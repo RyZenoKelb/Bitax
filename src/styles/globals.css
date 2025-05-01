@@ -766,6 +766,12 @@ header {
 
 /* ===== 1. CORRECTIONS POUR LE MODE SOMBRE ===== */
 
+/* Corrections des problèmes d'affichage en modes clair et sombre 
+ * Ajouter à la fin de src/styles/globals.css
+ */
+
+/* ===== 1. CORRECTIONS POUR LE MODE SOMBRE ===== */
+
 /* Amélioration des fonds des boîtes en mode sombre */
 .dark .bg-white,
 .dark .bg-white.dark\:bg-bitax-gray-800,
@@ -857,12 +863,19 @@ header {
   font-weight: 700 !important;
 }
 
-/* Adoucir le fond blanc en mode clair pour les cards et le dashboard */
-.light .card,
-.light .bg-white,
-.light main .bg-white {
+/* Adoucir le fond blanc en mode clair pour les cards et le dashboard - CORRIGÉ */
+.light .card {
   background-color: #f8fafc !important; /* Une teinte légèrement grise pour un blanc moins cassant */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Correctif pour les éléments bg-white en mode clair */
+.light div[class*="bg-white"] {
+  background-color: #f8fafc !important;
+}
+
+.light main div[class*="bg-white"] {
+  background-color: #f8fafc !important;
 }
 
 /* Fond plus doux pour toute la page en mode clair */
