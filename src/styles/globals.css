@@ -1,0 +1,286 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Importation des polices */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
+/* Styles de base */
+@layer base {
+  html {
+    @apply antialiased scroll-smooth;
+  }
+  
+  body {
+    @apply bg-bitax-gray-50 text-bitax-gray-800 font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+  
+  h4 {
+    @apply text-lg md:text-xl;
+  }
+  
+  a {
+    @apply text-bitax-primary-600 hover:text-bitax-primary-700 transition-colors duration-200;
+  }
+}
+
+/* Composants réutilisables */
+@layer components {
+  /* Boutons */
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl text-base font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply btn bg-bitax-primary-500 hover:bg-bitax-primary-600 text-white focus:ring-bitax-primary-500 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-bitax-accent-500 hover:bg-bitax-accent-600 text-white focus:ring-bitax-accent-500 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+  }
+  
+  .btn-success {
+    @apply btn bg-bitax-success-500 hover:bg-bitax-success-600 text-white focus:ring-bitax-success-500 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+  }
+  
+  .btn-danger {
+    @apply btn bg-bitax-danger-500 hover:bg-bitax-danger-600 text-white focus:ring-bitax-danger-500 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+  }
+  
+  .btn-warning {
+    @apply btn bg-bitax-warning-500 hover:bg-bitax-warning-600 text-white focus:ring-bitax-warning-500 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+  }
+  
+  .btn-outline {
+    @apply btn border-2 border-bitax-gray-300 text-bitax-gray-700 hover:bg-bitax-gray-50 focus:ring-bitax-gray-500 dark:border-bitax-gray-600 dark:text-white dark:hover:bg-bitax-gray-800;
+  }
+  
+  .btn-premium {
+    @apply btn bg-gradient-to-r from-bitax-premium-500 to-bitax-premium-600 hover:from-bitax-premium-600 hover:to-bitax-premium-700 text-white shadow-lg hover:shadow-xl focus:ring-bitax-premium-500 transform hover:-translate-y-1;
+  }
+  
+  .btn-sm {
+    @apply px-4 py-2 text-sm rounded-lg;
+  }
+  
+  .btn-lg {
+    @apply px-8 py-4 text-lg rounded-xl;
+  }
+  
+  /* Cartes */
+  .card {
+    @apply bg-white rounded-2xl shadow-card overflow-hidden transition-shadow duration-300 hover:shadow-card-hover border border-gray-100 dark:border-gray-800 dark:bg-bitax-gray-800;
+  }
+  
+  .card-premium {
+    @apply bg-gradient-to-br from-bitax-premium-50 to-bitax-premium-100 dark:from-bitax-gray-800 dark:to-bitax-gray-700 rounded-2xl shadow-card border border-bitax-premium-200 dark:border-bitax-premium-800;
+  }
+  
+  .card-header {
+    @apply px-6 py-5 border-b border-bitax-gray-200 dark:border-bitax-gray-700;
+  }
+  
+  .card-body {
+    @apply p-6;
+  }
+  
+  .card-footer {
+    @apply px-6 py-4 bg-bitax-gray-50 dark:bg-bitax-gray-800/70 border-t border-bitax-gray-200 dark:border-bitax-gray-700;
+  }
+  
+  .gradient-card {
+    @apply bg-gradient-to-br from-white to-gray-50 dark:from-bitax-gray-800 dark:to-bitax-gray-900 shadow-xl rounded-2xl border border-gray-100 dark:border-gray-700 hover:shadow-2xl transition-all duration-300;
+  }
+  
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-primary {
+    @apply badge bg-bitax-primary-100 text-bitax-primary-800;
+  }
+  
+  .badge-success {
+    @apply badge bg-bitax-success-100 text-bitax-success-800;
+  }
+  
+  .badge-warning {
+    @apply badge bg-bitax-warning-100 text-bitax-warning-800;
+  }
+  
+  .badge-danger {
+    @apply badge bg-bitax-danger-100 text-bitax-danger-800;
+  }
+  
+  .badge-gray {
+    @apply badge bg-bitax-gray-100 text-bitax-gray-800;
+  }
+  
+  /* Formulaires */
+  .form-input {
+    @apply w-full rounded-xl border-bitax-gray-300 shadow-sm focus:border-bitax-primary-500 focus:ring focus:ring-bitax-primary-500 focus:ring-opacity-50;
+  }
+  
+  .form-select {
+    @apply w-full rounded-xl border-bitax-gray-300 shadow-sm focus:border-bitax-primary-500 focus:ring focus:ring-bitax-primary-500 focus:ring-opacity-50;
+  }
+  
+  .form-checkbox {
+    @apply rounded border-bitax-gray-300 text-bitax-primary-600 shadow-sm focus:border-bitax-primary-500 focus:ring focus:ring-bitax-primary-500 focus:ring-opacity-50;
+  }
+  
+  .form-radio {
+    @apply border-bitax-gray-300 text-bitax-primary-600 shadow-sm focus:border-bitax-primary-500 focus:ring focus:ring-bitax-primary-500 focus:ring-opacity-50;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-bitax-gray-700 mb-1;
+  }
+  
+  .form-helper {
+    @apply mt-1 text-sm text-bitax-gray-500;
+  }
+  
+  .form-error {
+    @apply mt-1 text-sm text-bitax-danger-600;
+  }
+  
+  /* Tableaux */
+  .table-container {
+    @apply overflow-x-auto rounded-xl shadow-sm border border-bitax-gray-200;
+  }
+  
+  .table {
+    @apply min-w-full divide-y divide-bitax-gray-200;
+  }
+  
+  .table-header {
+    @apply bg-bitax-gray-50;
+  }
+  
+  .table-header-cell {
+    @apply px-6 py-3 text-left text-xs font-medium text-bitax-gray-500 uppercase tracking-wider;
+  }
+  
+  .table-body {
+    @apply bg-white divide-y divide-bitax-gray-200;
+  }
+  
+  .table-row {
+    @apply hover:bg-bitax-gray-50 transition-colors duration-150;
+  }
+  
+  .table-cell {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-bitax-gray-900;
+  }
+  
+  /* Alertes */
+  .alert {
+    @apply p-4 rounded-xl mb-4;
+  }
+  
+  .alert-info {
+    @apply alert bg-bitax-accent-50 text-bitax-accent-800 border border-bitax-accent-200;
+  }
+  
+  .alert-success {
+    @apply alert bg-bitax-success-50 text-bitax-success-800 border border-bitax-success-200;
+  }
+  
+  .alert-warning {
+    @apply alert bg-bitax-warning-50 text-bitax-warning-800 border border-bitax-warning-200;
+  }
+  
+  .alert-danger {
+    @apply alert bg-bitax-danger-50 text-bitax-danger-800 border border-bitax-danger-200;
+  }
+  
+  /* Navigation */
+  .nav-link {
+    @apply px-4 py-2 text-bitax-gray-600 hover:text-bitax-primary-600 hover:bg-bitax-primary-50 rounded-lg transition-colors duration-150;
+  }
+  
+  .nav-link-active {
+    @apply px-4 py-2 text-bitax-primary-600 bg-bitax-primary-50 rounded-lg font-medium;
+  }
+  
+  /* Stats / Métriques */
+  .stat-card {
+    @apply p-6 bg-white rounded-xl shadow-sm border border-bitax-gray-200;
+  }
+  
+  .stat-title {
+    @apply text-sm font-medium text-bitax-gray-500;
+  }
+  
+  .stat-value {
+    @apply mt-1 text-3xl font-semibold text-bitax-gray-900;
+  }
+  
+  .stat-desc {
+    @apply mt-1 text-sm text-bitax-gray-500;
+  }
+
+  /* Tabs */
+  .tabs {
+    @apply flex border-b border-bitax-gray-200;
+  }
+  
+  .tab {
+    @apply py-3 px-6 text-sm font-medium text-bitax-gray-500 hover:text-bitax-gray-700 hover:border-bitax-gray-300 border-b-2 border-transparent;
+  }
+  
+  .tab-active {
+    @apply py-3 px-6 text-sm font-medium text-bitax-primary-600 border-b-2 border-bitax-primary-500;
+  }
+}
+
+/* Utilitaires personnalisés */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-bitax-primary-500 to-bitax-accent-500;
+  }
+  
+  .premium-text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-bitax-premium-500 to-amber-500;
+  }
+  
+  .bg-gradient {
+    @apply bg-gradient-to-r from-bitax-primary-500 to-bitax-accent-500;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl;
+  }
+  
+  .glass {
+    @apply backdrop-blur-md bg-white/70 dark:bg-bitax-gray-900/70 border border-white/20 dark:border-gray-800/30;
+  }
+}
