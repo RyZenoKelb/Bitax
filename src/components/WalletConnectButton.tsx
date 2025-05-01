@@ -345,10 +345,10 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
   // Afficher le composant complet ou seulement le bouton
   useEffect(() => {
     // Si connecté et avec des transactions, afficher le dashboard complet
-    if (account && transactions.length > 0) {
+    if (account) {
       setIsFullDashboard(true);
     }
-  }, [account, transactions]);
+  }, [account]);
 
   // Si c'est juste le bouton simple à afficher
   if (!isFullDashboard && !account) {
@@ -568,7 +568,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                           : 'bg-gray-800/30 border border-gray-700/30 hover:border-gray-600/80'
                       } transition-all duration-200`}
                     >
-                      {activeNetwork === network && isLoading && (
+                      {selectedNetwork === network && isLoading && (
                         <div className="absolute inset-0 flex items-center justify-center bg-primary-900/80 rounded-lg z-10">
                           <svg className="animate-spin h-5 w-5 text-primary-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -695,7 +695,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
             </div>
           ) : (
             <>
-              {isWalletConnected ? (
+              {account ? (
                 transactions.length > 0 ? (
                   <>
                     {/* Résumé des transactions */}
