@@ -1066,9 +1066,9 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
 }
 
 /* 2. Amélioration des titres "Tableau de bord fiscal", "Rapport Fiscal" etc. */
-.light h1.text-3xl.font-bold.text-gray-900,
-.light h2.text-2xl.font-bold.text-gray-900,
-.light h3.text-xl.font-bold.text-gray-900,
+.light h1.text-3xl.font-bold,
+.light h2.text-2xl.font-bold,
+.light h3.text-xl.font-bold,
 .light [class*="text-3xl"][class*="font-bold"],
 .light [class*="text-2xl"][class*="font-bold"],
 .light [class*="text-xl"][class*="font-bold"] {
