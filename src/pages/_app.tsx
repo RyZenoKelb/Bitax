@@ -73,6 +73,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
+  const { isAuthenticated } = useContext(AuthContext);
 
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
