@@ -1,7 +1,8 @@
-import { prisma } from "@/lib/prisma";
+// src/app/api/register/route.ts - Correction
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 
 // Validation schema
 const UserSchema = z.object({
