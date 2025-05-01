@@ -780,3 +780,117 @@ header {
 .dark main {
   background-color: var(--color-dark);
 }
+
+/* Améliorations du mode sombre pour les boutons de sélection de blockchain et les textes */
+
+/* Meilleur contraste pour les boutons de blockchain en mode sombre */
+.dark button[class*="bg-gray-100"],
+.dark button[class*="bg-gray-800/30"] {
+  background-color: var(--color-gray-700) !important;
+  border-color: var(--color-gray-600) !important;
+}
+
+.dark button[class*="bg-gray-100"]:hover,
+.dark button[class*="bg-gray-800/30"]:hover {
+  background-color: var(--color-gray-600) !important;
+  border-color: var(--color-gray-500) !important;
+}
+
+/* Assurer que le texte est toujours suffisamment contrasté en mode sombre */
+.dark .text-gray-800,
+.dark .text-gray-900 {
+  color: var(--color-gray-100) !important;
+}
+
+.dark .text-gray-700 {
+  color: var(--color-gray-200) !important;
+}
+
+.dark .text-gray-600 {
+  color: var(--color-gray-300) !important;
+}
+
+/* Améliorer la visibilité des titres et nombres importants en mode sombre */
+.dark .font-bold,
+.dark .font-semibold,
+.dark .text-2xl,
+.dark .text-xl,
+.dark .text-lg {
+  color: white !important;
+}
+
+/* Correction spécifique pour "Résumé du Portefeuille" et les valeurs numériques */
+.dark h3.text-lg.font-semibold.text-gray-800,
+.dark .text-2xl.font-semibold.text-gray-900,
+.dark .mt-1.text-2xl.font-semibold.text-gray-900 {
+  color: white !important;
+}
+
+/* Assurer que le texte des métriques est bien visible (jours, tokens, montants) */
+.dark .mt-1.text-sm.text-gray-500,
+.dark .text-gray-500 {
+  color: var(--color-gray-400) !important;
+}
+
+/* Améliorer le contraste des éléments de statistiques */
+.dark .stat-value,
+.dark .stat-title,
+.dark .stat-desc {
+  color: white !important;
+}
+
+/* Rendre les boutons de réseau (eth, polygon, etc.) plus lisibles */
+.dark [class*="rounded-lg border border-gray-700"] button,
+.dark [class*="rounded-lg"] [class*="text-gray-700"] {
+  color: var(--color-gray-200) !important;
+}
+
+/* Améliorer la visibilité des boutons actifs */
+.dark [class*="bg-bitax-primary-600"] {
+  background-color: var(--color-primary-600) !important;
+  color: white !important;
+}
+
+/* Améliorer la lisibilité des valeurs numériques dans les cartes statistiques */
+.dark .card .text-2xl,
+.dark .card .text-3xl,
+.dark .card .font-bold,
+.dark .card .font-semibold {
+  color: white !important;
+}
+
+/* Améliorer le contraste des sous-titres et descriptions */
+.dark .card .text-sm,
+.dark .card .text-gray-600,
+.dark .card .text-gray-500 {
+  color: var(--color-gray-300) !important;
+}
+
+/* Assurer que le texte dans les boîtes de sélection est visible */
+.dark select,
+.dark option {
+  background-color: var(--color-gray-800);
+  color: white;
+}
+
+/* Améliorer le fond des boutons de sélection de réseau en mode sombre */
+.dark button[class*="relative flex items-center justify-center px-3 py-2"] {
+  background-color: var(--color-gray-700) !important;
+  color: var(--color-gray-200) !important;
+}
+
+.dark button[class*="relative flex items-center justify-center px-3 py-2"]:hover {
+  background-color: var(--color-gray-600) !important;
+}
+
+/* S'assurer que le bouton actif est clairement visible */
+.dark button[class*="bg-bitax-primary-600"] {
+  background-color: var(--color-primary-500) !important;
+  color: white !important;
+}
+
+/* Améliorer les fonds des boîtes en mode sombre */
+.dark .bg-white.dark\:bg-bitax-gray-800,
+.dark .bg-white.dark\:bg-gray-800 {
+  background-color: var(--color-dark-secondary) !important;
+}
