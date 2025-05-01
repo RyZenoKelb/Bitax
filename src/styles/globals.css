@@ -178,7 +178,7 @@
   }
   
   .light .text-white {
-    color: var(--color-gray-900);
+    @apply text-gray-900;
   }
   
   .light .text-dark {
@@ -186,7 +186,7 @@
   }
   
   .light .text-light {
-    color: white;
+    @apply text-white;
   }
 }
 
