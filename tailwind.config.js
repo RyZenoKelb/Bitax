@@ -42,7 +42,16 @@ module.exports = {
         },
         // Accent - Rose électrique
         accent: {
+          50: '#fff0f5',
+          100: '#ffe1eb',
+          200: '#ffc2d7',
+          300: '#ff94b8',
+          400: '#ff5d90',
           500: '#FF3D71',
+          600: '#eb1958',
+          700: '#cc0e48',
+          800: '#a90e40',
+          900: '#8f123a',
         },
         // Succès - Vert néon
         success: {
