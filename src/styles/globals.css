@@ -1007,6 +1007,6 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
 }
 
 /* Assurer que les titres des sections sont bien visibles en mode clair */
-.light h3.text-base.font-medium.text-gray-700.dark\:text-gray-300.mb-3 {
+.light h3[class*="text-base"][class*="font-medium"][class*="mb-3"] {
   color: var(--color-gray-900) !important;
 }
