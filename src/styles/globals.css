@@ -12,11 +12,13 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Importation des polices */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
-/* Ajout de la police Orbitron pour le style startup */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+/* Importation de Montserrat pour un look plus professionnel */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -24,6 +26,9 @@
 
 /* Variables */
 :root {
+  /* Police principale pour les titres */
+  --font-heading: 'Montserrat', 'Plus Jakarta Sans', sans-serif;
+
   /* Palette principale - Style Professionnel Blockchain */
   --color-primary-50: #eef2ff;
   --color-primary-100: #e0e7ff;
@@ -144,14 +149,16 @@
   }
   
   body {
-    @apply bg-transparent font-sans;
+    @apply bg-transparent;
     color: var(--color-gray-200);
+    font-family: 'Inter', sans-serif;
   }
   
-  /* Polices plus professionnelles - rétabli Orbitron pour le style startup */
+  /* Utilisation de Montserrat pour les titres */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', 'Plus Jakarta Sans', sans-serif;
-    @apply font-semibold;
+    font-family: var(--font-heading);
+    @apply font-bold;
+    letter-spacing: -0.02em;
   }
   
   h1 {
@@ -236,24 +243,41 @@
     animation: float 25s ease-in-out infinite alternate;
   }
   
-  /* Boutons */
+  /* Correction des boutons avec effet décalé */
   .btn {
     @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg text-base font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden relative z-10;
   }
   
   .btn-primary {
     @apply bg-primary-600 hover:bg-primary-700 text-white shadow-md hover:shadow-lg focus:ring-primary-500 transform hover:-translate-y-0.5;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
   }
   
+  /* Suppression de l'effet avant avant le hover */
   .btn-primary::before {
-    content: '';
-    @apply absolute top-0 -left-full w-full h-full;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.8s;
+    display: none;
   }
   
+  /* Ajout de l'effet seulement au survol */
   .btn-primary:hover::before {
-    @apply left-full;
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite;
+  }
+  
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
   }
   
   .btn-secondary {
@@ -263,22 +287,55 @@
   .btn-outline {
     @apply border-2 border-gray-500/30 text-gray-300 hover:border-white hover:text-white focus:ring-gray-500;
     backdrop-filter: blur(4px);
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+  }
+  
+  /* Suppression de l'effet avant avant le hover */
+  .btn-outline::before {
+    display: none;
+  }
+  
+  /* Ajout de l'effet seulement au survol */
+  .btn-outline:hover::before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite;
   }
   
   .btn-premium {
     @apply relative text-white shadow-md hover:shadow-lg focus:ring-primary-500 transform hover:-translate-y-0.5;
     background: linear-gradient(90deg, var(--color-primary-600), var(--color-secondary-600));
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
   }
   
+  /* Suppression de l'effet avant avant le hover */
   .btn-premium::before {
-    content: '';
-    @apply absolute top-0 -left-full w-full h-full;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.8s;
+    display: none;
   }
   
+  /* Ajout de l'effet seulement au survol */
   .btn-premium:hover::before {
-    @apply left-full;
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite;
   }
   
   .btn-sm {
@@ -287,6 +344,121 @@
   
   .btn-lg {
     @apply px-6 py-3 text-lg rounded-lg;
+  }
+  
+  /* Styles pour les boutons de la navbar */
+  .nav-link-improved {
+    @apply text-gray-200 hover:text-white font-medium py-2 px-1 transition-all relative;
+  }
+  
+  .nav-link-improved::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300;
+  }
+  
+  .nav-link-improved:hover::after {
+    @apply w-full;
+  }
+  
+  .btn-nav-login {
+    @apply text-white py-2 px-5 rounded-lg font-medium transition-all border border-white/20 hover:border-white/50 hover:bg-white/10 hover:shadow-md;
+  }
+  
+  .btn-nav-signup {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 px-5 rounded-lg font-medium shadow-md transform transition-all hover:shadow-lg hover:translate-y-[-2px];
+  }
+  
+  /* Styles pour la landing page */
+  .text-gradient-enhanced {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600;
+    filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
+  }
+  
+  .premium-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-500;
+    filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.3));
+  }
+  
+  .shadow-glow-purple {
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
+  }
+  
+  /* Boutons Hero améliorés */
+  .btn-hero-primary {
+    @apply relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium transition-all;
+    transform: translateZ(0); /* Force GPU acceleration */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  }
+  
+  .btn-hero-primary:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+  }
+  
+  .btn-hero-primary::before {
+    content: '';
+    @apply absolute top-0 right-0 bottom-0 left-0 bg-black opacity-0 transition-opacity;
+    z-index: -1;
+  }
+  
+  .btn-hero-primary:hover::before {
+    @apply opacity-10;
+  }
+  
+  .btn-hero-secondary {
+    @apply relative px-6 py-3 bg-transparent text-white rounded-lg font-medium transition-all border-2 border-white/30;
+    transform: translateZ(0);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0);
+  }
+  
+  .btn-hero-secondary:hover {
+    @apply border-white/60;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
+  }
+  
+  /* Network tags */
+  .network-tag {
+    @apply flex items-center backdrop-blur-md bg-white/5 rounded-full px-3 py-1.5 border border-white/10 transition-all;
+  }
+  
+  .network-tag:hover {
+    @apply bg-white/10 border-white/20 transform -translate-y-1;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  }
+  
+  /* Animations pour le dashboard */
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Effet de shadow glow pour les boutons */
+  .hover\:shadow-glow-blue:hover {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  }
+  
+  /* Animation des étoiles/particules */
+  .stars-container {
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, #eaeaea, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 90px 40px, #eeeeee, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 230px 50px, #eeeeee, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 250px 250px;
+    opacity: 0.15;
+    animation: stars-animation 300s linear infinite;
+  }
+  
+  @keyframes stars-animation {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-1000px);
+    }
   }
   
   /* Cartes avec styles plus professionnels */
@@ -423,90 +595,6 @@
   
   .badge-premium {
     @apply bg-gradient-to-r from-primary-600 to-secondary-600 text-white;
-  }
-
-    /* Styles spécifiques pour la landing page */
-  .text-gradient-enhanced {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600;
-    filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
-  }
-
-  /* Correction des animations de blur sur les boutons */
-  .btn-hero-primary {
-    @apply relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium transition-all;
-    transform: translateZ(0); /* Force GPU acceleration */
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-  }
-
-  .btn-hero-primary:hover {
-    @apply shadow-lg;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
-  }
-
-  .btn-hero-primary::before {
-    content: '';
-    @apply absolute top-0 right-0 bottom-0 left-0 bg-black opacity-0 transition-opacity;
-    z-index: -1;
-  }
-
-  .btn-hero-primary:hover::before {
-    @apply opacity-10;
-  }
-
-  .btn-hero-secondary {
-    @apply relative px-6 py-3 bg-transparent text-white rounded-lg font-medium transition-all border-2 border-white/30;
-    transform: translateZ(0);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0);
-  }
-
-  .btn-hero-secondary:hover {
-    @apply border-white/60;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
-  }
-
-  /* Style pour les "tags" de réseaux blockchain */
-  .network-tag {
-    @apply flex items-center backdrop-blur-md bg-white/5 rounded-full px-3 py-1.5 border border-white/10 transition-all;
-  }
-
-  .network-tag:hover {
-    @apply bg-white/10 border-white/20 transform -translate-y-1;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-  }
-
-  /* Animations pour les éléments dashboard */
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  /* Effet de shadow glow pour les boutons */
-  .hover\:shadow-glow-blue:hover {
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-  }
-
-  /* Animation des étoiles/particules */
-  .stars-container {
-    background-image: 
-      radial-gradient(2px 2px at 20px 30px, #eaeaea, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 90px 40px, #eeeeee, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 230px 50px, #eeeeee, rgba(0,0,0,0));
-    background-repeat: repeat;
-    background-size: 250px 250px;
-    opacity: 0.15;
-    animation: stars-animation 300s linear infinite;
-  }
-
-  @keyframes stars-animation {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(-1000px);
-    }
   }
   
   /* Formulaires */
