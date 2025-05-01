@@ -353,6 +353,20 @@
   .light .card-footer {
     @apply bg-gray-100/60 border-gray-200/60;
   }
+
+  .light footer {
+    background-color: #f8fafc !important; /* Fond gris très clair, doux et professionnel */
+    border-top: 1px solid #e2e8f0 !important; /* Bordure subtile */
+    color: #1e293b !important; /* Texte gris foncé pour un bon contraste */
+  }
+  
+  .light footer a {
+    color: #4b5563 !important; /* Liens en gris moyen */
+  }
+  
+  .light footer a:hover {
+    color: #1e293b !important; /* Liens plus foncés au survol */
+  }
   
   .glass {
     @apply backdrop-blur-md bg-white/5 border border-white/10;
