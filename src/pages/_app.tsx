@@ -18,32 +18,35 @@ declare module 'react' {
 }
 
 // Logo SVG amélioré avec style futuriste
-const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => (
-  <svg width="150" height="40" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#7B3FE4" />
-        <stop offset="100%" stopColor="#0EEAFF" />
-      </linearGradient>
-      <filter id="glow">
-        <feGaussianBlur stdDeviation="2.5" result="blur" />
-        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-      </filter>
-    </defs>
-    <g transform="translate(0, 0)">
-      <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="url(#logoGradient)" filter="url(#glow)" />
-      <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="#121033" fillOpacity="0.7" />
-      <line x1="30" y1="65" x2="30" y2="45" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <line x1="45" y1="65" x2="45" y2="35" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <line x1="60" y1="65" x2="60" y2="40" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <line x1="75" y1="65" x2="75" y2="50" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <text x="35" y="30" fontFamily="Orbitron, sans-serif" fontSize="18" fontWeight="bold" fill="white">$</text>
-    </g>
-    <text x="120" y="70" fontFamily="Orbitron, sans-serif" fontSize="55" fontWeight="700" fill="white" filter="url(#glow)">BITAX</text>
-    <text x="123" y="90" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="500" fill="#9997C0">Fiscalité crypto redéfinie</text>
-  </svg>
-);
+const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
+  const textColor = isDarkMode ? 'white' : 'black'; // Blanc en mode sombre, gris foncé en mode clair
 
+  return (
+    <svg width="150" height="40" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#7B3FE4" />
+          <stop offset="100%" stopColor="#0EEAFF" />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+      <g transform="translate(0, 0)">
+        <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="url(#logoGradient)" filter="url(#glow)" />
+        <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="#121033" fillOpacity="0.7" />
+        <line x1="30" y1="65" x2="30" y2="45" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <line x1="45" y1="65" x2="45" y2="35" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <line x1="60" y1="65" x2="60" y2="40" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <line x1="75" y1="65" x2="75" y2="50" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <text x="35" y="30" fontFamily="Orbitron, sans-serif" fontSize="18" fontWeight="bold" fill={textColor}>$</text>
+      </g>
+      <text x="120" y="70" fontFamily="Orbitron, sans-serif" fontSize="55" fontWeight="700" fill={textColor} filter="url(#glow)">BITAX</text>
+      <text x="123" y="90" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="500" fill={textColor === 'white' ? '#9997C0' : '#4b5563'}>Fiscalité crypto redéfinie</text>
+    </svg>
+  );
+};
 export default function App({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark'); // Toujours en dark mode pour le style cyberpunk
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -129,7 +132,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="container mx-auto py-3 px-6 flex justify-between items-center">
             <div className="flex items-center">
               <Link href="/" className="hover:opacity-90 transition-opacity">
-                <BitaxLogo />
+                <BitaxLogo isDarkMode={theme === 'dark'}/>
               </Link>
             </div>
             
@@ -168,28 +171,43 @@ export default function App({ Component, pageProps }: AppProps) {
               
               {/* Bouton toggle thème (gardé pour compatibilité) mais stylisé */}
               <button 
-                onClick={toggleTheme}
-                className="p-2 rounded-full text-gray-400 hover:text-secondary-400 hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-secondary-500/50 transition-colors duration-200"
-                aria-label="Toggle theme"
-              >
-                <div className="relative w-5 h-5">
-                  <Transition
-                    show={theme === 'dark'}
-                    enter="transition-opacity duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="transition-opacity duration-300"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <div className="absolute inset-0">
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                    </div>
-                  </Transition>
-                </div>
-              </button>
+  onClick={toggleTheme}
+  className="p-2 rounded-full text-gray-400 hover:text-secondary-400 hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-secondary-500/50 transition-colors duration-200"
+  aria-label="Toggle theme"
+>
+  <div className="relative w-5 h-5">
+    <Transition
+      show={theme === 'dark'}
+      enter="transition-opacity duration-300"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      leave="transition-opacity duration-300"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
+    >
+      <div className="absolute inset-0">
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </div>
+    </Transition>
+    <Transition
+      show={theme === 'light'}
+      enter="transition-opacity duration-300"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      leave="transition-opacity duration-300"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
+    >
+      <div className="absolute inset-0">
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </div>
+    </Transition>
+  </div>
+</button>
               
               {/* Menu hamburger mobile avec effet futuriste */}
               <button 

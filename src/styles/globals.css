@@ -759,16 +759,6 @@ header {
   @apply bg-gray-900/80;
 }
 
-/* Assurer que le bouton de toggle thème est visible dans le header */
-.light header button[aria-label="Toggle theme"] {
-  color: #1e293b !important;
-  background-color: rgba(226, 232, 240, 0.5) !important;
-}
-
-.light header button[aria-label="Toggle theme"]:hover {
-  background-color: rgba(203, 213, 225, 0.8) !important;
-}
-
 /* Styles spécifiques pour les titres de sections et éléments problématiques */
 .section-title {
   color: var(--text-primary) !important;
@@ -1108,10 +1098,21 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
   opacity: 1 !important;
 }
 
-.light button[class*="p-2 rounded-full"] svg path,
-.light button[aria-label="Toggle theme"] svg path {
+.light button[aria-label="Toggle theme"] svg {
+  color: #1e293b !important; /* Couleur gris foncé bien visible */
+  opacity: 1 !important; /* Forcer l'opacité à 100% */
+  stroke-width: 2.5px !important; /* Épaissir les traits pour plus de visibilité */
+}
+
+.light button[aria-label="Toggle theme"]:hover {
+  background-color: #e2e8f0 !important; /* Fond gris clair au survol */
+}
+
+/* S'assurer que l'icône reste visible même dans le header */
+.light header button[aria-label="Toggle theme"] svg {
+  color: #1e293b !important;
   stroke-width: 2.5px !important;
-  stroke: var(--color-gray-900) !important;
+  opacity: 1 !important;
 }
 
 /* S'assurer que l'icône de la lune est toujours visible en mode clair */
