@@ -1,4 +1,5 @@
 # 🚀 Bitax
+
 Bitax is a personal crypto finance dashboard that allows users to:
 
 Connect their crypto wallet (Coinbase Wallet, Metamask, etc.)
