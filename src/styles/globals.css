@@ -204,22 +204,6 @@
   .light .text-white {
     color: var(--color-gray-900);
   }
-
-    /* Styles pour les ombres */
-  .wallet-connected,
-  .dashboard,
-  .fiscal-item,
-  .menu-item {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
-
-  /* Ajustement pour le mode sombre */
-  .dark .wallet-connected,
-  .dark .dashboard,
-  .dark .fiscal-item,
-  .dark .menu-item {
-    box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
-  }
   
   .light .text-dark {
     color: var(--color-gray-800);
