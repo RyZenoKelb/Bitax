@@ -1,13 +1,12 @@
-// Prisma schema for Bitax (Production version)
+// Prisma schema for Bitax
 
 generator client {
   provider = "prisma-client-js"
 }
 
-// Configuration de la base de données pour la production
 datasource db {
-  provider = "postgresql" // Base de données PostgreSQL pour la production
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 // NextAuth Models
