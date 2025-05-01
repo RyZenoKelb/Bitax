@@ -135,15 +135,18 @@
   }
   
   h1 {
-    @apply text-3xl md:text-4xl text-white;
+    @apply text-3xl md:text-4xl;
+    color: white;
   }
   
   h2 {
-    @apply text-2xl md:text-3xl text-white;
+    @apply text-2xl md:text-3xl;
+    color: white;
   }
   
   h3 {
-    @apply text-xl md:text-2xl text-white;
+    @apply text-xl md:text-2xl;
+    color: white;
   }
   
   a {
@@ -152,7 +155,7 @@
   
   /* Classes génériques pour le texte en mode sombre/clair */
   .text-dark {
-    @apply text-white;
+    color: white;
   }
   
   .text-light {
@@ -170,23 +173,24 @@
   }
   
   .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
-    @apply text-gray-900;
+    color: var(--color-gray-900);
   }
   
   .light a {
     @apply text-primary-600 hover:text-primary-700;
   }
   
+  /* Correction de la dépendance circulaire - On remplace @apply par une déclaration directe */
   .light .text-white {
-    @apply text-gray-900;
+    color: var(--color-gray-900);
   }
   
   .light .text-dark {
-    @apply text-gray-800;
+    color: var(--color-gray-800);
   }
   
   .light .text-light {
-    @apply text-white;
+    color: white;
   }
 }
 
@@ -299,12 +303,14 @@
   }
   
   .card-premium-inner {
-    @apply bg-gray-900/80 rounded-xl p-6 text-white;
+    @apply bg-gray-900/80 rounded-xl p-6;
+    color: white;
     backdrop-filter: blur(8px);
   }
   
   .light .card-premium-inner {
-    @apply bg-white/90 text-gray-800;
+    @apply bg-white/90;
+    color: var(--color-gray-800);
   }
   
   .card-header {
@@ -456,7 +462,7 @@
   }
   
   .nav-link-active {
-    @apply text-white;
+    color: white;
   }
   
   .light .nav-link-active {
@@ -577,11 +583,12 @@
   }
   
   .stat-value {
-    @apply mt-1 text-3xl font-semibold text-white;
+    @apply mt-1 text-3xl font-semibold;
+    color: white;
   }
   
   .light .stat-value {
-    @apply text-gray-900;
+    color: var(--color-gray-900);
   }
   
   .stat-desc {
@@ -736,6 +743,7 @@ header {
 }
 
 /* Correction pour les backgrounds des cards dans les deux modes */
+/* Styles des cartes en mode clair/sombre */
 .light .card, .light .stat-card, .light .table-container {
   background: white;
   color: var(--color-gray-800);
@@ -746,6 +754,24 @@ header {
   color: white;
 }
 
+/* Style explicite pour s'assurer que les cartes du dashboard sont correctement stylisées en mode sombre */
+.dark .bg-white, 
+.dark .bg-white.dark\:bg-gray-800,
+.dark .bg-white.dark\:bg-bitax-gray-800 {
+  background-color: var(--color-dark-secondary) !important;
+  color: white !important;
+}
+
+/* Fix pour les boîtes de sélection en mode sombre */
+.dark select,
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-gray-200 {
+  background-color: var(--color-gray-800) !important;
+  color: var(--color-gray-200) !important;
+  border-color: var(--color-gray-700) !important;
+}
+
 /* Fix pour les fonds de pages */
 .light main {
   background-color: #f9fafb;
@@ -753,4 +779,118 @@ header {
 
 .dark main {
   background-color: var(--color-dark);
+}
+
+/* Améliorations du mode sombre pour les boutons de sélection de blockchain et les textes */
+
+/* Meilleur contraste pour les boutons de blockchain en mode sombre */
+.dark button[class*="bg-gray-100"],
+.dark button[class*="bg-gray-800/30"] {
+  background-color: var(--color-gray-700) !important;
+  border-color: var(--color-gray-600) !important;
+}
+
+.dark button[class*="bg-gray-100"]:hover,
+.dark button[class*="bg-gray-800/30"]:hover {
+  background-color: var(--color-gray-600) !important;
+  border-color: var(--color-gray-500) !important;
+}
+
+/* Assurer que le texte est toujours suffisamment contrasté en mode sombre */
+.dark .text-gray-800,
+.dark .text-gray-900 {
+  color: var(--color-gray-100) !important;
+}
+
+.dark .text-gray-700 {
+  color: var(--color-gray-200) !important;
+}
+
+.dark .text-gray-600 {
+  color: var(--color-gray-300) !important;
+}
+
+/* Améliorer la visibilité des titres et nombres importants en mode sombre */
+.dark .font-bold,
+.dark .font-semibold,
+.dark .text-2xl,
+.dark .text-xl,
+.dark .text-lg {
+  color: white !important;
+}
+
+/* Correction spécifique pour "Résumé du Portefeuille" et les valeurs numériques */
+.dark h3.text-lg.font-semibold.text-gray-800,
+.dark .text-2xl.font-semibold.text-gray-900,
+.dark .mt-1.text-2xl.font-semibold.text-gray-900 {
+  color: white !important;
+}
+
+/* Assurer que le texte des métriques est bien visible (jours, tokens, montants) */
+.dark .mt-1.text-sm.text-gray-500,
+.dark .text-gray-500 {
+  color: var(--color-gray-400) !important;
+}
+
+/* Améliorer le contraste des éléments de statistiques */
+.dark .stat-value,
+.dark .stat-title,
+.dark .stat-desc {
+  color: white !important;
+}
+
+/* Rendre les boutons de réseau (eth, polygon, etc.) plus lisibles */
+.dark [class*="rounded-lg border border-gray-700"] button,
+.dark [class*="rounded-lg"] [class*="text-gray-700"] {
+  color: var(--color-gray-200) !important;
+}
+
+/* Améliorer la visibilité des boutons actifs */
+.dark [class*="bg-bitax-primary-600"] {
+  background-color: var(--color-primary-600) !important;
+  color: white !important;
+}
+
+/* Améliorer la lisibilité des valeurs numériques dans les cartes statistiques */
+.dark .card .text-2xl,
+.dark .card .text-3xl,
+.dark .card .font-bold,
+.dark .card .font-semibold {
+  color: white !important;
+}
+
+/* Améliorer le contraste des sous-titres et descriptions */
+.dark .card .text-sm,
+.dark .card .text-gray-600,
+.dark .card .text-gray-500 {
+  color: var(--color-gray-300) !important;
+}
+
+/* Assurer que le texte dans les boîtes de sélection est visible */
+.dark select,
+.dark option {
+  background-color: var(--color-gray-800);
+  color: white;
+}
+
+/* Améliorer le fond des boutons de sélection de réseau en mode sombre */
+.dark button[class*="relative flex items-center justify-center px-3 py-2"] {
+  background-color: var(--color-gray-700) !important;
+  color: var(--color-gray-200) !important;
+}
+
+.dark button[class*="relative flex items-center justify-center px-3 py-2"]:hover {
+  background-color: var(--color-gray-600) !important;
+}
+
+/* S'assurer que le bouton actif est clairement visible */
+.dark button[class*="bg-bitax-primary-600"] {
+  background-color: var(--color-primary-500) !important;
+  color: white !important;
+}
+
+/* Améliorer les fonds des boîtes en mode sombre */
+.dark .bg-white.dark\:bg-bitax-gray-800,
+.dark .bg-white.dark\:bg-gray-800 {
+  background-color: var(--color-dark-secondary) !important;
 }
