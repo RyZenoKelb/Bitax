@@ -521,81 +521,36 @@ export async function getSolanaSPLTransactions(account: string): Promise<Transac
  * @param chain La blockchain à scanner
  * @returns Toutes les transactions combinées
  */
-// Pour src/utils/transactions.ts
-// Modification de la fonction getNFTTransactions pour gérer correctement les erreurs 500
-
-export const getNFTTransactions = async (address: string, network: NetworkType): Promise<Transaction[]> => {
+export async function getTransactions(account: string, chain: NetworkType): Promise<TransactionResult[]> {
   try {
-    const apiUrl = getApiUrlForNetwork(network);
+    // Normaliser l'adresse du compte
+    const normalizedAccount = normalizeAddress(account, chain);
     
-    // Si l'API n'est pas disponible pour ce réseau, retourner un tableau vide
-    if (!apiUrl) {
-      console.warn(`API non disponible pour le réseau ${network}`);
+    if (!normalizedAccount) {
+      console.error('Adresse de wallet invalide pour ' + chain);
       return [];
     }
     
-    const response = await axios.get(`${apiUrl}/nft/transfers`, {
-      params: {
-        address,
-        chain: getChainForNetwork(network),
-        limit: 100
-      },
-      timeout: 10000 // Ajouter un timeout pour éviter les requêtes qui prennent trop de temps
-    });
+    let nativeTxs: TransactionResult[] = [];
+    let erc20Txs: TransactionResult[] = [];
+    let nftTxs: TransactionResult[] = [];
     
-    // Vérifier que la réponse est valide
-    if (!response.data || !response.data.result) {
-      console.warn(`Réponse invalide pour les NFT du réseau ${network}`);
-      return [];
+    // Récupérer les différents types de transactions en fonction de la blockchain
+    if (chain === 'solana') {
+      // Pour Solana, une seule API couvre les transferts natifs et les tokens
+      [nativeTxs, erc20Txs] = await Promise.all([
+        getSolanaTransactions(normalizedAccount),
+        getSolanaSPLTransactions(normalizedAccount)
+      ]);
+    } else {
+      // Pour les blockchains EVM (Ethereum, Polygon, etc.)
+      [nativeTxs, erc20Txs, nftTxs] = await Promise.all([
+        getNativeTransactions(normalizedAccount, chain),
+        getERC20Transactions(normalizedAccount, chain),
+        getNFTTransactions(normalizedAccount, chain)
+      ]);
     }
     
-    // Transformer les transactions NFT
-    return response.data.result.map((tx: any) => ({
-      hash: tx.transaction_hash,
-      block_timestamp: tx.block_timestamp,
-      from_address: tx.from_address,
-      to_address: tx.to_address,
-      value: "0", // Les NFT n'ont pas de valeur numérique standard
-      type: "NFT Transfer",
-      tokenSymbol: tx.name || "NFT",
-      network
-    }));
-  } catch (error) {
-    // Gérer l'erreur de manière plus élégante
-    console.error(`Erreur lors de la récupération des NFT pour ${network}:`, error);
-    
-    // Retourner un tableau vide en cas d'erreur plutôt que de faire échouer toute la requête
-    return [];
-  }
-};
-
-// Mise à jour de la fonction getTransactions pour rendre les transactions NFT optionnelles
-export const getTransactions = async (address: string, network: NetworkType): Promise<Transaction[]> => {
-  try {
-    const [normalTxs, tokenTxs, nftTxs] = await Promise.allSettled([
-      getNormalTransactions(address, network),
-      getTokenTransactions(address, network),
-      getNFTTransactions(address, network) // Maintenant cette promesse ne fera jamais échouer l'ensemble
-    ]);
-    
-    // Fusionner toutes les transactions qui ont réussi
-    const allTransactions = [
-      ...(normalTxs.status === 'fulfilled' ? normalTxs.value : []),
-      ...(tokenTxs.status === 'fulfilled' ? tokenTxs.value : []),
-      ...(nftTxs.status === 'fulfilled' ? nftTxs.value : [])
-    ];
-    
-    // Trier par date (du plus récent au plus ancien)
-    return allTransactions.sort((a, b) => {
-      const dateA = new Date(a.block_timestamp || 0).getTime();
-      const dateB = new Date(b.block_timestamp || 0).getTime();
-      return dateB - dateA;
-    });
-  } catch (error) {
-    console.error(`Erreur lors de la récupération des transactions pour ${network}:`, error);
-    throw error;
-  }
-};
     // Filtrer les transactions spam/scam
     const filteredERC20Txs = filterSpamTransactions(erc20Txs);
     
