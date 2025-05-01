@@ -672,4 +672,4 @@ export function getNetworkConfig(network: NetworkType): NetworkConfig {
  */
 export function getExplorerLink(hash: string, network: NetworkType): string {
   const config = SUPPORTED_NETWORKS[network];
-  return `${config.explorerUrl}${hash}`;
+  return `${config.explorerUrl}${hash}`;}
