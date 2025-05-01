@@ -1,3 +1,4 @@
+// src/pages/_app.tsx
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -5,9 +6,10 @@ import { useState, useEffect, Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import CustomStyles from '@/components/CustomStyles'; // Importation du composant de styles personnalisés
+import CustomStyles from '@/components/CustomStyles';
+// Import du UserMenu et de l'AuthProvider
+import UserMenu from '@/components/UserMenu';
 import AuthProvider from '@/providers/AuthProvider';
-
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -17,10 +19,6 @@ declare module 'react' {
     '--tw-gradient-stops'?: string;
   }
 }
-
-
-
-
 
 // Logo SVG amélioré avec style futuriste
 const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
@@ -52,6 +50,7 @@ const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
     </svg>
   );
 };
+
 export default function App({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark'); // Toujours en dark mode pour le style cyberpunk
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -101,7 +100,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [Component]);
 
   return (
-    <>
+    <AuthProvider>
       <Head>
         <title>Bitax | Fiscalité crypto redéfinie</title>
         <meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
@@ -174,45 +173,48 @@ export default function App({ Component, pageProps }: AppProps) {
                 </Link>
               </nav>
               
+              {/* Menu utilisateur */}
+              <UserMenu />
+              
               {/* Bouton toggle thème (gardé pour compatibilité) mais stylisé */}
               <button 
-  onClick={toggleTheme}
-  className="p-2 rounded-full text-gray-400 hover:text-secondary-400 hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-secondary-500/50 transition-colors duration-200"
-  aria-label="Toggle theme"
->
-  <div className="relative w-5 h-5">
-    <Transition
-      show={theme === 'dark'}
-      enter="transition-opacity duration-300"
-      enterFrom="opacity-0"
-      enterTo="opacity-100"
-      leave="transition-opacity duration-300"
-      leaveFrom="opacity-100"
-      leaveTo="opacity-0"
-    >
-      <div className="absolute inset-0">
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      </div>
-    </Transition>
-    <Transition
-      show={theme === 'light'}
-      enter="transition-opacity duration-300"
-      enterFrom="opacity-0"
-      enterTo="opacity-100"
-      leave="transition-opacity duration-300"
-      leaveFrom="opacity-100"
-      leaveTo="opacity-0"
-    >
-      <div className="absolute inset-0">
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-      </div>
-    </Transition>
-  </div>
-</button>
+                onClick={toggleTheme}
+                className="p-2 rounded-full text-gray-400 hover:text-secondary-400 hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-secondary-500/50 transition-colors duration-200"
+                aria-label="Toggle theme"
+              >
+                <div className="relative w-5 h-5">
+                  <Transition
+                    show={theme === 'dark'}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="absolute inset-0">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
+                  </Transition>
+                  <Transition
+                    show={theme === 'light'}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-300"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="absolute inset-0">
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                      </svg>
+                    </div>
+                  </Transition>
+                </div>
+              </button>
               
               {/* Menu hamburger mobile avec effet futuriste */}
               <button 
@@ -384,6 +386,6 @@ export default function App({ Component, pageProps }: AppProps) {
           </div>
         </footer>
       </div>
-    </>
+    </AuthProvider>
   );
 }
