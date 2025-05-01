@@ -13,6 +13,14 @@ const walletSchema = z.object({
   isPrimary: z.boolean().default(false),
 });
 
+// Schéma de validation pour la mise à jour d'un wallet
+const walletUpdateSchema = z.object({
+  address: z.string().min(1, "L'adresse du wallet est requise").optional(),
+  network: z.string().optional(),
+  name: z.string().optional(),
+  isPrimary: z.boolean().optional(),
+});
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -103,6 +111,87 @@ export async function GET(req: Request) {
     console.error("Erreur lors de la récupération des wallets:", error);
     return NextResponse.json(
       { error: "Une erreur est survenue lors de la récupération des wallets" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 401 }
+      );
+    }
+    
+    const { searchParams } = new URL(req.url);
+    const walletId = searchParams.get('id');
+    
+    if (!walletId) {
+      return NextResponse.json(
+        { error: "ID de wallet manquant" },
+        { status: 400 }
+      );
+    }
+    
+    const body = await req.json();
+    
+    // Valider les données
+    const result = walletUpdateSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Données invalides", details: result.error.errors },
+        { status: 400 }
+      );
+    }
+    
+    // Vérifier que le wallet appartient bien à l'utilisateur
+    const existingWallet = await prisma.wallet.findFirst({
+      where: {
+        id: walletId,
+        userId: session.user.id,
+      },
+    });
+    
+    if (!existingWallet) {
+      return NextResponse.json(
+        { error: "Wallet non trouvé ou non autorisé" },
+        { status: 404 }
+      );
+    }
+    
+    const { address, network, name, isPrimary } = body;
+    
+    // Si le wallet est marqué comme principal, mettre à jour les autres
+    if (isPrimary) {
+      await prisma.wallet.updateMany({
+        where: { 
+          userId: session.user.id,
+          id: { not: walletId }
+        },
+        data: { isPrimary: false },
+      });
+    }
+    
+    // Mettre à jour le wallet
+    const updatedWallet = await prisma.wallet.update({
+      where: { id: walletId },
+      data: {
+        ...(address && { address }),
+        ...(network && { network }),
+        ...(name !== undefined && { name }),
+        ...(isPrimary !== undefined && { isPrimary }),
+      },
+    });
+    
+    return NextResponse.json({ success: true, wallet: updatedWallet });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du wallet:", error);
+    return NextResponse.json(
+      { error: "Une erreur est survenue lors de la mise à jour du wallet" },
       { status: 500 }
     );
   }

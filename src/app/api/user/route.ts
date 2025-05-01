@@ -113,3 +113,61 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Non autorisé" },
+        { status: 401 }
+      );
+    }
+    
+    // Vérifier si l'utilisateur a des données liées
+    const userWallets = await prisma.wallet.findMany({
+      where: { userId: session.user.id }
+    });
+    
+    const userReports = await prisma.report.findMany({
+      where: { userId: session.user.id }
+    });
+    
+    // Supprimer les données liées à l'utilisateur
+    if (userWallets.length > 0) {
+      await prisma.wallet.deleteMany({
+        where: { userId: session.user.id }
+      });
+    }
+    
+    if (userReports.length > 0) {
+      await prisma.report.deleteMany({
+        where: { userId: session.user.id }
+      });
+    }
+    
+    // Supprimer les sessions de l'utilisateur
+    await prisma.session.deleteMany({
+      where: { userId: session.user.id }
+    });
+    
+    // Supprimer les comptes de l'utilisateur
+    await prisma.account.deleteMany({
+      where: { userId: session.user.id }
+    });
+    
+    // Enfin, supprimer l'utilisateur
+    await prisma.user.delete({
+      where: { id: session.user.id }
+    });
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Erreur lors de la suppression du compte:", error);
+    return NextResponse.json(
+      { error: "Une erreur est survenue lors de la suppression du compte" },
+      { status: 500 }
+    );
+  }
+}
