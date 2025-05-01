@@ -907,11 +907,11 @@ header {
 }
 
 /* Fix pour les textes de titres en mode clair */
-.light h1.text-3xl.font-bold.text-gray-900.dark\:text-white,
-.light h2.text-3xl.font-bold.mb-4.text-gray-900.dark\:text-white,
-.light h1.text-3xl.font-bold.mb-4.sm\:mb-0,
-.light h1.text-3xl.font-bold.text-gray-900.dark\:text-white.mb-2,
-.light .text-xl.font-bold.text-gray-900.dark\:text-white.mb-4 {
+.light h1[class*="text-3xl"][class*="font-bold"],
+.light h2[class*="text-3xl"][class*="font-bold"],
+.light h1[class*="text-3xl"][class*="font-bold"][class*="mb-4"],
+.light h1[class*="text-3xl"][class*="font-bold"][class*="mb-2"],
+.light [class*="text-xl"][class*="font-bold"][class*="mb-4"] {
   color: var(--color-gray-900) !important;
 }
 
@@ -963,9 +963,9 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
 }
 
 /* Fix pour les textes "Tableau de bord fiscal" et "Rapport Fiscal" en mode clair */
-.light h1.text-xl.sm\:text-2xl.font-bold.text-gray-900.dark\:text-white.mb-1,
-.light h2.text-lg.font-semibold.text-gray-800.dark\:text-white,
-.light h3.text-base.font-medium.text-gray-900.dark\:text-white.mb-4 {
+.light h1[class*="text-xl"][class*="sm:text-2xl"][class*="font-bold"][class*="mb-1"],
+.light h2[class*="text-lg"][class*="font-semibold"],
+.light h3[class*="text-base"][class*="font-medium"][class*="mb-4"] {
   color: var(--color-gray-900) !important;
   font-weight: 700;
 }
