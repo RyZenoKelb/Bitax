@@ -135,15 +135,18 @@
   }
   
   h1 {
-    @apply text-3xl md:text-4xl text-white;
+    @apply text-3xl md:text-4xl;
+    color: white;
   }
   
   h2 {
-    @apply text-2xl md:text-3xl text-white;
+    @apply text-2xl md:text-3xl;
+    color: white;
   }
   
   h3 {
-    @apply text-xl md:text-2xl text-white;
+    @apply text-xl md:text-2xl;
+    color: white;
   }
   
   a {
@@ -152,7 +155,7 @@
   
   /* Classes génériques pour le texte en mode sombre/clair */
   .text-dark {
-    @apply text-white;
+    color: white;
   }
   
   .text-light {
@@ -170,23 +173,24 @@
   }
   
   .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
-    @apply text-gray-900;
+    color: var(--color-gray-900);
   }
   
   .light a {
     @apply text-primary-600 hover:text-primary-700;
   }
   
+  /* Correction de la dépendance circulaire - On remplace @apply par une déclaration directe */
   .light .text-white {
-    @apply text-gray-900;
+    color: var(--color-gray-900);
   }
   
   .light .text-dark {
-    @apply text-gray-800;
+    color: var(--color-gray-800);
   }
   
   .light .text-light {
-    @apply text-white;
+    color: white;
   }
 }
 
@@ -299,12 +303,14 @@
   }
   
   .card-premium-inner {
-    @apply bg-gray-900/80 rounded-xl p-6 text-white;
+    @apply bg-gray-900/80 rounded-xl p-6;
+    color: white;
     backdrop-filter: blur(8px);
   }
   
   .light .card-premium-inner {
-    @apply bg-white/90 text-gray-800;
+    @apply bg-white/90;
+    color: var(--color-gray-800);
   }
   
   .card-header {
@@ -456,7 +462,7 @@
   }
   
   .nav-link-active {
-    @apply text-white;
+    color: white;
   }
   
   .light .nav-link-active {
@@ -577,11 +583,12 @@
   }
   
   .stat-value {
-    @apply mt-1 text-3xl font-semibold text-white;
+    @apply mt-1 text-3xl font-semibold;
+    color: white;
   }
   
   .light .stat-value {
-    @apply text-gray-900;
+    color: var(--color-gray-900);
   }
   
   .stat-desc {
