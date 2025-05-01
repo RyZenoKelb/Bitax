@@ -6,6 +6,7 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles'; // Importation du composant de styles personnalisés
+import LightModeStyles from '@/components/LightModeStyles';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
