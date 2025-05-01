@@ -425,89 +425,89 @@
     @apply bg-gradient-to-r from-primary-600 to-secondary-600 text-white;
   }
 
-  /* Styles spécifiques pour la landing page */
-.text-gradient-enhanced {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600;
-  filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
-}
-
-/* Correction des animations de blur sur les boutons */
-.btn-hero-primary {
-  @apply relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium transition-all;
-  transform: translateZ(0); /* Force GPU acceleration */
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-}
-
-.btn-hero-primary:hover {
-  @apply shadow-lg;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
-}
-
-.btn-hero-primary::before {
-  content: '';
-  @apply absolute top-0 right-0 bottom-0 left-0 bg-black opacity-0 transition-opacity;
-  z-index: -1;
-}
-
-.btn-hero-primary:hover::before {
-  @apply opacity-10;
-}
-
-.btn-hero-secondary {
-  @apply relative px-6 py-3 bg-transparent text-white rounded-lg font-medium transition-all border-2 border-white/30;
-  transform: translateZ(0);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0);
-}
-
-.btn-hero-secondary:hover {
-  @apply border-white/60;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
-}
-
-/* Style pour les "tags" de réseaux blockchain */
-.network-tag {
-  @apply flex items-center backdrop-blur-md bg-white/5 rounded-full px-3 py-1.5 border border-white/10 transition-all;
-}
-
-.network-tag:hover {
-  @apply bg-white/10 border-white/20 transform -translate-y-1;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-}
-
-/* Animations pour les éléments dashboard */
-.animate-pulse-slow {
-  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Effet de shadow glow pour les boutons */
-.hover\:shadow-glow-blue:hover {
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-}
-
-/* Animation des étoiles/particules */
-.stars-container {
-  background-image: 
-    radial-gradient(2px 2px at 20px 30px, #eaeaea, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 90px 40px, #eeeeee, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 230px 50px, #eeeeee, rgba(0,0,0,0));
-  background-repeat: repeat;
-  background-size: 250px 250px;
-  opacity: 0.15;
-  animation: stars-animation 300s linear infinite;
-}
-
-@keyframes stars-animation {
-  from {
-    transform: translateY(0);
+    /* Styles spécifiques pour la landing page */
+  .text-gradient-enhanced {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600;
+    filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
   }
-  to {
-    transform: translateY(-1000px);
+
+  /* Correction des animations de blur sur les boutons */
+  .btn-hero-primary {
+    @apply relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium transition-all;
+    transform: translateZ(0); /* Force GPU acceleration */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   }
-}
+
+  .btn-hero-primary:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+  }
+
+  .btn-hero-primary::before {
+    content: '';
+    @apply absolute top-0 right-0 bottom-0 left-0 bg-black opacity-0 transition-opacity;
+    z-index: -1;
+  }
+
+  .btn-hero-primary:hover::before {
+    @apply opacity-10;
+  }
+
+  .btn-hero-secondary {
+    @apply relative px-6 py-3 bg-transparent text-white rounded-lg font-medium transition-all border-2 border-white/30;
+    transform: translateZ(0);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0);
+  }
+
+  .btn-hero-secondary:hover {
+    @apply border-white/60;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Style pour les "tags" de réseaux blockchain */
+  .network-tag {
+    @apply flex items-center backdrop-blur-md bg-white/5 rounded-full px-3 py-1.5 border border-white/10 transition-all;
+  }
+
+  .network-tag:hover {
+    @apply bg-white/10 border-white/20 transform -translate-y-1;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  }
+
+  /* Animations pour les éléments dashboard */
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Effet de shadow glow pour les boutons */
+  .hover\:shadow-glow-blue:hover {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  }
+
+  /* Animation des étoiles/particules */
+  .stars-container {
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, #eaeaea, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 90px 40px, #eeeeee, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 230px 50px, #eeeeee, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 250px 250px;
+    opacity: 0.15;
+    animation: stars-animation 300s linear infinite;
+  }
+
+  @keyframes stars-animation {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-1000px);
+    }
+  }
   
   /* Formulaires */
   .form-input {
