@@ -1,15 +1,17 @@
-// Prisma schema for Bitax
+// prisma/schema.prisma
 
+// Configuration améliorée pour la production
 generator client {
   provider = "prisma-client-js"
 }
 
+// Configuration de la base de données selon l'environnement
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql" // Changé de sqlite à postgresql pour la production
+  url      = env("DATABASE_URL")
 }
 
-// NextAuth Models
+// Le reste du schéma reste inchangé...
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -61,7 +63,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Bitax specific models
 model Wallet {
   id        String   @id @default(cuid())
   address   String
