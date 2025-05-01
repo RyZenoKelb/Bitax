@@ -1,8 +1,7 @@
-// src/app/api/register/route.ts - Correction
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
 
 // Validation schema
 const UserSchema = z.object({
@@ -13,9 +12,28 @@ const UserSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    // Vérifier que la requête est bien au format JSON
+    const contentType = req.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      return NextResponse.json(
+        { error: "Le contenu doit être au format JSON" },
+        { status: 400 }
+      );
+    }
+
+    // Analyser le corps de la requête
+    let body;
+    try {
+      body = await req.json();
+    } catch (error) {
+      console.error("Erreur lors du parsing JSON:", error);
+      return NextResponse.json(
+        { error: "Impossible de parser le corps de la requête en JSON" },
+        { status: 400 }
+      );
+    }
     
-    // Validate request body
+    // Valider les données
     const result = UserSchema.safeParse(body);
     if (!result.success) {
       return NextResponse.json(
@@ -26,7 +44,7 @@ export async function POST(req: Request) {
     
     const { name, email, password } = body;
     
-    // Check if user already exists
+    // Vérifier si l'utilisateur existe déjà
     const existingUser = await prisma.user.findUnique({
       where: {
         email,
@@ -40,10 +58,10 @@ export async function POST(req: Request) {
       );
     }
     
-    // Hash password
+    // Hasher le mot de passe
     const hashedPassword = await hash(password, 10);
     
-    // Create new user
+    // Créer le nouvel utilisateur
     const user = await prisma.user.create({
       data: {
         name,
@@ -52,6 +70,7 @@ export async function POST(req: Request) {
       },
     });
     
+    // Retourner une réponse avec les informations non sensibles
     return NextResponse.json(
       { 
         success: true, 
