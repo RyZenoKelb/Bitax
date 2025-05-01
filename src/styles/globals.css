@@ -743,6 +743,7 @@ header {
 }
 
 /* Correction pour les backgrounds des cards dans les deux modes */
+/* Styles des cartes en mode clair/sombre */
 .light .card, .light .stat-card, .light .table-container {
   background: white;
   color: var(--color-gray-800);
@@ -753,6 +754,24 @@ header {
   color: white;
 }
 
+/* Style explicite pour s'assurer que les cartes du dashboard sont correctement stylisées en mode sombre */
+.dark .bg-white, 
+.dark .bg-white.dark\:bg-gray-800,
+.dark .bg-white.dark\:bg-bitax-gray-800 {
+  background-color: var(--color-dark-secondary) !important;
+  color: white !important;
+}
+
+/* Fix pour les boîtes de sélection en mode sombre */
+.dark select,
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-gray-200 {
+  background-color: var(--color-gray-800) !important;
+  color: var(--color-gray-200) !important;
+  border-color: var(--color-gray-700) !important;
+}
+
 /* Fix pour les fonds de pages */
 .light main {
   background-color: #f9fafb;
@@ -760,169 +779,4 @@ header {
 
 .dark main {
   background-color: var(--color-dark);
-}
-
-/* Corrections des problèmes d'affichage en modes clair et sombre
- * Ajouter à la fin de src/styles/globals.css
- */
-
-/* ===== 1. CORRECTIONS POUR LE MODE SOMBRE ===== */
-
-/* Amélioration des fonds des boîtes en mode sombre */
-.dark div[class*="bg-white"] {
-  background-color: var(--color-dark-secondary) !important;
-}
-
-/* Meilleur contraste pour les boutons de blockchain en mode sombre */
-.dark button[class*="bg-gray-100"],
-.dark button[class*="bg-gray-800/30"] {
-  background-color: var(--color-gray-700) !important;
-  border-color: var(--color-gray-600) !important;
-  color: var(--color-gray-200) !important;
-}
-
-.dark button[class*="bg-gray-100"]:hover,
-.dark button[class*="bg-gray-800/30"]:hover {
-  background-color: var(--color-gray-600) !important;
-  border-color: var(--color-gray-500) !important;
-}
-
-/* Assurer que le texte est suffisamment contrasté en mode sombre */
-.dark [class*="text-gray-800"],
-.dark [class*="text-gray-900"] {
-  color: var(--color-gray-100) !important;
-}
-
-.dark [class*="text-gray-700"] {
-  color: var(--color-gray-200) !important;
-}
-
-.dark [class*="text-gray-600"] {
-  color: var(--color-gray-300) !important;
-}
-
-/* Améliorer la visibilité des titres et nombres importants en mode sombre */
-.dark h1, 
-.dark h2, 
-.dark h3,
-.dark .font-bold,
-.dark .font-semibold,
-.dark [class*="text-2xl"],
-.dark [class*="text-xl"],
-.dark [class*="text-lg"] {
-  color: white !important;
-}
-
-/* Assurer que le texte des métriques est bien visible (jours, tokens, montants) */
-.dark [class*="text-gray-500"] {
-  color: var(--color-gray-400) !important;
-}
-
-/* ===== 2. CORRECTIONS POUR LE MODE CLAIR ===== */
-
-/* Fix pour le bouton de bascule sombre/clair */
-.toggle-switch {
-  border: 1px solid var(--color-gray-300);
-  opacity: 0.85;
-}
-
-.light .toggle-switch {
-  background-color: var(--color-primary-500);
-  opacity: 1;
-}
-
-.dark .toggle-switch {
-  background-color: var(--color-gray-600);
-  opacity: 1;
-}
-
-/* Amélioration de la lisibilité des titres en mode clair */
-.light h1, 
-.light h2, 
-.light h3,
-.light .dashboard-title {
-  color: var(--color-gray-900) !important;
-  font-weight: 700 !important;
-}
-
-/* Adoucir le fond blanc en mode clair pour les cards et le dashboard */
-.light .card {
-  background-color: #f8fafc !important; /* Une teinte légèrement grise pour un blanc moins cassant */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Correctif pour les éléments bg-white en mode clair */
-.light div[class*="bg-white"] {
-  background-color: #f8fafc !important;
-}
-
-/* Fond plus doux pour toute la page en mode clair */
-.light main {
-  background-color: #f1f5f9 !important; /* Un fond légèrement bleuté pour plus de douceur */
-}
-
-/* Fix pour les boutons de blockchain en mode clair */
-.light button[class*="relative flex items-center justify-center px-3 py-2"] {
-  background-color: #f1f5f9 !important;
-  border: 1px solid #e2e8f0 !important;
-  color: var(--color-gray-800) !important;
-  transition: all 0.2s ease;
-}
-
-.light button[class*="relative flex items-center justify-center px-3 py-2"]:hover {
-  background-color: #e2e8f0 !important;
-  border-color: #cbd5e1 !important;
-}
-
-/* Style pour les boutons de blockchain sélectionnés en mode clair */
-.light button[class*="bg-bitax-primary-600"] {
-  background-color: var(--color-primary-500) !important;
-  color: white !important;
-  border-color: var(--color-primary-600) !important;
-}
-
-/* ===== 3. CORRECTIONS COMMUNES AUX DEUX MODES ===== */
-
-/* Correction pour les onglets du rapport fiscal - Ajout d'un soulignement */
-[class*="border-b-2 border-blue-500"] {
-  position: relative;
-}
-
-[class*="border-b-2 border-blue-500"]::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--color-primary-500);
-}
-
-/* Style amélioré pour les onglets actifs */
-.dark button[class*="text-blue-600"],
-.dark button[class*="text-primary-400"] {
-  color: var(--color-primary-400) !important;
-}
-
-.light button[class*="text-blue-600"],
-.light button[class*="text-primary-400"] {
-  color: var(--color-primary-600) !important;
-}
-
-/* Amélioration de la visibilité de l'onglet actif */
-[class*="text-blue-600 border-b-2 border-blue-500"] {
-  border-bottom-width: 3px !important;
-  font-weight: 600 !important;
-}
-
-/* Conteneur pour boutons en mode clair - ajustement pour cohérence visuelle */
-.light .lg\:col-span-1.space-y-6 .card {
-  background-color: #f8fafc !important;
-  border-color: #e2e8f0 !important;
-}
-
-/* Assurer la visibilité du contenu des dashboards */
-.light .card-body,
-.dark .card-body {
-  color: inherit !important;
 }
