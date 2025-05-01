@@ -60,6 +60,10 @@
   --color-dark: #0f172a; /* Bleu foncé professionnel */
   --color-dark-secondary: #1e293b; /* Bleu-gris foncé professionnel */
   
+  /* Couleurs mode clair - NOUVELLES */
+  --color-light: #f8fafc; /* Fond principal en mode clair - plus doux */
+  --color-light-secondary: #f1f5f9; /* Fond secondaire en mode clair */
+  
   /* Effets */
   --neon-shadow-primary: 0 0 8px rgba(57, 73, 171, 0.5), 0 0 16px rgba(57, 73, 171, 0.2);
   --neon-shadow-secondary: 0 0 8px rgba(8, 145, 178, 0.5), 0 0 16px rgba(8, 145, 178, 0.2);
@@ -75,8 +79,8 @@
 
 /* Variables pour le thème clair */
 :root.light {
-  --color-dark: #ffffff;
-  --color-dark-secondary: #f9fafb;
+  --color-dark: var(--color-light);
+  --color-dark-secondary: var(--color-light-secondary);
   
   /* Override des variables nécessaires pour le mode clair */
   --glass-card: linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(249, 250, 251, 0.9));
@@ -136,17 +140,17 @@
   
   h1 {
     @apply text-3xl md:text-4xl;
-    color: white;
+    color: var(--text-primary);
   }
   
   h2 {
     @apply text-2xl md:text-3xl;
-    color: white;
+    color: var(--text-primary);
   }
   
   h3 {
     @apply text-xl md:text-2xl;
-    color: white;
+    color: var(--text-primary);
   }
   
   a {
@@ -155,7 +159,7 @@
   
   /* Classes génériques pour le texte en mode sombre/clair */
   .text-dark {
-    color: white;
+    color: var(--text-primary);
   }
   
   .text-light {
@@ -164,12 +168,12 @@
 
   /* Gestion spécifique des couleurs pour le mode clair */
   .light {
-    background: #ffffff;
+    background: var(--color-light);
   }
   
   .light body {
     color: var(--color-gray-800);
-    background: #ffffff;
+    background: var(--color-light);
   }
   
   .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
@@ -277,7 +281,8 @@
   }
   
   .light .card {
-    @apply border-gray-200/60 bg-white;
+    @apply border-gray-200/60;
+    background: white;  /* Explicitement blanc pour les cartes */
   }
   
   .card-hover {
@@ -583,12 +588,11 @@
   }
   
   .stat-value {
-    @apply mt-1 text-3xl font-semibold;
-    color: white;
+    @apply mt-1 text-3xl font-semibold text-white dark:text-white;
   }
   
   .light .stat-value {
-    color: var(--color-gray-900);
+    @apply text-gray-900;
   }
   
   .stat-desc {
@@ -774,7 +778,7 @@ header {
 
 /* Fix pour les fonds de pages */
 .light main {
-  background-color: #f9fafb;
+  background-color: var(--color-light);
 }
 
 .dark main {
@@ -893,4 +897,116 @@ header {
 .dark .bg-white.dark\:bg-bitax-gray-800,
 .dark .bg-white.dark\:bg-gray-800 {
   background-color: var(--color-dark-secondary) !important;
+}
+
+/* NOUVELLES CORRECTIONS */
+
+/* Fix pour l'icône de thème en mode clair */
+.light svg[class*="text-gray-400"] {
+  color: var(--color-gray-600) !important;
+}
+
+/* Fix pour les textes de titres en mode clair */
+.light h1.text-3xl.font-bold.text-gray-900.dark\:text-white,
+.light h2.text-3xl.font-bold.mb-4.text-gray-900.dark\:text-white,
+.light h1.text-3xl.font-bold.mb-4.sm\:mb-0,
+.light h1.text-3xl.font-bold.text-gray-900.dark\:text-white.mb-2,
+.light .text-xl.font-bold.text-gray-900.dark\:text-white.mb-4 {
+  color: var(--color-gray-900) !important;
+}
+
+/* Fix pour les boutons de blockchain en mode clair */
+.light button[class*="bg-gray-100"],
+.light button[class*="bg-gray-50"] {
+  background-color: var(--color-gray-200) !important;
+  color: var(--color-gray-800) !important;
+  border-color: var(--color-gray-300) !important;
+}
+
+.light button[class*="bg-gray-100"]:hover,
+.light button[class*="bg-gray-50"]:hover {
+  background-color: var(--color-gray-300) !important;
+}
+
+/* Fix pour les boutons de blockchain sélectionnés en mode clair */
+.light button[class*="bg-bitax-primary-600"] {
+  background-color: var(--color-primary-500) !important;
+  color: white !important;
+  border-color: var(--color-primary-600) !important;
+}
+
+/* Amélioration des onglets actifs du rapport fiscal */
+button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"],
+.dark button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"] {
+  position: relative;
+}
+
+button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"]::after,
+.dark button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-primary-500);
+}
+
+/* Fix pour les boutons d'onglets en mode clair */
+.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700"] {
+  color: var(--color-gray-700) !important;
+}
+
+.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"] {
+  background-color: rgba(57, 73, 171, 0.1) !important;
+  color: var(--color-primary-700) !important;
+}
+
+/* Fix pour les textes "Tableau de bord fiscal" et "Rapport Fiscal" en mode clair */
+.light h1.text-xl.sm\:text-2xl.font-bold.text-gray-900.dark\:text-white.mb-1,
+.light h2.text-lg.font-semibold.text-gray-800.dark\:text-white,
+.light h3.text-base.font-medium.text-gray-900.dark\:text-white.mb-4 {
+  color: var(--color-gray-900) !important;
+  font-weight: 700;
+}
+
+/* Amélioration des fonds en mode clair */
+.light body,
+.light main,
+.light html {
+  background-color: var(--color-light);
+}
+
+/* Fix pour les valeurs dans les statistiques en mode clair */
+.light .stat-value,
+.light .text-2xl.font-semibold.text-gray-900,
+.light .mt-1.text-2xl.font-semibold.text-gray-900 {
+  color: var(--color-gray-900) !important;
+}
+
+/* Correction du contraste des textes dans les cards en mode clair */
+.light .text-gray-600.dark\:text-gray-300,
+.light p.text-gray-600.dark\:text-gray-400 {
+  color: var(--color-gray-700) !important;
+}
+
+/* Style de l'icône de thème (soleil/lune) pour le rendre plus visible en mode clair */
+.light button[class*="p-2 rounded-full text-gray-400"] {
+  color: var(--color-gray-700) !important;
+}
+
+.light button[class*="p-2 rounded-full text-gray-400"]:hover {
+  color: var(--color-primary-600) !important;
+  background-color: var(--color-gray-100) !important;
+}
+
+/* Amélioration du contraste pour tous les boutons en mode clair */
+.light [class*="bg-bitax-primary-600"] {
+  background-color: var(--color-primary-600) !important;
+  color: white !important;
+}
+
+/* Assurer que les titres des sections sont bien visibles en mode clair */
+.light h3.text-base.font-medium.text-gray-700.dark\:text-gray-300.mb-3 {
+  color: var(--color-gray-900) !important;
 }
