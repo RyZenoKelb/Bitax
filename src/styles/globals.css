@@ -750,11 +750,23 @@ header {
 }
 
 .light header {
-  @apply bg-white/90 border-gray-200/30;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(226, 232, 240, 0.5) !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .dark header {
   @apply bg-gray-900/80;
+}
+
+/* Assurer que le bouton de toggle thème est visible dans le header */
+.light header button[aria-label="Toggle theme"] {
+  color: #1e293b !important;
+  background-color: rgba(226, 232, 240, 0.5) !important;
+}
+
+.light header button[aria-label="Toggle theme"]:hover {
+  background-color: rgba(203, 213, 225, 0.8) !important;
 }
 
 /* Styles spécifiques pour les titres de sections et éléments problématiques */
@@ -938,15 +950,19 @@ header {
 
 /* Fix pour les boutons de blockchain en mode clair - amélioration de la visibilité */
 .light button[class*="bg-gray-100"],
-.light button[class*="bg-gray-50"] {
-  background-color: var(--color-gray-200) !important;
-  color: var(--color-gray-800) !important;
-  border-color: var(--color-gray-300) !important;
+.light button[class*="bg-gray-50"],
+.light button[class*="relative flex items-center justify-center px-3 py-2"] {
+  background-color: #e2e8f0 !important;
+  color: #1e293b !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .light button[class*="bg-gray-100"]:hover,
-.light button[class*="bg-gray-50"]:hover {
-  background-color: var(--color-gray-300) !important;
+.light button[class*="bg-gray-50"]:hover,
+.light button[class*="relative flex items-center justify-center px-3 py-2"]:hover {
+  background-color: #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
 /* Fix spécifique pour les boutons blockchain actifs en mode clair */
@@ -1049,6 +1065,44 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
 
 /* CORRECTIFS SUPPLÉMENTAIRES POUR LES PROBLÈMES SPÉCIFIQUES */
 
+/* Fix global pour corriger le mode clair et s'assurer que tous les éléments sont visibles */
+.light .flex.items-center.space-x-6,
+.light .flex.items-center,
+.light button[class*="px-4 py-2"],
+.light button[class*="px-3 py-2"],
+.light button[class*="Scanner"],
+.light button:has(svg[class*="w-4 h-4 mr-2"]) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+}
+
+/* Fix pour le titre "Tableau de bord fiscal" en mode clair */
+.light h1[class*="text-3xl"],
+.light h1.text-3xl.font-bold,
+.light h1.dashboard-title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  font-family: 'Orbitron', 'Plus Jakarta Sans', sans-serif !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* S'assurer que tous les boutons d'action sont toujours visibles */
+.light button[class*="bg-blue-600"],
+.light button[class*="bg-primary-600"],
+.light button[class*="bg-bitax-primary-600"] {
+  background-color: #3949ab !important;
+  color: white !important;
+  border: 1px solid #2c3278 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 /* 1. Fix pour l'icône de lune en mode clair */
 .light .Transition {
   opacity: 1 !important;
@@ -1105,18 +1159,29 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
 /* 4. Rendre le bouton "Scanner {blockchain sélectionnée}" plus visible */
 /* Bouton Scanner en mode clair */
 .light button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"],
-.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"] {
-  background-color: var(--color-primary-600) !important;
+.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"],
+.light button[class*="Scanner ETH"],
+.light [class*="Scanner ETH"],
+.light button:has(svg[class*="w-4 h-4 mr-2"]) {
+  background-color: #3949ab !important;
   color: white !important;
   font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--color-primary-700);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  border: 1px solid #2c3278;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .light button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"]:hover,
-.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"]:hover {
-  background-color: var(--color-primary-700) !important;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"]:hover,
+.light button[class*="Scanner ETH"]:hover,
+.light [class*="Scanner ETH"]:hover,
+.light button:has(svg[class*="w-4 h-4 mr-2"]):hover {
+  background-color: #2c3278 !important;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Bouton Scanner en mode sombre */
