@@ -18,6 +18,10 @@ declare module 'react' {
   }
 }
 
+
+
+
+
 // Logo SVG amélioré avec style futuriste
 const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
   const textColor = isDarkMode ? 'white' : 'black'; // Blanc en mode sombre, gris foncé en mode clair
