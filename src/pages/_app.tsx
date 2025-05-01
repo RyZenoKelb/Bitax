@@ -228,15 +228,16 @@ export default function App({ Component, pageProps }: AppProps) {
         
         {/* Contenu principal avec animation d'entrée */}
         <main className="flex-grow py-10 px-4 sm:px-6 transition-all duration-300 relative">
-          <Transition
-            show={isLoaded}
-            enter="transition-all duration-700 ease-out"
-            enterFrom="opacity-0 translate-y-10"
-            enterTo="opacity-100 translate-y-0"
-            className="container mx-auto relative z-10"
-          >
-            <Component {...pageProps} />
-          </Transition>
+          <div className="container mx-auto relative z-10">
+            <Transition
+              show={isLoaded}
+              enter="transition-all duration-700 ease-out"
+              enterFrom="opacity-0 translate-y-10"
+              enterTo="opacity-100 translate-y-0"
+            >
+              <Component {...pageProps} />
+            </Transition>
+          </div>
         </main>
         
         {/* Footer futuriste */}
