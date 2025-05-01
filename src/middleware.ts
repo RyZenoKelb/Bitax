@@ -1,8 +1,19 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Configuration des routes protégées et publiques
-const publicRoutes = ["/", "/login", "/register", "/api/auth", "/guide", "/pricing", "/support"];
+// Configuration des routes publiques et privées
+const publicRoutes = [
+  "/", 
+  "/login", 
+  "/register", 
+  "/api/auth", 
+  "/guide", 
+  "/pricing", 
+  "/tarifs", 
+  "/fonctionnalités", 
+  "/fonctionnalites", 
+  "/support"
+];
 const authRoutes = ["/login", "/register"];
 
 export async function middleware(request: NextRequest) {
@@ -13,7 +24,9 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.startsWith("/images") ||
-    pathname.startsWith("/fonts")
+    pathname.startsWith("/fonts") ||
+    pathname.startsWith("/api/db-test") ||
+    pathname.startsWith("/register-debug")
   ) {
     return NextResponse.next();
   }
@@ -53,7 +66,3 @@ export async function middleware(request: NextRequest) {
   
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ["/((?!api/auth).*)(.+)"], // All routes except /api/auth
-};
