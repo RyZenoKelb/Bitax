@@ -17,6 +17,25 @@ declare module 'react' {
   }
 }
 
+export default function App({ Component, pageProps }: AppProps) {
+  const { isAuthenticated } = useContext(AuthContext);
+
+  return (
+    <AuthProvider>
+      <Head>
+        <title>Bitax - Fiscalité Crypto Simplifiée</title>
+        <meta name="description" content="Gérez votre fiscalité crypto facilement" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      {isAuthenticated ? (
+        <Component {...pageProps} />
+      ) : (
+        <LandingPage />
+      )}
+    </AuthProvider>
+  );
+}
+
 // Logo SVG amélioré avec style futuriste
 const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
   const textColor = isDarkMode ? 'white' : 'black'; // Blanc en mode sombre, gris foncé en mode clair
