@@ -135,18 +135,15 @@
   }
   
   h1 {
-    @apply text-3xl md:text-4xl;
-    color: white;
+    @apply text-3xl md:text-4xl text-white;
   }
   
   h2 {
-    @apply text-2xl md:text-3xl;
-    color: white;
+    @apply text-2xl md:text-3xl text-white;
   }
   
   h3 {
-    @apply text-xl md:text-2xl;
-    color: white;
+    @apply text-xl md:text-2xl text-white;
   }
   
   a {
@@ -155,7 +152,7 @@
   
   /* Classes génériques pour le texte en mode sombre/clair */
   .text-dark {
-    color: white;
+    @apply text-white;
   }
   
   .text-light {
@@ -173,24 +170,23 @@
   }
   
   .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
-    color: var(--color-gray-900);
+    @apply text-gray-900;
   }
   
   .light a {
     @apply text-primary-600 hover:text-primary-700;
   }
   
-  /* Correction de la dépendance circulaire - On remplace @apply par une déclaration directe */
   .light .text-white {
-    color: var(--color-gray-900);
+    @apply text-gray-900;
   }
   
   .light .text-dark {
-    color: var(--color-gray-800);
+    @apply text-gray-800;
   }
   
   .light .text-light {
-    color: white;
+    @apply text-white;
   }
 }
 
@@ -303,14 +299,12 @@
   }
   
   .card-premium-inner {
-    @apply bg-gray-900/80 rounded-xl p-6;
-    color: white;
+    @apply bg-gray-900/80 rounded-xl p-6 text-white;
     backdrop-filter: blur(8px);
   }
   
   .light .card-premium-inner {
-    @apply bg-white/90;
-    color: var(--color-gray-800);
+    @apply bg-white/90 text-gray-800;
   }
   
   .card-header {
@@ -462,7 +456,7 @@
   }
   
   .nav-link-active {
-    color: white;
+    @apply text-white;
   }
   
   .light .nav-link-active {
@@ -583,12 +577,11 @@
   }
   
   .stat-value {
-    @apply mt-1 text-3xl font-semibold;
-    color: white;
+    @apply mt-1 text-3xl font-semibold text-white;
   }
   
   .light .stat-value {
-    color: var(--color-gray-900);
+    @apply text-gray-900;
   }
   
   .stat-desc {
@@ -743,7 +736,6 @@ header {
 }
 
 /* Correction pour les backgrounds des cards dans les deux modes */
-/* Styles des cartes en mode clair/sombre */
 .light .card, .light .stat-card, .light .table-container {
   background: white;
   color: var(--color-gray-800);
@@ -752,24 +744,6 @@ header {
 .dark .card, .dark .stat-card, .dark .table-container {
   background: var(--color-dark-secondary);
   color: white;
-}
-
-/* Style explicite pour s'assurer que les cartes du dashboard sont correctement stylisées en mode sombre */
-.dark .bg-white, 
-.dark .bg-white.dark\:bg-gray-800,
-.dark .bg-white.dark\:bg-bitax-gray-800 {
-  background-color: var(--color-dark-secondary) !important;
-  color: white !important;
-}
-
-/* Fix pour les boîtes de sélection en mode sombre */
-.dark select,
-.dark .bg-gray-50,
-.dark .bg-gray-100,
-.dark .bg-gray-200 {
-  background-color: var(--color-gray-800) !important;
-  color: var(--color-gray-200) !important;
-  border-color: var(--color-gray-700) !important;
 }
 
 /* Fix pour les fonds de pages */
