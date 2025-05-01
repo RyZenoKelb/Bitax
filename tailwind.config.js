@@ -55,15 +55,42 @@ module.exports = {
         },
         // Succès - Vert néon
         success: {
+          50: '#ecfff7',
+          100: '#c9ffea',
+          200: '#9bfada',
+          300: '#5aefcc',
+          400: '#2ae0b5',
           500: '#00E6C3',
+          600: '#00b494',
+          700: '#008f78',
+          800: '#007161',
+          900: '#005d51',
         },
         // Avertissement - Orange vif
         warning: {
-          500: '#FFB545',
+          50: '#fff8eb',
+          100: '#ffecc8',
+          200: '#ffdb91',
+          300: '#ffc352',
+          400: '#ffb545',
+          500: '#f99621',
+          600: '#dd7814',
+          700: '#b75711',
+          800: '#944314',
+          900: '#7a3816',
         },
         // Erreur - Rouge néon
         danger: {
+          50: '#ffebee',
+          100: '#ffcdd2',
+          200: '#ff9a9e',
+          300: '#ff6b7a',
+          400: '#ff4d6e',
           500: '#FF3D55',
+          600: '#e52e45',
+          700: '#c21f3a',
+          800: '#a11c33',
+          900: '#86192d',
         },
         // Tons de gris modifiés pour un look plus futuriste
         gray: {
