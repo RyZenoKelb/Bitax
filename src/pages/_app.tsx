@@ -6,6 +6,15 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+// Type pour les éléments d'enfants React
+declare module 'react' {
+  interface CSSProperties {
+    '--tw-gradient-from'?: string;
+    '--tw-gradient-to'?: string;
+    '--tw-gradient-stops'?: string;
+  }
+}
+
 // Logo SVG amélioré avec style futuriste
 const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => (
   <svg width="150" height="40" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
