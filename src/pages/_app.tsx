@@ -6,6 +6,10 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles'; // Importation du composant de styles personnalisés
+import { AuthProvider, AuthContext } from '@/context/AuthContext';
+import { useContext } from 'react';
+import LandingPage from '@/components/LandingPage';
+import Head from 'next/head';
 
 
 // Type pour les éléments d'enfants React
