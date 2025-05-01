@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 // Import du UserMenu et de l'AuthProvider
 import UserMenu from '@/components/UserMenu';
-import AuthProvider from '@/providers/AuthProvider';
+import AuthProvider from '@/components/AuthProvider';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
