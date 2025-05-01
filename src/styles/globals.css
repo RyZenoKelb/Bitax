@@ -743,6 +743,7 @@ header {
 }
 
 /* Correction pour les backgrounds des cards dans les deux modes */
+/* Styles des cartes en mode clair/sombre */
 .light .card, .light .stat-card, .light .table-container {
   background: white;
   color: var(--color-gray-800);
@@ -751,6 +752,24 @@ header {
 .dark .card, .dark .stat-card, .dark .table-container {
   background: var(--color-dark-secondary);
   color: white;
+}
+
+/* Style explicite pour s'assurer que les cartes du dashboard sont correctement stylisées en mode sombre */
+.dark .bg-white, 
+.dark .bg-white.dark\:bg-gray-800,
+.dark .bg-white.dark\:bg-bitax-gray-800 {
+  background-color: var(--color-dark-secondary) !important;
+  color: white !important;
+}
+
+/* Fix pour les boîtes de sélection en mode sombre */
+.dark select,
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-gray-200 {
+  background-color: var(--color-gray-800) !important;
+  color: var(--color-gray-200) !important;
+  border-color: var(--color-gray-700) !important;
 }
 
 /* Fix pour les fonds de pages */
