@@ -75,6 +75,21 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const { isAuthenticated } = useContext(AuthContext);
 
+  return (
+    <AuthProvider>
+      <Head>
+        <title>Bitax - Fiscalité Crypto Simplifiée</title>
+        <meta name="description" content="Gérez votre fiscalité crypto facilement" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      {isAuthenticated ? (
+        <Component {...pageProps} />
+      ) : (
+        <LandingPage />
+      )}
+    </AuthProvider>
+  )
+
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
     setTheme(current => {
