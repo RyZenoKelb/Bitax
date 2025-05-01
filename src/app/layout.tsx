@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import { ReactNode } from 'react';
 import AuthProvider from '@/components/AuthProvider';
 import '../styles/globals.css';
@@ -14,6 +13,11 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
+      <head>
+        {/* Ajout des polices Google */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body>
         <AuthProvider>
           {children}
