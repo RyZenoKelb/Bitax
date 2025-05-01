@@ -6,8 +6,6 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles'; // Importation du composant de styles personnalisés
-import { AuthProvider, AuthContext } from '@/context/AuthContext';
-import LandingPage from '@/components/LandingPage';
 
 
 // Type pour les éléments d'enfants React
@@ -19,24 +17,6 @@ declare module 'react' {
   }
 }
 
-export default function App({ Component, pageProps }: AppProps) {
-  const { isAuthenticated } = useContext(AuthContext);
-
-  return (
-    <AuthProvider>
-      <Head>
-        <title>Bitax - Fiscalité Crypto Simplifiée</title>
-        <meta name="description" content="Gérez votre fiscalité crypto facilement" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      {isAuthenticated ? (
-        <Component {...pageProps} />
-      ) : (
-        <LandingPage />
-      )}
-    </AuthProvider>
-  );
-}
 
 // Logo SVG amélioré avec style futuriste
 const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
@@ -73,22 +53,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
-  const { isAuthenticated } = useContext(AuthContext);
-
-  return (
-    <AuthProvider>
-      <Head>
-        <title>Bitax - Fiscalité Crypto Simplifiée</title>
-        <meta name="description" content="Gérez votre fiscalité crypto facilement" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      {isAuthenticated ? (
-        <Component {...pageProps} />
-      ) : (
-        <LandingPage />
-      )}
-    </AuthProvider>
-  )
 
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
