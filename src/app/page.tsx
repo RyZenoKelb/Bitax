@@ -28,8 +28,9 @@ export default function Home() {
       {/* Header */}
       <header className="absolute top-0 left-0 w-full py-6 px-4 sm:px-6 lg:px-8 z-10">
         <div className="container mx-auto flex justify-between items-center">
+        // Dans ton composant Header ou Navbar
           <div className="flex items-center">
-            <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+            <div className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 p-1 rounded-lg shadow-glow-purple transform hover:scale-105 transition-all">
               BITAX
             </div>
           </div>
