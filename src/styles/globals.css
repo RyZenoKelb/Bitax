@@ -10,9 +10,13 @@
   color: white !important;
   font-weight: 600;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+/* Ajout de la police Orbitron pour le style startup */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -144,9 +148,9 @@
     color: var(--color-gray-200);
   }
   
-  /* Polices plus professionnelles */
+  /* Polices plus professionnelles - rétabli Orbitron pour le style startup */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Orbitron', 'Plus Jakarta Sans', sans-serif;
     @apply font-semibold;
   }
   
@@ -914,8 +918,13 @@ header {
 /* NOUVELLES CORRECTIONS */
 
 /* Fix pour l'icône de thème en mode clair */
-.light svg[class*="text-gray-400"] {
-  color: var(--color-gray-600) !important;
+.light button[class*="p-2 rounded-full"] svg {
+  color: var(--color-gray-800) !important;
+  stroke-width: 2px;
+}
+
+.light button[class*="p-2 rounded-full"]:hover {
+  background-color: var(--color-gray-200) !important;
 }
 
 /* Fix pour les textes de titres en mode clair */
@@ -927,7 +936,6 @@ header {
   color: var(--color-gray-900) !important;
 }
 
-/* Fix pour les boutons de blockchain en mode clair */
 /* Fix pour les boutons de blockchain en mode clair - amélioration de la visibilité */
 .light button[class*="bg-gray-100"],
 .light button[class*="bg-gray-50"] {
@@ -1037,4 +1045,129 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
 /* Assurer que les titres des sections sont bien visibles en mode clair */
 .light h3[class*="text-base"][class*="font-medium"][class*="mb-3"] {
   color: var(--color-gray-900) !important;
+}
+
+/* CORRECTIFS SUPPLÉMENTAIRES POUR LES PROBLÈMES SPÉCIFIQUES */
+
+/* 1. Fix pour l'icône de lune en mode clair */
+.light .Transition {
+  opacity: 1 !important;
+}
+
+.light button[class*="p-2 rounded-full"] svg path,
+.light button[aria-label="Toggle theme"] svg path {
+  stroke-width: 2.5px !important;
+  stroke: var(--color-gray-900) !important;
+}
+
+/* S'assurer que l'icône de la lune est toujours visible en mode clair */
+.light .relative.w-5.h-5 {
+  opacity: 1 !important;
+}
+
+/* 2. Amélioration des titres "Tableau de bord fiscal", "Rapport Fiscal" etc. */
+.light h1.text-3xl.font-bold.text-gray-900,
+.light h2.text-2xl.font-bold.text-gray-900,
+.light h3.text-xl.font-bold.text-gray-900,
+.light [class*="text-3xl"][class*="font-bold"],
+.light [class*="text-2xl"][class*="font-bold"],
+.light [class*="text-xl"][class*="font-bold"] {
+  color: var(--color-gray-900) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* 3. Corriger les boutons ETH, polygon, arbitrum etc. pour les rendre plus visibles */
+/* Boutons blockchain en mode clair - non sélectionnés */
+.light button[class*="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-gray-100"] {
+  background-color: var(--color-gray-100) !important;
+  color: var(--color-gray-800) !important;
+  border: 1px solid var(--color-gray-300) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Boutons blockchain en mode clair - au survol */
+.light button[class*="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-gray-100"]:hover {
+  background-color: var(--color-gray-200) !important;
+  border-color: var(--color-gray-400) !important;
+}
+
+/* Boutons blockchain en mode clair - sélectionnés */
+.light button[class*="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-bitax-primary-600"] {
+  background-color: var(--color-primary-600) !important;
+  color: white !important;
+  border: 1px solid var(--color-primary-700) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+}
+
+/* 4. Rendre le bouton "Scanner {blockchain sélectionnée}" plus visible */
+/* Bouton Scanner en mode clair */
+.light button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"],
+.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"] {
+  background-color: var(--color-primary-600) !important;
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-primary-700);
+}
+
+.light button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"]:hover,
+.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"]:hover {
+  background-color: var(--color-primary-700) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Bouton Scanner en mode sombre */
+.dark button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"],
+.dark button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"] {
+  background-color: var(--color-primary-500) !important;
+  border: 1px solid var(--color-primary-400);
+  box-shadow: 0 0 8px rgba(57, 73, 171, 0.4);
+}
+
+/* 5. Corriger l'opacité des catégories après avoir cliqué dessus (tabs) */
+/* Onglets actifs - mode clair */
+.light [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"],
+.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg"] {
+  position: relative;
+}
+
+.light [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"]::after,
+.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-primary-600);
+  opacity: 1 !important;
+}
+
+/* Onglets actifs - mode sombre */
+.dark [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"]::after,
+.dark button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-primary-400);
+  opacity: 1 !important;
+}
+
+/* Améliorer la visibilité du texte dans les onglets actifs */
+.light [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"],
+.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"] {
+  color: var(--color-primary-700) !important;
+  font-weight: 600;
+}
+
+.dark [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"],
+.dark button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"] {
+  color: var(--color-primary-300) !important;
+  font-weight: 600;
 }
