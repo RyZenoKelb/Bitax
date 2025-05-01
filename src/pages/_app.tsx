@@ -48,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
 
-  // Toggle du thème (light/dark) - conservé pour compatibilité
+  // Toggle du thème (light/dark)
   const toggleTheme = () => {
     setTheme(current => {
       const newTheme = current === 'light' ? 'dark' : 'light';
@@ -57,11 +57,16 @@ export default function App({ Component, pageProps }: AppProps) {
     });
   };
 
-  // Initialisation
+  // Vérifier si l'utilisateur a déjà une préférence de thème
   useEffect(() => {
-    // Toujours utiliser le thème sombre
-    setTheme('dark');
-    localStorage.setItem('bitax-theme', 'dark');
+    // Initialiser avec un délai pour éviter le flash lors du chargement
+    const savedTheme = localStorage.getItem('bitax-theme') as 'light' | 'dark' | null;
+    
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+    }
     
     // Attendre un peu pour faire l'animation d'apparition
     setTimeout(() => {
@@ -71,7 +76,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   // Appliquer le thème au document
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, [theme]);
 
   // Fermer le menu mobile lors d'un changement de route
