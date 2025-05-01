@@ -10,23 +10,38 @@ const UserSchema = z.object({
   password: z.string().min(8, "Le mot de passe doit comporter au moins 8 caractères"),
 });
 
+// Fonction helper pour le logging
+function logDebug(message: string, data?: any) {
+  console.log(`[API DEBUG] ${message}`, data ? JSON.stringify(data) : '');
+}
+
 export async function POST(req: Request) {
+  logDebug('Début de la requête POST /api/register');
+  
   try {
     // Vérifier que la requête est bien au format JSON
     const contentType = req.headers.get("content-type");
+    logDebug(`Content-Type: ${contentType}`);
+    
     if (!contentType || !contentType.includes("application/json")) {
+      logDebug('Erreur: Content-Type incorrect');
       return NextResponse.json(
         { error: "Le contenu doit être au format JSON" },
         { status: 400 }
       );
     }
 
-    // Analyser le corps de la requête
+    // Lire la requête brute pour le debug
+    const rawText = await req.text();
+    logDebug('Corps de la requête brut:', rawText);
+    
+    // Convertir en JSON
     let body;
     try {
-      body = await req.json();
+      body = JSON.parse(rawText);
+      logDebug('Corps de la requête parsé:', body);
     } catch (error) {
-      console.error("Erreur lors du parsing JSON:", error);
+      logDebug('Erreur de parsing JSON:', error);
       return NextResponse.json(
         { error: "Impossible de parser le corps de la requête en JSON" },
         { status: 400 }
@@ -36,6 +51,7 @@ export async function POST(req: Request) {
     // Valider les données
     const result = UserSchema.safeParse(body);
     if (!result.success) {
+      logDebug('Validation échouée:', result.error);
       return NextResponse.json(
         { error: "Données d'inscription invalides", details: result.error.errors },
         { status: 400 }
@@ -43,6 +59,7 @@ export async function POST(req: Request) {
     }
     
     const { name, email, password } = body;
+    logDebug(`Tentative d'inscription pour: ${email}`);
     
     // Vérifier si l'utilisateur existe déjà
     const existingUser = await prisma.user.findUnique({
@@ -52,6 +69,7 @@ export async function POST(req: Request) {
     });
     
     if (existingUser) {
+      logDebug('Utilisateur déjà existant');
       return NextResponse.json(
         { error: "Cet email est déjà utilisé" },
         { status: 400 }
@@ -59,9 +77,11 @@ export async function POST(req: Request) {
     }
     
     // Hasher le mot de passe
+    logDebug('Hachage du mot de passe');
     const hashedPassword = await hash(password, 10);
     
     // Créer le nouvel utilisateur
+    logDebug('Création de l\'utilisateur');
     const user = await prisma.user.create({
       data: {
         name,
@@ -69,6 +89,8 @@ export async function POST(req: Request) {
         password: hashedPassword,
       },
     });
+    
+    logDebug('Utilisateur créé avec succès');
     
     // Retourner une réponse avec les informations non sensibles
     return NextResponse.json(
@@ -83,6 +105,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
+    logDebug('Erreur non gérée:', error);
     console.error("Erreur d'inscription:", error);
     return NextResponse.json(
       { error: "Une erreur est survenue lors de l'inscription" },
