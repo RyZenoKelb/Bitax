@@ -272,81 +272,52 @@ export async function getERC20Transactions(account: string, chain: NetworkType):
  * @param chain La blockchain à scanner
  * @returns Liste des transactions NFT formatées
  */
-// Pour src/utils/transactions.ts
-// Modification de la fonction getNFTTransactions pour gérer correctement les erreurs 500
-
-export const getNFTTransactions = async (address: string, network: NetworkType): Promise<Transaction[]> => {
+export async function getNFTTransactions(account: string, chain: NetworkType): Promise<TransactionResult[]> {
   try {
-    const apiUrl = getApiUrlForNetwork(network);
-    
-    // Si l'API n'est pas disponible pour ce réseau, retourner un tableau vide
-    if (!apiUrl) {
-      console.warn(`API non disponible pour le réseau ${network}`);
+    if (!account || !chain || chain === 'solana') {
+      // Pour Solana, les NFTs sont déjà inclus dans les transactions SPL
+      if (chain === 'solana') return [];
+      
+      console.error('Paramètres invalides pour getNFTTransactions', { account, chain });
       return [];
     }
+
+    const url = `https://deep-index.moralis.io/api/v2.2/${account}/nft/transfers?chain=${chain}&limit=100`;
     
-    const response = await axios.get(`${apiUrl}/nft/transfers`, {
-      params: {
-        address,
-        chain: getChainForNetwork(network),
-        limit: 100
+    const response = await axios.get(url, {
+      headers: {
+        'accept': 'application/json',
+        'X-API-Key': MORALIS_API_KEY,
       },
-      timeout: 10000 // Ajouter un timeout pour éviter les requêtes qui prennent trop de temps
     });
-    
-    // Vérifier que la réponse est valide
-    if (!response.data || !response.data.result) {
-      console.warn(`Réponse invalide pour les NFT du réseau ${network}`);
+
+    if (!response.data || !response.data.result || !Array.isArray(response.data.result)) {
+      console.error('Format de réponse Moralis invalide', response.data);
       return [];
     }
-    
-    // Transformer les transactions NFT
-    return response.data.result.map((tx: any) => ({
-      hash: tx.transaction_hash,
-      block_timestamp: tx.block_timestamp,
-      from_address: tx.from_address,
-      to_address: tx.to_address,
-      value: "0", // Les NFT n'ont pas de valeur numérique standard
-      type: "NFT Transfer",
-      tokenSymbol: tx.name || "NFT",
-      network
+
+    const mappedTransactions = response.data.result.map((tx: any) => ({
+      hash: tx.transaction_hash || '',
+      block_timestamp: tx.block_timestamp || '',
+      value: '0',  // Les NFTs n'ont pas de "valeur" numérique traditionnelle
+      from_address: tx.from_address || '',
+      to_address: tx.to_address || '',
+      type: 'NFT Transfer',
+      tokenSymbol: tx.contract_symbol || 'NFT',
+      tokenName: tx.contract_name || 'Unknown NFT',
+      contractAddress: tx.contract_address || '',
+      network: chain,
+      nftId: tx.token_id || '',
+      isNFT: true
     }));
+
+    return mappedTransactions;
   } catch (error) {
-    // Gérer l'erreur de manière plus élégante
-    console.error(`Erreur lors de la récupération des NFT pour ${network}:`, error);
-    
-    // Retourner un tableau vide en cas d'erreur plutôt que de faire échouer toute la requête
+    console.error(`Erreur lors de la récupération des transactions NFT sur ${chain}:`, error);
     return [];
   }
-};
+}
 
-// Mise à jour de la fonction getTransactions pour rendre les transactions NFT optionnelles
-export const getTransactions = async (address: string, network: NetworkType): Promise<Transaction[]> => {
-  try {
-    const [normalTxs, tokenTxs, nftTxs] = await Promise.allSettled([
-      getNormalTransactions(address, network),
-      getTokenTransactions(address, network),
-      getNFTTransactions(address, network) // Maintenant cette promesse ne fera jamais échouer l'ensemble
-    ]);
-    
-    // Fusionner toutes les transactions qui ont réussi
-    const allTransactions = [
-      ...(normalTxs.status === 'fulfilled' ? normalTxs.value : []),
-      ...(tokenTxs.status === 'fulfilled' ? tokenTxs.value : []),
-      ...(nftTxs.status === 'fulfilled' ? nftTxs.value : [])
-    ];
-    
-    // Trier par date (du plus récent au plus ancien)
-    return allTransactions.sort((a, b) => {
-      const dateA = new Date(a.block_timestamp || 0).getTime();
-      const dateB = new Date(b.block_timestamp || 0).getTime();
-      return dateB - dateA;
-    });
-  } catch (error) {
-    console.error(`Erreur lors de la récupération des transactions pour ${network}:`, error);
-    throw error;
-  }
-};
 /**
  * Récupère les transactions Solana pour un compte
  * @param account L'adresse du wallet Solana
