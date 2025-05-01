@@ -43,8 +43,6 @@
 }
 
 /* Composants réutilisables */
-@layer components {
-
   @layer components {
     /* Styles des boutons améliorés */
     .btn {
