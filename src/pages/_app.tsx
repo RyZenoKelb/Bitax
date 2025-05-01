@@ -5,6 +5,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import CustomStyles from '@/components/CustomStyles'; // Importation du composant de styles personnalisés
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -78,7 +79,9 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
+      document.documentElement.classList.add('light');
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
@@ -102,7 +105,17 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property="og:title" content="Bitax | Fiscalité crypto redéfinie" />
         <meta property="og:description" content="Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
         <meta property="og:type" content="website" />
+        
+        {/* Ajout des polices explicitement */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
+      
+      {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
+      <CustomStyles />
       
       <div className={`min-h-screen flex flex-col ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
         {/* Effets de fond */}
