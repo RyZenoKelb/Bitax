@@ -18,31 +18,88 @@ declare module 'react' {
 }
 
 // Logo SVG amélioré avec style futuriste
-const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => (
-  <svg width="150" height="40" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#7B3FE4" />
-        <stop offset="100%" stopColor="#0EEAFF" />
-      </linearGradient>
-      <filter id="glow">
-        <feGaussianBlur stdDeviation="2.5" result="blur" />
-        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-      </filter>
-    </defs>
-    <g transform="translate(0, 0)">
-      <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="url(#logoGradient)" filter="url(#glow)" />
-      <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill="#121033" fillOpacity="0.7" />
-      <line x1="30" y1="65" x2="30" y2="45" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <line x1="45" y1="65" x2="45" y2="35" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <line x1="60" y1="65" x2="60" y2="40" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <line x1="75" y1="65" x2="75" y2="50" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
-      <text x="35" y="30" fontFamily="Orbitron, sans-serif" fontSize="18" fontWeight="bold" fill="white">$</text>
-    </g>
-    <text x="120" y="70" fontFamily="Orbitron, sans-serif" fontSize="55" fontWeight="700" fill="white" filter="url(#glow)">BITAX</text>
-    <text x="123" y="90" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="500" fill="#9997C0">Fiscalité crypto redéfinie</text>
-  </svg>
-);
+// Composant BitaxLogo amélioré avec visibilité en mode clair
+// Remplacer le composant BitaxLogo existant dans _app.tsx
+
+const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
+  // Détection automatique du mode sombre/clair
+  const [theme, setTheme] = React.useState<'light' | 'dark'>('dark');
+  
+  React.useEffect(() => {
+    const updateTheme = () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      setTheme(isDark ? 'dark' : 'light');
+    };
+    
+    // Vérifier le thème initial
+    updateTheme();
+    
+    // Observer les changements de classe sur html
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          updateTheme();
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, { attributes: true });
+    
+    return () => observer.disconnect();
+  }, []);
+  
+  return (
+    <svg width="150" height="40" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#7B3FE4" />
+          <stop offset="100%" stopColor="#0EEAFF" />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+      <g transform="translate(0, 0)">
+        <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="url(#logoGradient)" filter="url(#glow)" />
+        <polygon points="50,20 80,35 80,65 50,80 20,65 20,35" fill={theme === 'dark' ? "#121033" : "#2c3278"} fillOpacity="0.7" />
+        <line x1="30" y1="65" x2="30" y2="45" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <line x1="45" y1="65" x2="45" y2="35" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <line x1="60" y1="65" x2="60" y2="40" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <line x1="75" y1="65" x2="75" y2="50" stroke="#0EEAFF" strokeWidth="4" strokeLinecap="round" />
+        <text x="35" y="30" fontFamily="'Roboto Mono', monospace" fontSize="18" fontWeight="bold" fill="white">$</text>
+      </g>
+      
+      {/* Texte "BITAX" adapté au mode clair/sombre */}
+      <text 
+        x="120" 
+        y="70" 
+        fontFamily="'Montserrat', sans-serif" 
+        fontSize="55" 
+        fontWeight="700" 
+        fill={theme === 'dark' ? "white" : "#0f172a"} 
+        filter={theme === 'dark' ? "url(#glow)" : "none"}
+      >
+        BITAX
+      </text>
+      
+      {/* Slogan adapté au mode clair/sombre */}
+      <text 
+        x="123" 
+        y="90" 
+        fontFamily="'Montserrat', sans-serif" 
+        fontSize="16" 
+        fontWeight="500" 
+        fill={theme === 'dark' ? "#9997C0" : "#475569"}
+      >
+        Fiscalité crypto redéfinie
+      </text>
+    </svg>
+  );
+};
+
+export default BitaxLogo;
+
 
 export default function App({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark'); // Toujours en dark mode pour le style cyberpunk
