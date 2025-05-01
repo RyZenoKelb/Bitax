@@ -762,20 +762,14 @@ header {
   background-color: var(--color-dark);
 }
 
-/* ===== NOUVELLES CORRECTIONS AJOUTÉES CI-DESSOUS ===== */
-
-/* ===== 1. CORRECTIONS POUR LE MODE SOMBRE ===== */
-
-/* Corrections des problèmes d'affichage en modes clair et sombre 
+/* Corrections des problèmes d'affichage en modes clair et sombre
  * Ajouter à la fin de src/styles/globals.css
  */
 
 /* ===== 1. CORRECTIONS POUR LE MODE SOMBRE ===== */
 
 /* Amélioration des fonds des boîtes en mode sombre */
-.dark .bg-white,
-.dark .bg-white.dark\:bg-bitax-gray-800,
-.dark .bg-white.dark\:bg-gray-800 {
+.dark div[class*="bg-white"] {
   background-color: var(--color-dark-secondary) !important;
 }
 
@@ -793,39 +787,34 @@ header {
   border-color: var(--color-gray-500) !important;
 }
 
-/* Assurer que le texte est toujours suffisamment contrasté en mode sombre */
-.dark .text-gray-800,
-.dark .text-gray-900 {
+/* Assurer que le texte est suffisamment contrasté en mode sombre */
+.dark [class*="text-gray-800"],
+.dark [class*="text-gray-900"] {
   color: var(--color-gray-100) !important;
 }
 
-.dark .text-gray-700 {
+.dark [class*="text-gray-700"] {
   color: var(--color-gray-200) !important;
 }
 
-.dark .text-gray-600 {
+.dark [class*="text-gray-600"] {
   color: var(--color-gray-300) !important;
 }
 
 /* Améliorer la visibilité des titres et nombres importants en mode sombre */
+.dark h1, 
+.dark h2, 
+.dark h3,
 .dark .font-bold,
 .dark .font-semibold,
-.dark .text-2xl,
-.dark .text-xl,
-.dark .text-lg {
-  color: white !important;
-}
-
-/* Correction spécifique pour "Résumé du Portefeuille" et les valeurs numériques */
-.dark h3.text-lg.font-semibold.text-gray-800,
-.dark .text-2xl.font-semibold.text-gray-900,
-.dark .mt-1.text-2xl.font-semibold.text-gray-900 {
+.dark [class*="text-2xl"],
+.dark [class*="text-xl"],
+.dark [class*="text-lg"] {
   color: white !important;
 }
 
 /* Assurer que le texte des métriques est bien visible (jours, tokens, montants) */
-.dark .mt-1.text-sm.text-gray-500,
-.dark .text-gray-500 {
+.dark [class*="text-gray-500"] {
   color: var(--color-gray-400) !important;
 }
 
@@ -848,22 +837,15 @@ header {
 }
 
 /* Amélioration de la lisibilité des titres en mode clair */
-.light h1.text-3xl.font-bold,
-.light h2.text-3xl.font-bold,
-.light .text-3xl.font-bold {
-  color: var(--color-gray-900) !important;
-}
-
-/* Plus de contraste pour "Tableau de bord fiscal" et "Rapport Fiscal" en mode clair */
 .light h1, 
-.light h2,
-.light .dashboard-title,
-.light .text-3xl.font-bold.text-gray-900.dark\:text-white {
+.light h2, 
+.light h3,
+.light .dashboard-title {
   color: var(--color-gray-900) !important;
   font-weight: 700 !important;
 }
 
-/* Adoucir le fond blanc en mode clair pour les cards et le dashboard - CORRIGÉ */
+/* Adoucir le fond blanc en mode clair pour les cards et le dashboard */
 .light .card {
   background-color: #f8fafc !important; /* Une teinte légèrement grise pour un blanc moins cassant */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
@@ -871,10 +853,6 @@ header {
 
 /* Correctif pour les éléments bg-white en mode clair */
 .light div[class*="bg-white"] {
-  background-color: #f8fafc !important;
-}
-
-.light main div[class*="bg-white"] {
   background-color: #f8fafc !important;
 }
 
@@ -906,15 +884,11 @@ header {
 /* ===== 3. CORRECTIONS COMMUNES AUX DEUX MODES ===== */
 
 /* Correction pour les onglets du rapport fiscal - Ajout d'un soulignement */
-.btn-primary.border-b-2.border-blue-500,
-.py-2.px-4.text-sm.font-medium.text-blue-600.border-b-2.border-blue-500,
-button.py-2.px-4.text-sm.font-medium.border-b-2.border-blue-500 {
+[class*="border-b-2 border-blue-500"] {
   position: relative;
 }
 
-.btn-primary.border-b-2.border-blue-500::after,
-.py-2.px-4.text-sm.font-medium.text-blue-600.border-b-2.border-blue-500::after,
-button.py-2.px-4.text-sm.font-medium.border-b-2.border-blue-500::after {
+[class*="border-b-2 border-blue-500"]::after {
   content: '';
   position: absolute;
   bottom: -2px;
@@ -925,13 +899,13 @@ button.py-2.px-4.text-sm.font-medium.border-b-2.border-blue-500::after {
 }
 
 /* Style amélioré pour les onglets actifs */
-.dark button.text-blue-600,
-.dark button.text-primary-400 {
+.dark button[class*="text-blue-600"],
+.dark button[class*="text-primary-400"] {
   color: var(--color-primary-400) !important;
 }
 
-.light button.text-blue-600,
-.light button.text-primary-400 {
+.light button[class*="text-blue-600"],
+.light button[class*="text-primary-400"] {
   color: var(--color-primary-600) !important;
 }
 
