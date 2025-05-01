@@ -801,16 +801,16 @@ header {
 }
 
 /* Assurer que le texte est toujours suffisamment contrasté en mode sombre */
-.dark .text-gray-800,
-.dark .text-gray-900 {
+.dark [class*="text-gray-800"],
+.dark [class*="text-gray-900"] {
   color: var(--color-gray-100) !important;
 }
 
-.dark .text-gray-700 {
+.dark [class*="text-gray-700"] {
   color: var(--color-gray-200) !important;
 }
 
-.dark .text-gray-600 {
+.dark [class*="text-gray-600"] {
   color: var(--color-gray-300) !important;
 }
 
@@ -824,9 +824,9 @@ header {
 }
 
 /* Correction spécifique pour "Résumé du Portefeuille" et les valeurs numériques */
-.dark h3.text-lg.font-semibold.text-gray-800,
-.dark .text-2xl.font-semibold.text-gray-900,
-.dark .mt-1.text-2xl.font-semibold.text-gray-900 {
+.dark h3[class*="text-lg"][class*="font-semibold"],
+.dark [class*="text-2xl"][class*="font-semibold"],
+.dark [class*="mt-1"][class*="text-2xl"][class*="font-semibold"] {
   color: white !important;
 }
 
@@ -979,14 +979,14 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
 
 /* Fix pour les valeurs dans les statistiques en mode clair */
 .light .stat-value,
-.light .text-2xl.font-semibold.text-gray-900,
-.light .mt-1.text-2xl.font-semibold.text-gray-900 {
+.light [class*="text-2xl"][class*="font-semibold"],
+.light [class*="mt-1"][class*="text-2xl"][class*="font-semibold"] {
   color: var(--color-gray-900) !important;
 }
 
 /* Correction du contraste des textes dans les cards en mode clair */
-.light .text-gray-600.dark\:text-gray-300,
-.light p.text-gray-600.dark\:text-gray-400 {
+.light [class*="text-gray-600"],
+.light p[class*="text-gray-600"] {
   color: var(--color-gray-700) !important;
 }
 
