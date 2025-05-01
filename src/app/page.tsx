@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 
@@ -29,23 +28,36 @@ export default function Home() {
       <header className="absolute top-0 left-0 w-full py-6 px-4 sm:px-6 lg:px-8 z-10">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <div className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 p-1 rounded-lg shadow-glow-purple transform hover:scale-105 transition-all">
+            <div className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 p-2 rounded-xl shadow-glow-purple transform hover:scale-105 transition-all">
               BITAX
             </div>
           </div>
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/features" className="text-white hover:text-blue-400 transition-colors">
-              Fonctionnalités
-            </Link>
-            <Link href="/pricing" className="text-white hover:text-blue-400 transition-colors">
-              Tarifs
-            </Link>
-            <Link href="/login" className="text-white hover:text-blue-400 transition-colors">
-              Connexion
-            </Link>
-            <Link href="/register" className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-all transform hover:scale-105 hover:shadow-glow-blue">
-              S'inscrire
-            </Link>
+          <nav className="hidden md:flex items-center space-x-6">
+            {['Fonctionnalités', 'Tarifs'].map((item) => (
+              <Link 
+                key={item} 
+                href={`/${item.toLowerCase()}`}
+                className="nav-link-improved"
+              >
+                {item}
+              </Link>
+            ))}
+            
+            <div className="flex items-center space-x-3">
+              <Link 
+                href="/login" 
+                className="btn-nav-login"
+              >
+                Connexion
+              </Link>
+              
+              <Link 
+                href="/register" 
+                className="btn-nav-signup"
+              >
+                S'inscrire
+              </Link>
+            </div>
           </nav>
           <button className="md:hidden text-white">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,9 +71,9 @@ export default function Home() {
       <main className="min-h-screen flex items-center justify-center px-4 pt-16">
         <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            <h1 className="text-4xl md:text-6xl font-heading mb-4">
               <span className="text-white">Votre fiscalité crypto, </span>
-              <span className="text-gradient-enhanced">simplifiée</span>
+              <span className="premium-gradient-text">simplifiée</span>
             </h1>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto lg:mx-0">
               Bitax automatise la déclaration de vos cryptomonnaies et calcule vos plus-values en quelques clics.
