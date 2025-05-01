@@ -59,10 +59,9 @@ export default function Home() {
       <main className="min-h-screen flex items-center justify-center px-4 pt-16">
         <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-          // Dans ta page d'accueil
-            <h1 className="text-4xl md:text-6xl font-heading mb-4">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
               <span className="text-white">Votre fiscalité crypto, </span>
-              <span className="premium-gradient-text">simplifiée</span>
+              <span className="text-gradient-enhanced">simplifiée</span>
             </h1>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto lg:mx-0">
               Bitax automatise la déclaration de vos cryptomonnaies et calcule vos plus-values en quelques clics.
