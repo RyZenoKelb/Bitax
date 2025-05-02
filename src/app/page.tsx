@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 // Importations des logos de blockchain
 const blockchainLogos = {
@@ -14,6 +17,16 @@ const blockchainLogos = {
 };
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Rediriger vers le dashboard si l'utilisateur est connecté
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
+
   return (
     <div className="min-h-screen overflow-hidden relative">
       {/* Effet de fond dynamique amélioré */}
@@ -53,7 +66,7 @@ export default function Home() {
           </div>
           <nav className="hidden md:flex items-center space-x-6">
             <Link 
-              href="/fonctionnalités" 
+              href="/fonctionnalites" 
               className="nav-link-futuristic"
             >
               Fonctionnalités
@@ -231,6 +244,69 @@ export default function Home() {
           </div>
         </div>
       </main>
+      
+      {/* Sections caractéristiques et avantages */}
+      <section className="py-16 bg-gray-900/70">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-white">Simplifiez votre fiscalité crypto en 3 étapes</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "🔌",
+                title: "Connectez votre wallet",
+                description: "Connectez-vous de façon sécurisée sans jamais partager vos clés privées"
+              },
+              {
+                icon: "🧠",
+                title: "Analysez vos transactions",
+                description: "Notre algorithme identifie automatiquement vos plus et moins-values"
+              },
+              {
+                icon: "📊",
+                title: "Générez votre rapport",
+                description: "Exportez un rapport fiscal complet prêt pour votre déclaration"
+              }
+            ].map((step, index) => (
+              <div key={index} className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 flex flex-col items-center text-center transform transition-all hover:-translate-y-2 duration-300">
+                <div className="text-4xl mb-4">{step.icon}</div>
+                <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                <p className="text-gray-300">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section className="py-16 bg-gradient-to-r from-indigo-900/70 to-purple-900/70 rounded-3xl mx-4 sm:mx-8 lg:mx-12 my-12">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Prêt à simplifier votre fiscalité crypto?</h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+            Commencez gratuitement et générez votre premier rapport fiscal en quelques minutes.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register" className="px-8 py-4 bg-white text-indigo-700 hover:bg-blue-50 font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              Essayer gratuitement
+            </Link>
+            <Link href="/dashboard" className="px-8 py-4 bg-transparent border-2 border-white text-white hover:bg-indigo-800/30 font-bold rounded-xl transition-all duration-300">
+              Accéder au dashboard
+            </Link>
+          </div>
+        </div>
+      </section>
+      
+      {/* Footer simple */}
+      <footer className="py-8 bg-gray-900/80 border-t border-gray-800/50">
+        <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
+          <p>© 2025 Bitax. Tous droits réservés.</p>
+          <div className="mt-2 space-x-4">
+            <Link href="/fonctionnalites" className="hover:text-white transition-colors">Fonctionnalités</Link>
+            <Link href="/tarifs" className="hover:text-white transition-colors">Tarifs</Link>
+            <Link href="#" className="hover:text-white transition-colors">Confidentialité</Link>
+          </div>
+        </div>
+      </footer>
       
       {/* Styles supplémentaires pour cette page spécifique */}
       <style jsx global>{`
