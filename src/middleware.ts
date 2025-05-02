@@ -11,7 +11,6 @@ const publicRoutes = [
   "/guide", 
   "/pricing", 
   "/tarifs", 
-  "/fonctionnalités", 
   "/fonctionnalites", 
   "/support",
   "/register-alt",
