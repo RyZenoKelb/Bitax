@@ -172,9 +172,9 @@ const TransactionList: React.FC<TransactionListProps> = ({
     }
   };
   
-    const toggleTransactionSelection = (hash: string, index: number) => {
-    const uniqueKey = `${hash}-${index}`;
-    const newSelection = new Set(selectedTransactions);
+  const toggleTransactionSelection = (hash: string, index: number) => {
+  const uniqueKey = `${hash}-${index}`;
+  const newSelection = new Set(selectedTransactions);
     if (newSelection.has(uniqueKey)) {
       newSelection.delete(uniqueKey);
     } else {
