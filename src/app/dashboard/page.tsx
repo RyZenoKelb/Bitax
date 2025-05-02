@@ -411,10 +411,7 @@ export default function Dashboard() {
       setIsPremiumUser(isPremium);
     }
 
-    // Récupérer les wallets sauvegardés
-    if (session?.user) {
-      fetchSavedWallets();
-    }
+
 
     return () => {
       if (scanInterval.current) {
