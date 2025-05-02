@@ -1,5 +1,5 @@
-// src/pages/index.tsx
-// Amélioration de la page d'accueil avec un design plus attractif et des sections informatives
+// src/pages/dashboard.tsx
+// Contenu copié depuis index.tsx pour créer une route Dashboard
 
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
@@ -14,7 +14,7 @@ import OnboardingWizard from '@/components/OnboardingWizard';
 import { getTransactions, NetworkType } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 
-export default function Home() {
+export default function Dashboard() {
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
