@@ -1,7 +1,6 @@
 // src/components/DashboardHeader.tsx
 import React, { useState } from 'react';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
-import NetworkIcon from '@/components/NetworkIcon';
 
 interface DashboardHeaderProps {
   walletAddress: string;
@@ -17,7 +16,7 @@ interface DashboardHeaderProps {
 }
 
 /**
- * En-tête amélioré pour le tableau de bord fiscal
+ * En-tête du tableau de bord fiscal
  * Affiche les informations clés et les actions principales
  */
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -57,22 +56,22 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const mainNetworks: NetworkType[] = ['eth', 'polygon', 'arbitrum', 'optimism', 'base'];
   
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden ${className}`}>
+    <div className={`bg-gray-800 dark:bg-gray-800 rounded-xl shadow-sm border border-gray-700 dark:border-gray-700 overflow-hidden ${className}`}>
       <div className="p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex flex-col">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-white dark:text-white mb-1">
               Tableau de bord fiscal
             </h1>
             
-            <div className="flex flex-wrap items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-              <div className="flex items-center px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-md">
+            <div className="flex flex-wrap items-center gap-1.5 text-sm text-gray-400 dark:text-gray-400">
+              <div className="flex items-center px-2 py-0.5 bg-blue-900/30 text-blue-300 dark:text-blue-300 rounded-md">
                 <span className="w-2 h-2 bg-green-500 rounded-full mr-1.5 animate-pulse"></span>
                 <span>{formatAddress(walletAddress)}</span>
               </div>
               
               {balance !== undefined && (
-                <div className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-md flex items-center">
+                <div className="px-2 py-0.5 bg-gray-700 dark:bg-gray-700 rounded-md flex items-center">
                   <svg className="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
@@ -80,7 +79,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 </div>
               )}
               
-              <div className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-md flex items-center">
+              <div className="px-2 py-0.5 bg-gray-700 dark:bg-gray-700 rounded-md flex items-center">
                 <svg className="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
@@ -88,7 +87,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </div>
               
               {isPremiumUser && (
-                <div className="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-md flex items-center">
+                <div className="px-2 py-0.5 bg-yellow-900/30 text-yellow-300 dark:text-yellow-300 rounded-md flex items-center">
                   <svg className="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                   </svg>
@@ -97,7 +96,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               )}
               
               {lastUpdated && (
-                <div className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-md flex items-center">
+                <div className="px-2 py-0.5 bg-gray-700 dark:bg-gray-700 rounded-md flex items-center">
                   <svg className="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -114,11 +113,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 <button 
                   onClick={() => setIsNetworkMenuOpen(!isNetworkMenuOpen)}
                   disabled={isLoading}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                  className="inline-flex items-center px-4 py-2 border border-gray-600 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-300 dark:text-gray-300 bg-gray-800 dark:bg-gray-800 hover:bg-gray-700 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                 >
                   {isLoading ? (
                     <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-300 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -138,20 +137,20 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 </button>
                 
                 {isNetworkMenuOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 border border-gray-200 dark:border-gray-700">
+                  <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-gray-800 dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 border border-gray-700 dark:border-gray-700">
                     <div className="py-1 max-h-96 overflow-y-auto" role="menu" aria-orientation="vertical">
                       <button
                         onClick={() => {
                           onScanRequest();
                           setIsNetworkMenuOpen(false);
                         }}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full text-left block px-4 py-2 text-sm text-gray-300 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-700"
                         role="menuitem"
                       >
                         Scan multi-blockchain automatique
                       </button>
                       
-                      <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                      <div className="border-t border-gray-700 dark:border-gray-700 my-1"></div>
                       
                       {mainNetworks.map((network) => (
                         <button
@@ -160,11 +159,13 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             onScanRequest(network);
                             setIsNetworkMenuOpen(false);
                           }}
-                          className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          className="w-full text-left block px-4 py-2 text-sm text-gray-300 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-700"
                           role="menuitem"
                         >
                           <div className="flex items-center">
-                            <NetworkIcon network={network} size={20} className="mr-2" />
+                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs mr-2">
+                              {network.charAt(0).toUpperCase()}
+                            </div>
                             <span>Scanner {SUPPORTED_NETWORKS[network].name}</span>
                           </div>
                         </button>
@@ -192,14 +193,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 </button>
                 
                 {isExportMenuOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 border border-gray-200 dark:border-gray-700">
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 border border-gray-700 dark:border-gray-700">
                     <div className="py-1" role="menu" aria-orientation="vertical">
                       <button
                         onClick={() => {
                           onExportReport();
                           setIsExportMenuOpen(false);
                         }}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full text-left block px-4 py-2 text-sm text-gray-300 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-700"
                         role="menuitem"
                       >
                         <div className="flex items-center">
@@ -214,7 +215,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                           onExportReport();
                           setIsExportMenuOpen(false);
                         }}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full text-left block px-4 py-2 text-sm text-gray-300 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-700"
                         role="menuitem"
                       >
                         <div className="flex items-center">
@@ -229,7 +230,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                           onExportReport();
                           setIsExportMenuOpen(false);
                         }}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full text-left block px-4 py-2 text-sm text-gray-300 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-700"
                         role="menuitem"
                       >
                         <div className="flex items-center">
@@ -240,14 +241,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         </div>
                       </button>
                       
-                      <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                      <div className="border-t border-gray-700 dark:border-gray-700 my-1"></div>
                       
                       <button
                         onClick={() => {
                           onExportReport();
                           setIsExportMenuOpen(false);
                         }}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full text-left block px-4 py-2 text-sm text-gray-300 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-700"
                         role="menuitem"
                       >
                         <div className="flex items-center">
@@ -268,7 +269,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       
       {/* Barre de progression ou état */}
       {isLoading && (
-        <div className="h-1 w-full bg-gray-200 dark:bg-gray-700">
+        <div className="h-1 w-full bg-gray-700 dark:bg-gray-700">
           <div className="h-1 bg-blue-600 animate-pulse"></div>
         </div>
       )}
