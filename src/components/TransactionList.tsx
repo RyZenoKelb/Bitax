@@ -500,7 +500,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {paginatedTransactions.length > 0 ? (
               paginatedTransactions.map((tx, index) => (
-                <tr key={tx.hash || index} className="hover:bg-gray-100">
+                <tr key={`${tx.hash}-${index}`} className="hover:bg-gray-100">
                   {isPremiumUser && (
                     <td className="px-3 py-4 whitespace-nowrap">
                       <input
