@@ -16,22 +16,6 @@ import {
 } from 'lucide-react';
 
 // Interfaces et types
-interface TransactionResult {
-  hash: string;
-  type: string;
-  tokenIn: string;
-  tokenOut: string;
-  valueIn: number;
-  valueOut: number;
-  timestamp: number;
-  isProfit: boolean;
-  profitAmount: number;
-}
-
-// Modifié pour être compatible avec le type TransactionResult des utils
-type ImportedTransactionResult = ReturnType<typeof getTransactions> extends Promise<infer T> ? 
-  T extends Array<infer U> ? U : never : never;
-
 interface ChartDataPoint {
   date: string;
   amount: number;
@@ -68,7 +52,35 @@ interface StatCardProps {
 // Composants importés
 import WalletConnectButton from '@/components/WalletConnectButton';
 import OnboardingWizard from '@/components/OnboardingWizard';
-import { getTransactions, NetworkType } from '@/utils/transactions';
+
+interface StatusBadgeProps {
+  type: 'success' | 'warning' | 'error' | 'info' | 'premium';
+  text: string;
+}
+
+interface NetworkButtonProps {
+  network: string;
+  active: boolean;
+  onClick: () => void;
+  isLoading: boolean;
+}
+
+interface TransactionPreviewProps {
+  transaction: TransactionResult | null;
+}
+
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  trend?: number;
+  color?: 'blue' | 'green' | 'purple' | 'amber' | 'rose';
+  onClick?: () => void;
+  isLoading: boolean;
+}
+
+// Utilisation du type TransactionResult directement depuis les utils
+import { getTransactions, NetworkType, TransactionResult } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 
 // Animation de chargement du scanner
@@ -216,17 +228,12 @@ const NetworkButton = ({ network, active, onClick, isLoading }: NetworkButtonPro
 
 // Composant d'aperçu de transaction
 const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.ReactElement => {
-  // Simulation de données de transaction
+  // Utilisation de données de démo si pas de transaction
   const tx = transaction || {
     hash: '0x1234...5678',
     type: 'swap',
-    tokenIn: 'ETH',
-    tokenOut: 'USDC',
-    valueIn: 0.5,
-    valueOut: 1250,
-    timestamp: new Date().getTime() - Math.random() * 10000000000,
-    isProfit: Math.random() > 0.5,
-    profitAmount: Math.random() * 200,
+    value: 0.5,
+    timestamp: Date.now() - Math.random() * 10000000000
   };
 
   const formatDate = (timestamp: number): string => {
@@ -247,10 +254,7 @@ const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.Rea
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center">
           <div className="h-8 w-8 rounded-full bg-blue-600/20 flex items-center justify-center mr-3">
-            {tx.isProfit ? 
-              <TrendingUp className="h-4 w-4 text-green-400" /> : 
-              <TrendingDown className="h-4 w-4 text-red-400" />
-            }
+            <TrendingUp className="h-4 w-4 text-blue-400" />
           </div>
           <div>
             <p className="font-medium text-white mb-0.5">{tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</p>
@@ -258,10 +262,9 @@ const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.Rea
           </div>
         </div>
         <div className="text-right">
-          <p className={`font-semibold ${tx.isProfit ? 'text-green-400' : 'text-red-400'}`}>
-            {tx.isProfit ? '+' : '-'}€{tx.profitAmount.toFixed(2)}
+          <p className="font-semibold text-white">
+            {formatAmount(tx.value || 0)}
           </p>
-          <p className="text-xs text-gray-400">{tx.tokenIn} → {tx.tokenOut}</p>
         </div>
       </div>
       <div className="mt-2 pt-2 border-t border-gray-700/30 flex justify-between items-center">
@@ -493,20 +496,7 @@ export default function Dashboard() {
       const txs = await getTransactions(address, network as NetworkType);
       const filteredTxs = filterSpamTransactions(txs);
       
-      // Conversion des transactions avec mapping des propriétés
-      const mappedTransactions: TransactionResult[] = filteredTxs.map((tx: ImportedTransactionResult) => ({
-        hash: tx.hash || '',
-        type: tx.type || 'swap',
-        tokenIn: tx.tokenIn || tx.token || 'ETH',
-        tokenOut: tx.tokenOut || '',
-        valueIn: tx.valueIn || 0,
-        valueOut: tx.valueOut || 0,
-        timestamp: tx.timestamp || Date.now(),
-        isProfit: !!tx.isProfit,
-        profitAmount: tx.profitAmount || 0
-      }));
-      
-      setTransactions(mappedTransactions);
+      setTransactions(filteredTxs);
     } catch (error) {
       console.error('Erreur lors de la récupération des transactions:', error);
       setError('Impossible de récupérer les transactions. Veuillez réessayer plus tard.');
