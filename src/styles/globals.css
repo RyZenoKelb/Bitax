@@ -1476,52 +1476,6 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-/* Boutons */
-.btn-primary {
-  @apply px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all relative overflow-hidden;
-  box-shadow: 0 4px 20px -5px rgba(79, 70, 229, 0.4);
-}
-
-.btn-primary:hover {
-  @apply transform -translate-y-1;
-  box-shadow: 0 8px 25px -5px rgba(79, 70, 229, 0.6);
-}
-
-.btn-primary::after {
-  content: '';
-  @apply absolute inset-0 bg-gradient-to-r from-primary/0 via-white/20 to-primary/0;
-  transform: translateX(-100%);
-  transition: transform 0.8s;
-}
-
-.btn-primary:hover::after {
-  transform: translateX(100%);
-}
-
-.btn-outline {
-  @apply px-4 py-2 bg-transparent border border-gray-600 hover:border-primary text-gray-300 hover:text-primary-light font-medium rounded-lg transition-colors;
-}
-
-.btn-secondary {
-  @apply px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg shadow transition-colors;
-}
-
-.btn-icon {
-  @apply p-2 rounded-full text-gray-400 hover:text-primary-light hover:bg-gray-800/50 focus:outline-none transition-colors;
-}
-
-.btn-text {
-  @apply text-gray-400 hover:text-primary-light font-medium transition-colors;
-}
-
-/* Dégradés et couleurs */
-.bg-gradient-blue {
-  @apply bg-gradient-to-r from-primary to-secondary;
-}
-
-.bg-gradient-purple {
-  @apply bg-gradient-to-r from-secondary to-accent;
-}
 
 .shadow-blue {
   box-shadow: 0 5px 20px -5px rgba(59, 130, 246, 0.3);
