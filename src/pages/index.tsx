@@ -1,9 +1,7 @@
-"use client";
-
+// src/pages/index.tsx
 import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import WalletConnectButton from '@/components/WalletConnectButton';
-import WalletConnectPanel from '@/components/WalletConnectPanel';
 import TransactionSummary from '@/components/TransactionSummary';
 import TransactionList from '@/components/TransactionList';
 import TaxDashboard from '@/components/TaxDashboard';
@@ -13,8 +11,6 @@ import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transa
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 import NetworkIcon from '@/components/NetworkIcon';
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
 
 export default function Dashboard() {
   const { data: session } = useSession();
