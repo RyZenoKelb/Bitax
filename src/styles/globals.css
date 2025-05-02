@@ -1423,39 +1423,3 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
   color: var(--color-primary-300) !important;
   font-weight: 600;
 }
-
-/* Styles pour la nouvelle navbar */
-.dropdown-container {
-  position: relative;
-}
-
-/* Animations pour les icônes de flèche */
-.transform.rotate-180 {
-  transform: rotate(180deg);
-  transition: transform 0.2s ease-in-out;
-}
-
-/* Styles pour les badges et status */
-.badge-premium {
-  @apply bg-gradient-to-r from-indigo-500 to-purple-600 text-white;
-}
-
-/* Effets de transition pour les boutons */
-.transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
-}
-
-/* Amélioration des formulaires */
-.form-input-improved {
-  @apply block w-full rounded-lg border shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2.5 text-sm;
-}
-
-.dark .form-input-improved {
-  @apply bg-gray-700 border-gray-600 text-white;
-}
-
-.light .form-input-improved {
-  @apply bg-white border-gray-300 text-gray-900;
-}
