@@ -226,6 +226,14 @@ const NetworkButton = ({ network, active, onClick, isLoading }: NetworkButtonPro
   );
 };
 
+// Définir un type pour les données de démo
+interface DemoTransaction {
+  hash: string;
+  type: string;
+  value: number;
+  timestamp: number;
+}
+
 // Composant d'aperçu de transaction
 const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.ReactElement => {
   // Utilisation de données de démo si pas de transaction
@@ -234,7 +242,7 @@ const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.Rea
     type: 'swap',
     value: 0.5,
     timestamp: Date.now() - Math.random() * 10000000000
-  };
+  } as DemoTransaction;
 
   const formatDate = (timestamp: number): string => {
     return new Date(timestamp).toLocaleDateString('fr-FR', {
@@ -263,7 +271,7 @@ const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.Rea
         </div>
         <div className="text-right">
           <p className="font-semibold text-white">
-            {formatAmount(tx.value || 0)}
+            {formatAmount(typeof tx.value === 'number' ? tx.value : 0)}
           </p>
         </div>
       </div>
@@ -479,6 +487,11 @@ export default function Dashboard() {
         return prev + 1;
       });
     }, 30);
+  };
+  
+  // Fonction pour déterminer si une transaction est 'wallet' (contient le paramètre spécifique implicite)
+  const getTransactionType = (w: TransactionResult) => {
+    return w.type || 'unknown';
   };
 
   // Récupérer les transactions
