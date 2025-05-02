@@ -423,27 +423,7 @@ export default function Dashboard() {
     };
   }, [session]);
 
-  // Récupérer les wallets sauvegardés
-  const fetchSavedWallets = async () => {
-    try {
-      const response = await fetch('/api/wallet');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.wallets && data.wallets.length > 0) {
-          // Prendre le wallet principal ou le premier de la liste
-          const primaryWallet = data.wallets.find((w) => w.isPrimary) || data.wallets[0];
-          
-          setWalletAddress(primaryWallet.address);
-          setIsWalletConnected(true);
-          
-          // Charger les transactions pour ce wallet
-          await fetchTransactions(primaryWallet.address, activeNetwork);
-        }
-      }
-    } catch (error) {
-      console.error('Erreur lors de la récupération des wallets:', error);
-    }
-  };
+
 
   // Gérer la connexion du wallet
   const handleWalletConnect = async (address: string, walletProvider: ethers.BrowserProvider) => {
