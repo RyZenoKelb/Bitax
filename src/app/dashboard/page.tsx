@@ -226,13 +226,22 @@ const NetworkButton = ({ network, active, onClick, isLoading }: NetworkButtonPro
   );
 };
 
-// Définir un type pour les données de démo
+// Définir un type pour les transactions démo qui inclut toutes les propriétés possibles
 interface DemoTransaction {
   hash: string;
   type: string;
   value: number;
   timestamp: number;
 }
+
+// Créer un type union pour gérer les deux types possibles
+type AnyTransaction = TransactionResult | DemoTransaction;
+
+// Fonctions utilitaires pour travailler avec les deux types de transactions
+const getTimestamp = (tx: AnyTransaction): number => {
+  // Utiliser une valeur par défaut si timestamp n'existe pas
+  return (tx as any).timestamp || Date.now();
+};
 
 // Composant d'aperçu de transaction
 const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.ReactElement => {
@@ -266,7 +275,7 @@ const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.Rea
           </div>
           <div>
             <p className="font-medium text-white mb-0.5">{tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</p>
-            <p className="text-xs text-gray-400">{formatDate(tx.timestamp)}</p>
+            <p className="text-xs text-gray-400">{formatDate(getTimestamp(tx))}</p>
           </div>
         </div>
         <div className="text-right">
@@ -489,8 +498,8 @@ export default function Dashboard() {
     }, 30);
   };
   
-  // Fonction pour déterminer si une transaction est 'wallet' (contient le paramètre spécifique implicite)
-  const getTransactionType = (w: TransactionResult) => {
+  // Récupérer le type de transaction
+  const getTransactionType = (w: any): string => {
     return w.type || 'unknown';
   };
 
