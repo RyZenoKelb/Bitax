@@ -13,16 +13,16 @@ export const metadata: Metadata = {
 };
 
 // Logo SVG amélioré avec style futuriste
-const BitaxLogo = () => {
+const BitaxLogo = (): React.ReactElement => {
   return (
     <div className="flex items-center">
       <div className="relative h-12 w-12 mr-3">
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 opacity-80 blur-sm"></div>
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 opacity-80 blur-sm"></div>
         <div className="absolute inset-0 flex items-center justify-center text-2xl font-extrabold text-white">
           BX
         </div>
       </div>
-      <div className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400">
+      <div className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-400">
         BITAX
       </div>
     </div>
@@ -30,10 +30,10 @@ const BitaxLogo = () => {
 };
 
 // Composant du bouton de thème
-const ThemeToggle = () => {
+const ThemeToggle = (): React.ReactElement => {
   return (
     <button
-      className="relative overflow-hidden h-8 w-8 rounded-full bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors group"
+      className="relative overflow-hidden h-8 w-8 rounded-full bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors group"
       aria-label="Changer de thème"
     >
       {/* Icône soleil (mode clair) */}
@@ -52,14 +52,14 @@ const ThemeToggle = () => {
 };
 
 // Menu utilisateur amélioré avec animation
-const UserMenu = ({ user }: { user: any }) => {
+const UserMenu = ({ user }: { user: any }): React.ReactElement => {
   return (
     <div className="relative group" data-user-menu>
       <button
-        className="flex items-center space-x-2 bg-gray-800/50 hover:bg-gray-700/50 rounded-xl py-2 px-3 border border-gray-700/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/10 focus:outline-none focus:ring-2 focus:ring-primary-500/40"
+        className="flex items-center space-x-2 bg-gray-800/50 hover:bg-gray-700/50 rounded-xl py-2 px-3 border border-gray-700/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
         data-user-menu-button
       >
-        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-medium shadow-inner shadow-white/10">
+        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-medium shadow-inner shadow-white/10">
           {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
         </div>
         <span className="hidden sm:inline text-white font-medium">
@@ -120,11 +120,11 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-blue-900/30 to-gray-900">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-blue-900/10 to-gray-900">
       {/* Effets de fond */}
       <div className="absolute inset-0 -z-10 bg-[url('/grid.svg')] bg-repeat opacity-10"></div>
-      <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px]"></div>
-      <div className="absolute bottom-0 left-0 -z-10 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]"></div>
+      <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]"></div>
+      <div className="absolute bottom-0 left-0 -z-10 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]"></div>
       
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-gray-900/80 border-b border-gray-800/50 py-4 px-6">
