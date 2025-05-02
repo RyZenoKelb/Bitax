@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from "next-auth/react";
 import { ethers } from 'ethers';
 import Link from 'next/link';
@@ -27,6 +27,10 @@ interface TransactionResult {
   isProfit: boolean;
   profitAmount: number;
 }
+
+// Modifié pour être compatible avec le type TransactionResult des utils
+type ImportedTransactionResult = ReturnType<typeof getTransactions> extends Promise<infer T> ? 
+  T extends Array<infer U> ? U : never : never;
 
 interface ChartDataPoint {
   date: string;
@@ -136,7 +140,7 @@ const truncateAddress = (address: string): string => {
 };
 
 // Composant de badge d'état
-const StatusBadge = ({ type, text }: StatusBadgeProps): JSX.Element => {
+const StatusBadge = ({ type, text }: StatusBadgeProps): React.ReactElement => {
   const badgeStyles: Record<StatusBadgeProps['type'], string> = {
     success: "bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-500 border border-emerald-500/20",
     warning: "bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-500 border border-amber-500/20",
@@ -145,7 +149,7 @@ const StatusBadge = ({ type, text }: StatusBadgeProps): JSX.Element => {
     premium: "bg-gradient-to-r from-purple-500/20 to-violet-500/20 text-purple-500 border border-purple-500/20",
   };
 
-  const icons: Record<StatusBadgeProps['type'], JSX.Element> = {
+  const icons: Record<StatusBadgeProps['type'], React.ReactElement> = {
     success: <CheckCircle className="w-3.5 h-3.5 mr-1.5" />,
     warning: <AlertTriangle className="w-3.5 h-3.5 mr-1.5" />,
     error: <AlertTriangle className="w-3.5 h-3.5 mr-1.5" />,
@@ -162,7 +166,7 @@ const StatusBadge = ({ type, text }: StatusBadgeProps): JSX.Element => {
 };
 
 // Composant de bouton réseau
-const NetworkButton = ({ network, active, onClick, isLoading }: NetworkButtonProps): JSX.Element => {
+const NetworkButton = ({ network, active, onClick, isLoading }: NetworkButtonProps): React.ReactElement => {
   const getNetworkColor = (networkName: string): string => {
     const colors: Record<string, string> = {
       eth: "#627EEA",
@@ -211,7 +215,7 @@ const NetworkButton = ({ network, active, onClick, isLoading }: NetworkButtonPro
 };
 
 // Composant d'aperçu de transaction
-const TransactionPreview = ({ transaction }: TransactionPreviewProps): JSX.Element => {
+const TransactionPreview = ({ transaction }: TransactionPreviewProps): React.ReactElement => {
   // Simulation de données de transaction
   const tx = transaction || {
     hash: '0x1234...5678',
@@ -272,7 +276,7 @@ const TransactionPreview = ({ transaction }: TransactionPreviewProps): JSX.Eleme
 };
 
 // Composant de carte statistique
-const StatCard = ({ title, value, icon, trend, color = "blue", onClick, isLoading }: StatCardProps): JSX.Element => {
+const StatCard = ({ title, value, icon, trend, color = "blue", onClick, isLoading }: StatCardProps): React.ReactElement => {
   const gradients: Record<string, string> = {
     blue: "from-blue-500/20 to-indigo-500/20 border-blue-500/30",
     green: "from-emerald-500/20 to-green-500/20 border-emerald-500/30",
@@ -461,7 +465,7 @@ export default function Dashboard() {
     setScanProgress(0);
     
     scanInterval.current = window.setInterval(() => {
-      setScanProgress(prev => {
+      setScanProgress((prev: number) => {
         if (prev >= 100) {
           if (scanInterval.current) {
             window.clearInterval(scanInterval.current);
@@ -489,7 +493,20 @@ export default function Dashboard() {
       const txs = await getTransactions(address, network as NetworkType);
       const filteredTxs = filterSpamTransactions(txs);
       
-      setTransactions(filteredTxs);
+      // Conversion des transactions avec mapping des propriétés
+      const mappedTransactions: TransactionResult[] = filteredTxs.map((tx: ImportedTransactionResult) => ({
+        hash: tx.hash || '',
+        type: tx.type || 'swap',
+        tokenIn: tx.tokenIn || tx.token || 'ETH',
+        tokenOut: tx.tokenOut || '',
+        valueIn: tx.valueIn || 0,
+        valueOut: tx.valueOut || 0,
+        timestamp: tx.timestamp || Date.now(),
+        isProfit: !!tx.isProfit,
+        profitAmount: tx.profitAmount || 0
+      }));
+      
+      setTransactions(mappedTransactions);
     } catch (error) {
       console.error('Erreur lors de la récupération des transactions:', error);
       setError('Impossible de récupérer les transactions. Veuillez réessayer plus tard.');
