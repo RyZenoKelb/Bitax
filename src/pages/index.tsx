@@ -861,7 +861,7 @@ export default function Dashboard() {
                           Transactions
                         </h2>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          Historique de vos transactions {activeNetwork !== 'all' && `sur ${activeNetwork.toUpperCase()}`}
+                          Historique de vos transactions {activeNetwork !== `sur ${activeNetwork.toUpperCase()}`}
                         </p>
                       </div>
                       <div className="p-6">
