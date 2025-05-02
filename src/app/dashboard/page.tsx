@@ -8,12 +8,58 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Lottie from 'lottie-react';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar, 
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell
 } from 'recharts';
 import { 
   ArrowRight, TrendingUp, TrendingDown, AlertTriangle, CheckCircle,
   BarChart2, PieChart, RefreshCw, Zap, Clock, DollarSign
 } from 'lucide-react';
+
+// Interfaces et types
+interface TransactionResult {
+  hash: string;
+  type: string;
+  tokenIn: string;
+  tokenOut: string;
+  valueIn: number;
+  valueOut: number;
+  timestamp: number;
+  isProfit: boolean;
+  profitAmount: number;
+}
+
+interface ChartDataPoint {
+  date: string;
+  amount: number;
+  profit: number;
+  loss: number;
+}
+
+interface StatusBadgeProps {
+  type: 'success' | 'warning' | 'error' | 'info' | 'premium';
+  text: string;
+}
+
+interface NetworkButtonProps {
+  network: string;
+  active: boolean;
+  onClick: () => void;
+  isLoading: boolean;
+}
+
+interface TransactionPreviewProps {
+  transaction: TransactionResult | null;
+}
+
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  trend?: number;
+  color?: 'blue' | 'green' | 'purple' | 'amber' | 'rose';
+  onClick?: () => void;
+  isLoading: boolean;
+}
 
 // Composants importés
 import WalletConnectButton from '@/components/WalletConnectButton';
@@ -75,7 +121,7 @@ const demoTransactionData = [
 ];
 
 // Fonction pour formater les montants
-const formatAmount = (amount) => {
+const formatAmount = (amount: number): string => {
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
     currency: 'EUR',
@@ -84,14 +130,14 @@ const formatAmount = (amount) => {
 };
 
 // Fonction pour tronquer les adresses de wallet
-const truncateAddress = (address) => {
+const truncateAddress = (address: string): string => {
   if (!address) return '';
   return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 };
 
 // Composant de badge d'état
-const StatusBadge = ({ type, text }) => {
-  const badgeStyles = {
+const StatusBadge = ({ type, text }: StatusBadgeProps): JSX.Element => {
+  const badgeStyles: Record<StatusBadgeProps['type'], string> = {
     success: "bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-500 border border-emerald-500/20",
     warning: "bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-500 border border-amber-500/20",
     error: "bg-gradient-to-r from-rose-500/20 to-red-500/20 text-rose-500 border border-rose-500/20",
@@ -99,7 +145,7 @@ const StatusBadge = ({ type, text }) => {
     premium: "bg-gradient-to-r from-purple-500/20 to-violet-500/20 text-purple-500 border border-purple-500/20",
   };
 
-  const icons = {
+  const icons: Record<StatusBadgeProps['type'], JSX.Element> = {
     success: <CheckCircle className="w-3.5 h-3.5 mr-1.5" />,
     warning: <AlertTriangle className="w-3.5 h-3.5 mr-1.5" />,
     error: <AlertTriangle className="w-3.5 h-3.5 mr-1.5" />,
@@ -116,9 +162,9 @@ const StatusBadge = ({ type, text }) => {
 };
 
 // Composant de bouton réseau
-const NetworkButton = ({ network, active, onClick, isLoading }) => {
-  const getNetworkColor = (network) => {
-    const colors = {
+const NetworkButton = ({ network, active, onClick, isLoading }: NetworkButtonProps): JSX.Element => {
+  const getNetworkColor = (networkName: string): string => {
+    const colors: Record<string, string> = {
       eth: "#627EEA",
       polygon: "#8247E5",
       arbitrum: "#28A0F0",
@@ -126,7 +172,7 @@ const NetworkButton = ({ network, active, onClick, isLoading }) => {
       base: "#0052FF",
       solana: "#14F195"
     };
-    return colors[network] || "#627EEA";
+    return colors[networkName] || "#627EEA";
   };
 
   const networkColor = getNetworkColor(network);
@@ -165,7 +211,7 @@ const NetworkButton = ({ network, active, onClick, isLoading }) => {
 };
 
 // Composant d'aperçu de transaction
-const TransactionPreview = ({ transaction }) => {
+const TransactionPreview = ({ transaction }: TransactionPreviewProps): JSX.Element => {
   // Simulation de données de transaction
   const tx = transaction || {
     hash: '0x1234...5678',
@@ -179,7 +225,7 @@ const TransactionPreview = ({ transaction }) => {
     profitAmount: Math.random() * 200,
   };
 
-  const formatDate = (timestamp) => {
+  const formatDate = (timestamp: number): string => {
     return new Date(timestamp).toLocaleDateString('fr-FR', {
       year: 'numeric',
       month: 'short',
@@ -226,8 +272,8 @@ const TransactionPreview = ({ transaction }) => {
 };
 
 // Composant de carte statistique
-const StatCard = ({ title, value, icon, trend, color = "blue", onClick, isLoading }) => {
-  const gradients = {
+const StatCard = ({ title, value, icon, trend, color = "blue", onClick, isLoading }: StatCardProps): JSX.Element => {
+  const gradients: Record<string, string> = {
     blue: "from-blue-500/20 to-indigo-500/20 border-blue-500/30",
     green: "from-emerald-500/20 to-green-500/20 border-emerald-500/30",
     purple: "from-purple-500/20 to-violet-500/20 border-purple-500/30",
@@ -235,7 +281,7 @@ const StatCard = ({ title, value, icon, trend, color = "blue", onClick, isLoadin
     rose: "from-rose-500/20 to-red-500/20 border-rose-500/30",
   };
 
-  const textColors = {
+  const textColors: Record<string, string> = {
     blue: "text-blue-400",
     green: "text-emerald-400",
     purple: "text-purple-400",
@@ -308,21 +354,21 @@ const StatCard = ({ title, value, icon, trend, color = "blue", onClick, isLoadin
 // Composant principal Dashboard
 export default function Dashboard() {
   const { data: session } = useSession();
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
-  const [provider, setProvider] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanProgress, setScanProgress] = useState(0);
-  const [isPremiumUser, setIsPremiumUser] = useState(false);
-  const [activeNetwork, setActiveNetwork] = useState('eth');
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [activeView, setActiveView] = useState('chart');
-  const [timeRange, setTimeRange] = useState('1m'); // 1d, 1w, 1m, 1y, all
-  const scanInterval = useRef(null);
+  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
+  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  const [transactions, setTransactions] = useState<TransactionResult[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [scanProgress, setScanProgress] = useState<number>(0);
+  const [isPremiumUser, setIsPremiumUser] = useState<boolean>(false);
+  const [activeNetwork, setActiveNetwork] = useState<string>('eth');
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('overview');
+  const [activeView, setActiveView] = useState<string>('chart');
+  const [timeRange, setTimeRange] = useState<string>('1m'); // 1d, 1w, 1m, 1y, all
+  const scanInterval = useRef<number | null>(null);
 
   // Vérification du statut premium et récupération des wallets
   useEffect(() => {
@@ -376,7 +422,7 @@ export default function Dashboard() {
   };
 
   // Gérer la connexion du wallet
-  const handleWalletConnect = async (address, walletProvider) => {
+  const handleWalletConnect = async (address: string, walletProvider: ethers.BrowserProvider) => {
     try {
       setWalletAddress(address);
       setProvider(walletProvider);
@@ -414,10 +460,12 @@ export default function Dashboard() {
     setIsScanning(true);
     setScanProgress(0);
     
-    scanInterval.current = setInterval(() => {
+    scanInterval.current = window.setInterval(() => {
       setScanProgress(prev => {
         if (prev >= 100) {
-          clearInterval(scanInterval.current);
+          if (scanInterval.current) {
+            window.clearInterval(scanInterval.current);
+          }
           setIsScanning(false);
           return 0;
         }
@@ -427,7 +475,7 @@ export default function Dashboard() {
   };
 
   // Récupérer les transactions
-  const fetchTransactions = async (address, network) => {
+  const fetchTransactions = async (address: string, network: string) => {
     if (!address) return;
     
     setIsLoading(true);
@@ -438,7 +486,7 @@ export default function Dashboard() {
       // On simule un délai pour apprécier l'animation
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      const txs = await getTransactions(address, network);
+      const txs = await getTransactions(address, network as NetworkType);
       const filteredTxs = filterSpamTransactions(txs);
       
       setTransactions(filteredTxs);
@@ -449,13 +497,13 @@ export default function Dashboard() {
       setIsLoading(false);
       setIsScanning(false);
       if (scanInterval.current) {
-        clearInterval(scanInterval.current);
+        window.clearInterval(scanInterval.current);
       }
     }
   };
 
   // Scanner un réseau spécifique
-  const handleScanNetwork = async (network) => {
+  const handleScanNetwork = async (network: string) => {
     setActiveNetwork(network);
     if (walletAddress) {
       await fetchTransactions(walletAddress, network);
@@ -868,6 +916,7 @@ export default function Dashboard() {
               icon={<DollarSign className="w-5 h-5" />}
               trend={2.5}
               color="blue"
+              onClick={() => {}}
               isLoading={isLoading}
             />
             <StatCard 
@@ -876,6 +925,7 @@ export default function Dashboard() {
               icon={<TrendingUp className="w-5 h-5" />}
               trend={5.2}
               color="green"
+              onClick={() => {}}
               isLoading={isLoading}
             />
             <StatCard 
@@ -884,13 +934,16 @@ export default function Dashboard() {
               icon={<TrendingDown className="w-5 h-5" />}
               trend={-1.8}
               color="rose"
+              onClick={() => {}}
               isLoading={isLoading}
             />
             <StatCard 
               title="Transactions" 
               value={transactions.length || "142"} 
               icon={<BarChart2 className="w-5 h-5" />}
+              trend={0}
               color="purple"
+              onClick={() => {}}
               isLoading={isLoading}
             />
           </div>
