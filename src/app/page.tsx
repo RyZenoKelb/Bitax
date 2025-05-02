@@ -33,7 +33,7 @@ export default function Home() {
             </div>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
-            {['Fonctionnalités', 'Tarifs'].map((item) => (
+            {['Fonctionnalites', 'Tarifs'].map((item) => (
               <Link 
                 key={item} 
                 href={`/${item.toLowerCase()}`}
