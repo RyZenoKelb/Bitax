@@ -1,7 +1,8 @@
+// src/middleware.ts
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Configuration des routes publiques et privées
+// Configuration des routes publiques
 const publicRoutes = [
   "/", 
   "/login", 
@@ -12,21 +13,25 @@ const publicRoutes = [
   "/tarifs", 
   "/fonctionnalités", 
   "/fonctionnalites", 
-  "/support"
+  "/support",
+  "/register-alt",
+  "/api-test",
+  "/register-debug"
 ];
+
 const authRoutes = ["/login", "/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Check if the path is for API or static files
+  // MODIFICATION CRUCIALE: Ne jamais intercepter les routes API (commençant par /api)
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.startsWith("/images") ||
     pathname.startsWith("/fonts") ||
-    pathname.startsWith("/api/db-test") ||
-    pathname.startsWith("/register-debug")
+    pathname.startsWith("/api/") ||  // Ajouter cette ligne pour exclure toutes les API
+    pathname.includes("api-test")
   ) {
     return NextResponse.next();
   }
@@ -66,3 +71,10 @@ export async function middleware(request: NextRequest) {
   
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    // Exclut toutes les routes commençant par /api/
+    "/((?!api/).*)(.+)",
+  ],
+};
