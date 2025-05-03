@@ -146,17 +146,17 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments visuels améliorés
-    const hexagons: Hexagon[] = [];
-    const connections: Connection[] = [];
-    const particles: Particle[] = [];
-    const dataPackets: DataPacket[] = [];
-      
-    // Créer des hexagones (symboles de blockchain)
-    const createHexagons = () => {
-      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
-      
-      for (let i = 0; i < hexCount; i++) {
+    // Configuration des éléments du réseau blockchain
+    const cryptoNodes = [];
+    const connections = [];
+    const dataPackets = [];
+    const particles = [];
+    
+    // Symboles de crypto-monnaies pour les noeuds
+    const cryptoSymbols = [
+      { symbol: '₿', color: '#F7931A' }, // Bitcoin
+      { symbol: 'Ξ', color: '#627EEA' }, // Ethereum
+      { symbol: 'Ⓢ', color: '#2BD3E4' }, // Solana 
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
         const size = Math.random() * 25 + 20; // Hexagones plus grands
