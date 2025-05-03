@@ -286,9 +286,9 @@ export default function Home() {
         gradient.addColorStop(0, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 1.5})`);
         gradient.addColorStop(0.7, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.5})`);
         gradient.addColorStop(1, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0)`);
-          const angle = i * 2 * Math.PI / sides;
-          const pointX = size * 0.7 * Math.cos(angle);
-          const pointY = size * 0.7 * Math.sin(angle);
+      } else {
+        // Node inactif - plus discret
+        gradient.addColorStop(0, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.8})`);
           
           if (i === 0) {
             ctx.moveTo(pointX, pointY);
