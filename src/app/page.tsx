@@ -75,44 +75,7 @@ export default function Home() {
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   
-  // Créer les étoiles uniquement côté client (pour éviter les erreurs d'hydratation)
-  useEffect(() => {
-    // Créer des étoiles avec des positions fixes (pour éviter les problèmes d'hydratation)
-    const generateStars = () => {
-      // Nombre d'étoiles proportionnel à la taille de l'écran
-      const starCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 3000), 200);
-      
-      // Créer les étoiles avec des positions fixes
-      const newStars = Array.from({ length: starCount }).map((_, index) => {
-        // Utiliser l'index comme graine pour générer des positions "aléatoires" mais déterministes
-        const seed1 = Math.sin(index * 123.456) * 0.5 + 0.5;
-        const seed2 = Math.cos(index * 789.012) * 0.5 + 0.5;
-        
-        return {
-          id: index,
-          x: seed1 * 100, // Position en pourcentage de l'écran
-          y: seed2 * 100,
-          size: (Math.sin(index * 45.678) * 0.5 + 0.5) * 2 + 0.5, // Taille entre 0.5 et 2.5px
-          opacity: (Math.cos(index * 321.098) * 0.3 + 0.7), // Opacité entre 0.4 et 1
-          animationDelay: `${(index % 10) * 0.5}s`, // Délai d'animation entre 0 et 4.5s
-        };
-      });
-      
-      setStars(newStars);
-    };
-    
-    generateStars();
-    
-    // Regénérer les étoiles lors du redimensionnement de la fenêtre
-    const handleResize = () => {
-      generateStars();
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Effet pour l'animation des particules
+  // Effet pour l'animation des particules et des formes géométriques blockchain
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -129,29 +92,55 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des particules
-    const particlesArray: {
-      x: number;
-      y: number;
-      size: number;
-      speedX: number;
-      speedY: number;
-      color: string;
-    }[] = [];
-
-    // Créer particules
-    const createParticles = () => {
-      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 10000), 100);
+    // Configuration des particules et des formes géométriques
+    const hexagons = [];
+    const connections = [];
+    const particles = [];
+    
+    // Créer des hexagones (symboles de blockchain)
+    const createHexagons = () => {
+      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 180000), 15);
       
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 3 + 0.5;
+      for (let i = 0; i < hexCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const speedX = Math.random() * 0.5 - 0.25;
-        const speedY = Math.random() * 0.5 - 0.25;
+        const size = Math.random() * 20 + 15;
+        const opacity = Math.random() * 0.2 + 0.1;
+        const speedX = (Math.random() - 0.5) * 0.3;
+        const speedY = (Math.random() - 0.5) * 0.3;
+        
+        hexagons.push({ x, y, size, opacity, speedX, speedY });
+      }
+    };
+    
+    // Créer des connexions entre hexagones (simuler une blockchain)
+    const createConnections = () => {
+      for (let i = 0; i < hexagons.length; i++) {
+        for (let j = i + 1; j < hexagons.length; j++) {
+          if (Math.random() > 0.7) {
+            connections.push({
+              from: i,
+              to: j,
+              opacity: Math.random() * 0.15 + 0.05
+            });
+          }
+        }
+      }
+    };
+    
+    // Créer particules normales (effet visuel)
+    const createParticles = () => {
+      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 20000), 40);
+      
+      for (let i = 0; i < particleCount; i++) {
+        const size = Math.random() * 2 + 0.5;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speedX = (Math.random() - 0.5) * 0.5;
+        const speedY = (Math.random() - 0.5) * 0.5;
         const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
 
-        particlesArray.push({
+        particles.push({
           x,
           y,
           size,
@@ -162,13 +151,77 @@ export default function Home() {
       }
     };
 
+    createHexagons();
+    createConnections();
     createParticles();
 
-    // Animer particules
+    // Dessiner un hexagone
+    const drawHexagon = (x, y, size, opacity) => {
+      const sides = 6;
+      ctx.beginPath();
+      ctx.moveTo(x + size * Math.cos(0), y + size * Math.sin(0));
+      
+      for (let i = 1; i <= sides; i++) {
+        const angle = i * 2 * Math.PI / sides;
+        ctx.lineTo(x + size * Math.cos(angle), y + size * Math.sin(angle));
+      }
+      
+      ctx.closePath();
+      ctx.strokeStyle = `rgba(147, 51, 234, ${opacity})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    };
+
+    // Animer tous les éléments
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particlesArray.forEach(p => {
+      // Mettre à jour et dessiner les hexagones
+      hexagons.forEach(hex => {
+        hex.x += hex.speedX;
+        hex.y += hex.speedY;
+        
+        // Rebond sur les bords
+        if (hex.x < 0 || hex.x > canvas.width) hex.speedX *= -1;
+        if (hex.y < 0 || hex.y > canvas.height) hex.speedY *= -1;
+        
+        drawHexagon(hex.x, hex.y, hex.size, hex.opacity);
+      });
+      
+      // Dessiner les connexions
+      connections.forEach(conn => {
+        const fromHex = hexagons[conn.from];
+        const toHex = hexagons[conn.to];
+        
+        // Calculer la distance
+        const distance = Math.sqrt(
+          Math.pow(fromHex.x - toHex.x, 2) + 
+          Math.pow(fromHex.y - toHex.y, 2)
+        );
+        
+        // Ne dessiner la connexion que si les hexagones sont assez proches
+        if (distance < 300) {
+          ctx.beginPath();
+          ctx.moveTo(fromHex.x, fromHex.y);
+          ctx.lineTo(toHex.x, toHex.y);
+          ctx.strokeStyle = `rgba(99, 102, 241, ${conn.opacity})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+          
+          // Dessiner un petit carré au milieu pour simuler des "données"
+          const midX = (fromHex.x + toHex.x) / 2;
+          const midY = (fromHex.y + toHex.y) / 2;
+          
+          if (Math.random() > 0.99) {
+            // Animation de "transfert de données" occasionnel
+            ctx.fillStyle = 'rgba(129, 140, 248, 0.8)';
+            ctx.fillRect(midX - 2, midY - 2, 4, 4);
+          }
+        }
+      });
+      
+      // Mettre à jour et dessiner les particules
+      particles.forEach(p => {
         p.x += p.speedX;
         p.y += p.speedY;
 
@@ -357,8 +410,8 @@ export default function Home() {
   };
   
   return (
-    <div className="min-h-screen overflow-x-hidden font-poppins" ref={mainRef}>
-      {/* Background élégant avec étoiles animées */}
+    <div className="min-h-screen overflow-x-hidden font-inter" ref={mainRef}> {/* Changer la police en Inter */}
+      {/* Background moderne avec animation blockchain au lieu d'étoiles */}
       <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
         {/* Gradient d'ambiance */}
         <motion.div className="absolute top-0 left-0 w-full h-full">
@@ -402,38 +455,12 @@ export default function Home() {
           ></motion.div>
         </motion.div>
         
-        {/* Canvas pour les particules animées */}
+        {/* Canvas pour les animations blockchain et particules */}
         <canvas 
           ref={canvasRef} 
           className="fixed inset-0 w-full h-full -z-10"
           style={{ opacity: 0.7 }}
         ></canvas>
-        
-        {/* Étoiles animées en CSS pur */}
-        <div className="fixed inset-0 overflow-hidden">
-          {stars.map(star => (
-            <motion.div 
-              key={star.id}
-              className="absolute rounded-full bg-white animate-twinkle" 
-              style={{
-                left: `${star.x}%`,
-                top: `${star.y}%`,
-                width: `${star.size}px`,
-                height: `${star.size}px`,
-                opacity: star.opacity,
-                animationDelay: star.animationDelay,
-              }}
-              animate={{
-                opacity: [star.opacity, star.opacity * 0.3, star.opacity],
-              }}
-              transition={{
-                repeat: Infinity,
-                duration: 3 + Math.random() * 3,
-                ease: "easeInOut",
-              }}
-            ></motion.div>
-          ))}
-        </div>
       </div>
 
       {/* Header premium avec glassmorphism et effet de scroll */}
@@ -458,7 +485,7 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Navbar ultra moderne */}
+          {/* Navbar ultra moderne avec boutons en français */}
           <nav className="hidden md:flex items-center space-x-8">
             {[
               { name: 'Fonctionnalités', href: '/fonctionnalites' },
@@ -475,20 +502,20 @@ export default function Home() {
               </Link>
             ))}
             
-            {/* Boutons Sign In/Sign Up inspirés de l'image de référence */}
+            {/* Boutons Connexion/S'inscrire en français */}
             <div className="flex items-center space-x-4 ml-8">
               <Link 
                 href="/login" 
                 className="relative px-6 py-2 overflow-hidden rounded-full border border-white/20 text-white font-medium transition-all duration-300 hover:border-white/40 hover:bg-white/5 group"
               >
-                <span className="relative z-10">Sign In</span>
+                <span className="relative z-10">Connexion</span>
               </Link>
               
               <Link 
                 href="/register" 
                 className="relative px-6 py-2 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105 group"
               >
-                <span className="relative z-10">Sign Up</span>
+                <span className="relative z-10">S'inscrire</span>
                 <span className="absolute top-0 right-full w-full h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-500 group-hover:right-0"></span>
               </Link>
             </div>
@@ -592,7 +619,10 @@ export default function Home() {
               transition={{ delay: 0.6, duration: 0.8 }}
             >
               {/* Bouton principal avec animation avancée */}
-              <Link href="/register" className="relative overflow-hidden group rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 p-0.5 shadow-xl hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105">
+              <Link 
+                href="/register" 
+                className="relative overflow-hidden group rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 p-0.5 shadow-xl hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+              >
                 <div className="relative flex items-center justify-center space-x-2 px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600/90 to-purple-600/90 text-white font-medium overflow-hidden">
                   <svg className="w-5 h-5 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -600,7 +630,7 @@ export default function Home() {
                   <span className="relative z-10">Commencer gratuitement</span>
                   <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                {/* Effet de lumière au survol */}
+                {/* Effet de lumière au survol centré */}
                 <div className="absolute -inset-1 rounded-full blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-300 bg-gradient-to-r from-indigo-400 to-purple-400"></div>
               </Link>
               
@@ -615,114 +645,138 @@ export default function Home() {
               </Link>
             </motion.div>
             
-            {/* Badges de cryptomonnaies premium */}
+            {/* Badges de cryptomonnaies améliorés en cercles 3D */}
             <motion.div 
-              className="flex flex-wrap justify-center lg:justify-start gap-4 mb-6"
+              className="flex flex-wrap justify-center lg:justify-start gap-6 mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
               {/* Ethereum */}
-              <div className="crypto-badge group">
-                <div className="crypto-badge-inner">
-                  <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg">
+              <motion.div 
+                className="crypto-circle-badge" 
+                whileHover={{ scale: 1.1, y: -5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <div className="crypto-circle-inner eth">
+                  <svg className="w-6 h-6" viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg">
                     <g>
-                      <polygon className="crypto-svg-fill" fill="#343434" fillRule="nonzero" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"/>
-                      <polygon className="crypto-svg-fill" fill="#8C8C8C" fillRule="nonzero" points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"/>
-                      <polygon className="crypto-svg-fill" fill="#3C3C3B" fillRule="nonzero" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"/>
-                      <polygon className="crypto-svg-fill" fill="#8C8C8C" fillRule="nonzero" points="392.07,1277.38 392.07,956.52 -0,724.89"/>
-                      <polygon className="crypto-svg-fill" fill="#141414" fillRule="nonzero" points="392.07,882.29 784.13,650.54 392.07,472.33"/>
-                      <polygon className="crypto-svg-fill" fill="#393939" fillRule="nonzero" points="0,650.54 392.07,882.29 392.07,472.33"/>
+                      <polygon fill="#343434" fillRule="nonzero" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"/>
+                      <polygon fill="#8C8C8C" fillRule="nonzero" points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"/>
+                      <polygon fill="#3C3C3B" fillRule="nonzero" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"/>
+                      <polygon fill="#8C8C8C" fillRule="nonzero" points="392.07,1277.38 392.07,956.52 -0,724.89"/>
+                      <polygon fill="#141414" fillRule="nonzero" points="392.07,882.29 784.13,650.54 392.07,472.33"/>
+                      <polygon fill="#393939" fillRule="nonzero" points="0,650.54 392.07,882.29 392.07,472.33"/>
                     </g>
                   </svg>
-                  <span className="text-sm font-medium">ETH</span>
+                  <span className="text-sm font-medium">Ethereum</span>
                 </div>
-              </div>
+              </motion.div>
               
               {/* Polygon/Matic */}
-              <div className="crypto-badge group">
-                <div className="crypto-badge-inner">
-                  <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 38.4 33.5" xmlns="http://www.w3.org/2000/svg">
-                    <path className="crypto-svg-fill" fill="#8247E5" d="M29,10.2c-0.7-0.4-1.6-0.4-2.4,0L21,13.5l-3.8,2.1l-5.5,3.3c-0.7,0.4-1.6,0.4-2.4,0L5,16.3
+              <motion.div 
+                className="crypto-circle-badge"
+                whileHover={{ scale: 1.1, y: -5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <div className="crypto-circle-inner polygon">
+                  <svg className="w-6 h-6" viewBox="0 0 38.4 33.5" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#8247E5" d="M29,10.2c-0.7-0.4-1.6-0.4-2.4,0L21,13.5l-3.8,2.1l-5.5,3.3c-0.7,0.4-1.6,0.4-2.4,0L5,16.3
                       c-0.7-0.4-1.2-1.2-1.2-2.1v-5c0-0.8,0.4-1.6,1.2-2.1l4.3-2.5c0.7-0.4,1.6-0.4,2.4,0L16,7.2c0.7,0.4,1.2,1.2,1.2,2.1v3.3l3.8-2.2V7
                       c0-0.8-0.4-1.6-1.2-2.1l-8-4.7c-0.7-0.4-1.6-0.4-2.4,0L1.2,5C0.4,5.4,0,6.2,0,7v9.4c0,0.8,0.4,1.6,1.2,2.1l8.1,4.7
                       c0.7,0.4,1.6,0.4,2.4,0l5.5-3.2l3.8-2.2l5.5-3.2c0.7-0.4,1.6-0.4,2.4,0l4.3,2.5c0.7,0.4,1.2,1.2,1.2,2.1v5c0,0.8-0.4,1.6-1.2,2.1
                       L29,28.8c-0.7,0.4-1.6,0.4-2.4,0l-4.3-2.5c-0.7-0.4-1.2-1.2-1.2-2.1V21l-3.8,2.2v3.3c0,0.8,0.4,1.6,1.2,2.1l8.1,4.7
                       c0.7,0.4,1.6,0.4,2.4,0l8.1-4.7c0.7-0.4,1.2-1.2,1.2-2.1V17c0-0.8-0.4-1.6-1.2-2.1L29,10.2z"/>
                   </svg>
-                  <span className="text-sm font-medium">MATIC</span>
+                  <span className="text-sm font-medium">Polygon</span>
                 </div>
-              </div>
+              </motion.div>
               
               {/* Arbitrum */}
-              <div className="crypto-badge group">
-                <div className="crypto-badge-inner">
-                  <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path className="crypto-svg-fill" d="M512 1024C794.769 1024 1024 794.769 1024 512C1024 229.23 794.769 0 512 0C229.23 0 0 229.23 0 512C0 794.769 229.23 1024 512 1024Z" fill="#2D374B"/>
-                    <path className="crypto-svg-fill" d="M512 1024C794.769 1024 1024 794.769 1024 512C1024 229.23 794.769 0 512 0C229.23 0 0 229.23 0 512C0 794.769 229.23 1024 512 1024Z" fill="#28A0F0"/>
-                    <path className="crypto-svg-fill" d="M672.2 499.1V619.8L568.3 680.1V559.4L672.2 499.1Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M568.3 680.1V559.4L466.5 498V618.7L568.3 680.1Z" fill="#96BEDC"/>
-                    <path className="crypto-svg-fill" d="M672.2 378.5V499.1L568.3 559.4V438.8L672.2 378.5Z" fill="#96BEDC"/>
-                    <path className="crypto-svg-fill" d="M568.3 438.8V559.4L466.5 498V377.3L568.3 438.8Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M466.5 618.7V498L357.8 434.3V555L466.5 618.7Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M466.5 377.3V498L357.8 434.3V313.7L466.5 377.3Z" fill="#96BEDC"/>
+              <motion.div 
+                className="crypto-circle-badge"
+                whileHover={{ scale: 1.1, y: -5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <div className="crypto-circle-inner arbitrum">
+                  <svg className="w-6 h-6" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M512 1024C794.769 1024 1024 794.769 1024 512C1024 229.23 794.769 0 512 0C229.23 0 0 229.23 0 512C0 794.769 229.23 1024 512 1024Z" fill="#2D374B"/>
+                    <path d="M512 1024C794.769 1024 1024 794.769 1024 512C1024 229.23 794.769 0 512 0C229.23 0 0 229.23 0 512C0 794.769 229.23 1024 512 1024Z" fill="#28A0F0"/>
+                    <path d="M672.2 499.1V619.8L568.3 680.1V559.4L672.2 499.1Z" fill="white"/>
+                    <path d="M568.3 680.1V559.4L466.5 498V618.7L568.3 680.1Z" fill="#96BEDC"/>
+                    <path d="M672.2 378.5V499.1L568.3 559.4V438.8L672.2 378.5Z" fill="#96BEDC"/>
+                    <path d="M568.3 438.8V559.4L466.5 498V377.3L568.3 438.8Z" fill="white"/>
+                    <path d="M466.5 618.7V498L357.8 434.3V555L466.5 618.7Z" fill="white"/>
+                    <path d="M466.5 377.3V498L357.8 434.3V313.7L466.5 377.3Z" fill="#96BEDC"/>
                   </svg>
-                  <span className="text-sm font-medium">ARB</span>
+                  <span className="text-sm font-medium">Arbitrum</span>
                 </div>
-              </div>
+              </motion.div>
               
               {/* Optimism */}
-              <div className="crypto-badge group">
-                <div className="crypto-badge-inner">
-                  <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path className="crypto-svg-fill" d="M14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 21.732 6.26801 28 14 28Z" fill="#FF0420"/>
-                    <path className="crypto-svg-fill" d="M9.08465 8.69519H12.6871C12.786 8.69519 12.8652 8.77448 12.8652 8.8933V11.5335C12.8652 11.6325 12.7859 11.7118 12.6871 11.7118H9.08465C8.98583 11.7118 8.90654 11.6325 8.90654 11.5335V8.8933C8.90654 8.77448 8.98583 8.69519 9.08465 8.69519Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M13.6739 8.69519H17.2764C17.3752 8.69519 17.4545 8.77448 17.4545 8.8933V11.5335C17.4545 11.6325 17.3752 11.7118 17.2764 11.7118H13.6739C13.5751 11.7118 13.4958 11.6325 13.4958 11.5335V8.8933C13.4958 8.77448 13.5751 8.69519 13.6739 8.69519Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M9.08465 12.4812H12.6871C12.786 12.4812 12.8652 12.5605 12.8652 12.6593V15.2995C12.8652 15.3984 12.7859 15.4777 12.6871 15.4777H9.08465C8.98583 15.4777 8.90654 15.3984 8.90654 15.2995V12.6593C8.90654 12.5605 8.98583 12.4812 9.08465 12.4812Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M13.6739 12.4812H17.2764C17.3752 12.4812 17.4545 12.5605 17.4545 12.6593V15.2995C17.4545 15.3984 17.3752 15.4777 17.2764 15.4777H13.6739C13.5751 15.4777 13.4958 15.3984 13.4958 15.2995V12.6593C13.4958 12.5605 13.5751 12.4812 13.6739 12.4812Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M9.08465 16.2674H12.6871C12.786 16.2674 12.8652 16.3467 12.8652 16.4455V19.0857C12.8652 19.1845 12.7859 19.2638 12.6871 19.2638H9.08465C8.98583 19.2638 8.90654 19.1845 8.90654 19.0857V16.4455C8.90654 16.3467 8.98583 16.2674 9.08465 16.2674Z" fill="white"/>
-                    <path className="crypto-svg-fill" d="M13.6739 16.2674H17.2764C17.3752 16.2674 17.4545 16.3467 17.4545 16.4455V19.0857C17.4545 19.1845 17.3752 19.2638 17.2764 19.2638H13.6739C13.5751 19.2638 13.4958 19.1845 13.4958 19.0857V16.4455C13.4958 16.3467 13.5751 16.2674 13.6739 16.2674Z" fill="white"/>
+              <motion.div 
+                className="crypto-circle-badge"
+                whileHover={{ scale: 1.1, y: -5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <div className="crypto-circle-inner optimism">
+                  <svg className="w-6 h-6" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 21.732 6.26801 28 14 28Z" fill="#FF0420"/>
+                    <path d="M9.08465 8.69519H12.6871C12.786 8.69519 12.8652 8.77448 12.8652 8.8933V11.5335C12.8652 11.6325 12.7859 11.7118 12.6871 11.7118H9.08465C8.98583 11.7118 8.90654 11.6325 8.90654 11.5335V8.8933C8.90654 8.77448 8.98583 8.69519 9.08465 8.69519Z" fill="white"/>
+                    <path d="M13.6739 8.69519H17.2764C17.3752 8.69519 17.4545 8.77448 17.4545 8.8933V11.5335C17.4545 11.6325 17.3752 11.7118 17.2764 11.7118H13.6739C13.5751 11.7118 13.4958 11.6325 13.4958 11.5335V8.8933C13.4958 8.77448 13.5751 8.69519 13.6739 8.69519Z" fill="white"/>
+                    <path d="M9.08465 12.4812H12.6871C12.786 12.4812 12.8652 12.5605 12.8652 12.6593V15.2995C12.8652 15.3984 12.7859 15.4777 12.6871 15.4777H9.08465C8.98583 15.4777 8.90654 15.3984 8.90654 15.2995V12.6593C8.90654 12.5605 8.98583 12.4812 9.08465 12.4812Z" fill="white"/>
+                    <path d="M13.6739 12.4812H17.2764C17.3752 12.4812 17.4545 12.5605 17.4545 12.6593V15.2995C17.4545 15.3984 17.3752 15.4777 17.2764 15.4777H13.6739C13.5751 15.4777 13.4958 15.3984 13.4958 15.2995V12.6593C13.4958 12.5605 13.5751 12.4812 13.6739 12.4812Z" fill="white"/>
+                    <path d="M9.08465 16.2674H12.6871C12.786 16.2674 12.8652 16.3467 12.8652 16.4455V19.0857C12.8652 19.1845 12.7859 19.2638 12.6871 19.2638H9.08465C8.98583 19.2638 8.90654 19.1845 8.90654 19.0857V16.4455C8.90654 16.3467 8.98583 16.2674 9.08465 16.2674Z" fill="white"/>
+                    <path d="M13.6739 16.2674H17.2764C17.3752 16.2674 17.4545 16.3467 17.4545 16.4455V19.0857C17.4545 19.1845 17.3752 19.2638 17.2764 19.2638H13.6739C13.5751 19.2638 13.4958 19.1845 13.4958 19.0857V16.4455C13.4958 16.3467 13.5751 16.2674 13.6739 16.2674Z" fill="white"/>
                   </svg>
-                  <span className="text-sm font-medium">OPT</span>
+                  <span className="text-sm font-medium">Optimism</span>
                 </div>
-              </div>
+              </motion.div>
               
               {/* Base */}
-              <div className="crypto-badge group">
-                <div className="crypto-badge-inner">
-                  <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path className="crypto-svg-fill" fillRule="evenodd" clipRule="evenodd" d="M19 38C29.4934 38 38 29.4934 38 19C38 8.50659 29.4934 0 19 0C8.50659 0 0 8.50659 0 19C0 29.4934 8.50659 38 19 38ZM19.7146 7.60573L29.1945 22.8486C29.8464 23.8368 29.1278 25.1395 27.9506 25.1395H8.04937C6.87215 25.1395 6.15358 23.8368 6.8055 22.8486L16.2854 7.60573C16.9313 6.6249 18.0687 6.6249 18.7146 7.60573H19.7146Z" fill="#0052FF"/>
+              <motion.div 
+                className="crypto-circle-badge"
+                whileHover={{ scale: 1.1, y: -5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <div className="crypto-circle-inner base">
+                  <svg className="w-6 h-6" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M19 38C29.4934 38 38 29.4934 38 19C38 8.50659 29.4934 0 19 0C8.50659 0 0 8.50659 0 19C0 29.4934 8.50659 38 19 38ZM19.7146 7.60573L29.1945 22.8486C29.8464 23.8368 29.1278 25.1395 27.9506 25.1395H8.04937C6.87215 25.1395 6.15358 23.8368 6.8055 22.8486L16.2854 7.60573C16.9313 6.6249 18.0687 6.6249 18.7146 7.60573H19.7146Z" fill="#0052FF"/>
                   </svg>
-                  <span className="text-sm font-medium">BASE</span>
+                  <span className="text-sm font-medium">Base</span>
                 </div>
-              </div>
+              </motion.div>
               
               {/* Solana */}
-              <div className="crypto-badge group">
-                <div className="crypto-badge-inner">
-                  <svg className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" viewBox="0 0 397.7 311.7" xmlns="http://www.w3.org/2000/svg">
+              <motion.div 
+                className="crypto-circle-badge"
+                whileHover={{ scale: 1.1, y: -5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <div className="crypto-circle-inner solana">
+                  <svg className="w-6 h-6" viewBox="0 0 397.7 311.7" xmlns="http://www.w3.org/2000/svg">
                     <linearGradient id="solGradientA" gradientUnits="userSpaceOnUse" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)">
                       <stop offset="0" style={{ stopColor: '#00FFA3' }}/>
                       <stop offset="1" style={{ stopColor: '#DC1FFF' }}/>
                     </linearGradient>
-                    <path className="crypto-svg-fill" fill="url(#solGradientA)" d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
+                    <path fill="url(#solGradientA)" d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
                       c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z"/>
                     <linearGradient id="solGradientB" gradientUnits="userSpaceOnUse" x1="264.8291" y1="401.6014" x2="45.163" y2="-19.1475" gradientTransform="matrix(1 0 0 -1 0 314)">
                       <stop offset="0" style={{ stopColor: '#00FFA3' }}/>
                       <stop offset="1" style={{ stopColor: '#DC1FFF' }}/>
                     </linearGradient>
-                    <path className="crypto-svg-fill" fill="url(#solGradientB)" d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
+                    <path fill="url(#solGradientB)" d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
                       c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z"/>
                     <linearGradient id="solGradientC" gradientUnits="userSpaceOnUse" x1="312.5484" y1="376.688" x2="92.8822" y2="-44.061" gradientTransform="matrix(1 0 0 -1 0 314)">
                       <stop offset="0" style={{ stopColor: '#00FFA3' }}/>
                       <stop offset="1" style={{ stopColor: '#DC1FFF' }}/>
                     </linearGradient>
-                    <path className="crypto-svg-fill" fill="url(#solGradientC)" d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4
+                    <path fill="url(#solGradientC)" d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4
                       c5.8,0,8.7-7,4.6-11.1L333.1,120.1z"/>
                   </svg>
-                  <span className="text-sm font-medium">SOL</span>
+                  <span className="text-sm font-medium">Solana</span>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </motion.div>
           
@@ -734,7 +788,7 @@ export default function Home() {
             {/* Effet de glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[70%] bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full blur-[100px] animate-pulse-slow"></div>
             
-            {/* Dashboard card */}
+            {/* Dashboard card fiscalité crypto */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] perspective-1000">
               <motion.div 
                 className="dashboard-card relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:rotate-y-0 hover:scale-105 hover:shadow-glow-xl rotate-y-10"
@@ -759,7 +813,7 @@ export default function Home() {
                   
                   {/* Titre avec badge pro */}
                   <div className="flex items-center">
-                    <span className="text-sm text-white/80 font-medium">Tableau de bord</span>
+                    <span className="text-sm text-white/80 font-medium">Déclaration fiscale</span>
                     <span className="ml-2 px-2 py-0.5 text-[10px] font-medium bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-white">PRO</span>
                   </div>
                   
@@ -774,58 +828,64 @@ export default function Home() {
                 <div className="bg-gradient-to-b from-[#080814] to-[#0c0c20] p-5 h-[calc(100%-60px)] flex flex-col gap-6">
                   {/* Header du dashboard */}
                   <div className="flex justify-between items-center">
-                    <div className="dashboard-item-glow h-10 w-40 rounded-lg bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-white/5 flex items-center justify-between px-3 shadow-inner-white">
-                      <span className="text-xs text-white/70">Portfolio total</span>
-                      <span className="text-sm font-bold text-white">24,586 €</span>
+                    <div className="dashboard-item-glow h-10 w-48 rounded-lg bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-white/5 flex items-center justify-between px-3 shadow-inner-white">
+                      <span className="text-xs text-white/70">Plus-values globales</span>
+                      <span className="text-sm font-bold text-white">+3,245.68 €</span>
                     </div>
                     
-                    <div className="dashboard-item-glow h-10 w-32 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-white/5 flex items-center justify-between px-3 shadow-inner-white">
-                      <span className="text-xs text-white/70">Profit</span>
-                      <span className="text-sm font-bold text-green-400">+12.4%</span>
+                    <div className="dashboard-item-glow h-10 w-40 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-white/5 flex items-center justify-between px-3 shadow-inner-white">
+                      <span className="text-xs text-white/70">Impôt estimé</span>
+                      <span className="text-sm font-bold text-green-400">811.42 €</span>
                     </div>
                   </div>
                   
-                  {/* Cartes de statistiques */}
+                  {/* Cartes de statistiques fiscales */}
                   <div className="grid grid-cols-3 gap-5">
                     {/* Carte statistique 1 */}
                     <div className="dashboard-item-glow h-28 rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 p-4 flex flex-col justify-between shadow-inner-white">
                       <div className="flex justify-between items-start">
-                        <span className="text-xs text-white/60">Bitcoin</span>
-                        <div className="h-6 w-6 rounded-full bg-gradient-to-r from-orange-400 to-yellow-400 flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-white">₿</span>
+                        <span className="text-xs text-white/60">Transactions</span>
+                        <div className="h-6 w-6 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400 flex items-center justify-center">
+                          <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                          </svg>
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-white">0.345 BTC</div>
-                        <div className="text-xs text-white/60">≈ 12,584 €</div>
+                        <div className="text-sm font-bold text-white">128 analysées</div>
+                        <div className="text-xs text-white/60">24 plus-values</div>
                       </div>
                     </div>
                     
                     {/* Carte statistique 2 */}
                     <div className="dashboard-item-glow h-28 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-white/5 p-4 flex flex-col justify-between shadow-inner-white animate-pulse-slow">
                       <div className="flex justify-between items-start">
-                        <span className="text-xs text-white/60">Ethereum</span>
-                        <div className="h-6 w-6 rounded-full bg-gradient-to-r from-indigo-400 to-blue-400 flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-white">Ξ</span>
+                        <span className="text-xs text-white/60">Période fiscale</span>
+                        <div className="h-6 w-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
+                          <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-white">4.21 ETH</div>
-                        <div className="text-xs text-white/60">≈ 8,420 €</div>
+                        <div className="text-sm font-bold text-white">Année 2024</div>
+                        <div className="text-xs text-white/60">Du 01/01 au 31/12</div>
                       </div>
                     </div>
                     
                     {/* Carte statistique 3 */}
                     <div className="dashboard-item-glow h-28 rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 p-4 flex flex-col justify-between shadow-inner-white">
                       <div className="flex justify-between items-start">
-                        <span className="text-xs text-white/60">Solana</span>
-                        <div className="h-6 w-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
-                          <span className="text-[10px] font-bold text-white">◎</span>
+                        <span className="text-xs text-white/60">Statut fiscal</span>
+                        <div className="h-6 w-6 rounded-full bg-gradient-to-r from-green-400 to-emerald-400 flex items-center justify-center">
+                          <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-white">56.8 SOL</div>
-                        <div className="text-xs text-white/60">≈ 3,582 €</div>
+                        <div className="text-sm font-bold text-white">Prêt pour CERFA</div>
+                        <div className="text-xs text-white/60">Forfait 30%</div>
                       </div>
                     </div>
                   </div>
@@ -833,37 +893,40 @@ export default function Home() {
                   {/* Graphique avec effet néomorphique */}
                   <div className="flex-1 dashboard-item-glow rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 overflow-hidden shadow-inner-white">
                     <div className="h-8 px-4 flex items-center justify-between border-b border-white/5">
-                      <span className="text-xs font-medium text-white/70">Évolution du portfolio</span>
+                      <span className="text-xs font-medium text-white/70">Répartition des plus-values</span>
                       <div className="flex space-x-2">
-                        <span className="px-2 py-0.5 text-[10px] font-medium bg-indigo-500/20 text-indigo-300 rounded-full">1M</span>
-                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/60 rounded-full">3M</span>
-                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/60 rounded-full">1Y</span>
+                        <span className="px-2 py-0.5 text-[10px] font-medium bg-indigo-500/20 text-indigo-300 rounded-full">2024</span>
+                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/60 rounded-full">2023</span>
+                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/60 rounded-full">Tout</span>
                       </div>
                     </div>
                     
-                    {/* Graphique interactif */}
+                    {/* Graphique fiscal */}
                     <div className="p-4 h-[calc(100%-32px)] flex items-end">
                       <div className="h-full w-full flex items-end space-x-1">
-                        {Array.from({ length: 30 }).map((_, i) => {
-                          // Calculer une hauteur aléatoire mais semblant suivre une tendance
-                          const height = 10 + Math.sin(i / 3) * 30 + (Math.cos(i * 7.123) * 0.5 + 0.5) * 20;
-                          const isHighlighted = i === 22;
+                        {Array.from({ length: 12 }).map((_, i) => {
+                          // Calculer une hauteur simulant des plus-values par mois
+                          const height = 5 + Math.sin(i / 2) * 20 + (Math.cos(i * 3.123) * 0.5 + 0.5) * 50;
+                          const isHighlighted = i === 8; // Mois avec la plus haute plus-value
+                          const month = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'][i];
                           
                           return (
-                            <div 
-                              key={i} 
-                              className={`w-full rounded-t-sm transition-all duration-300 hover:opacity-100 group relative ${
-                                isHighlighted 
-                                  ? 'bg-indigo-500' 
-                                  : 'bg-indigo-500/30 hover:bg-indigo-500/50'
-                              }`}
-                              style={{ height: `${height}%` }}
-                            >
-                              {isHighlighted && (
-                                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-indigo-500 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                  +2,345€
-                                </div>
-                              )}
+                            <div key={i} className="flex flex-col items-center w-full">
+                              <div 
+                                className={`w-full rounded-t-sm transition-all duration-300 hover:opacity-100 group relative ${
+                                  isHighlighted 
+                                    ? 'bg-indigo-500' 
+                                    : 'bg-indigo-500/30 hover:bg-indigo-500/50'
+                                }`}
+                                style={{ height: `${height}%` }}
+                              >
+                                {isHighlighted && (
+                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-indigo-500 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    +1,245€
+                                  </div>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-white/50 mt-1">{month}</span>
                             </div>
                           );
                         })}
@@ -1062,7 +1125,7 @@ export default function Home() {
         </div>
       </motion.section>
       
-      {/* Section Témoignages avec effet parallaxe */}
+      {/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
       <motion.section 
         className="py-20 relative"
         style={{ y: y3 }}
@@ -1077,36 +1140,36 @@ export default function Home() {
               Ce que disent nos utilisateurs
             </h2>
             <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
-              Découvrez l'expérience de nos utilisateurs avec Bitax.
+              Nos premiers utilisateurs auront bientôt la parole ici.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
+            {[1, 2, 3].map((id) => (
               <motion.div 
-                key={testimonial.id}
+                key={id}
                 className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.1 * testimonial.id, duration: 0.5 }}
+                transition={{ delay: 0.1 * id, duration: 0.5 }}
                 whileHover={{ y: -5, transition: { duration: 0.3 } }}
               >
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
-                    {testimonial.name.charAt(0)}
+                    {id}
                   </div>
                   <div className="ml-4">
                     <h3 className="text-lg font-bold text-white">
-                      {testimonial.name}
+                      Futur témoignage
                     </h3>
                     <p className="text-sm text-blue-100/70">
-                      {testimonial.role}
+                      Utilisateur Bitax
                     </p>
                   </div>
                 </div>
                 <p className="text-blue-100/80 italic">
-                  "{testimonial.content}"
+                  "Cette section sera bientôt remplie avec de vrais témoignages d'utilisateurs satisfaits de notre service de gestion fiscale crypto."
                 </p>
                 <div className="mt-4 flex">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -1175,9 +1238,9 @@ export default function Home() {
         </div>
       </motion.section>
       
-      {/* CTA Section avec effet parallaxe */}
+      {/* CTA Section avec effet parallaxe - Remonté pour éviter le débordement */}
       <motion.section 
-        className="py-20 relative"
+        className="py-12 relative mb-8" // Réduit le padding vertical et ajout d'une marge inférieure
         style={{ y: y2 }}
       >
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
@@ -1324,16 +1387,16 @@ export default function Home() {
                   <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <a href="mailto:contact@bitax.fr" className="text-blue-100/70 hover:text-white transition-colors duration-300">
-                    contact@bitax.fr
-                  </a>
+                  <span className="text-blue-100/70">
+                    Contact à venir
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   <span className="text-blue-100/70">
-                    (+33) 01 23 45 67 89
+                    En cours de mise en place
                   </span>
                 </li>
                 <li className="flex items-start">
@@ -1342,8 +1405,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <span className="text-blue-100/70">
-                    8 Rue de la Cryptographie<br />
-                    75008 Paris, France
+                    Adresse à venir
                   </span>
                 </li>
               </ul>
@@ -1371,26 +1433,64 @@ export default function Home() {
       
       {/* Ajoutez des styles CSS globaux pour les classes personnalisées */}
       <style jsx global>{`
-        /* Styles pour les badges de crypto */
-        .crypto-badge {
-          @apply flex items-center backdrop-blur-md bg-white/5 rounded-full px-3 py-1.5 border border-white/10 transition-all duration-300;
+        /* Police Inter pour tout le site */
+        body, html {
+          font-family: 'Inter', sans-serif;
+        }
+
+        /* Styles pour les badges de crypto circulaires améliorés */
+        .crypto-circle-badge {
+          @apply relative flex items-center justify-center w-24 h-24 transition-all duration-300;
         }
         
-        .crypto-badge:hover {
-          @apply bg-white/10 border-white/20 transform -translate-y-1;
-          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        .crypto-circle-inner {
+          @apply flex flex-col items-center justify-center space-y-2 w-20 h-20 rounded-full bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg transition-all duration-300;
+          position: relative;
+          overflow: hidden;
         }
         
-        .crypto-badge-inner {
-          @apply flex items-center;
+        .crypto-circle-inner::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+          opacity: 0;
+          transition: opacity 0.3s ease-in-out;
         }
         
-        .crypto-svg-fill {
-          transition: all 0.3s ease;
+        .crypto-circle-badge:hover .crypto-circle-inner::before {
+          opacity: 1;
         }
         
-        .crypto-badge:hover .crypto-svg-fill {
-          filter: brightness(1.2);
+        /* Couleurs spécifiques pour chaque blockchain */
+        .crypto-circle-inner.eth {
+          border-color: rgba(98, 126, 234, 0.4);
+          box-shadow: 0 0 15px rgba(98, 126, 234, 0.2);
+        }
+        
+        .crypto-circle-inner.polygon {
+          border-color: rgba(130, 71, 229, 0.4);
+          box-shadow: 0 0 15px rgba(130, 71, 229, 0.2);
+        }
+        
+        .crypto-circle-inner.arbitrum {
+          border-color: rgba(40, 160, 240, 0.4);
+          box-shadow: 0 0 15px rgba(40, 160, 240, 0.2);
+        }
+        
+        .crypto-circle-inner.optimism {
+          border-color: rgba(255, 4, 32, 0.4);
+          box-shadow: 0 0 15px rgba(255, 4, 32, 0.2);
+        }
+        
+        .crypto-circle-inner.base {
+          border-color: rgba(0, 82, 255, 0.4);
+          box-shadow: 0 0 15px rgba(0, 82, 255, 0.2);
+        }
+        
+        .crypto-circle-inner.solana {
+          border-color: rgba(153, 69, 255, 0.4);
+          box-shadow: 0 0 15px rgba(153, 69, 255, 0.2);
         }
         
         /* Animation de scintillement pour les étoiles */
