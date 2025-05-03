@@ -54,6 +54,7 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-indigo-600/10 rounded-full filter blur-[150px] animate-float"></div>
           <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-600/10 rounded-full filter blur-[150px] animate-float-delayed"></div>
         </div>
+      
         
         {/* Étoiles animées en CSS pur */}
         <div className="absolute inset-0 overflow-hidden">
