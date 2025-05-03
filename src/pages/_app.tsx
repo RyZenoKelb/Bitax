@@ -7,7 +7,7 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
-// Import du UserMenu et de l'AuthProvider
+
 import AuthProvider from '@/components/AuthProvider';
 
 // Type pour les éléments d'enfants React
