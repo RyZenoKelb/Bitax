@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 
+// Définition des interfaces pour le typage
 // Définir l'interface pour les fonctionnalités
 interface Feature {
   id: number;
@@ -34,6 +35,50 @@ interface FaqItem {
   id: number;
   question: string;
   answer: string;
+}
+
+// Définir l'interface pour Node
+interface Node {
+  x: number;
+  y: number;
+  size: number;
+  baseSize: number;
+  opacity: number;
+  speedX: number;
+  speedY: number;
+  pulseSpeed: number;
+  pulseAmount: number;
+  pulsePhase: number;
+  rotation: number;
+  type: string;
+  color: string;
+  isActive: boolean;
+}
+
+// Définir l'interface pour Connection
+interface Connection {
+  from: number;
+  to: number;
+  opacity: number;
+  active: boolean;
+  lastTransactionTime: number;
+  transactionInterval: number;
+}
+
+// Définir l'interface pour Transaction
+interface Transaction {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  x: number;
+  y: number;
+  progress: number;
+  speed: number;
+  size: number;
+  color: string;
+  from: number;
+  to: number;
 }
 
 export default function Home() {
@@ -79,9 +124,9 @@ export default function Home() {
     window.addEventListener('resize', resizeCanvas);
 
     // Configuration des éléments visuels pour l'animation blockchain
-    const nodes = [];
-    const connections = [];
-    const transactions = [];
+    const nodes: Node[] = [];
+    const connections: Connection[] = [];
+    const transactions: Transaction[] = [];
     
     // Créer des noeuds blockchain
     const createNodes = () => {
@@ -128,7 +173,7 @@ export default function Home() {
     };
 
     // Fonction pour créer une transaction entre deux noeuds
-    const createTransaction = (from, to) => {
+    const createTransaction = (from: number, to: number) => {
       const fromNode = nodes[from];
       const toNode = nodes[to];
       
@@ -154,7 +199,7 @@ export default function Home() {
     createConnections();
 
     // Dessiner un noeud blockchain
-    const drawNode = (x, y, size, rotation, opacity, type, color, isActive) => {
+    const drawNode = (x: number, y: number, size: number, rotation: number, opacity: number, type: string, color: string, isActive: boolean) => {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rotation);
@@ -173,8 +218,8 @@ export default function Home() {
         ctx.arcTo(-width/2, -height/2, -width/2 + radius, -height/2, radius);
         ctx.closePath();
         
-        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
+        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
+        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
         ctx.fill();
@@ -186,7 +231,7 @@ export default function Home() {
           ctx.rect(-width/2 * 0.6, -height/2 * 0.3, width * 0.7, height * 0.1);
           ctx.rect(-width/2 * 0.6, 0, width * 0.5, height * 0.1);
           ctx.rect(-width/2 * 0.6, height/2 * 0.3, width * 0.8, height * 0.1);
-          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.5})`;
+          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.5})`;
           ctx.fill();
         }
       } else if (type === 'wallet') {
@@ -205,8 +250,8 @@ export default function Home() {
           }
         }
         
-        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
+        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
+        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
         ctx.fill();
@@ -215,7 +260,7 @@ export default function Home() {
         if (isActive) {
           ctx.beginPath();
           ctx.arc(0, 0, size * 0.4, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.5})`;
+          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.5})`;
           ctx.fill();
         }
       } else {
@@ -227,8 +272,8 @@ export default function Home() {
         ctx.lineTo(-size, 0);
         ctx.closePath();
         
-        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
+        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
+        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
         ctx.fill();
@@ -241,7 +286,7 @@ export default function Home() {
           ctx.lineTo(0, size*0.5);
           ctx.lineTo(-size*0.5, 0);
           ctx.closePath();
-          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g).map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.8})`;
+          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.8})`;
           ctx.fill();
         }
       }
@@ -250,7 +295,7 @@ export default function Home() {
     };
 
     // Dessiner une transaction en cours
-    const drawTransaction = (transaction) => {
+    const drawTransaction = (transaction: Transaction) => {
       ctx.beginPath();
       ctx.arc(transaction.x, transaction.y, transaction.size, 0, Math.PI * 2);
       ctx.fillStyle = transaction.color;
@@ -279,7 +324,7 @@ export default function Home() {
     let lastTime = 0;
     
     // Animer tous les éléments avec timestamp
-    const animate = (timestamp) => {
+    const animate = (timestamp: number) => {
       const deltaTime = timestamp - lastTime;
       lastTime = timestamp;
       
@@ -1308,7 +1353,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-      
       {/* Section FAQ avec effet accordéon */}
       <motion.section 
         className="py-20 relative"
