@@ -48,27 +48,53 @@ interface FaqItem {
   answer: string;
 }
 
-// Interface pour les formes géométriques financières
-interface FinancialShape {
+// Interface pour les blocs blockchain
+interface CryptoBlock {
   x: number;
   y: number;
-  width: number;
-  height: number;
-  type: 'chart' | 'table' | 'document' | 'graph';
-  rotation: number;
-  opacity: number;
+  hash: string;
+  timestamp: number;
+  size: number;
   color: string;
-  scale: number;
+  opacity: number;
+  rotationSpeed: number;
+  rotation: number;
+  pulsePhase: number;
+  isActive: boolean;
 }
 
-// Interface pour les lignes de données
-interface DataLine {
+// Interface pour les chaînes de blocs
+interface BlockChain {
+  blocks: CryptoBlock[];
+  color: string;
+  route: { x: number; y: number }[];
+  progress: number;
+  speed: number;
+}
+
+// Interface pour les particules crypto
+interface CryptoParticle {
+  id: number;
+  x: number;
   y: number;
-  data: string;
+  size: number;
+  symbol: string;
+  color: string;
+  speedX: number;
+  speedY: number;
+  rotation: number;
+  rotationSpeed: number;
+  opacity: number;
+  fadeDirection: number;
+}
+
+// Interface pour les lignes de code défilantes
+interface CodeLine {
+  y: number;
+  code: string;
   speed: number;
   opacity: number;
   color: string;
-  width: number;
 }
 
 export default function Home() {
@@ -99,7 +125,7 @@ export default function Home() {
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   
-  // Effet pour l'animation financière professionnelle
+  // Effet pour l'animation cryptographique avancée
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -116,135 +142,263 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments financiers
-    const financialShapes: FinancialShape[] = [];
-    const dataLines: DataLine[] = [];
+    // Configuration des éléments cryptographiques
+    const cryptoBlocks: CryptoBlock[] = [];
+    const blockChains: BlockChain[] = [];
+    const cryptoParticles: CryptoParticle[] = [];
+    const codeLines: CodeLine[] = [];
     
-    // Données fiscales défilantes
-    const financialData = [
-      '€12,345 - Plus-value',
-      'Déclaration 2024',
-      'Taux imposition 30%',
-      '47 transactions',
-      'Régime réel',
-      'Flat tax auto',
-      '€8,950 - Moins-value',
-      'Seuil déclaratif',
-      'Abattements applicables',
-      '23% gains long terme',
-      'Article 150-0 D bis',
-      'Form 2086'
+    // Symboles crypto réalistes
+    const cryptoSymbols = ['₿', 'Ξ', '◎', '⟠', '×', '▣', '◈', '◆'];
+    
+    // Codes blockchain défilants
+    const codeSamples = [
+      '0xTransferEvent(…)',
+      'Block #7,982,345',
+      'Gas: 21000 gwei',
+      '0x1234...abcd',
+      'Contract Verified ✓',
+      'Mining reward: 2 ETH',
+      'Difficulty: 14.5T',
+      'Hashrate: 800 TH/s',
+      'Chain ID: 1',
+      '0xLiquidityPool',
+      'Staking APY: 7.2%',
+      'Network: Mainnet',
+      '1,000,000 TPS',
+      'Consensus: PoS',
+      'Smart Contract',
+      'DeFi Protocol',
+      'NFT Mint Active',
+      'Bridge: ETH↔BSC',
+      'Oracle Price Feed',
+      'DAO Governance'
     ];
     
-    // Créer des formes financières abstraites
-    const createFinancialShapes = () => {
-      for (let i = 0; i < 8; i++) {
+    // Créer des éléments blockchain réalistes
+    const createCryptoBlocks = () => {
+      for (let i = 0; i < 10; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const types: ('chart' | 'table' | 'document' | 'graph')[] = ['chart', 'table', 'document', 'graph'];
-        const type = types[Math.floor(Math.random() * types.length)];
+        const hash = Array(6).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+        const blockTypes = ['BTC', 'ETH', 'SOL', 'MATIC', 'AVAX'];
+        const blockType = blockTypes[Math.floor(Math.random() * blockTypes.length)];
         
-        financialShapes.push({
+        cryptoBlocks.push({
           x,
           y,
-          width: 60 + Math.random() * 80,
-          height: 40 + Math.random() * 60,
-          type,
-          rotation: Math.random() * 45 - 22.5,
-          opacity: 0.05 + Math.random() * 0.1,
-          color: ['#3949ab', '#0891b2', '#1e293b', '#4f46e5'][Math.floor(Math.random() * 4)],
-          scale: 1
+          hash: `${blockType}:${hash}`,
+          timestamp: Date.now(),
+          size: Math.random() * 20 + 25,
+          color: {
+            'BTC': '#F7931A',
+            'ETH': '#627EEA',
+            'SOL': '#00FFA3',
+            'MATIC': '#8247E5',
+            'AVAX': '#E84142'
+          }[blockType] || '#6A5ACD',
+          opacity: Math.random() * 0.2 + 0.4,
+          rotationSpeed: (Math.random() - 0.5) * 0.001,
+          rotation: 0,
+          pulsePhase: Math.random() * Math.PI * 2,
+          isActive: Math.random() > 0.6
         });
       }
     };
     
-    // Créer des lignes de données
-    const createDataLines = () => {
-      for (let i = 0; i < 10; i++) {
-        dataLines.push({
+    // Créer des chaînes de blocs
+    const createBlockChains = () => {
+      const chainColors = ['#F7931A', '#627EEA', '#00FFA3', '#8247E5'];
+      for (let i = 0; i < 3; i++) {
+        const route: { x: number; y: number }[] = [];
+        const startX = -200;
+        const startY = Math.random() * canvas.height;
+        const endX = canvas.width + 200;
+        const endY = Math.random() * canvas.height;
+        
+        // Créer une route sinusoïdale
+        for (let j = 0; j <= 50; j++) {
+          const t = j / 50;
+          const x = startX + (endX - startX) * t;
+          const y = startY + (endY - startY) * t + Math.sin(t * Math.PI * 4) * 50;
+          route.push({ x, y });
+        }
+        
+        blockChains.push({
+          blocks: [],
+          color: chainColors[i % chainColors.length],
+          route,
+          progress: 0,
+          speed: 0.0005 + Math.random() * 0.0005
+        });
+      }
+    };
+    
+    // Créer des particules crypto discrètes
+    const createCryptoParticles = () => {
+      for (let i = 0; i < 15; i++) {
+        cryptoParticles.push({
+          id: i,
+          x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          data: financialData[Math.floor(Math.random() * financialData.length)],
-          speed: 0.1 + Math.random() * 0.3,
-          opacity: 0.05 + Math.random() * 0.05,
-          color: '#64748b',
-          width: Math.random() * canvas.width
+          size: Math.random() * 12 + 6,
+          symbol: cryptoSymbols[Math.floor(Math.random() * cryptoSymbols.length)],
+          color: ['#F7931A', '#627EEA', '#00FFA3', '#8247E5', '#6A5ACD'][Math.floor(Math.random() * 5)],
+          speedX: (Math.random() - 0.5) * 0.15,
+          speedY: (Math.random() - 0.5) * 0.15,
+          rotation: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.01,
+          opacity: Math.random() * 0.3 + 0.1,
+          fadeDirection: Math.random() > 0.5 ? 1 : -1
         });
       }
     };
     
-    // Dessiner une forme financière
-    const drawFinancialShape = (shape: FinancialShape) => {
+    // Créer des lignes de code
+    const createCodeLines = () => {
+      for (let i = 0; i < 20; i++) {
+        codeLines.push({
+          y: Math.random() * canvas.height,
+          code: codeSamples[Math.floor(Math.random() * codeSamples.length)],
+          speed: Math.random() * 0.5 + 0.1,
+          opacity: Math.random() * 0.1 + 0.05,
+          color: ['#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD'][Math.floor(Math.random() * 4)]
+        });
+      }
+    };
+    
+    // Dessiner un bloc crypto style blockchain
+    const drawCryptoBlock = (block: CryptoBlock) => {
       ctx.save();
-      ctx.translate(shape.x, shape.y);
-      ctx.rotate(shape.rotation * Math.PI / 180);
-      ctx.globalAlpha = shape.opacity;
-      ctx.fillStyle = shape.color;
-      ctx.strokeStyle = shape.color;
-      ctx.lineWidth = 1;
+      ctx.translate(block.x, block.y);
+      ctx.rotate(block.rotation);
       
-      switch (shape.type) {
-        case 'chart':
-          // Graphique à barres
-          for (let i = 0; i < 5; i++) {
-            const height = shape.height * (0.3 + Math.random() * 0.7);
-            ctx.fillRect(i * (shape.width / 5), shape.height - height, shape.width / 5 - 4, height);
-          }
-          break;
-          
-        case 'table':
-          // Tableau
-          for (let i = 0; i <= 3; i++) {
-            for (let j = 0; j <= 2; j++) {
-              ctx.strokeRect(i * (shape.width / 3), j * (shape.height / 3), shape.width / 3, shape.height / 3);
-            }
-          }
-          break;
-          
-        case 'document':
-          // Document avec coin replié
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.lineTo(shape.width - 10, 0);
-          ctx.lineTo(shape.width, 10);
-          ctx.lineTo(shape.width, shape.height);
-          ctx.lineTo(0, shape.height);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-          // Lignes de texte
-          for (let i = 0; i < 4; i++) {
-            ctx.strokeRect(10, 10 + i * 10, shape.width - 20, 5);
-          }
-          break;
-          
-        case 'graph':
-          // Graphique linéaire
-          ctx.beginPath();
-          ctx.moveTo(0, shape.height);
-          for (let i = 0; i <= 10; i++) {
-            const x = i * (shape.width / 10);
-            const y = shape.height - Math.random() * shape.height;
-            ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-          break;
+      // Dessiner le bloc principal
+      const blockWidth = block.size * 1.5;
+      const blockHeight = block.size;
+      
+      // Dégradé du bloc
+      const gradient = ctx.createLinearGradient(-blockWidth/2, -blockHeight/2, blockWidth/2, blockHeight/2);
+      gradient.addColorStop(0, block.color + '20');
+      gradient.addColorStop(0.5, block.color + '40');
+      gradient.addColorStop(1, block.color + '20');
+      
+      ctx.fillStyle = gradient;
+      ctx.globalAlpha = block.opacity;
+      
+      // Bloc avec coins arrondis
+      ctx.beginPath();
+      ctx.roundRect(-blockWidth/2, -blockHeight/2, blockWidth, blockHeight, 5);
+      ctx.fill();
+      
+      // Bordure
+      ctx.strokeStyle = block.color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      
+      // Effet glitch/scan lines
+      ctx.globalAlpha = block.opacity * 0.3;
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(-blockWidth/2, -blockHeight/2 + (i * blockHeight/3));
+        ctx.lineTo(blockWidth/2, -blockHeight/2 + (i * blockHeight/3));
+        ctx.strokeStyle = block.color;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+      
+      // Dessiner l'identifiant du bloc
+      ctx.fillStyle = '#FFFFFF';
+      ctx.globalAlpha = block.opacity * 0.9;
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(block.hash, 0, 0);
+      
+      // Effet de pulsation si actif
+      if (block.isActive) {
+        const pulse = Math.sin(Date.now() * 0.003 + block.pulsePhase) * 0.5 + 0.5;
+        ctx.globalAlpha = pulse * 0.4;
+        ctx.strokeStyle = block.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
       }
       
       ctx.restore();
     };
     
-    // Dessiner une ligne de données
-    const drawDataLine = (line: DataLine) => {
+    // Dessiner une chaine de blocs
+    const drawBlockChain = (chain: BlockChain) => {
+      // Dessiner le chemin
+      ctx.strokeStyle = chain.color + '30';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(chain.route[0].x, chain.route[0].y);
+      for (let i = 1; i < chain.route.length; i++) {
+        ctx.lineTo(chain.route[i].x, chain.route[i].y);
+      }
+      ctx.stroke();
+      
+      // Dessiner les blocs sur le chemin
+      chain.blocks.forEach(block => {
+        drawCryptoBlock(block);
+      });
+      
+      // Animation de lumière voyageuse
+      const lightPos = chain.route[Math.floor(chain.progress * (chain.route.length - 1))];
+      if (lightPos) {
+        const gradient = ctx.createRadialGradient(lightPos.x, lightPos.y, 0, lightPos.x, lightPos.y, 30);
+        gradient.addColorStop(0, chain.color);
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.beginPath();
+        ctx.arc(lightPos.x, lightPos.y, 30, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.globalAlpha = 0.6;
+        ctx.fill();
+      }
+    };
+    
+    // Dessiner une particule crypto
+    const drawCryptoParticle = (particle: CryptoParticle) => {
+      ctx.save();
+      ctx.translate(particle.x, particle.y);
+      ctx.rotate(particle.rotation);
+      ctx.globalAlpha = particle.opacity;
+      
+      // Créer un gradient pour la particule
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, particle.size);
+      gradient.addColorStop(0, particle.color);
+      gradient.addColorStop(0.5, particle.color + '80');
+      gradient.addColorStop(1, 'transparent');
+      
+      ctx.fillStyle = gradient;
+      ctx.fillRect(-particle.size/2, -particle.size/2, particle.size, particle.size);
+      
+      // Dessiner le symbole
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = `bold ${particle.size * 0.7}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(particle.symbol, 0, 0);
+      
+      ctx.restore();
+    };
+    
+    // Dessiner une ligne de code
+    const drawCodeLine = (line: CodeLine) => {
       ctx.save();
       ctx.globalAlpha = line.opacity;
       ctx.fillStyle = line.color;
-      ctx.font = '12px monospace';
-      ctx.fillText(line.data, -line.width, line.y);
+      ctx.font = '14px "JetBrains Mono", monospace';
+      ctx.fillText(line.code, -100, line.y);
       ctx.restore();
     };
     
-    createFinancialShapes();
-    createDataLines();
+    createCryptoBlocks();
+    createBlockChains();
+    createCryptoParticles();
+    createCodeLines();
     
     let lastTime = 0;
     
@@ -257,44 +411,106 @@ export default function Home() {
       ctx.fillStyle = 'rgba(13, 11, 34, 0.03)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Animer les lignes de données
-      dataLines.forEach(line => {
-        line.width += line.speed;
-        if (line.width > canvas.width + 200) {
-          line.width = -200;
-          line.data = financialData[Math.floor(Math.random() * financialData.length)];
+      // Dessiner le grid de fond
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      const gridSize = 50;
+      for (let x = 0; x <= canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      
+      // Animer les lignes de code
+      codeLines.forEach(line => {
+        line.y += line.speed;
+        if (line.y > canvas.height + 20) {
+          line.y = -20;
+          line.code = codeSamples[Math.floor(Math.random() * codeSamples.length)];
         }
-        drawDataLine(line);
+        drawCodeLine(line);
       });
       
-      // Animer les formes financières
-      financialShapes.forEach(shape => {
-        shape.scale = 1 + Math.sin(timestamp * 0.0005) * 0.05;
-        ctx.save();
-        ctx.translate(shape.x, shape.y);
-        ctx.scale(shape.scale, shape.scale);
-        ctx.translate(-shape.x, -shape.y);
-        drawFinancialShape(shape);
-        ctx.restore();
+      // Animer les blocs crypto
+      cryptoBlocks.forEach(block => {
+        block.rotation += block.rotationSpeed;
+        const pulse = Math.sin(timestamp * 0.002 + block.pulsePhase) * 0.1 + 1;
+        block.size = (block.size / pulse) * pulse;
         
-        // Créer des connections entre les formes (représentant des flux de données)
-        financialShapes.forEach(otherShape => {
-          if (shape !== otherShape) {
+        drawCryptoBlock(block);
+        
+        // Créer des connections entre les blocs
+        cryptoBlocks.forEach(otherBlock => {
+          if (block !== otherBlock) {
             const distance = Math.sqrt(
-              Math.pow(shape.x - otherShape.x, 2) + 
-              Math.pow(shape.y - otherShape.y, 2)
+              Math.pow(block.x - otherBlock.x, 2) + 
+              Math.pow(block.y - otherBlock.y, 2)
             );
             
-            if (distance < 300) {
-              ctx.strokeStyle = `rgba(79, 70, 229, ${(1 - distance / 300) * 0.1})`;
+            if (distance < 200) {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - distance / 200) * 0.1})`;
               ctx.lineWidth = 1;
               ctx.beginPath();
-              ctx.moveTo(shape.x, shape.y);
-              ctx.lineTo(otherShape.x, otherShape.y);
+              ctx.moveTo(block.x, block.y);
+              ctx.lineTo(otherBlock.x, otherBlock.y);
               ctx.stroke();
             }
           }
         });
+      });
+      
+      // Animer les chaînes de blocs
+      blockChains.forEach(chain => {
+        chain.progress += chain.speed;
+        if (chain.progress >= 1) {
+          chain.progress = 0;
+          // Créer de nouveaux blocs
+          chain.blocks = [];
+          for (let i = 0; i < 5; i++) {
+            const routeIndex = Math.floor((i / 5) * chain.route.length);
+            const pos = chain.route[routeIndex];
+            chain.blocks.push({
+              x: pos.x,
+              y: pos.y,
+              hash: Array(8).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join(''),
+              timestamp: Date.now(),
+              size: 15,
+              color: chain.color,
+              opacity: 0.8,
+              rotationSpeed: 0,
+              rotation: 0,
+              pulsePhase: 0,
+              isActive: true
+            });
+          }
+        }
+        drawBlockChain(chain);
+      });
+      
+      // Animer les particules crypto
+      cryptoParticles.forEach(particle => {
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+        particle.rotation += particle.rotationSpeed;
+        
+        // Effet de fade
+        particle.opacity += particle.fadeDirection * 0.002;
+        if (particle.opacity > 0.8 || particle.opacity < 0.2) {
+          particle.fadeDirection *= -1;
+        }
+        
+        // Rebond sur les bords
+        if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+        
+        drawCryptoParticle(particle);
       });
       
       requestAnimationFrame(animate);
@@ -479,19 +695,19 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      {/* Background avancé avec animation fiscale */}
+      {/* Background avancé avec animation cryptographique */}
       <div className="fixed inset-0 -z-20 overflow-hidden">
         {/* Gradients de base */}
         <motion.div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900" />
-          <div className="absolute top-0 left-0 w-full h-full opacity-40">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-800/20 rounded-full filter blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-sky-800/20 rounded-full filter blur-3xl animate-pulse delay-300" />
-            <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-slate-800/20 rounded-full filter blur-3xl animate-pulse delay-500" />
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900" />
+          <div className="absolute top-0 left-0 w-full h-full opacity-70">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-800/30 rounded-full filter blur-3xl animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-800/30 rounded-full filter blur-3xl animate-pulse delay-300" />
+            <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-indigo-800/20 rounded-full filter blur-3xl animate-pulse delay-500" />
           </div>
         </motion.div>
         
-        {/* Canvas pour les animations financières */}
+        {/* Canvas pour les animations crypto */}
         <canvas 
           ref={canvasRef} 
           className="fixed inset-0 w-full h-full"
@@ -1332,12 +1548,22 @@ export default function Home() {
               <div className="flex space-x-4">
                 <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19.77 5.03l1.4 1.4L8.43 19.17l-5.6-5.6 1.4-1.4 4.2 4.2L19.77 5.03m0-2.83L8.43 13.54l-4.2-4.2L0 13.57 8.43 22 24 6.43 19.77 2.2z" />
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
                   </svg>
                 </a>
                 <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.44 3.06H5.56C4.15 3.06 3 4.21 3 5.62v12.88c0 1.41 1.15 2.56 2.56 2.56h12.88c1.41 0 2.56-1.15 2.56-2.56V5.62c0-1.41-1.15-2.56-2.56-2.56zm0 2.56v3.81h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v3.82h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v.99H5.56V5.62h12.88z" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.77 5.03l1.4 1.4L8.43 19.17l-5.6-5.6 1.4-1.4 4.2 4.2L19.77 5.03m0-2.83L8.43 13.54l-4.2-4.2L0 13.57 8.43 22 24 6.43 19.77 2.2z" />
                   </svg>
                 </a>
               </div>
