@@ -237,15 +237,15 @@ export default function Home() {
       const fromNode = cryptoNodes[from];
       const toNode = cryptoNodes[to];
       
-        from,
-        to
-      });
-    };
-
-    createHexagons();
-    createConnections();
-    createParticles();
-
+      // Déterminer si c'est une transaction réussie (verte) ou échouée (rouge)
+      const isSuccessful = Math.random() > 0.2;
+      
+      dataPackets.push({
+        fromX: fromNode.x,
+        fromY: fromNode.y,
+        toX: toNode.x,
+        toY: toNode.y,
+        x: fromNode.x,
     // Dessiner un hexagone avec rotation
     const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
       const sides = 6;
