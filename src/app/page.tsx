@@ -411,22 +411,6 @@ export default function Home() {
       ctx.fillStyle = 'rgba(13, 11, 34, 0.03)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Dessiner le grid de fond
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
-      ctx.lineWidth = 1;
-      const gridSize = 15;
-      for (let x = 0; x <= canvas.width; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
-      }
-      for (let y = 0; y <= canvas.height; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-      }
       
       // Animer les lignes de code
       codeLines.forEach(line => {
