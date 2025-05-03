@@ -25,12 +25,7 @@ const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
   const textColor = isDarkMode ? 'white' : 'black';
 
   return (
-    <div className="flex items-center space-x-2">
-      <div className="w-10 h-10 rounded-lg overflow-hidden relative flex items-center justify-center shadow-lg">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600 animate-pulse-slow"></div>
-        <div className="relative z-10 font-display text-2xl font-bold text-white">B</div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-      </div>
+    <div className="flex items-center">
       <div className="flex flex-col">
         <span className="text-2xl font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-400 tracking-tight">BITAX</span>
         <span className="text-xs text-gray-400 dark:text-gray-500 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
