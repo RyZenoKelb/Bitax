@@ -6,12 +6,6 @@ const openai = new OpenAI({
 });
 
 
-// Configuration de l'API OpenAI
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-
 // Instructions pour le chatbot
 const SYSTEM_PROMPT = `
 Tu es l'assistant virtuel de Bitax, une plateforme de fiscalité pour les cryptomonnaies.
