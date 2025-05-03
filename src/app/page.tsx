@@ -414,7 +414,7 @@ export default function Home() {
       // Dessiner le grid de fond
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
       ctx.lineWidth = 1;
-      const gridSize = 0;
+      const gridSize = 1;
       for (let x = 0; x <= canvas.width; x += gridSize) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
