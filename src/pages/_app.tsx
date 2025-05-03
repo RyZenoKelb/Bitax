@@ -231,7 +231,7 @@ export default function App({ Component, pageProps }: AppProps) {
                         Mon profil
                       </Link>
                       <Link 
-                        href="/settings" 
+                        href="/profile" 
                         className={`block px-4 py-2 text-sm ${
                           theme === 'dark' 
                             ? 'text-gray-300 hover:bg-gray-700 hover:text-white' 
