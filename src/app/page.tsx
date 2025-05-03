@@ -322,12 +322,12 @@ export default function Home() {
     };
 
     // Convertir couleur HEX en RGB
-      const dx = packet.toX - packet.fromX;
-      const dy = packet.toY - packet.fromY;
-      const angle = Math.atan2(dy, dx);
-      
-      const trailX = packet.x - Math.cos(angle) * trailLength;
-      const trailY = packet.y - Math.sin(angle) * trailLength;
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
       
       ctx.lineTo(trailX, trailY);
       ctx.strokeStyle = packet.color.replace('0.8', '0.3');
