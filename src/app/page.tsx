@@ -1,6 +1,3 @@
-import Link from "next/link";
-import Image from "next/image";
-
 export default function Home() {
   return (
     <div className="min-h-screen overflow-hidden relative">
@@ -24,13 +21,23 @@ export default function Home() {
       {/* Particules/étoiles */}
       <div className="stars-container absolute inset-0 -z-5"></div>
 
-      {/* Header */}
-      <header className="absolute top-0 left-0 w-full py-6 px-4 sm:px-6 lg:px-8 z-10">
+      {/* Header amélioré avec navbar moderne */}
+      <header className="absolute top-0 left-0 w-full py-4 px-4 sm:px-6 lg:px-8 z-10 backdrop-blur-lg bg-gray-900/10 border-b border-gray-800/20">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <div className="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 p-2 rounded-xl shadow-glow-purple transform hover:scale-105 transition-all">
-              BITAX
-            </div>
+            <Link href="/" className="inline-block group">
+              <div className="flex items-center space-x-2">
+                <div className="w-10 h-10 rounded-lg overflow-hidden relative flex items-center justify-center shadow-lg group-hover:scale-105 transition-all duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600 animate-pulse-slow"></div>
+                  <div className="relative z-10 font-display text-2xl font-bold text-white">B</div>
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-2xl font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-400 tracking-tight">BITAX</span>
+                  <span className="text-xs text-gray-400 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
+                </div>
+              </div>
+            </Link>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
             {['Fonctionnalites', 'Tarifs'].map((item) => (
@@ -46,14 +53,14 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <Link 
                 href="/login" 
-                className="btn-nav-login"
+                className="px-4 py-2 rounded-lg text-white border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
               >
                 Connexion
               </Link>
               
               <Link 
                 href="/register" 
-                className="btn-nav-signup"
+                className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-primary-600 to-secondary-600 hover:shadow-glow-blue transition-all duration-300"
               >
                 S'inscrire
               </Link>
