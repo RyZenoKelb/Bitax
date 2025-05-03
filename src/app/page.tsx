@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 
 // Définir l'interface pour les étoiles
@@ -20,7 +20,7 @@ interface Feature {
   id: number;
   title: string;
   description: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
 }
 
 // Interface pour les avantages
@@ -28,7 +28,7 @@ interface Benefit {
   id: number;
   title: string;
   description: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
 }
 
 // Interface pour les témoignages
