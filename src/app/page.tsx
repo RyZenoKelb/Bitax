@@ -219,11 +219,11 @@ export default function Home() {
       const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 10000), 80);
       
       for (let i = 0; i < particleCount; i++) {
-    // Fonction pour créer un "paquet de données" transitant entre deux hexagones
-    const createDataPacket = (from: number, to: number) => {
-      const fromHex = hexagons[from];
-      const toHex = hexagons[to];
-      
+        const size = Math.random() * 2 + 0.5;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speedX = (Math.random() - 0.5) * 0.5;
+        const speedY = (Math.random() - 0.5) * 0.5;
       dataPackets.push({
         fromX: fromHex.x,
         fromY: fromHex.y,
