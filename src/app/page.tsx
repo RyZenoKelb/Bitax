@@ -214,11 +214,11 @@ export default function Home() {
       }
     };
     
-          color
-        });
-      }
-    };
-
+    // Créer particules d'arrière-plan (effet visuel)
+    const createParticles = () => {
+      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 10000), 80);
+      
+      for (let i = 0; i < particleCount; i++) {
     // Fonction pour créer un "paquet de données" transitant entre deux hexagones
     const createDataPacket = (from: number, to: number) => {
       const fromHex = hexagons[from];
