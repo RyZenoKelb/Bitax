@@ -246,24 +246,24 @@ export default function Home() {
         toX: toNode.x,
         toY: toNode.y,
         x: fromNode.x,
-    // Dessiner un hexagone avec rotation
-    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
-      const sides = 6;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-      
-      // Hexagone principal
-      ctx.beginPath();
-      for (let i = 0; i <= sides; i++) {
-        const angle = i * 2 * Math.PI / sides;
-        const pointX = size * Math.cos(angle);
-        const pointY = size * Math.sin(angle);
-        
-        if (i === 0) {
-          ctx.moveTo(pointX, pointY);
-        } else {
-          ctx.lineTo(pointX, pointY);
+        y: fromNode.y,
+        progress: 0,
+        speed: Math.random() * 0.01 + 0.005,
+        size: Math.random() * 3 + 2,
+        color: isSuccessful ? 
+          'rgba(46, 213, 115, 0.8)' : // Vert pour transaction réussie
+          'rgba(255, 71, 87, 0.8)',   // Rouge pour transaction échouée
+        from,
+        to,
+        successful: isSuccessful
+      });
+    };
+
+    createCryptoNodes();
+    createConnections();
+    createParticles();
+
+    // Dessiner un noeud blockchain avec son symbole
         }
       }
       
