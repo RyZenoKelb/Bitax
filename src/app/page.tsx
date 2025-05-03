@@ -146,133 +146,133 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments du réseau blockchain
-    const cryptoNodes = [];
-    const connections = [];
-    const dataPackets = [];
-    const particles = [];
-    
-    // Symboles de crypto-monnaies pour les noeuds
-    const cryptoSymbols = [
-      { symbol: '₿', color: '#F7931A' }, // Bitcoin
-      { symbol: 'Ξ', color: '#627EEA' }, // Ethereum
-      { symbol: 'Ⓢ', color: '#2BD3E4' }, // Solana 
-      { symbol: 'Ⓟ', color: '#8247E5' }, // Polygon
-      { symbol: '◎', color: '#00E4AD' }, // Avalanche
-      { symbol: '₳', color: '#0033AD' }, // Cardano
-      { symbol: 'Ð', color: '#C2A633' }, // Dogecoin
-      { symbol: 'Ł', color: '#345D9D' }, // Litecoin
-      { symbol: 'Ȼ', color: '#F0B90B' }, // Binance Coin
-    ];
-    
-    // Créer des noeuds blockchain (chaque noeud = une crypto)
-    const createCryptoNodes = () => {
-      const nodeCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 15);
+    // Configuration des éléments visuels améliorés
+    const hexagons: Hexagon[] = [];
+    const connections: Connection[] = [];
+    const particles: Particle[] = [];
+    const dataPackets: DataPacket[] = [];
       
-      for (let i = 0; i < nodeCount; i++) {
+    // Créer des hexagones (symboles de blockchain)
+    const createHexagons = () => {
+      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
+      
+      for (let i = 0; i < hexCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const size = Math.random() * 20 + 25; // Taille des noeuds
-        const opacity = Math.random() * 0.3 + 0.2;
+        const size = Math.random() * 25 + 20; // Hexagones plus grands
+        const opacity = Math.random() * 0.3 + 0.15;
         const speedX = (Math.random() - 0.5) * 0.4;
         const speedY = (Math.random() - 0.5) * 0.4;
         const pulseSpeed = Math.random() * 0.01 + 0.005;
-        const pulseAmount = Math.random() * 0.2 + 0.1;
-        const symbolIndex = Math.floor(Math.random() * cryptoSymbols.length);
-        const isActive = Math.random() > 0.5; // Certains noeuds sont "actifs"
+        const pulseAmount = Math.random() * 0.3 + 0.1;
+        const baseSize = size;
+        const rotationSpeed = (Math.random() - 0.5) * 0.005;
+        const rotation = Math.random() * Math.PI * 2;
         
-        cryptoNodes.push({ 
-          x, y, size, opacity, speedX, speedY, 
+        hexagons.push({ 
+          x, y, size, baseSize, opacity, speedX, speedY, 
           pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
-          symbolIndex, isActive
+          rotation, rotationSpeed, 
+          isActive: Math.random() > 0.7 // Certains hexagones sont "actifs"
         });
       }
     };
     
-    // Créer des connexions entre les noeuds (représente le réseau blockchain)
+    // Créer des connexions entre hexagones (simuler une blockchain)
     const createConnections = () => {
-      for (let i = 0; i < cryptoNodes.length; i++) {
-        // Chaque noeud peut avoir jusqu'à 3 connexions
-        const connectionCount = Math.floor(Math.random() * 3) + 1;
-        
-        for (let j = 0; j < connectionCount; j++) {
-          // Trouver un noeud cible aléatoire différent du noeud source
-          let targetIndex;
-          do {
-            targetIndex = Math.floor(Math.random() * cryptoNodes.length);
-          } while (targetIndex === i);
-          
-          connections.push({
-            from: i,
-            to: targetIndex,
-            opacity: Math.random() * 0.2 + 0.05,
-            active: false,
-            lastPacketTime: 0,
-            packetInterval: Math.random() * 5000 + 2000, // Intervalle entre les transactions
-          });
+      for (let i = 0; i < hexagons.length; i++) {
+        for (let j = i + 1; j < hexagons.length; j++) {
+          if (Math.random() > 0.5) {
+            connections.push({
+              from: i,
+              to: j,
+              opacity: Math.random() * 0.2 + 0.05,
+              active: false,
+              lastPacketTime: 0,
+              packetInterval: Math.random() * 8000 + 2000, // Intervalle entre les paquets
+            });
+          }
         }
       }
     };
     
-    // Créer particules d'arrière-plan (effet visuel)
+    // Créer particules normales (effet visuel)
     const createParticles = () => {
-      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 10000), 80);
+      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 60);
       
       for (let i = 0; i < particleCount; i++) {
         const size = Math.random() * 2 + 0.5;
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const speedX = (Math.random() - 0.5) * 0.5;
-        const speedY = (Math.random() - 0.5) * 0.5;
-        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.4 + 0.2})`;
+        const speedX = (Math.random() - 0.5) * 0.6;
+        const speedY = (Math.random() - 0.5) * 0.6;
+        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
 
         particles.push({
-          x, y, size, speedX, speedY, color
+          x,
+          y,
+          size,
+          speedX,
+          speedY,
+          color
         });
       }
     };
 
-    // Fonction pour créer une "transaction" entre deux noeuds
-    const createTransaction = (from, to) => {
-      const fromNode = cryptoNodes[from];
-      const toNode = cryptoNodes[to];
-      
-      // Déterminer si c'est une transaction réussie (verte) ou échouée (rouge)
-      const isSuccessful = Math.random() > 0.2;
+    // Fonction pour créer un "paquet de données" transitant entre deux hexagones
+    const createDataPacket = (from: number, to: number) => {
+      const fromHex = hexagons[from];
+      const toHex = hexagons[to];
       
       dataPackets.push({
-        fromX: fromNode.x,
-        fromY: fromNode.y,
-        toX: toNode.x,
-        toY: toNode.y,
-        x: fromNode.x,
-        y: fromNode.y,
+        fromX: fromHex.x,
+        fromY: fromHex.y,
+        toX: toHex.x,
+        toY: toHex.y,
+        x: fromHex.x,
+        y: fromHex.y,
         progress: 0,
         speed: Math.random() * 0.01 + 0.005,
-        size: Math.random() * 3 + 2,
-        color: isSuccessful ? 
-          'rgba(46, 213, 115, 0.8)' : // Vert pour transaction réussie
-          'rgba(255, 71, 87, 0.8)',   // Rouge pour transaction échouée
+        size: Math.random() * 4 + 2,
+        color: Math.random() > 0.5 ? 
+          'rgba(147, 51, 234, 0.8)' : // Violet
+          'rgba(99, 102, 241, 0.8)', // Indigo
         from,
-        to,
-        successful: isSuccessful
+        to
       });
     };
 
-    createCryptoNodes();
+    createHexagons();
     createConnections();
     createParticles();
 
-    // Dessiner un noeud blockchain avec son symbole
-    const drawCryptoNode = (node) => {
-      const { x, y, size, opacity, symbolIndex, isActive, pulsePhase, pulseSpeed, pulseAmount } = node;
-      const symbolInfo = cryptoSymbols[symbolIndex];
-      const pulseFactor = 1 + Math.sin(Date.now() * pulseSpeed + pulsePhase) * pulseAmount;
-      const currentSize = size * pulseFactor;
-      
+    // Dessiner un hexagone avec rotation
+    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
+      const sides = 6;
       ctx.save();
       ctx.translate(x, y);
+      ctx.rotate(rotation);
       
+      // Hexagone principal
+      ctx.beginPath();
+      for (let i = 0; i <= sides; i++) {
+        const angle = i * 2 * Math.PI / sides;
+        const pointX = size * Math.cos(angle);
+        const pointY = size * Math.sin(angle);
+        
+        if (i === 0) {
+          ctx.moveTo(pointX, pointY);
+        } else {
+          ctx.lineTo(pointX, pointY);
+        }
+      }
+      
+      // Style pour hexagone actif/inactif
+      if (isActive) {
+        // Hexagone actif - double style
+        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 1.5})`;
+        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 0.15})`;
+      } else {
         // Hexagone inactif
         ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
         ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
