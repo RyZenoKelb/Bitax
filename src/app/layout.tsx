@@ -28,3 +28,22 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     </html>
   );
 }
+
+// Dans src/app/layout.tsx
+import Chatbot from '@/components/Chatbot';
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        {/* ... */}
+      </head>
+      <body>
+        <AuthProvider>
+          {children}
+          <Chatbot />
+        </AuthProvider>
+      </body>
+    </html>
+  );
+}
