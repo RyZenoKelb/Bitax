@@ -192,28 +192,28 @@ export default function Home() {
     // Créer des connexions entre les noeuds (représente le réseau blockchain)
     const createConnections = () => {
       for (let i = 0; i < cryptoNodes.length; i++) {
+        // Chaque noeud peut avoir jusqu'à 3 connexions
+        const connectionCount = Math.floor(Math.random() * 3) + 1;
+        
+        for (let j = 0; j < connectionCount; j++) {
+          // Trouver un noeud cible aléatoire différent du noeud source
+          let targetIndex;
+          do {
+            targetIndex = Math.floor(Math.random() * cryptoNodes.length);
+          } while (targetIndex === i);
+          
+          connections.push({
+            from: i,
+            to: targetIndex,
+            opacity: Math.random() * 0.2 + 0.05,
+            active: false,
+            lastPacketTime: 0,
+            packetInterval: Math.random() * 5000 + 2000, // Intervalle entre les transactions
+          });
         }
       }
     };
     
-    // Créer particules normales (effet visuel)
-    const createParticles = () => {
-      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 60);
-      
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 2 + 0.5;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const speedX = (Math.random() - 0.5) * 0.6;
-        const speedY = (Math.random() - 0.5) * 0.6;
-        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
-
-        particles.push({
-          x,
-          y,
-          size,
-          speedX,
-          speedY,
           color
         });
       }
