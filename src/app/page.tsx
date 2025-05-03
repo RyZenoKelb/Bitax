@@ -46,7 +46,7 @@ export default function Home() {
   }, []);
   
   return (
-    <div> className="min-h-screen overflow-hidden relative font-poppins">
+    <div className="min-h-screen overflow-hidden relative font-poppins">
       {/* Background élégant avec étoiles animées */}
       <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
         {/* Gradient d'ambiance */}
