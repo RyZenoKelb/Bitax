@@ -11,7 +11,7 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['Inter', 'Inter', 'ui-sans-serif', 'system-ui'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        mono: ['Inter', 'ui-monospace', 'monospace'],
       },
       colors: {
         // Couleur principale - Style Crypto Néon
