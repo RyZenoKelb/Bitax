@@ -1,10 +1,27 @@
-// src/pages/support.tsx - Page de support
+// src/pages/support.tsx
 import React from 'react';
+import Link from 'next/link';
 
 export default function SupportPage() {
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Support client</h1>
+    <div className="max-w-4xl mx-auto py-8 px-4">
+      {/* Header amélioré pour la page support */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Support client</h1>
+          <p className="mt-1 text-gray-600 dark:text-gray-400">Nous sommes là pour vous aider à chaque étape</p>
+        </div>
+        
+        {/* Boutons d'action */}
+        <div className="flex items-center space-x-3">
+          <Link href="/dashboard" className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors duration-200">
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </Link>
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
