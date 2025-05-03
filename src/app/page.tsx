@@ -1,11 +1,22 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import Head from "next/head";
 
-// Définition des interfaces pour le typage
-// Définir l'interface pour les fonctionnalités
+// Définir l'interface pour les étoiles
+interface Star {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  animationDelay: string;
+}
+
+// Interface pour les fonctionnalités
 interface Feature {
   id: number;
   title: string;
@@ -37,8 +48,8 @@ interface FaqItem {
   answer: string;
 }
 
-// Définir l'interface pour Node
-interface Node {
+// Interface pour les hexagones
+interface Hexagon {
   x: number;
   y: number;
   size: number;
@@ -50,23 +61,32 @@ interface Node {
   pulseAmount: number;
   pulsePhase: number;
   rotation: number;
-  type: string;
-  color: string;
+  rotationSpeed: number;
   isActive: boolean;
 }
 
-// Définir l'interface pour Connection
+// Interface pour les connexions entre hexagones
 interface Connection {
   from: number;
   to: number;
   opacity: number;
   active: boolean;
-  lastTransactionTime: number;
-  transactionInterval: number;
+  lastPacketTime: number;
+  packetInterval: number;
 }
 
-// Définir l'interface pour Transaction
-interface Transaction {
+// Interface pour les particules
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+  color: string;
+}
+
+// Interface pour les paquets de données
+interface DataPacket {
   fromX: number;
   fromY: number;
   toX: number;
@@ -82,6 +102,9 @@ interface Transaction {
 }
 
 export default function Home() {
+  // État pour gérer les étoiles avec le type correct
+  const [stars, setStars] = useState<Star[]>([]);
+  
   // Référence pour le canvas d'animation
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
@@ -106,7 +129,7 @@ export default function Home() {
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   
-  // Effet pour l'animation blockchain
+  // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -123,125 +146,149 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments visuels pour l'animation blockchain
-    const nodes: Node[] = [];
+    // Configuration des éléments visuels améliorés
+    const hexagons: Hexagon[] = [];
     const connections: Connection[] = [];
-    const transactions: Transaction[] = [];
-    
-    // Créer des noeuds blockchain
-    const createNodes = () => {
-      const nodeCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 15);
+    const particles: Particle[] = [];
+    const dataPackets: DataPacket[] = [];
       
-      for (let i = 0; i < nodeCount; i++) {
+    // Créer des hexagones (symboles de blockchain)
+    const createHexagons = () => {
+      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
+      
+      for (let i = 0; i < hexCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const size = Math.random() * 15 + 20;
-        const type = Math.random() > 0.6 ? 'block' : (Math.random() > 0.5 ? 'wallet' : 'transaction');
-        const opacity = Math.random() * 0.3 + 0.2;
-        const speedX = (Math.random() - 0.5) * 0.2;
-        const speedY = (Math.random() - 0.5) * 0.2;
+        const size = Math.random() * 25 + 20; // Hexagones plus grands
+        const opacity = Math.random() * 0.3 + 0.15;
+        const speedX = (Math.random() - 0.5) * 0.4;
+        const speedY = (Math.random() - 0.5) * 0.4;
         const pulseSpeed = Math.random() * 0.01 + 0.005;
         const pulseAmount = Math.random() * 0.3 + 0.1;
         const baseSize = size;
+        const rotationSpeed = (Math.random() - 0.5) * 0.005;
         const rotation = Math.random() * Math.PI * 2;
-        const color = type === 'block' ? '#3949ab' : (type === 'wallet' ? '#9c27b0' : '#00bcd4');
         
-        nodes.push({ 
+        hexagons.push({ 
           x, y, size, baseSize, opacity, speedX, speedY, 
           pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
-          rotation, type, color, isActive: Math.random() > 0.7
+          rotation, rotationSpeed, 
+          isActive: Math.random() > 0.7 // Certains hexagones sont "actifs"
         });
       }
     };
     
-    // Créer des connexions entre noeuds
+    // Créer des connexions entre hexagones (simuler une blockchain)
     const createConnections = () => {
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          if (Math.random() > 0.6) {
+      for (let i = 0; i < hexagons.length; i++) {
+        for (let j = i + 1; j < hexagons.length; j++) {
+          if (Math.random() > 0.5) {
             connections.push({
               from: i,
               to: j,
               opacity: Math.random() * 0.2 + 0.05,
               active: false,
-              lastTransactionTime: 0,
-              transactionInterval: Math.random() * 8000 + 2000,
+              lastPacketTime: 0,
+              packetInterval: Math.random() * 8000 + 2000, // Intervalle entre les paquets
             });
           }
         }
       }
     };
-
-    // Fonction pour créer une transaction entre deux noeuds
-    const createTransaction = (from: number, to: number) => {
-      const fromNode = nodes[from];
-      const toNode = nodes[to];
+    
+    // Créer particules normales (effet visuel)
+    const createParticles = () => {
+      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 60);
       
-      transactions.push({
-        fromX: fromNode.x,
-        fromY: fromNode.y,
-        toX: toNode.x,
-        toY: toNode.y,
-        x: fromNode.x,
-        y: fromNode.y,
+      for (let i = 0; i < particleCount; i++) {
+        const size = Math.random() * 2 + 0.5;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speedX = (Math.random() - 0.5) * 0.6;
+        const speedY = (Math.random() - 0.5) * 0.6;
+        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
+
+        particles.push({
+          x,
+          y,
+          size,
+          speedX,
+          speedY,
+          color
+        });
+      }
+    };
+
+    // Fonction pour créer un "paquet de données" transitant entre deux hexagones
+    const createDataPacket = (from: number, to: number) => {
+      const fromHex = hexagons[from];
+      const toHex = hexagons[to];
+      
+      dataPackets.push({
+        fromX: fromHex.x,
+        fromY: fromHex.y,
+        toX: toHex.x,
+        toY: toHex.y,
+        x: fromHex.x,
+        y: fromHex.y,
         progress: 0,
         speed: Math.random() * 0.01 + 0.005,
-        size: Math.random() * 3 + 2,
+        size: Math.random() * 4 + 2,
         color: Math.random() > 0.5 ? 
-          'rgba(147, 51, 234, 0.8)' : 
-          'rgba(99, 102, 241, 0.8)',
+          'rgba(147, 51, 234, 0.8)' : // Violet
+          'rgba(99, 102, 241, 0.8)', // Indigo
         from,
         to
       });
     };
 
-    createNodes();
+    createHexagons();
     createConnections();
+    createParticles();
 
-    // Dessiner un noeud blockchain
-    const drawNode = (x: number, y: number, size: number, rotation: number, opacity: number, type: string, color: string, isActive: boolean) => {
+    // Dessiner un hexagone avec rotation
+    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
+      const sides = 6;
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(rotation);
       
-      if (type === 'block') {
-        // Dessiner un bloc (rectangle arrondi)
-        const width = size * 1.2;
-        const height = size * 0.8;
-        const radius = size * 0.2;
+      // Hexagone principal
+      ctx.beginPath();
+      for (let i = 0; i <= sides; i++) {
+        const angle = i * 2 * Math.PI / sides;
+        const pointX = size * Math.cos(angle);
+        const pointY = size * Math.sin(angle);
         
-        ctx.beginPath();
-        ctx.moveTo(width/2 - radius, -height/2);
-        ctx.arcTo(width/2, -height/2, width/2, -height/2 + radius, radius);
-        ctx.arcTo(width/2, height/2, width/2 - radius, height/2, radius);
-        ctx.arcTo(-width/2, height/2, -width/2, height/2 - radius, radius);
-        ctx.arcTo(-width/2, -height/2, -width/2 + radius, -height/2, radius);
-        ctx.closePath();
-        
-        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        ctx.fill();
-        
-        // Détails intérieurs pour les blocs actifs
-        if (isActive) {
-          ctx.beginPath();
-          ctx.rect(-width/2 * 0.6, -height/2 * 0.6, width * 0.6, height * 0.1);
-          ctx.rect(-width/2 * 0.6, -height/2 * 0.3, width * 0.7, height * 0.1);
-          ctx.rect(-width/2 * 0.6, 0, width * 0.5, height * 0.1);
-          ctx.rect(-width/2 * 0.6, height/2 * 0.3, width * 0.8, height * 0.1);
-          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.5})`;
-          ctx.fill();
+        if (i === 0) {
+          ctx.moveTo(pointX, pointY);
+        } else {
+          ctx.lineTo(pointX, pointY);
         }
-      } else if (type === 'wallet') {
-        // Dessiner un wallet (hexagone)
-        const sides = 6;
+      }
+      
+      // Style pour hexagone actif/inactif
+      if (isActive) {
+        // Hexagone actif - double style
+        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 1.5})`;
+        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 0.15})`;
+      } else {
+        // Hexagone inactif
+        ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
+        ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
+      }
+      
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fill();
+      
+      // Détail intérieur pour les hexagones actifs
+      if (isActive) {
         ctx.beginPath();
         for (let i = 0; i <= sides; i++) {
           const angle = i * 2 * Math.PI / sides;
-          const pointX = size * Math.cos(angle);
-          const pointY = size * Math.sin(angle);
+          const pointX = size * 0.7 * Math.cos(angle);
+          const pointY = size * 0.7 * Math.sin(angle);
           
           if (i === 0) {
             ctx.moveTo(pointX, pointY);
@@ -249,74 +296,42 @@ export default function Home() {
             ctx.lineTo(pointX, pointY);
           }
         }
-        
-        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 0.8})`;
         ctx.stroke();
-        ctx.fill();
         
-        // Détail pour wallet actif
-        if (isActive) {
-          ctx.beginPath();
-          ctx.arc(0, 0, size * 0.4, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.5})`;
-          ctx.fill();
-        }
-      } else {
-        // Dessiner une transaction (diamant)
+        // Point central pulsant
         ctx.beginPath();
-        ctx.moveTo(0, -size);
-        ctx.lineTo(size, 0);
-        ctx.lineTo(0, size);
-        ctx.lineTo(-size, 0);
-        ctx.closePath();
-        
-        ctx.strokeStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.15})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+        ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 2})`;
         ctx.fill();
-        
-        // Détail pour transaction active
-        if (isActive) {
-          ctx.beginPath();
-          ctx.moveTo(0, -size*0.5);
-          ctx.lineTo(size*0.5, 0);
-          ctx.lineTo(0, size*0.5);
-          ctx.lineTo(-size*0.5, 0);
-          ctx.closePath();
-          ctx.fillStyle = `rgba(${color.replace('#', '').match(/../g)!.map(h => parseInt(h, 16)).join(', ')}, ${opacity * 0.8})`;
-          ctx.fill();
-        }
       }
       
       ctx.restore();
     };
 
-    // Dessiner une transaction en cours
-    const drawTransaction = (transaction: Transaction) => {
+    // Dessiner un paquet de données
+    const drawDataPacket = (packet: DataPacket) => {
       ctx.beginPath();
-      ctx.arc(transaction.x, transaction.y, transaction.size, 0, Math.PI * 2);
-      ctx.fillStyle = transaction.color;
+      ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
+      ctx.fillStyle = packet.color;
       ctx.fill();
       
       // Effet de traînée
       ctx.beginPath();
       const trailLength = 15;
-      ctx.moveTo(transaction.x, transaction.y);
+      ctx.moveTo(packet.x, packet.y);
       
       // Calculer point arrière basé sur la direction du mouvement
-      const dx = transaction.toX - transaction.fromX;
-      const dy = transaction.toY - transaction.fromY;
+      const dx = packet.toX - packet.fromX;
+      const dy = packet.toY - packet.fromY;
       const angle = Math.atan2(dy, dx);
       
-      const trailX = transaction.x - Math.cos(angle) * trailLength;
-      const trailY = transaction.y - Math.sin(angle) * trailLength;
+      const trailX = packet.x - Math.cos(angle) * trailLength;
+      const trailY = packet.y - Math.sin(angle) * trailLength;
       
       ctx.lineTo(trailX, trailY);
-      ctx.strokeStyle = transaction.color.replace('0.8', '0.3');
-      ctx.lineWidth = transaction.size * 0.7;
+      ctx.strokeStyle = packet.color.replace('0.8', '0.3');
+      ctx.lineWidth = packet.size * 0.7;
       ctx.stroke();
     };
 
@@ -332,20 +347,20 @@ export default function Home() {
       
       // Mettre à jour et dessiner les connexions
       connections.forEach((conn, index) => {
-        const fromNode = nodes[conn.from];
-        const toNode = nodes[conn.to];
+        const fromHex = hexagons[conn.from];
+        const toHex = hexagons[conn.to];
         
         // Calculer la distance
         const distance = Math.sqrt(
-          Math.pow(fromNode.x - toNode.x, 2) + 
-          Math.pow(fromNode.y - toNode.y, 2)
+          Math.pow(fromHex.x - toHex.x, 2) + 
+          Math.pow(fromHex.y - toHex.y, 2)
         );
         
-        // Ne dessiner la connexion que si les noeuds sont assez proches
+        // Ne dessiner la connexion que si les hexagones sont assez proches
         if (distance < 350) {
           ctx.beginPath();
-          ctx.moveTo(fromNode.x, fromNode.y);
-          ctx.lineTo(toNode.x, toNode.y);
+          ctx.moveTo(fromHex.x, fromHex.y);
+          ctx.lineTo(toHex.x, toHex.y);
           
           // Style de ligne basé sur l'activité
           if (conn.active) {
@@ -353,28 +368,29 @@ export default function Home() {
             ctx.lineWidth = 1.5;
             
             // Désactive la connexion après un certain temps
-            if (timestamp - conn.lastTransactionTime > 1500) {
+            if (timestamp - conn.lastPacketTime > 1500) {
               conn.active = false;
             }
           } else {
             ctx.strokeStyle = `rgba(99, 102, 241, ${conn.opacity})`;
             ctx.lineWidth = 0.8;
             
-            // Créer une nouvelle transaction à intervalle régulier
-            if (timestamp - conn.lastTransactionTime > conn.transactionInterval) {
+            // Créer un nouveau paquet à intervalle régulier
+            if (timestamp - conn.lastPacketTime > conn.packetInterval) {
               conn.active = true;
-              conn.lastTransactionTime = timestamp;
-              createTransaction(conn.from, conn.to);
+              conn.lastPacketTime = timestamp;
+              createDataPacket(conn.from, conn.to);
               
               // Augmente les chances d'activation connectée
               connections.forEach(otherConn => {
+                // Si cette connexion partage un node avec la connexion active
                 if (otherConn !== conn && 
                     (otherConn.from === conn.from || otherConn.from === conn.to ||
                      otherConn.to === conn.from || otherConn.to === conn.to)) {
                   if (Math.random() > 0.7) {
                     otherConn.active = true;
-                    otherConn.lastTransactionTime = timestamp;
-                    createTransaction(otherConn.from, otherConn.to);
+                    otherConn.lastPacketTime = timestamp;
+                    createDataPacket(otherConn.from, otherConn.to);
                   }
                 }
               });
@@ -385,42 +401,59 @@ export default function Home() {
         }
       });
       
-      // Mettre à jour et dessiner les transactions
-      for (let i = transactions.length - 1; i >= 0; i--) {
-        const transaction = transactions[i];
-        transaction.progress += transaction.speed;
+      // Mettre à jour et dessiner les paquets de données
+      for (let i = dataPackets.length - 1; i >= 0; i--) {
+        const packet = dataPackets[i];
+        packet.progress += packet.speed;
         
         // Mouvement le long de la ligne
-        transaction.x = transaction.fromX + (transaction.toX - transaction.fromX) * transaction.progress;
-        transaction.y = transaction.fromY + (transaction.toY - transaction.fromY) * transaction.progress;
+        packet.x = packet.fromX + (packet.toX - packet.fromX) * packet.progress;
+        packet.y = packet.fromY + (packet.toY - packet.fromY) * packet.progress;
         
-        drawTransaction(transaction);
+        drawDataPacket(packet);
         
-        // Supprimer la transaction si elle a atteint sa destination
-        if (transaction.progress >= 1) {
-          // Activer brièvement le noeud de destination
-          nodes[transaction.to].isActive = true;
+        // Supprimer le paquet s'il a atteint sa destination
+        if (packet.progress >= 1) {
+          // Activer brièvement l'hexagone de destination
+          hexagons[packet.to].isActive = true;
           setTimeout(() => {
-            if (nodes[transaction.to]) nodes[transaction.to].isActive = Math.random() > 0.7;
+            if (hexagons[packet.to]) hexagons[packet.to].isActive = Math.random() > 0.7;
           }, 800);
           
-          transactions.splice(i, 1);
+          dataPackets.splice(i, 1);
         }
       }
       
-      // Mettre à jour et dessiner les noeuds
-      nodes.forEach(node => {
-        node.x += node.speedX;
-        node.y += node.speedY;
+      // Mettre à jour et dessiner les hexagones
+      hexagons.forEach(hex => {
+        hex.x += hex.speedX;
+        hex.y += hex.speedY;
+        hex.rotation += hex.rotationSpeed;
         
         // Effet de pulsation
-        node.size = node.baseSize + Math.sin(timestamp * node.pulseSpeed + node.pulsePhase) * node.baseSize * node.pulseAmount;
+        hex.size = hex.baseSize + Math.sin(timestamp * hex.pulseSpeed + hex.pulsePhase) * hex.baseSize * hex.pulseAmount;
         
         // Rebond sur les bords
-        if (node.x < 0 || node.x > canvas.width) node.speedX *= -1;
-        if (node.y < 0 || node.y > canvas.height) node.speedY *= -1;
+        if (hex.x < 0 || hex.x > canvas.width) hex.speedX *= -1;
+        if (hex.y < 0 || hex.y > canvas.height) hex.speedY *= -1;
         
-        drawNode(node.x, node.y, node.size, node.rotation, node.opacity, node.type, node.color, node.isActive);
+        drawHexagon(hex.x, hex.y, hex.size, hex.rotation, hex.opacity, hex.isActive);
+      });
+      
+      // Mettre à jour et dessiner les particules
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        // Rebond sur les bords
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+        // Dessiner particule
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
       });
 
       requestAnimationFrame(animate);
@@ -434,8 +467,8 @@ export default function Home() {
       for (let i = 0; i < 3; i++) {
         const connIndex = Math.floor(Math.random() * connections.length);
         connections[connIndex].active = true;
-        connections[connIndex].lastTransactionTime = performance.now();
-        createTransaction(connections[connIndex].from, connections[connIndex].to);
+        connections[connIndex].lastPacketTime = performance.now();
+        createDataPacket(connections[connIndex].from, connections[connIndex].to);
       }
     }, 500);
 
@@ -609,8 +642,15 @@ export default function Home() {
   
   return (
     <div className="min-h-screen overflow-x-hidden font-sans" ref={mainRef}>
-      {/* Background avec animation blockchain */}
-      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 overflow-hidden">
+      {/* Import de la police Inter directement */}
+      <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+      </Head>
+
+      {/* Background moderne avec animation blockchain au lieu d'étoiles */}
+      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
         {/* Gradient d'ambiance */}
         <motion.div className="absolute top-0 left-0 w-full h-full">
           <motion.div 
@@ -653,7 +693,7 @@ export default function Home() {
           ></motion.div>
         </motion.div>
         
-        {/* Canvas pour les animations blockchain */}
+        {/* Canvas pour les animations blockchain et particules */}
         <canvas 
           ref={canvasRef} 
           className="fixed inset-0 w-full h-full -z-10"
@@ -693,11 +733,10 @@ export default function Home() {
               <Link 
                 key={item.name} 
                 href={item.href}
-                className="relative px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white transition-all duration-300 group overflow-hidden"
+                className="relative px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white transition-all duration-300 group"
               >
-                <span className="relative z-10">{item.name}</span>
+                <span>{item.name}</span>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300 ease-out"></span>
-                <span className="absolute inset-0 w-full h-full bg-white/0 group-hover:bg-white/10 -z-10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
               </Link>
             ))}
             
@@ -708,7 +747,6 @@ export default function Home() {
                 className="relative px-6 py-2 overflow-hidden rounded-full border border-white/20 text-white font-medium transition-all duration-300 hover:border-white/40 hover:bg-white/5 group"
               >
                 <span className="relative z-10">Connexion</span>
-                <span className="absolute inset-0 bg-gradient-to-r from-indigo-600/0 to-purple-600/0 group-hover:from-indigo-600/10 group-hover:to-purple-600/10 transition-all duration-300"></span>
               </Link>
               
               <Link 
@@ -717,7 +755,6 @@ export default function Home() {
               >
                 <span className="relative z-10">S'inscrire</span>
                 <span className="absolute top-0 right-full w-full h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-500 group-hover:right-0"></span>
-                <span className="absolute inset-0 w-full h-full backdrop-blur-md bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
               </Link>
             </div>
           </nav>
@@ -765,7 +802,7 @@ export default function Home() {
                     className="w-full py-2.5 text-center text-white/80 border border-white/20 rounded-lg hover:bg-white/5 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
-                    Connexion
+                    Sign In
                   </Link>
                   
                   <Link 
@@ -773,7 +810,7 @@ export default function Home() {
                     className="w-full py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg"
                     onClick={() => setMenuOpen(false)}
                   >
-                    S'inscrire
+                    Sign Up
                   </Link>
                 </div>
               </div>
@@ -819,29 +856,22 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              {/* Bouton principal avec animation améliorée */}
+              {/* Bouton principal avec animation avancée */}
               <Link 
                 href="/register" 
-                className="cta-button relative px-6 py-3 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105 group"
+                className="relative px-6 py-3 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
               >
-                <span className="relative z-10">Commencer gratuitement</span>
-                <span className="absolute inset-0 w-full h-full group-hover:bg-white/10 transition-all duration-300"></span>
-                <span className="absolute -top-1 -bottom-1 left-0 right-0 skew-y-0 group-hover:-skew-y-2 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 blur-xl transition-all duration-500"></span>
-                <span className="absolute inset-0 w-0 h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-500 ease-out group-hover:w-full"></span>
+                <span>Commencer gratuitement</span>
               </Link>
               
               {/* Bouton secondaire glassmorphism */}
-              <Link 
-                href="/guide" 
-                className="relative group rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105 overflow-hidden"
-              >
-                <div className="relative z-10 flex items-center justify-center space-x-2 px-8 py-3 text-white">
+              <Link href="/guide" className="relative group rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105">
+                <div className="relative flex items-center justify-center space-x-2 px-8 py-3 text-white">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span>Comment ça marche</span>
                 </div>
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 to-white/0 group-hover:from-white/5 group-hover:to-white/5 transition-all duration-300"></span>
               </Link>
             </motion.div>
             
@@ -970,10 +1000,10 @@ export default function Home() {
             {/* Effet de glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[70%] bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full blur-[100px] animate-pulse-slow"></div>
             
-            {/* Dashboard card - version améliorée avec texte net */}
+            {/* Dashboard card - retour à l'original mais orienté fiscalité */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] perspective-1000">
               <motion.div 
-                className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:rotate-y-0 hover:scale-105 hover:shadow-glow-xl rotate-y-10 bg-[rgba(8,8,19,0.85)] antialiased"
+                className="dashboard-card relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:rotate-y-0 hover:scale-105 hover:shadow-glow-xl rotate-y-10"
                 whileHover={{ 
                   rotateY: 0,
                   scale: 1.05,
@@ -981,8 +1011,11 @@ export default function Home() {
                 }}
                 initial={{ rotateY: 15 }}
               >
+                {/* Effet de reflet */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
+                
                 {/* Barre de titre avec glassmorphism */}
-                <div className="py-4 px-5 border-b border-white/10 flex items-center justify-between">
+                <div className="py-4 px-5 border-b border-white/10 bg-[rgba(8,8,19,0.7)] backdrop-blur-xl flex items-center justify-between">
                   {/* Boutons du navigateur */}
                   <div className="flex space-x-2">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -990,10 +1023,10 @@ export default function Home() {
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
                   
-                  {/* Titre avec badge pro - TEXTE PLUS NET */}
+                  {/* Titre avec badge pro */}
                   <div className="flex items-center">
-                    <span className="text-sm text-white font-medium tracking-wide">Tableau de bord</span>
-                    <span className="ml-2 px-2 py-0.5 text-[10px] font-bold bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-white">PRO</span>
+                    <span className="text-sm text-white/80 font-medium">Tableau de bord</span>
+                    <span className="ml-2 px-2 py-0.5 text-[10px] font-medium bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-white">PRO</span>
                   </div>
                   
                   {/* Menu de navigation */}
@@ -1003,17 +1036,17 @@ export default function Home() {
                   </div>
                 </div>
                 
-                {/* Contenu du dashboard avec neumorphism - TEXTE PLUS NET */}
+                {/* Contenu du dashboard avec neumorphism */}
                 <div className="bg-gradient-to-b from-[#080814] to-[#0c0c20] p-5 h-[calc(100%-60px)] flex flex-col gap-6">
                   {/* Header du dashboard */}
                   <div className="flex justify-between items-center">
-                    <div className="h-10 w-40 rounded-lg bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-white/5 flex items-center justify-between px-3">
-                      <span className="text-xs text-white/90 font-medium">Portfolio total</span>
+                    <div className="dashboard-item-glow h-10 w-40 rounded-lg bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-white/5 flex items-center justify-between px-3 shadow-inner-white">
+                      <span className="text-xs text-white/70">Portfolio total</span>
                       <span className="text-sm font-bold text-white">24,586 €</span>
                     </div>
                     
-                    <div className="h-10 w-32 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-white/5 flex items-center justify-between px-3">
-                      <span className="text-xs text-white/90 font-medium">Profit</span>
+                    <div className="dashboard-item-glow h-10 w-32 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-white/5 flex items-center justify-between px-3 shadow-inner-white">
+                      <span className="text-xs text-white/70">Profit</span>
                       <span className="text-sm font-bold text-green-400">+12.4%</span>
                     </div>
                   </div>
@@ -1021,56 +1054,56 @@ export default function Home() {
                   {/* Cartes de statistiques */}
                   <div className="grid grid-cols-3 gap-5">
                     {/* Carte statistique 1 */}
-                    <div className="h-28 rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 p-4 flex flex-col justify-between">
+                    <div className="dashboard-item-glow h-28 rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 p-4 flex flex-col justify-between shadow-inner-white">
                       <div className="flex justify-between items-start">
-                        <span className="text-xs text-white/90 font-medium">Bitcoin</span>
+                        <span className="text-xs text-white/60">Bitcoin</span>
                         <div className="h-6 w-6 rounded-full bg-gradient-to-r from-orange-400 to-yellow-400 flex items-center justify-center">
                           <span className="text-[10px] font-bold text-white">₿</span>
                         </div>
                       </div>
                       <div>
                         <div className="text-sm font-bold text-white">0.345 BTC</div>
-                        <div className="text-xs text-white/90 font-medium">≈ 12,584 €</div>
+                        <div className="text-xs text-white/60">≈ 12,584 €</div>
                       </div>
                     </div>
                     
                     {/* Carte statistique 2 */}
-                    <div className="h-28 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-white/5 p-4 flex flex-col justify-between">
+                    <div className="dashboard-item-glow h-28 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-white/5 p-4 flex flex-col justify-between shadow-inner-white animate-pulse-slow">
                       <div className="flex justify-between items-start">
-                        <span className="text-xs text-white/90 font-medium">Ethereum</span>
+                        <span className="text-xs text-white/60">Ethereum</span>
                         <div className="h-6 w-6 rounded-full bg-gradient-to-r from-indigo-400 to-blue-400 flex items-center justify-center">
                           <span className="text-[10px] font-bold text-white">Ξ</span>
                         </div>
                       </div>
                       <div>
                         <div className="text-sm font-bold text-white">4.21 ETH</div>
-                        <div className="text-xs text-white/90 font-medium">≈ 8,420 €</div>
+                        <div className="text-xs text-white/60">≈ 8,420 €</div>
                       </div>
                     </div>
                     
                     {/* Carte statistique 3 */}
-                    <div className="h-28 rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 p-4 flex flex-col justify-between">
+                    <div className="dashboard-item-glow h-28 rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 p-4 flex flex-col justify-between shadow-inner-white">
                       <div className="flex justify-between items-start">
-                        <span className="text-xs text-white/90 font-medium">Solana</span>
+                        <span className="text-xs text-white/60">Solana</span>
                         <div className="h-6 w-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center">
                           <span className="text-[10px] font-bold text-white">◎</span>
                         </div>
                       </div>
                       <div>
                         <div className="text-sm font-bold text-white">56.8 SOL</div>
-                        <div className="text-xs text-white/90 font-medium">≈ 3,582 €</div>
+                        <div className="text-xs text-white/60">≈ 3,582 €</div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Graphique avec effet néomorphique */}
-                  <div className="flex-1 rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 overflow-hidden">
+                  <div className="flex-1 dashboard-item-glow rounded-xl bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border border-white/5 overflow-hidden shadow-inner-white">
                     <div className="h-8 px-4 flex items-center justify-between border-b border-white/5">
-                      <span className="text-xs font-medium text-white/90">Évolution du portfolio</span>
+                      <span className="text-xs font-medium text-white/70">Évolution du portfolio</span>
                       <div className="flex space-x-2">
                         <span className="px-2 py-0.5 text-[10px] font-medium bg-indigo-500/20 text-indigo-300 rounded-full">1M</span>
-                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/80 rounded-full">3M</span>
-                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/80 rounded-full">1Y</span>
+                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/60 rounded-full">3M</span>
+                        <span className="px-2 py-0.5 text-[10px] font-medium bg-white/10 text-white/60 rounded-full">1Y</span>
                       </div>
                     </div>
                     
@@ -1228,7 +1261,7 @@ export default function Home() {
                   transition={{ delay: 0.2 * index, duration: 0.5 }}
                 >
                   <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
-                    <div className="bg-gray-900/80 rounded-full w-16 h-16 flex items-center justify-center">
+                    <div className="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center">
                       <div className="text-white text-2xl font-bold">{item.step}</div>
                     </div>
                   </div>
@@ -1353,6 +1386,7 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
+      
       {/* Section FAQ avec effet accordéon */}
       <motion.section 
         className="py-20 relative"
@@ -1433,217 +1467,274 @@ export default function Home() {
             >
               Rejoignez les milliers d'utilisateurs qui font confiance à Bitax pour gérer automatiquement leur déclaration fiscale en quelques clics.
             </motion.p>
-            <motion.div
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <Link 
+                href="/register" 
+                className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+              >
+                Créer un compte gratuitement
+              </Link>
+            </motion.div>
+          </div>
+          
+          {/* Illustration ou statistiques */}
+          <motion.div 
+            className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 border border-white/10 rounded-2xl p-6 backdrop-blur-lg"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
           >
-            <Link 
-              href="/register" 
-              className="cta-button relative inline-block px-6 py-3 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105 group"
-            >
-              <span className="relative z-10">Créer un compte gratuitement</span>
-              <span className="absolute inset-0 w-full h-full group-hover:bg-white/10 transition-all duration-300"></span>
-              <span className="absolute -top-1 -bottom-1 left-0 right-0 skew-y-0 group-hover:-skew-y-2 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 blur-xl transition-all duration-500"></span>
-              <span className="absolute inset-0 w-0 h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-500 ease-out group-hover:w-full"></span>
-            </Link>
+            <div className="grid grid-cols-2 gap-5">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+                <h4 className="text-2xl font-bold text-indigo-400 mb-2">98%</h4>
+                <p className="text-sm text-white/70">de précision dans les calculs fiscaux</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+                <h4 className="text-2xl font-bold text-purple-400 mb-2">30min</h4>
+                <p className="text-sm text-white/70">de temps gagné par déclaration</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+                <h4 className="text-2xl font-bold text-blue-400 mb-2">5+</h4>
+                <p className="text-sm text-white/70">blockchains prises en charge</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+                <h4 className="text-2xl font-bold text-emerald-400 mb-2">24/7</h4>
+                <p className="text-sm text-white/70">de disponibilité de la plateforme</p>
+              </div>
+            </div>
           </motion.div>
         </div>
-        
-        {/* Illustration ou statistiques */}
-        <motion.div 
-          className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 border border-white/10 rounded-2xl p-6 backdrop-blur-lg"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
-          <div className="grid grid-cols-2 gap-5">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-              <h4 className="text-2xl font-bold text-indigo-400 mb-2">98%</h4>
-              <p className="text-sm text-white/70">de précision dans les calculs fiscaux</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-              <h4 className="text-2xl font-bold text-purple-400 mb-2">30min</h4>
-              <p className="text-sm text-white/70">de temps gagné par déclaration</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-              <h4 className="text-2xl font-bold text-blue-400 mb-2">5+</h4>
-              <p className="text-sm text-white/70">blockchains prises en charge</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-              <h4 className="text-2xl font-bold text-emerald-400 mb-2">24/7</h4>
-              <p className="text-sm text-white/70">de disponibilité de la plateforme</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </motion.section>
-    
-    {/* Footer avec effet parallaxe */}
-    <motion.footer 
-      className="py-12 border-t border-white/10 relative"
-      style={{ y: y1 }}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          <div className="md:col-span-2">
-            <Link href="/" className="group inline-block mb-6">
-              <div className="flex items-center">
-                <div className="flex flex-col">
-                  <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</h1>
-                  <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
+      </motion.section>
+      
+      {/* Footer avec effet parallaxe */}
+      <motion.footer 
+        className="py-12 border-t border-white/10 relative"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <Link href="/" className="group inline-block mb-6">
+                <div className="flex items-center">
+                  <div className="flex flex-col">
+                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</h1>
+                    <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
+                  </div>
                 </div>
+              </Link>
+              <p className="text-blue-100/70 mb-6 max-w-md">
+                Simplifiez votre fiscalité crypto avec notre plateforme intuitive. Connectez vos wallets, analysez vos transactions et générez des rapports fiscaux en quelques clics.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.44 3.06H5.56C4.15 3.06 3 4.21 3 5.62v12.88c0 1.41 1.15 2.56 2.56 2.56h12.88c1.41 0 2.56-1.15 2.56-2.56V5.62c0-1.41-1.15-2.56-2.56-2.56zm0 2.56v3.81h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v3.82h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v.99H5.56V5.62h12.88z" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.77 5.03l1.4 1.4L8.43 19.17l-5.6-5.6 1.4-1.4 4.2 4.2L19.77 5.03m0-2.83L8.43 13.54l-4.2-4.2L0 13.57 8.43 22 24 6.43 19.77 2.2z" />
+                  </svg>
+                </a>
               </div>
-            </Link>
-            <p className="text-blue-100/70 mb-6 max-w-md">
-              Simplifiez votre fiscalité crypto avec notre plateforme intuitive. Connectez vos wallets, analysez vos transactions et générez des rapports fiscaux en quelques clics.
-            </p>
-            <div className="flex space-x-4">
-              <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300 group">
-                <svg className="w-5 h-5 group-hover:text-indigo-400 transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </a>
-              <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300 group">
-                <svg className="w-5 h-5 group-hover:text-indigo-400 transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-              </a>
-              <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300 group">
-                <svg className="w-5 h-5 group-hover:text-indigo-400 transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
-                </svg>
-              </a>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Navigation</h3>
+              <ul className="space-y-3">
+                {[
+                  { name: 'Accueil', href: '/' },
+                  { name: 'Fonctionnalités', href: '/fonctionnalites' },
+                  { name: 'Tarifs', href: '/tarifs' },
+                  { name: 'Guide', href: '/guide' },
+                  { name: 'Support', href: '/support' }
+                ].map((item, index) => (
+                  <li key={index}>
+                    <Link 
+                      href={item.href}
+                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Légal</h3>
+              <ul className="space-y-3">
+                {[
+                  { name: 'Conditions d\'utilisation', href: '/terms' },
+                  { name: 'Politique de confidentialité', href: '/privacy' },
+                  { name: 'Mentions légales', href: '/legal' },
+                  { name: 'Cookies', href: '/cookies' }
+                ].map((item, index) => (
+                  <li key={index}>
+                    <Link 
+                      href={item.href}
+                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Contact</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    Contact à venir
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    En cours de mise en place
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    Adresse à venir
+                  </span>
+                </li>
+              </ul>
             </div>
           </div>
           
-          <div>
-            <h3 className="text-lg font-display font-semibold mb-4 text-white">Navigation</h3>
-            <ul className="space-y-2.5">
-              {[
-                { name: 'Accueil', href: '/' },
-                { name: 'Fonctionnalités', href: '/fonctionnalites' },
-                { name: 'Tarifs', href: '/tarifs' },
-                { name: 'Guide', href: '/guide' },
-                { name: 'Support', href: '/support' }
-              ].map((item, index) => (
-                <li key={index}>
-                  <Link 
-                    href={item.href}
-                    className="flex items-center text-sm text-gray-400 hover:text-indigo-400 transition-colors duration-300 group"
-                  >
-                    <span className="w-1.5 h-1.5 mr-2 rounded-full bg-gray-600 group-hover:bg-indigo-400 transition-colors duration-300"></span>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-display font-semibold mb-4 text-white">Légal</h3>
-            <ul className="space-y-2.5">
-              {[
-                { name: "Conditions d'utilisation", href: "#" },
-                { name: "Politique de confidentialité", href: "#" },
-                { name: "Mentions légales", href: "#" },
-                { name: "Cookies", href: "#" }
-              ].map((item, index) => (
-                <li key={index}>
-                  <a href={item.href} className="flex items-center text-sm text-gray-400 hover:text-indigo-400 transition-colors duration-300 group">
-                    <span className="w-1.5 h-1.5 mr-2 rounded-full bg-gray-600 group-hover:bg-indigo-400 transition-colors duration-300"></span>
-                    {item.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        
-        <div className="pt-6 border-t border-gray-800/50">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-500 mb-4 md:mb-0">
+          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-blue-100/50 text-sm mb-4 md:mb-0">
               &copy; {new Date().getFullYear()} Bitax. Tous droits réservés.
             </p>
-            <div className="flex items-center space-x-6">
-              <a href="#" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors duration-300">
+            <div className="flex space-x-6">
+              <Link href="/legal" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
                 Mentions légales
-              </a>
-              <a href="#" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors duration-300">
+              </Link>
+              <Link href="/privacy" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
                 Politique de confidentialité
-              </a>
-              <a href="#" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors duration-300">
+              </Link>
+              <Link href="/contact" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
         </div>
-      </div>
-    </motion.footer>
-    
-    {/* Styles CSS pour les animations et effets spécifiques */}
-    <style jsx global>{`
-      /* Police Inter pour tout le site */
-      body, html {
-        font-family: 'Inter', sans-serif !important;
-      }
+      </motion.footer>
       
-      /* Effet amélioré pour les badges de crypto */
-      .crypto-icon-badge {
-        @apply flex items-center justify-center transition-all duration-300;
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
-      }
-      
-      .crypto-icon-badge svg {
-        opacity: 0.9;
-        transition: all 0.3s ease;
-      }
-      
-      .crypto-icon-badge:hover svg {
-        opacity: 1;
-        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
-      }
-      
-      /* Animation pour le pulse lent */
-      @keyframes pulse-slow {
-        0%, 100% {
-          opacity: 0.5;
+      {/* Ajoutez des styles CSS globaux pour les classes personnalisées */}
+      <style jsx global>{`
+        /* Police Inter pour tout le site */
+        body, html {
+          font-family: 'Inter', sans-serif !important;
         }
-        50% {
-          opacity: 0.8;
+
+        /* Styles pour les badges de crypto simplifiés */
+        .crypto-icon-badge {
+          @apply flex items-center justify-center transition-all duration-300;
+          filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
         }
-      }
-      
-      .animate-pulse-slow {
-        animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-      }
-      
-      /* Style amélioré pour les boutons CTA */
-      .cta-button:hover span.relative {
-        color: white;
-      }
-      
-      /* Animation du texte sur les boutons au hover */
-      .cta-button:hover::before {
-        transform: scaleX(1);
-      }
-      
-      /* Animation pour les boutons au hover */
-      @keyframes glow {
-        0%, 100% {
-          box-shadow: 0 0 5px rgba(99, 102, 241, 0.5);
+        
+        .crypto-icon-badge svg {
+          opacity: 0.9;
+          transition: all 0.3s ease;
         }
-        50% {
-          box-shadow: 0 0 20px rgba(99, 102, 241, 0.7);
+        
+        .crypto-icon-badge:hover svg {
+          opacity: 1;
+          filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
         }
-      }
-      
-      .hover-glow:hover {
-        animation: glow 2s ease-in-out infinite;
-      }
-    `}</style>
-  </div>
-);
+        
+        /* Animation pour le pulse lent */
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 0.5;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Effet néomorphique pour les éléments du dashboard */
+        .dashboard-item-glow {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .dashboard-item-glow::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 60%);
+          opacity: 0;
+          transition: opacity 0.3s ease-in-out;
+        }
+        
+        .dashboard-item-glow:hover::before {
+          opacity: 1;
+        }
+        
+        /* Effet d'ombre interne pour les éléments du dashboard */
+        .shadow-inner-white {
+          box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Transformation 3D */
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+        
+        .rotate-y-10 {
+          transform: rotateY(10deg);
+        }
+        
+        .rotate-y-0 {
+          transform: rotateY(0deg);
+        }
+        
+        /* Shadow glow */
+        .shadow-glow-sm {
+          box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .shadow-glow-xl {
+          box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+        }
+      `}</style>
+    </div>
+  );
 }
