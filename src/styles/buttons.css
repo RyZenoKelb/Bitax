@@ -1,0 +1,208 @@
+/* Styles améliorés pour les boutons - À importer dans globals.css */
+
+/* Style de base pour tous les boutons */
+.btn, button, a[href]:not(.btn-link) {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1;
+  }
+  
+  /* Effet de hover premium pour les boutons primaires */
+  .btn-primary, 
+  a[href].btn-primary,
+  .cta-button, 
+  a[href*="register"], 
+  button[class*="from-indigo"],
+  a[class*="from-indigo"] {
+    background-image: linear-gradient(135deg, #3949ab, #9333ea);
+    color: white;
+    border: none !important;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Effet de pulsation subtile sur les boutons primaires */
+  .btn-primary::before,
+  a[href].btn-primary::before,
+  .cta-button::before,
+  a[href*="register"]::before,
+  button[class*="from-indigo"]::before,
+  a[class*="from-indigo"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(0);
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
+  }
+  
+  /* Animation au survol */
+  .btn-primary:hover::before,
+  a[href].btn-primary:hover::before,
+  .cta-button:hover::before,
+  a[href*="register"]:hover::before,
+  button[class*="from-indigo"]:hover::before,
+  a[class*="from-indigo"]:hover::before {
+    transform: translateX(50%);
+  }
+  
+  /* Ajout d'une bordure brillante au survol */
+  .btn-primary:hover,
+  a[href].btn-primary:hover,
+  .cta-button:hover,
+  a[href*="register"]:hover,
+  button[class*="from-indigo"]:hover,
+  a[class*="from-indigo"]:hover {
+    box-shadow: 0 0 15px rgba(147, 51, 234, 0.5), 0 0 30px rgba(79, 70, 229, 0.3);
+    transform: translateY(-2px) scale(1.02);
+  }
+  
+  /* Style pour les boutons secondaires (contour) */
+  .btn-secondary,
+  a[href].btn-secondary,
+  button[class*="border-white"],
+  a[class*="border-white"] {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  /* Effet de hover pour les boutons secondaires */
+  .btn-secondary::before,
+  a[href].btn-secondary::before,
+  button[class*="border-white"]::before,
+  a[class*="border-white"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(147, 51, 234, 0.2));
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+  }
+  
+  /* Animation au survol des boutons secondaires */
+  .btn-secondary:hover::before,
+  a[href].btn-secondary:hover::before,
+  button[class*="border-white"]:hover::before,
+  a[class*="border-white"]:hover::before {
+    opacity: 1;
+  }
+  
+  .btn-secondary:hover,
+  a[href].btn-secondary:hover,
+  button[class*="border-white"]:hover,
+  a[class*="border-white"]:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  /* Effet de focus pour l'accessibilité */
+  .btn:focus,
+  button:focus,
+  a[href]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.4);
+  }
+  
+  /* Effet d'appui (active) */
+  .btn:active,
+  button:active,
+  a[href]:active {
+    transform: translateY(1px);
+    transition: transform 0.1s;
+  }
+  
+  /* Effet spécial pour les boutons de navigation */
+  .nav-link, a[class*="px-3 py-1.5"] {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .nav-link::after, 
+  a[class*="px-3 py-1.5"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3949ab, #9333ea);
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link:hover::after,
+  a[class*="px-3 py-1.5"]:hover::after {
+    width: 100%;
+  }
+  
+  /* Animation pour les boutons avec icônes */
+  button:has(svg), a:has(svg) {
+    transition: all 0.3s ease;
+  }
+  
+  button:has(svg):hover svg, 
+  a:has(svg):hover svg {
+    transform: translateX(3px);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Animation spéciale pour le bouton "Comment ça marche" */
+  a[href="/guide"] {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  a[href="/guide"]::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  a[href="/guide"]:hover::before {
+    opacity: 1;
+    transform: scale(1.2);
+    transition: all 0.5s ease;
+  }
+  
+  /* Animation pour le bouton S'inscrire dans le header */
+  a[href="/register"][class*="bg-gradient"] {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  a[href="/register"][class*="bg-gradient"]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.7), rgba(79, 70, 229, 0.7));
+    transition: opacity 0.4s ease;
+    z-index: -1;
+  }
+  
+  a[href="/register"][class*="bg-gradient"]:hover::after {
+    opacity: 1;
+  }
+  
+  a[href="/register"][class*="bg-gradient"]:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.4);
+  }
