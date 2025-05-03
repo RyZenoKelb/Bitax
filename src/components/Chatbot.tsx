@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/Chatbot.tsx
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
