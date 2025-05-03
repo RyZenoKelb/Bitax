@@ -157,24 +157,24 @@ export default function Home() {
       { symbol: '₿', color: '#F7931A' }, // Bitcoin
       { symbol: 'Ξ', color: '#627EEA' }, // Ethereum
       { symbol: 'Ⓢ', color: '#2BD3E4' }, // Solana 
+      { symbol: 'Ⓟ', color: '#8247E5' }, // Polygon
+      { symbol: '◎', color: '#00E4AD' }, // Avalanche
+      { symbol: '₳', color: '#0033AD' }, // Cardano
+      { symbol: 'Ð', color: '#C2A633' }, // Dogecoin
+      { symbol: 'Ł', color: '#345D9D' }, // Litecoin
+      { symbol: 'Ȼ', color: '#F0B90B' }, // Binance Coin
+    ];
+    
+    // Créer des noeuds blockchain (chaque noeud = une crypto)
+    const createCryptoNodes = () => {
+      const nodeCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 15);
+      
+      for (let i = 0; i < nodeCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const size = Math.random() * 25 + 20; // Hexagones plus grands
-        const opacity = Math.random() * 0.3 + 0.15;
+        const size = Math.random() * 20 + 25; // Taille des noeuds
+        const opacity = Math.random() * 0.3 + 0.2;
         const speedX = (Math.random() - 0.5) * 0.4;
-        const speedY = (Math.random() - 0.5) * 0.4;
-        const pulseSpeed = Math.random() * 0.01 + 0.005;
-        const pulseAmount = Math.random() * 0.3 + 0.1;
-        const baseSize = size;
-        const rotationSpeed = (Math.random() - 0.5) * 0.005;
-        const rotation = Math.random() * Math.PI * 2;
-        
-        hexagons.push({ 
-          x, y, size, baseSize, opacity, speedX, speedY, 
-          pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
-          rotation, rotationSpeed, 
-          isActive: Math.random() > 0.7 // Certains hexagones sont "actifs"
-        });
       }
     };
     
