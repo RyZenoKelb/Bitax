@@ -279,16 +279,16 @@ export default function Home() {
       
       // Gradient radial pour un effet plus moderne
       const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, currentSize);
-      const baseColor = hexToRgb(symbolInfo.color);
+      ctx.stroke();
+      ctx.fill();
       
+      // Détail intérieur pour les hexagones actifs
       if (isActive) {
-        // Node actif - plus lumineux
-        gradient.addColorStop(0, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 1.5})`);
-        gradient.addColorStop(0.7, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.5})`);
-        gradient.addColorStop(1, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0)`);
-      } else {
-        // Node inactif - plus discret
-        gradient.addColorStop(0, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.8})`);
+        ctx.beginPath();
+        for (let i = 0; i <= sides; i++) {
+          const angle = i * 2 * Math.PI / sides;
+          const pointX = size * 0.7 * Math.cos(angle);
+          const pointY = size * 0.7 * Math.sin(angle);
           
           if (i === 0) {
             ctx.moveTo(pointX, pointY);
@@ -1737,3 +1737,4 @@ export default function Home() {
       `}</style>
     </div>
   );
+}
