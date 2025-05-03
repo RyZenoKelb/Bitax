@@ -31,7 +31,6 @@ export default function Chatbot() {
   };
 
   useEffect(() => {
-    console.log("Chatbot monté");
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
 
