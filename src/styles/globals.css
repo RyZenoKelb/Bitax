@@ -1,3 +1,6 @@
+/* Importation des fichiers de style */
+@import 'buttons.css';
+
 /* Amélioration du bouton "Suivant" en mode clair */
 .light button[class*="px-6 py-2"],
 .light a[class*="px-6 py-2"] {
@@ -151,7 +154,12 @@
   body {
     @apply bg-transparent;
     color: var(--color-gray-200);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif !important;
+  }
+  
+  /* Ajout - Forçage de la police Inter pour tous les éléments */
+  body, p, div, span, li, a, button, input, textarea, select {
+    font-family: 'Inter', sans-serif !important;
   }
   
   /* Utilisation de Montserrat pour les titres */
@@ -179,17 +187,7 @@
   a {
     @apply text-secondary-500 hover:text-secondary-400 transition-colors duration-300;
   }
-
-    /* Dans src/styles/globals.css, ajoutez ou renforcez cette règle */
-  body, html, p, div, span, li, a {
-    font-family: 'Inter', sans-serif !important;
-  }
-
-  /* Gardez la spécificité pour les titres */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-  }
-    
+  
   /* Classes génériques pour le texte en mode sombre/clair */
   .text-dark {
     color: var(--text-primary);
@@ -253,132 +251,6 @@
     animation: float 25s ease-in-out infinite alternate;
   }
   
-  /* Correction des boutons avec effet décalé */
-  .btn {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg text-base font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden relative z-10;
-  }
-  
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white shadow-md hover:shadow-lg focus:ring-primary-500 transform hover:-translate-y-0.5;
-    position: relative;
-    overflow: hidden;
-    transform: translateZ(0);
-  }
-  
-  /* Suppression de l'effet avant avant le hover */
-  .btn-primary::before {
-    display: none;
-  }
-  
-  /* Ajout de l'effet seulement au survol */
-  .btn-primary:hover::before {
-    display: block;
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transform: translateX(-100%);
-    animation: shimmer 1.5s infinite;
-  }
-  
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
-  }
-  
-  .btn-secondary {
-    @apply bg-transparent border-2 border-secondary-600 text-secondary-500 hover:bg-secondary-600/10 focus:ring-secondary-500 transform hover:-translate-y-0.5;
-  }
-  
-  .btn-outline {
-    @apply border-2 border-gray-500/30 text-gray-300 hover:border-white hover:text-white focus:ring-gray-500;
-    backdrop-filter: blur(4px);
-    position: relative;
-    overflow: hidden;
-    transform: translateZ(0);
-  }
-  
-  /* Suppression de l'effet avant avant le hover */
-  .btn-outline::before {
-    display: none;
-  }
-  
-  /* Ajout de l'effet seulement au survol */
-  .btn-outline:hover::before {
-    display: block;
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transform: translateX(-100%);
-    animation: shimmer 1.5s infinite;
-  }
-  
-  .btn-premium {
-    @apply relative text-white shadow-md hover:shadow-lg focus:ring-primary-500 transform hover:-translate-y-0.5;
-    background: linear-gradient(90deg, var(--color-primary-600), var(--color-secondary-600));
-    position: relative;
-    overflow: hidden;
-    transform: translateZ(0);
-  }
-  
-  /* Suppression de l'effet avant avant le hover */
-  .btn-premium::before {
-    display: none;
-  }
-  
-  /* Ajout de l'effet seulement au survol */
-  .btn-premium:hover::before {
-    display: block;
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transform: translateX(-100%);
-    animation: shimmer 1.5s infinite;
-  }
-  
-  .btn-sm {
-    @apply px-3.5 py-2 text-sm rounded-md;
-  }
-  
-  .btn-lg {
-    @apply px-6 py-3 text-lg rounded-lg;
-  }
-  
-  /* Styles pour les boutons de la navbar */
-  .nav-link-improved {
-    @apply text-gray-200 hover:text-white font-medium py-2 px-1 transition-all relative;
-  }
-  
-  .nav-link-improved::after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300;
-    background-image: linear-gradient(90deg, #4F46E5, #9F7AEA);
-  }
-  
-  .nav-link-improved:hover::after {
-    @apply w-full;
-  }
-  
-  .btn-nav-login {
-    @apply text-white py-2 px-5 rounded-lg font-medium transition-all border border-white/20 hover:border-white/50 hover:bg-white/10 hover:shadow-md;
-  }
-  
-  .btn-nav-signup {
-    @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 px-5 rounded-lg font-medium shadow-md transform transition-all hover:shadow-lg hover:translate-y-[-2px];
-  }
-  
   /* Styles pour la landing page */
   .text-gradient-enhanced {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600;
@@ -392,41 +264,6 @@
   
   .shadow-glow-purple {
     filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
-  }
-  
-  /* Boutons Hero améliorés */
-  .btn-hero-primary {
-    @apply relative overflow-hidden px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium transition-all;
-    transform: translateZ(0); /* Force GPU acceleration */
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-  }
-  
-  .btn-hero-primary:hover {
-    @apply shadow-lg;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
-  }
-  
-  .btn-hero-primary::before {
-    content: '';
-    @apply absolute top-0 right-0 bottom-0 left-0 bg-black opacity-0 transition-opacity;
-    z-index: -1;
-  }
-  
-  .btn-hero-primary:hover::before {
-    @apply opacity-10;
-  }
-  
-  .btn-hero-secondary {
-    @apply relative px-6 py-3 bg-transparent text-white rounded-lg font-medium transition-all border-2 border-white/30;
-    transform: translateZ(0);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0);
-  }
-  
-  .btn-hero-secondary:hover {
-    @apply border-white/60;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
   }
   
   /* Network tags */
@@ -848,36 +685,6 @@
   .light .tab-active {
     @apply text-primary-600 border-primary-600;
   }
-  
-  /* Améliorer les effets de survol des boutons */
-  .nav-link-improved::after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300;
-    background-image: linear-gradient(to right, #4F46E5, #9F7AEA);
-  }
-  
-  .nav-link-improved:hover::after {
-    @apply w-full;
-  }
-  
-  /* Styles boutons */
-  .btn-primary {
-    @apply transition-all duration-300;
-    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
-  }
-  
-  .btn-primary:hover {
-    @apply bg-indigo-700 transform;
-    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
-  }
-  
-  .btn-primary:focus {
-    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
-  }
-  
-  .btn-secondary:hover {
-    @apply bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white;
-  }
 }
 
 /* Animations et effets */
@@ -1288,187 +1095,65 @@ button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg
   color: var(--color-gray-900) !important;
 }
 
-/* CORRECTIFS SUPPLÉMENTAIRES POUR LES PROBLÈMES SPÉCIFIQUES */
-
-/* Fix global pour corriger le mode clair et s'assurer que tous les éléments sont visibles */
-.light .flex.items-center.space-x-6,
-.light .flex.items-center,
-.light button[class*="px-4 py-2"],
-.light button[class*="px-3 py-2"],
-.light button[class*="Scanner"],
-.light button:has(svg[class*="w-4 h-4 mr-2"]) {
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: flex !important;
+/* Fix pour faire que tous les textes utilisent Inter */
+body, html, p, div, span, li, a, button, input, textarea, select, table, td, th, caption, pre, code {
+  font-family: 'Inter', sans-serif !important;
 }
 
-/* Fix pour le titre "Tableau de bord fiscal" en mode clair */
-.light h1[class*="text-3xl"],
-.light h1.text-3xl.font-bold,
-.light h1.dashboard-title {
-  color: #0f172a !important;
-  font-weight: 800 !important;
-  font-family: 'Orbitron', 'Plus Jakarta Sans', sans-serif !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  opacity: 1 !important;
-  visibility: visible !important;
+/* Force la police Inter pour le tableau de bord */
+.dashboard-card * {
+  font-family: 'Inter', sans-serif !important;
+  letter-spacing: normal !important;
 }
 
-/* S'assurer que tous les boutons d'action sont toujours visibles */
-.light button[class*="bg-blue-600"],
-.light button[class*="bg-primary-600"],
-.light button[class*="bg-bitax-primary-600"] {
-  background-color: #3949ab !important;
-  color: white !important;
-  border: 1px solid #2c3278 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+/* Amélioration des animations et des effets */
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
-/* 1. Fix pour l'icône de lune en mode clair */
-.light .Transition {
-  opacity: 1 !important;
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
 }
 
-.light button[aria-label="Toggle theme"] svg {
-  color: #1e293b !important; /* Couleur gris foncé bien visible */
-  opacity: 1 !important; /* Forcer l'opacité à 100% */
-  stroke-width: 2.5px !important; /* Épaissir les traits pour plus de visibilité */
+/* Animation pour les éléments blockchain */
+@keyframes pulse-blockchain {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
 }
 
-.light button[aria-label="Toggle theme"]:hover {
-  background-color: #e2e8f0 !important; /* Fond gris clair au survol */
+.pulse-blockchain {
+  animation: pulse-blockchain 3s ease-in-out infinite;
 }
 
-/* S'assurer que l'icône reste visible même dans le header */
-.light header button[aria-label="Toggle theme"] svg {
-  color: #1e293b !important;
-  stroke-width: 2.5px !important;
-  opacity: 1 !important;
-}
-
-/* S'assurer que l'icône de la lune est toujours visible en mode clair */
-.light .relative.w-5.h-5 {
-  opacity: 1 !important;
-}
-
-/* 2. Amélioration des titres "Tableau de bord fiscal", "Rapport Fiscal" etc. */
-.light h1.text-3xl.font-bold,
-.light h2.text-2xl.font-bold,
-.light h3.text-xl.font-bold,
-.light [class*="text-3xl"][class*="font-bold"],
-.light [class*="text-2xl"][class*="font-bold"],
-.light [class*="text-xl"][class*="font-bold"] {
-  color: var(--color-gray-900) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.02em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-/* 3. Corriger les boutons ETH, polygon, arbitrum etc. pour les rendre plus visibles */
-/* Boutons blockchain en mode clair - non sélectionnés */
-.light button[class*="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-gray-100"] {
-  background-color: var(--color-gray-100) !important;
-  color: var(--color-gray-800) !important;
-  border: 1px solid var(--color-gray-300) !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-/* Boutons blockchain en mode clair - au survol */
-.light button[class*="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-gray-100"]:hover {
-  background-color: var(--color-gray-200) !important;
-  border-color: var(--color-gray-400) !important;
-}
-
-/* Boutons blockchain en mode clair - sélectionnés */
-.light button[class*="flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg bg-bitax-primary-600"] {
-  background-color: var(--color-primary-600) !important;
-  color: white !important;
-  border: 1px solid var(--color-primary-700) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  font-weight: 600;
-}
-
-/* 4. Rendre le bouton "Scanner {blockchain sélectionnée}" plus visible */
-/* Bouton Scanner en mode clair */
-.light button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"],
-.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"],
-.light button[class*="Scanner ETH"],
-.light [class*="Scanner ETH"],
-.light button:has(svg[class*="w-4 h-4 mr-2"]) {
-  background-color: #3949ab !important;
-  color: white !important;
-  font-weight: 600;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  border: 1px solid #2c3278;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.light button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"]:hover,
-.light button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"]:hover,
-.light button[class*="Scanner ETH"]:hover,
-.light [class*="Scanner ETH"]:hover,
-.light button:has(svg[class*="w-4 h-4 mr-2"]):hover {
-  background-color: #2c3278 !important;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Bouton Scanner en mode sombre */
-.dark button[class*="flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"],
-.dark button[class*="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600"] {
-  background-color: var(--color-primary-500) !important;
-  border: 1px solid var(--color-primary-400);
-  box-shadow: 0 0 8px rgba(57, 73, 171, 0.4);
-}
-
-/* 5. Corriger l'opacité des catégories après avoir cliqué dessus (tabs) */
-/* Onglets actifs - mode clair */
-.light [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"],
-.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg"] {
+/* Style d'overlay pour les boutons */
+.hover-overlay {
   position: relative;
+  overflow: hidden;
 }
 
-.light [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"]::after,
-.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"]::after {
+.hover-overlay::before {
   content: '';
   position: absolute;
+  top: 0;
   left: 0;
+  right: 0;
   bottom: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--color-primary-600);
-  opacity: 1 !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* Onglets actifs - mode sombre */
-.dark [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"]::after,
-.dark button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"]::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--color-primary-400);
-  opacity: 1 !important;
-}
-
-/* Améliorer la visibilité du texte dans les onglets actifs */
-.light [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"],
-.light button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-100"] {
-  color: var(--color-primary-700) !important;
-  font-weight: 600;
-}
-
-.dark [class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"],
-.dark button[class*="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg bg-bitax-primary-900"] {
-  color: var(--color-primary-300) !important;
-  font-weight: 600;
+.hover-overlay:hover::before {
+  opacity: 1;
 }
