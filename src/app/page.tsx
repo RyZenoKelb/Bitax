@@ -48,30 +48,19 @@ interface FaqItem {
   answer: string;
 }
 
-interface TaxDocument {
+// Interface pour les blocs blockchain
+interface CryptoBlock {
   x: number;
   y: number;
-  type: string;
-  rotation: number;
+  hash: string;
+  timestamp: number;
   size: number;
-  opacity: number;
-  speed: number;
-  pulsePhase: number;
-}
-
-interface FlowLine {
-  startX: number;
-  startY: number;
-  control1X: number;
-  control1Y: number;
-  control2X: number;
-  control2Y: number;
-  endX: number;
-  endY: number;
-  progress: number;
   color: string;
   opacity: number;
-  type: string; // 'crypto-to-doc' ou 'doc-to-euro'
+  rotationSpeed: number;
+  rotation: number;
+  pulsePhase: number;
+  isActive: boolean;
 }
 
 // Interface pour les chaînes de blocs
@@ -153,88 +142,94 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments fiscaux
-    const taxDocuments: TaxDocument[] = [];
-    const flowLines: FlowLine[] = [];
+    // Configuration des éléments cryptographiques
+    const cryptoBlocks: CryptoBlock[] = [];
+    const blockChains: BlockChain[] = [];
+    const cryptoParticles: CryptoParticle[] = [];
     const codeLines: CodeLine[] = [];
     
-    // Types de documents fiscaux
-    const documentTypes = [
-      'Form 2086',
-      'Cerfa 2074',
-      'Tax Report',
-      '€ Déclaration',
-      'Plus-Value',
-      'Bilan Fiscal',
-      'Rapport IA',
-      'Auto-Tax'
-    ];
+    // Symboles crypto réalistes
+    const cryptoSymbols = ['₿', 'Ξ', '◎', '⟠', '×', '▣', '◈', '◆'];
     
-    // Codes d'automatisation fiscale
+    // Codes blockchain défilants
     const codeSamples = [
-      'calculateCapitalGains()',
-      'generateTaxReport()',
-      'if(profit > 0) tax += …',
-      'Plus-value: 2,345€',
-      'Imputation fiscale',
-      'Taux effectif: 19%',
-      'Déduction PFU: 306€',
-      'Date: 04/05/2025',
-      'Transactions: 47',
-      'Montant imposable',
-      'Régime forfaitaire',
-      'Solde fiscal: 1,276€',
-      'Crypto → Document',
-      'Automation.sync()',
-      'Rapport automatisé',
-      'Fiscal compliance ✓',
-      'export.toPDF()',
-      'trackCryptoTaxes()',
-      'submitDeclaration()',
-      'AI-powered analysis'
+      '0xTransferEvent(…)',
+      'Block #7,982,345',
+      'Gas: 21000 gwei',
+      '0x1234...abcd',
+      'Contract Verified ✓',
+      'Mining reward: 2 ETH',
+      'Difficulty: 14.5T',
+      'Hashrate: 800 TH/s',
+      'Chain ID: 1',
+      '0xLiquidityPool',
+      'Staking APY: 7.2%',
+      'Network: Mainnet',
+      '1,000,000 TPS',
+      'Consensus: PoS',
+      'Smart Contract',
+      'DeFi Protocol',
+      'NFT Mint Active',
+      'Bridge: ETH↔BSC',
+      'Oracle Price Feed',
+      'DAO Governance'
     ];
     
-    // Créer des documents fiscaux animés
-    const createTaxDocuments = () => {
-      for (let i = 0; i < 8; i++) {
+    // Créer des éléments blockchain réalistes
+    const createCryptoBlocks = () => {
+      for (let i = 0; i < 10; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const docType = documentTypes[Math.floor(Math.random() * documentTypes.length)];
+        const hash = Array(6).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+        const blockTypes = ['BTC', 'ETH', 'SOL', 'MATIC', 'AVAX'];
+        const blockType = blockTypes[Math.floor(Math.random() * blockTypes.length)];
         
-        taxDocuments.push({
+        cryptoBlocks.push({
           x,
           y,
-          type: docType,
-          rotation: Math.random() * Math.PI / 6 - Math.PI / 12, // Légère rotation
-          size: Math.random() * 40 + 50,
-          opacity: Math.random() * 0.15 + 0.1,
-          speed: Math.random() * 0.05 + 0.02,
-          pulsePhase: Math.random() * Math.PI * 2
+          hash: `${blockType}:${hash}`,
+          timestamp: Date.now(),
+          size: Math.random() * 20 + 25,
+          color: {
+            'BTC': '#F7931A',
+            'ETH': '#627EEA',
+            'SOL': '#00FFA3',
+            'MATIC': '#8247E5',
+            'AVAX': '#E84142'
+          }[blockType] || '#6A5ACD',
+          opacity: Math.random() * 0.2 + 0.4,
+          rotationSpeed: (Math.random() - 0.5) * 0.001,
+          rotation: 0,
+          pulsePhase: Math.random() * Math.PI * 2,
+          isActive: Math.random() > 0.6
         });
       }
     };
     
-    // Créer des flux d'automatisation fiscale
-    const createFlowLines = () => {
-      for (let i = 0; i < 5; i++) {
-        const startX = Math.random() * canvas.width * 0.3;
+    // Créer des chaînes de blocs
+    const createBlockChains = () => {
+      const chainColors = ['#F7931A', '#627EEA', '#00FFA3', '#8247E5'];
+      for (let i = 0; i < 3; i++) {
+        const route: { x: number; y: number }[] = [];
+        const startX = -200;
         const startY = Math.random() * canvas.height;
-        const endX = canvas.width * 0.7 + Math.random() * canvas.width * 0.3;
+        const endX = canvas.width + 200;
         const endY = Math.random() * canvas.height;
         
-        flowLines.push({
-          startX,
-          startY,
-          control1X: startX + Math.random() * 200 + 100,
-          control1Y: startY + (Math.random() - 0.5) * 100,
-          control2X: endX - Math.random() * 200 - 100,
-          control2Y: endY + (Math.random() - 0.5) * 100,
-          endX,
-          endY,
+        // Créer une route sinusoïdale
+        for (let j = 0; j <= 50; j++) {
+          const t = j / 50;
+          const x = startX + (endX - startX) * t;
+          const y = startY + (endY - startY) * t + Math.sin(t * Math.PI * 4) * 50;
+          route.push({ x, y });
+        }
+        
+        blockChains.push({
+          blocks: [],
+          color: chainColors[i % chainColors.length],
+          route,
           progress: 0,
-          color: ['#3B82F6', '#8B5CF6', '#10B981', '#EF4444'][Math.floor(Math.random() * 4)],
-          opacity: Math.random() * 0.15 + 0.1,
-          type: Math.random() > 0.5 ? 'crypto-to-doc' : 'doc-to-euro'
+          speed: 0.0005 + Math.random() * 0.0005
         });
       }
     };
@@ -272,49 +267,62 @@ export default function Home() {
       }
     };
     
-    // Dessiner un document fiscal animé
-    const drawTaxDocument = (doc: TaxDocument) => {
+    // Dessiner un bloc crypto style blockchain
+    const drawCryptoBlock = (block: CryptoBlock) => {
       ctx.save();
-      ctx.translate(doc.x, doc.y);
-      ctx.rotate(doc.rotation);
+      ctx.translate(block.x, block.y);
+      ctx.rotate(block.rotation);
       
-      // Forme de document
-      const docWidth = doc.size * 0.7;
-      const docHeight = doc.size;
+      // Dessiner le bloc principal
+      const blockWidth = block.size * 1.5;
+      const blockHeight = block.size;
       
-      // Document en papier
-      ctx.globalAlpha = doc.opacity;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-      ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
-      ctx.lineWidth = 1;
+      // Dégradé du bloc
+      const gradient = ctx.createLinearGradient(-blockWidth/2, -blockHeight/2, blockWidth/2, blockHeight/2);
+      gradient.addColorStop(0, block.color + '20');
+      gradient.addColorStop(0.5, block.color + '40');
+      gradient.addColorStop(1, block.color + '20');
       
-      // Dessiner le document
+      ctx.fillStyle = gradient;
+      ctx.globalAlpha = block.opacity;
+      
+      // Bloc avec coins arrondis
       ctx.beginPath();
-      ctx.moveTo(-docWidth/2, -docHeight/2);
-      ctx.lineTo(docWidth/2, -docHeight/2);
-      ctx.lineTo(docWidth/2, docHeight/2);
-      ctx.lineTo(-docWidth/2, docHeight/2);
-      ctx.moveTo(docWidth/2 - 10, -docHeight/2);
-      ctx.lineTo(docWidth/2, -docHeight/2 + 10);
-      ctx.closePath();
+      ctx.roundRect(-blockWidth/2, -blockHeight/2, blockWidth, blockHeight, 5);
       ctx.fill();
+      
+      // Bordure
+      ctx.strokeStyle = block.color;
+      ctx.lineWidth = 1.5;
       ctx.stroke();
       
-      // Lignes de texte stylisées
-      ctx.strokeStyle = 'rgba(99, 102, 241, 0.2)';
-      for (let i = 0; i < 4; i++) {
+      // Effet glitch/scan lines
+      ctx.globalAlpha = block.opacity * 0.3;
+      for (let i = 0; i < 3; i++) {
         ctx.beginPath();
-        ctx.moveTo(-docWidth/2 + 5, -docHeight/2 + 15 + i * 10);
-        ctx.lineTo(docWidth/2 - 5, -docHeight/2 + 15 + i * 10);
+        ctx.moveTo(-blockWidth/2, -blockHeight/2 + (i * blockHeight/3));
+        ctx.lineTo(blockWidth/2, -blockHeight/2 + (i * blockHeight/3));
+        ctx.strokeStyle = block.color;
+        ctx.lineWidth = 0.5;
         ctx.stroke();
       }
       
-      // Texte du document
-      ctx.fillStyle = 'rgba(255, 255, 255, ' + (doc.opacity * 2) + ')';
-      ctx.font = '10px monospace';
+      // Dessiner l'identifiant du bloc
+      ctx.fillStyle = '#FFFFFF';
+      ctx.globalAlpha = block.opacity * 0.9;
+      ctx.font = '8px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(doc.type, 0, 0);
+      ctx.fillText(block.hash, 0, 0);
+      
+      // Effet de pulsation si actif
+      if (block.isActive) {
+        const pulse = Math.sin(Date.now() * 0.003 + block.pulsePhase) * 0.5 + 0.5;
+        ctx.globalAlpha = pulse * 0.4;
+        ctx.strokeStyle = block.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
       
       ctx.restore();
     };
@@ -403,10 +411,10 @@ export default function Home() {
       ctx.fillStyle = 'rgba(13, 11, 34, 0.03)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Grid très subtil (presque invisible)
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.01)';
+      // Dessiner le grid de fond
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
       ctx.lineWidth = 1;
-      const gridSize = 100;
+      const gridSize = 50;
       for (let x = 0; x <= canvas.width; x += gridSize) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -430,63 +438,60 @@ export default function Home() {
         drawCodeLine(line);
       });
       
-      // Animer les flux d'automatisation
-      flowLines.forEach(flow => {
-        flow.progress += 0.002;
-        if (flow.progress > 1) {
-          flow.progress = 0;
-        }
+      // Animer les blocs crypto
+      cryptoBlocks.forEach(block => {
+        block.rotation += block.rotationSpeed;
+        const pulse = Math.sin(timestamp * 0.002 + block.pulsePhase) * 0.1 + 1;
+        block.size = (block.size / pulse) * pulse;
         
-        // Dessiner la ligne de flux
-        ctx.beginPath();
-        ctx.moveTo(flow.startX, flow.startY);
-        ctx.bezierCurveTo(
-          flow.control1X, flow.control1Y,
-          flow.control2X, flow.control2Y,
-          flow.endX, flow.endY
-        );
-        ctx.strokeStyle = flow.color + '15';
-        ctx.lineWidth = 1;
-        ctx.stroke();
+        drawCryptoBlock(block);
         
-        // Point voyageur
-        const t = flow.progress;
-        const invT = 1 - t;
-        const x = invT * invT * invT * flow.startX +
-                  3 * invT * invT * t * flow.control1X +
-                  3 * invT * t * t * flow.control2X +
-                  t * t * t * flow.endX;
-        const y = invT * invT * invT * flow.startY +
-                  3 * invT * invT * t * flow.control1Y +
-                  3 * invT * t * t * flow.control2Y +
-                  t * t * t * flow.endY;
-        
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = flow.color;
-        ctx.globalAlpha = 0.5;
-        ctx.fill();
-        
-        // Symbole au point d'origine et destination
-        if (flow.type === 'crypto-to-doc') {
-          ctx.fillStyle = '#F7931A';
-          ctx.font = '12px monospace';
-          ctx.fillText('₿', flow.startX - 6, flow.startY + 4);
-          ctx.fillStyle = '#6366F1';
-          ctx.fillText('€', flow.endX - 6, flow.endY + 4);
-        }
+        // Créer des connections entre les blocs
+        cryptoBlocks.forEach(otherBlock => {
+          if (block !== otherBlock) {
+            const distance = Math.sqrt(
+              Math.pow(block.x - otherBlock.x, 2) + 
+              Math.pow(block.y - otherBlock.y, 2)
+            );
+            
+            if (distance < 200) {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - distance / 200) * 0.1})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(block.x, block.y);
+              ctx.lineTo(otherBlock.x, otherBlock.y);
+              ctx.stroke();
+            }
+          }
+        });
       });
       
-      // Animer les documents fiscaux
-      taxDocuments.forEach(doc => {
-        // Mouvement lent et subtil
-        doc.y += doc.speed;
-        if (doc.y > canvas.height + doc.size) {
-          doc.y = -doc.size;
-          doc.x = Math.random() * canvas.width;
+      // Animer les chaînes de blocs
+      blockChains.forEach(chain => {
+        chain.progress += chain.speed;
+        if (chain.progress >= 1) {
+          chain.progress = 0;
+          // Créer de nouveaux blocs
+          chain.blocks = [];
+          for (let i = 0; i < 5; i++) {
+            const routeIndex = Math.floor((i / 5) * chain.route.length);
+            const pos = chain.route[routeIndex];
+            chain.blocks.push({
+              x: pos.x,
+              y: pos.y,
+              hash: Array(8).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join(''),
+              timestamp: Date.now(),
+              size: 15,
+              color: chain.color,
+              opacity: 0.8,
+              rotationSpeed: 0,
+              rotation: 0,
+              pulsePhase: 0,
+              isActive: true
+            });
+          }
         }
-        
-        drawTaxDocument(doc);
+        drawBlockChain(chain);
       });
       
       // Animer les particules crypto
