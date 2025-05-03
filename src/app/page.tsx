@@ -275,15 +275,15 @@ export default function Home() {
       
       // Cercle extérieur
       ctx.beginPath();
-        ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
-      }
+      ctx.arc(0, 0, currentSize, 0, Math.PI * 2);
       
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.fill();
+      // Gradient radial pour un effet plus moderne
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, currentSize);
+      const baseColor = hexToRgb(symbolInfo.color);
       
-      // Détail intérieur pour les hexagones actifs
       if (isActive) {
+        // Node actif - plus lumineux
+        gradient.addColorStop(0, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 1.5})`);
         ctx.beginPath();
         for (let i = 0; i <= sides; i++) {
           const angle = i * 2 * Math.PI / sides;
