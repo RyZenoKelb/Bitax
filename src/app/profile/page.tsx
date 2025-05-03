@@ -667,7 +667,6 @@ export default function ProfilePage() {
                                 </svg>
                                 <h3 className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Plan Premium</h3>
                               </div>
-                              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                               <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
                                 Prochain renouvellement le 15 mai 2025
                               </p>
