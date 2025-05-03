@@ -247,7 +247,7 @@ export default function Home() {
     createParticles();
 
     // Dessiner un hexagone avec rotation
-    const drawHexagon = (x, y, size, rotation, opacity, isActive) => {
+    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
       const sides = 6;
       ctx.save();
       ctx.translate(x, y);
