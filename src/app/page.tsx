@@ -339,7 +339,7 @@ export default function Home() {
     let lastTime = 0;
     
     // Animer tous les éléments avec timestamp
-    const animate = (timestamp) => {
+    const animate = (timestamp: number) => {
       const deltaTime = timestamp - lastTime;
       lastTime = timestamp;
       
