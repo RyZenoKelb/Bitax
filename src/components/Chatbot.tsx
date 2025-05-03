@@ -56,7 +56,7 @@ export default function Chatbot() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 right-8 w-80 max-h-[70vh] bg-white dark:bg-gray-800 rounded-xl shadow-lg z-[9999] flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-8 w-80 h-[500px] bg-white dark:bg-gray-800 rounded-xl shadow-lg z-[9999] flex flex-col overflow-hidden"
           >
             <div className="p-4 font-bold bg-primary-500 text-white dark:bg-gray-900">
               Bitax Assistant
