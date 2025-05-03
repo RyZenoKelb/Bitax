@@ -298,12 +298,12 @@ export default function Home() {
       
       // Cercle intérieur
       ctx.beginPath();
-        
-        // Point central pulsant
-        ctx.beginPath();
-        ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 2})`;
-        ctx.fill();
+      ctx.arc(0, 0, currentSize * 0.7, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.3})`;
+      ctx.fill();
+      
+      // Symbole de crypto au centre
+      ctx.font = `bold ${currentSize * 0.6}px "Arial", sans-serif`;
       }
       
       ctx.restore();
