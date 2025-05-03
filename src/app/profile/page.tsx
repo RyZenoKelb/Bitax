@@ -17,6 +17,7 @@ export default function ProfilePage() {
   });
   const [wallets, setWallets] = useState<any[]>([]);
   const [isLoadingWallets, setIsLoadingWallets] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile");
 
   // Charger les données de l'utilisateur
   useEffect(() => {
@@ -116,187 +117,588 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Mon profil</h1>
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="flex flex-col space-y-8">
+        {/* Header avec titre et menu de navigation */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Paramètres du compte</h1>
+            <p className="mt-1 text-gray-600 dark:text-gray-400">Gérez votre profil et vos préférences</p>
+          </div>
+          
+          {/* Boutons d'action */}
+          <div className="flex items-center space-x-3">
+            <Link href="/dashboard" className="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
+              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Retour au dashboard
+            </Link>
+          </div>
+        </div>
         
+        {/* Alertes de succès ou d'erreur */}
         {message && (
           <div
-            className={`p-4 mb-6 rounded-lg ${
+            className={`p-4 rounded-xl shadow-sm border ${
               message.type === "success"
-                ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 text-green-700 dark:text-green-300"
-                : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300"
+                ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300"
+                : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300"
             }`}
           >
-            {message.text}
+            <div className="flex items-center">
+              <span className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center mr-3">
+                {message.type === "success" ? (
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
+              </span>
+              <span className="font-medium">{message.text}</span>
+            </div>
           </div>
         )}
         
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-          <div className="md:flex">
-            {/* Section de l'avatar et du statut */}
-            <div className="md:w-1/3 bg-gray-50 dark:bg-gray-700 p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700">
-              <div className="mb-4">
-                {session.user.image ? (
-                  <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-primary-500">
-                    <Image
-                      src={session.user.image}
-                      alt={session.user.name || "Profile"}
-                      width={112}
-                      height={112}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-3xl font-medium">
-                    {(session.user.name?.charAt(0) || session.user.email?.charAt(0) || "U").toUpperCase()}
-                  </div>
-                )}
-              </div>
+        {/* Grille principale: Sidebar et contenu */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar - Onglets de navigation */}
+          <div className="col-span-1">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                <li>
+                  <button 
+                    onClick={() => setActiveTab("profile")}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium ${
+                      activeTab === "profile" 
+                        ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 border-l-4 border-primary-600 dark:border-primary-500"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    } transition-colors duration-200`}
+                  >
+                    <svg className={`mr-3 h-5 w-5 ${activeTab === "profile" ? "text-primary-600 dark:text-primary-400" : "text-gray-500 dark:text-gray-400"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Informations personnelles
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab("wallets")}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium ${
+                      activeTab === "wallets" 
+                        ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 border-l-4 border-primary-600 dark:border-primary-500"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    } transition-colors duration-200`}
+                  >
+                    <svg className={`mr-3 h-5 w-5 ${activeTab === "wallets" ? "text-primary-600 dark:text-primary-400" : "text-gray-500 dark:text-gray-400"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    Wallets connectés
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab("security")}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium ${
+                      activeTab === "security" 
+                        ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 border-l-4 border-primary-600 dark:border-primary-500"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    } transition-colors duration-200`}
+                  >
+                    <svg className={`mr-3 h-5 w-5 ${activeTab === "security" ? "text-primary-600 dark:text-primary-400" : "text-gray-500 dark:text-gray-400"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Sécurité
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab("subscription")}
+                    className={`w-full flex items-center px-4 py-3 text-sm font-medium ${
+                      activeTab === "subscription" 
+                        ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 border-l-4 border-primary-600 dark:border-primary-500"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    } transition-colors duration-200`}
+                  >
+                    <svg className={`mr-3 h-5 w-5 ${activeTab === "subscription" ? "text-primary-600 dark:text-primary-400" : "text-gray-500 dark:text-gray-400"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Abonnement
+                  </button>
+                </li>
+              </ul>
               
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">
-                {session.user.name || "Utilisateur"}
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">{session.user.email}</p>
-              
-              {session.user.isPremium ? (
-                <div className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-4 py-2 rounded-full flex items-center text-sm font-medium">
-                  <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
-                  Compte Premium
+              {/* Information du compte */}
+              <div className="p-4 bg-gray-50 dark:bg-gray-700/40 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    {session.user.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.name || "Profile"}
+                        width={40}
+                        height={40}
+                        className="rounded-full border-2 border-gray-200 dark:border-gray-600"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center text-white text-sm font-semibold shadow-md">
+                        {(session.user.name?.charAt(0) || session.user.email?.charAt(0) || "U").toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {session.user.name || "Utilisateur"}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {session.user.email}
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                <Link href="/pricing" className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center text-sm font-medium">
-                  <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
-                  Passer Premium
-                </Link>
-              )}
-            </div>
-            
-            {/* Section du formulaire de profil */}
-            <div className="md:w-2/3 p-8">
-              <h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">Informations personnelles</h3>
-              
-              <form onSubmit={handleSubmit}>
-                <div className="space-y-5">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Nom complet
-                    </label>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-gray-900"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-gray-900"
-                    />
-                  </div>
-                  
-                  <div className="pt-4">
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="btn-primary py-2 px-6 relative"
+                
+                <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
+                  {session.user.isPremium ? (
+                    <div className="flex items-center text-sm text-yellow-700 dark:text-yellow-400">
+                      <svg className="h-4 w-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clipRule="evenodd" />
+                      </svg>
+                      Compte Premium
+                    </div>
+                  ) : (
+                    <Link
+                      href="/pricing"
+                      className="inline-flex items-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
                     >
-                      {isLoading ? (
-                        <>
-                          <span className="absolute inset-0 flex items-center justify-center">
-                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </span>
-                          <span className="opacity-0">Sauvegarder</span>
-                        </>
-                      ) : (
-                        "Sauvegarder"
-                      )}
-                    </button>
-                  </div>
+                      <svg className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                      </svg>
+                      Passer à Premium
+                    </Link>
+                  )}
                 </div>
-              </form>
+              </div>
             </div>
           </div>
-        </div>
-        
-        {/* Section des wallets connectés */}
-        <div className="mt-10 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-          <div className="p-8">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Wallets connectés</h3>
-              <Link href="/dashboard" className="btn-outline py-2 px-4 text-sm">
-                Ajouter un wallet
-              </Link>
-            </div>
-            
-            {isLoadingWallets ? (
-              <div className="flex justify-center py-8">
-                <svg className="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              </div>
-            ) : wallets.length === 0 ? (
-              <div className="py-8 text-center">
-                <p className="text-gray-500 dark:text-gray-400">Aucun wallet connecté pour le moment.</p>
-                <Link href="/dashboard" className="inline-block mt-4 text-primary-600 dark:text-primary-400 hover:underline">
-                  Connecter un wallet →
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {wallets.map((wallet) => (
-                  <div key={wallet.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 mr-4">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1M19 20a2 2 0 002-2V8a2 2 0 00-2-2h-5a2 2 0 01-2-2v0a2 2 0 00-2-2h0a2 2 0 00-2 2v4a2 2 0 002 2h2a2 2 0 012 2v0c0 1.105.895 2 2 2h0" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">
-                          {wallet.name || `Wallet ${formatAddress(wallet.address)}`}
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {formatAddress(wallet.address)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      {wallet.isPrimary && (
-                        <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs rounded-full">
-                          Principal
-                        </span>
-                      )}
-                      <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs rounded-full uppercase">
-                        {wallet.network}
-                      </span>
-                    </div>
+          
+          {/* Contenu principal basé sur l'onglet actif */}
+          <div className="col-span-1 lg:col-span-3">
+            {/* Onglet: Informations personnelles */}
+            {activeTab === "profile" && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                      Informations personnelles
+                    </h2>
                   </div>
-                ))}
+                  
+                  <form onSubmit={handleSubmit}>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Nom complet
+                          </label>
+                          <input
+                            id="name"
+                            name="name"
+                            type="text"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Email
+                          </label>
+                          <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          Photo de profil
+                        </label>
+                        <div className="flex items-center mt-2">
+                          {session.user.image ? (
+                            <Image
+                              src={session.user.image}
+                              alt={session.user.name || "Profile"}
+                              width={64}
+                              height={64}
+                              className="rounded-full border-2 border-gray-200 dark:border-gray-600"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center text-white text-xl font-semibold shadow-md">
+                              {(session.user.name?.charAt(0) || session.user.email?.charAt(0) || "U").toUpperCase()}
+                            </div>
+                          )}
+                          <div className="ml-4">
+                            <div className="flex space-x-2">
+                              <button
+                                type="button"
+                                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                              >
+                                Changer
+                              </button>
+                              <button
+                                type="button"
+                                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                              >
+                                Supprimer
+                              </button>
+                            </div>
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                              PNG, JPG ou GIF. 1MB maximum.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          disabled={isLoading}
+                          className="inline-flex justify-center items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium relative"
+                        >
+                          {isLoading ? (
+                            <>
+                              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              <span>Enregistrement...</span>
+                            </>
+                          ) : (
+                            "Enregistrer les modifications"
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+            
+            {/* Onglet: Wallets connectés */}
+            {activeTab === "wallets" && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                      Wallets connectés
+                    </h2>
+                    <Link 
+                      href="/dashboard" 
+                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      Ajouter un wallet
+                    </Link>
+                  </div>
+                  
+                  {isLoadingWallets ? (
+                    <div className="py-8 flex justify-center">
+                      <svg className="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </div>
+                  ) : wallets.length === 0 ? (
+                    <div className="py-8 text-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl">
+                      <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                      <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Aucun wallet connecté
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Commencez par connecter un wallet pour analyser vos transactions.
+                      </p>
+                      <div className="mt-6">
+                        <Link
+                          href="/dashboard"
+                          className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                          Connecter un wallet
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {wallets.map((wallet) => (
+                        <div key={wallet.id} className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 mr-4">
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                              </svg>
+                            </div>
+                            <div>
+                              <h3 className="font-medium text-gray-900 dark:text-white">
+                                {wallet.name || `Wallet ${formatAddress(wallet.address)}`}
+                              </h3>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                                {formatAddress(wallet.address)}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <div className="flex space-x-2">
+                              {wallet.isPrimary && (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                  Principal
+                                </span>
+                              )}
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 uppercase">
+                                {wallet.network}
+                              </span>
+                            </div>
+                            <div className="flex-shrink-0 flex space-x-2">
+                              <button className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-md">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                              </button>
+                              <button className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 rounded-md">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Onglet: Sécurité */}
+            {activeTab === "security" && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                    Sécurité
+                  </h2>
+                  
+                  <div className="space-y-8">
+                    {/* Changement de mot de passe */}
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                        Changer de mot de passe
+                      </h3>
+                      <form className="space-y-4">
+                        <div>
+                          <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Mot de passe actuel
+                          </label>
+                          <input
+                            id="current-password"
+                            name="current-password"
+                            type="password"
+                            className="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Nouveau mot de passe
+                          </label>
+                          <input
+                            id="new-password"
+                            name="new-password"
+                            type="password"
+                            className="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Confirmer le nouveau mot de passe
+                          </label>
+                          <input
+                            id="confirm-password"
+                            name="confirm-password"
+                            type="password"
+                            className="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                          />
+                        </div>
+                        
+                        <div className="flex justify-end">
+                          <button
+                            type="submit"
+                            className="inline-flex justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium"
+                          >
+                            Mettre à jour le mot de passe
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                        Sessions actives
+                      </h3>
+                      <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div className="p-4 flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 mr-4">
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-gray-900 dark:text-white">
+                                Session actuelle (Chrome sur Windows)
+                              </h4>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Paris, France · Il y a 5 minutes
+                              </p>
+                            </div>
+                          </div>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                            Actif
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 flex justify-end">
+                        <button
+                          type="button"
+                          className="inline-flex justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 font-medium"
+                        >
+                          Déconnecter toutes les autres sessions
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                        Supprimer le compte
+                      </h3>
+                      <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/30">
+                        <p className="text-sm">
+                          La suppression de votre compte est définitive et irréversible. Toutes vos données, y compris les wallets, rapports fiscaux et paramètres, seront supprimées.
+                        </p>
+                      </div>
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          className="inline-flex justify-center px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 font-medium"
+                        >
+                          Supprimer mon compte
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Onglet: Abonnement */}
+            {activeTab === "subscription" && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="p-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                    Abonnement
+                  </h2>
+                  
+                  {session.user.isPremium ? (
+                    <div>
+                      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl p-0.5 shadow-lg">
+                        <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="flex items-center">
+                                <svg className="h-7 w-7 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                </svg>
+                                <h3 className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Plan Premium</h3>
+                              </div>
+                              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                Prochain renouvellement le 15 mai 2025
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-2xl font-bold text-gray-900 dark:text-white">9,99€</span>
+                              <span className="text-sm text-gray-500 dark:text-gray-400">/mois</span>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                              Inclus dans votre abonnement :
+                            </h4>
+                            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Transactions illimitées
+                              </li>
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Analyse multi-blockchain
+                              </li>
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Rapports fiscaux complets (PDF, CSV, Excel)
+                              </li>
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Support prioritaire
+                              </li>
+                            </ul>
+                          </div>
+                          
+                          <div className="mt-6 flex flex-col sm:flex-row sm:justify-between gap-4">
+                            <button
+                              type="button"
+                              className="inline-flex justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium"
+                            >
+                              Gérer le mode de paiement
+                            </button>
+                            <button
+                              type="button"
+                              className="inline-flex justify-center px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 font-medium"
+                            >
+                              Annuler l'abonnement
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6">
+                        <h4 className="font-medium text-gray-900 dark:text-white mb-4">
+                          Historique de facturation
+                        </h4>
+                        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
+                          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead className="bg-gray-50 dark:bg-gray-700">
+                              <tr>
+                                <th scope="col" className="px
