@@ -273,12 +273,12 @@ export default function Home() {
       ctx.save();
       ctx.translate(x, y);
       
-      // Cercle extérieur
-      ctx.beginPath();
-      ctx.arc(0, 0, currentSize, 0, Math.PI * 2);
+        // Hexagone inactif
+        ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
+        ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
+      }
       
-      // Gradient radial pour un effet plus moderne
-      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, currentSize);
+      ctx.lineWidth = 1.5;
       ctx.stroke();
       ctx.fill();
       
