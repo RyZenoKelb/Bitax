@@ -3,12 +3,20 @@ import Link from "next/link";
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white">
-      {/* Header simplifié avec juste un logo pour revenir à l'accueil */}
-      <header className="py-6 px-4 sm:px-6 lg:px-8">
+      {/* Header amélioré avec logo moderne */}
+      <header className="py-6 px-4 sm:px-6 lg:px-8 backdrop-blur-lg bg-gray-900/50 border-b border-gray-800/30">
         <div className="container mx-auto">
-          <Link href="/" className="inline-block">
-            <div className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 p-2 rounded-xl shadow-glow-purple transform hover:scale-105 transition-all">
-              BITAX
+          <Link href="/" className="inline-block group">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 rounded-lg overflow-hidden relative flex items-center justify-center shadow-lg group-hover:scale-105 transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600 animate-pulse-slow"></div>
+                <div className="relative z-10 font-display text-2xl font-bold text-white">B</div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-400 tracking-tight">BITAX</span>
+                <span className="text-xs text-gray-400 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
+              </div>
             </div>
           </Link>
         </div>
