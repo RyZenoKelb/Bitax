@@ -25,6 +25,7 @@ Sois toujours poli, concis et professionnel.
 export async function POST(req: Request) {
   try {
     if (!process.env.OPENAI_API_KEY) {
+      console.error("❌ Clé API manquante !");
       return NextResponse.json(
         { error: "OpenAI API key not configured" },
         { status: 500 }
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
     const { message, history = [] } = body;
 
     if (!message || message.trim().length === 0) {
+      console.warn("⚠️ Aucun message fourni");
       return NextResponse.json(
         { error: "Please provide a valid message" },
         { status: 400 }
@@ -47,18 +49,22 @@ export async function POST(req: Request) {
       { role: "user", content: message }
     ];
 
+    console.log("✅ Messages envoyés à OpenAI:", JSON.stringify(messages, null, 2));
+
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: messages,
+      messages,
       temperature: 0.7,
       max_tokens: 500,
     });
 
     const responseText = completion.choices[0].message?.content || "Désolé, je n'ai pas pu générer de réponse.";
 
+    console.log("✅ Réponse de l'API OpenAI :", responseText);
+
     return NextResponse.json({ message: responseText });
   } catch (error: any) {
-    console.error(`Error with OpenAI API: ${error.message}`);
+    console.error("❌ Erreur dans /api/chat:", error);
     return NextResponse.json(
       { error: "An error occurred during your request." },
       { status: 500 }
