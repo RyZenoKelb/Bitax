@@ -1,6 +1,10 @@
-// src/app/api/chat/route.ts
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 
 // Configuration de l'API OpenAI
 const configuration = new Configuration({
