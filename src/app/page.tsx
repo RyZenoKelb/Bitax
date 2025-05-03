@@ -178,20 +178,20 @@ export default function Home() {
         const speedY = (Math.random() - 0.5) * 0.4;
         const pulseSpeed = Math.random() * 0.01 + 0.005;
         const pulseAmount = Math.random() * 0.2 + 0.1;
-    // Créer des connexions entre hexagones (simuler une blockchain)
+        const symbolIndex = Math.floor(Math.random() * cryptoSymbols.length);
+        const isActive = Math.random() > 0.5; // Certains noeuds sont "actifs"
+        
+        cryptoNodes.push({ 
+          x, y, size, opacity, speedX, speedY, 
+          pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
+          symbolIndex, isActive
+        });
+      }
+    };
+    
+    // Créer des connexions entre les noeuds (représente le réseau blockchain)
     const createConnections = () => {
-      for (let i = 0; i < hexagons.length; i++) {
-        for (let j = i + 1; j < hexagons.length; j++) {
-          if (Math.random() > 0.5) {
-            connections.push({
-              from: i,
-              to: j,
-              opacity: Math.random() * 0.2 + 0.05,
-              active: false,
-              lastPacketTime: 0,
-              packetInterval: Math.random() * 8000 + 2000, // Intervalle entre les paquets
-            });
-          }
+      for (let i = 0; i < cryptoNodes.length; i++) {
         }
       }
     };
