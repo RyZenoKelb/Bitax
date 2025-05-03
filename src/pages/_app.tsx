@@ -7,10 +7,8 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
-// Import du UserMenu et de l'AuthProvider
-import UserMenu from '@/components/UserMenu';
+
 import AuthProvider from '@/components/AuthProvider';
-import { useSession } from 'next-auth/react';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -27,19 +25,9 @@ const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
 
   return (
     <div className="flex items-center">
-      {/* Logo BX avec B plus élevé que le X */}
-      <div className="relative mr-2 h-9 flex items-center">
-        <span className="text-2xl font-extrabold font-display text-primary-500 relative" style={{ top: '-2px' }}>B</span>
-        <span className="text-2xl font-extrabold font-display text-secondary-500 relative" style={{ left: '-2px' }}>X</span>
-      </div>
-      
       <div className="flex flex-col">
-        <span className="text-2xl font-extrabold font-display tracking-tight">
-          <span className="text-primary-500">B</span>
-          <span className={isDarkMode ? 'text-gray-100' : 'text-gray-800'}>ITA</span>
-          <span className="text-secondary-500">X</span>
-        </span>
-        <span className="text-xs text-gray-400 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
+        <span className="text-2xl font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-400 tracking-tight">BITAX</span>
+        <span className="text-xs text-gray-400 dark:text-gray-500 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
       </div>
     </div>
   );
@@ -51,7 +39,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-  const { data: session } = useSession();
 
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
@@ -163,7 +150,9 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className="flex items-center justify-between">
               {/* Logo amélioré */}
               <Link href="/" className="group">
-                <BitaxLogo isDarkMode={theme === 'dark'} />
+                <div className="flex items-center">
+                  <BitaxLogo isDarkMode={theme === 'dark'} />
+                </div>
               </Link>
               
               {/* Navigation desktop nouvelle génération */}
@@ -224,12 +213,8 @@ export default function App({ Component, pageProps }: AppProps) {
                       theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
                     }`}>
                       <div className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} pb-2 pt-2 px-4 mb-1`}>
-                        <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                          {session?.user?.name || "Mon compte Bitax"}
-                        </p>
-                        <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                          {session?.user?.email || "utilisateur@exemple.com"}
-                        </p>
+                        <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Mon compte Bitax</p>
+                        <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>john.doe@example.com</p>
                       </div>
                       <Link 
                         href="/profile" 
