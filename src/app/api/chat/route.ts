@@ -1,10 +1,11 @@
+// src/app/api/chat/route.ts
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+// Configuration de l'API OpenAI
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
 
 // Instructions pour le chatbot
 const SYSTEM_PROMPT = `
@@ -23,8 +24,7 @@ Sois toujours poli, concis et professionnel.
 
 export async function POST(req: Request) {
   try {
-    // Vérifier que l'API key est configurée
-    if (!configuration.apiKey) {
+    if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
         { error: "OpenAI API key not configured" },
         { status: 500 }
@@ -41,22 +41,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // Préparer les messages pour l'API OpenAI
     const messages = [
       { role: "system", content: SYSTEM_PROMPT },
       ...history,
       { role: "user", content: message }
     ];
 
-    // Appel à l'API OpenAI
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: messages,
       temperature: 0.7,
       max_tokens: 500,
     });
 
-    const responseText = completion.data.choices[0].message?.content || "Désolé, je n'ai pas pu générer de réponse.";
+    const responseText = completion.choices[0].message?.content || "Désolé, je n'ai pas pu générer de réponse.";
 
     return NextResponse.json({ message: responseText });
   } catch (error: any) {
