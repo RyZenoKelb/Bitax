@@ -1,6 +1,5 @@
 "use client";
 
-// src/components/Chatbot.tsx
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -25,7 +24,6 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Fonction pour faire défiler vers le dernier message
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -34,57 +32,47 @@ export default function Chatbot() {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
 
-  // Envoyer un message au backend
   const sendMessage = async () => {
     if (!input.trim()) return;
-    
-    // Ajouter le message de l'utilisateur
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: input,
       role: 'user',
       timestamp: new Date()
     };
-    
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
-    
+
     try {
-      // Appel à votre API
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: input,
           history: messages.map(m => ({ role: m.role, content: m.content }))
         }),
       });
-      
+
       const data = await response.json();
-      
-      // Ajouter la réponse du bot
+
       const botMessage: Message = {
         id: Date.now().toString(),
         content: data.message,
         role: 'assistant',
         timestamp: new Date()
       };
-      
+
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du message:', error);
-      
-      // Message d'erreur
       const errorMessage: Message = {
         id: Date.now().toString(),
         content: "Désolé, j'ai rencontré un problème. Veuillez réessayer plus tard.",
         role: 'assistant',
         timestamp: new Date()
       };
-      
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -93,25 +81,18 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* Bouton du chatbot fixé en bas à droite */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 w-16 h-16 bg-red-500 z-[9999]"
+        className="fixed bottom-4 right-4 w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-full flex items-center justify-center z-[9999]"
         aria-label="Chat support"
       >
         {isOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x">
-            <path d="M18 6 6 18"/>
-            <path d="m6 6 12 12"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         )}
       </button>
-      
-      {/* Fenêtre de chat */}
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -119,20 +100,12 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-24 right-8 w-96 h-[500px] bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 z-50"
+            className="fixed bottom-24 right-8 w-96 h-[500px] bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700 z-[9999]"
           >
-            {/* En-tête du chat */}
             <div className="bg-gradient-to-r from-primary-500 to-secondary-500 px-4 py-3 text-white">
               <div className="flex items-center">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center mr-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bot">
-                    <path d="M12 8V4H8"/>
-                    <rect width="16" height="12" x="4" y="8" rx="2"/>
-                    <path d="M2 14h2"/>
-                    <path d="M20 14h2"/>
-                    <path d="M15 13v2"/>
-                    <path d="M9 13v2"/>
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
                 </div>
                 <div>
                   <h3 className="font-medium">Assistant Bitax</h3>
@@ -140,8 +113,7 @@ export default function Chatbot() {
                 </div>
               </div>
             </div>
-            
-            {/* Zone des messages */}
+
             <div className="flex-1 p-4 overflow-y-auto">
               {messages.map((message) => (
                 <div
@@ -151,7 +123,7 @@ export default function Chatbot() {
                   <div
                     className={`p-3 rounded-lg max-w-[80%] ${
                       message.role === 'user'
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-primary-500 text-white'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white'
                     }`}
                   >
@@ -166,17 +138,16 @@ export default function Chatbot() {
                 <div className="flex justify-start mb-4">
                   <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
                     <div className="flex space-x-2 items-center">
-                      <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                     </div>
                   </div>
                 </div>
               )}
               <div ref={messagesEndRef} />
             </div>
-            
-            {/* Zone de saisie du message */}
+
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
               <form
                 onSubmit={(e) => {
@@ -190,17 +161,14 @@ export default function Chatbot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Posez votre question..."
-                  className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white text-sm"
+                  className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white text-gray-800 text-sm"
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-primary-500 text-white p-2 rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-send">
-                    <path d="m22 2-7 20-4-9-9-4Z"/>
-                    <path d="M22 2 11 13"/>
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                 </button>
               </form>
             </div>
