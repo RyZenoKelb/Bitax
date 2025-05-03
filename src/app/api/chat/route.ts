@@ -1,6 +1,6 @@
 // src/app/api/chat/route.ts
 import { NextResponse } from 'next/server';
-import { OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
 // Configuration de l'API OpenAI
 const configuration = new Configuration({
