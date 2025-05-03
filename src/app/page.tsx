@@ -289,51 +289,51 @@ export default function Home() {
       } else {
         // Node inactif - plus discret
         gradient.addColorStop(0, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.8})`);
-        gradient.addColorStop(0.6, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.3})`);
-        gradient.addColorStop(1, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0)`);
-      }
-      
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      
-      // Cercle intérieur
-      ctx.beginPath();
-      ctx.arc(0, 0, currentSize * 0.7, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.3})`;
-      ctx.fill();
-      
-      // Symbole de crypto au centre
-      ctx.font = `bold ${currentSize * 0.6}px "Arial", sans-serif`;
-      ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 2.5})`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(symbolInfo.symbol, 0, 0);
-      
-      // Effet supplémentaire pour les noeuds actifs
-      if (isActive) {
-        ctx.beginPath();
-        ctx.arc(0, 0, currentSize * 1.1, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.3})`;
-        ctx.lineWidth = 1;
+          
+          if (i === 0) {
+            ctx.moveTo(pointX, pointY);
+          } else {
+            ctx.lineTo(pointX, pointY);
+          }
+        }
+        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 0.8})`;
         ctx.stroke();
+        
+        // Point central pulsant
+        ctx.beginPath();
+        ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 2})`;
+        ctx.fill();
       }
       
       ctx.restore();
     };
 
-    // Convertir couleur HEX en RGB
-    const hexToRgb = (hex) => {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : { r: 255, g: 255, b: 255 };
-    };
-
-    // Dessiner une transaction
-    const drawTransaction = (packet) => {
+    // Dessiner un paquet de données
+    const drawDataPacket = (packet: DataPacket) => {
       ctx.beginPath();
+      ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
+      ctx.fillStyle = packet.color;
+      ctx.fill();
+      
+      // Effet de traînée
+      ctx.beginPath();
+      const trailLength = 15;
+      ctx.moveTo(packet.x, packet.y);
+      
+      // Calculer point arrière basé sur la direction du mouvement
+      const dx = packet.toX - packet.fromX;
+      const dy = packet.toY - packet.fromY;
+      const angle = Math.atan2(dy, dx);
+      
+      const trailX = packet.x - Math.cos(angle) * trailLength;
+      const trailY = packet.y - Math.sin(angle) * trailLength;
+      
+      ctx.lineTo(trailX, trailY);
+      ctx.strokeStyle = packet.color.replace('0.8', '0.3');
+      ctx.lineWidth = packet.size * 0.7;
+      ctx.stroke();
+    };
 
     // Animation timestamp pour gestion du temps
     let lastTime = 0;
