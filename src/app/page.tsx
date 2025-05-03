@@ -328,12 +328,12 @@ export default function Home() {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16)
-      
-      ctx.lineTo(trailX, trailY);
-      ctx.strokeStyle = packet.color.replace('0.8', '0.3');
-      ctx.lineWidth = packet.size * 0.7;
-      ctx.stroke();
+      } : { r: 255, g: 255, b: 255 };
     };
+
+    // Dessiner une transaction
+    const drawTransaction = (packet) => {
+      ctx.beginPath();
 
     // Animation timestamp pour gestion du temps
     let lastTime = 0;
