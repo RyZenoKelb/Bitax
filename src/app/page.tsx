@@ -289,15 +289,15 @@ export default function Home() {
       } else {
         // Node inactif - plus discret
         gradient.addColorStop(0, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.8})`);
-          
-          if (i === 0) {
-            ctx.moveTo(pointX, pointY);
-          } else {
-            ctx.lineTo(pointX, pointY);
-          }
-        }
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 0.8})`;
-        ctx.stroke();
+        gradient.addColorStop(0.6, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.3})`);
+        gradient.addColorStop(1, `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 0)`);
+      }
+      
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      // Cercle intérieur
+      ctx.beginPath();
         
         // Point central pulsant
         ctx.beginPath();
