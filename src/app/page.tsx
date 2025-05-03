@@ -264,17 +264,17 @@ export default function Home() {
     createParticles();
 
     // Dessiner un noeud blockchain avec son symbole
-        }
-      }
+    const drawCryptoNode = (node) => {
+      const { x, y, size, opacity, symbolIndex, isActive, pulsePhase, pulseSpeed, pulseAmount } = node;
+      const symbolInfo = cryptoSymbols[symbolIndex];
+      const pulseFactor = 1 + Math.sin(Date.now() * pulseSpeed + pulsePhase) * pulseAmount;
+      const currentSize = size * pulseFactor;
       
-      // Style pour hexagone actif/inactif
-      if (isActive) {
-        // Hexagone actif - double style
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 0.15})`;
-      } else {
-        // Hexagone inactif
-        ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
+      ctx.save();
+      ctx.translate(x, y);
+      
+      // Cercle extérieur
+      ctx.beginPath();
         ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
       }
       
