@@ -487,7 +487,7 @@ export default function Home() {
                       <div className="h-full w-full flex items-end space-x-1">
                         {Array.from({ length: 30 }).map((_, i) => {
                           // Calculer une hauteur aléatoire mais semblant suivre une tendance
-                          const height = 10 + Math.sin(i/3) * 30 + Math.random() * 20;
+                          const height = 10 + Math.sin(i / 3) * 30 + (Math.cos(i * 7.123) * 0.5 + 0.5) * 20;
                           const isHighlighted = i === 22;
                           
                           return (
