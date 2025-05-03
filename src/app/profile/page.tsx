@@ -668,3 +668,193 @@ export default function ProfilePage() {
                                 <h3 className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Plan Premium</h3>
                               </div>
                               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                              <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                                Prochain renouvellement le 15 mai 2025
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-2xl font-bold text-gray-900 dark:text-white">9,99€</span>
+                              <span className="text-sm text-gray-500 dark:text-gray-400">/mois</span>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                              Inclus dans votre abonnement :
+                            </h4>
+                            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Transactions illimitées
+                              </li>
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Analyse multi-blockchain
+                              </li>
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Rapports fiscaux complets (PDF, CSV, Excel)
+                              </li>
+                              <li className="flex items-start">
+                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Support prioritaire
+                              </li>
+                            </ul>
+                          </div>
+                          
+                          <div className="mt-6 flex flex-col sm:flex-row sm:justify-between gap-4">
+                            <button
+                              type="button"
+                              className="inline-flex justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+                            >
+                              Gérer le mode de paiement
+                            </button>
+                            <button
+                              type="button"
+                              className="inline-flex justify-center px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
+                            >
+                              Annuler l'abonnement
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6">
+                        <h4 className="font-medium text-gray-900 dark:text-white mb-4">
+                          Historique de facturation
+                        </h4>
+                        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
+                          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead className="bg-gray-50 dark:bg-gray-700">
+                              <tr>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                  Date
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                  Montant
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                  Statut
+                                </th>
+                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                  Facture
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                              {[
+                                { id: 1, date: "15 avril 2025", amount: "9,99€", status: "Payé" },
+                                { id: 2, date: "15 mars 2025", amount: "9,99€", status: "Payé" },
+                                { id: 3, date: "15 février 2025", amount: "9,99€", status: "Payé" }
+                              ].map((invoice) => (
+                                <tr key={invoice.id}>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                    {invoice.date}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                                    {invoice.amount}
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                      {invoice.status}
+                                    </span>
+                                  </td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
+                                    <button
+                                      type="button"
+                                      className="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-medium"
+                                    >
+                                      Télécharger
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg text-yellow-800 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/30">
+                        <div className="flex">
+                          <svg className="h-5 w-5 text-yellow-400 dark:text-yellow-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <p className="text-sm">
+                            Vous utilisez actuellement le plan <span className="font-medium">Gratuit</span>. Passez au plan Premium pour accéder à toutes les fonctionnalités.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
+                        <div className="px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
+                          <h3 className="text-lg font-bold">Plan Premium</h3>
+                          <p className="text-sm opacity-90">Accès complet à toutes les fonctionnalités</p>
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center mb-6">
+                            <span className="text-3xl font-bold text-gray-900 dark:text-white">9,99€</span>
+                            <span className="text-gray-500 dark:text-gray-400 ml-2">/mois</span>
+                          </div>
+                          
+                          <ul className="space-y-3 mb-6">
+                            <li className="flex items-start">
+                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="text-gray-700 dark:text-gray-300">Transactions illimitées</span>
+                            </li>
+                            <li className="flex items-start">
+                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="text-gray-700 dark:text-gray-300">Analyse multi-blockchain</span>
+                            </li>
+                            <li className="flex items-start">
+                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="text-gray-700 dark:text-gray-300">Rapports fiscaux complets (PDF, CSV, Excel)</span>
+                            </li>
+                            <li className="flex items-start">
+                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="text-gray-700 dark:text-gray-300">Support prioritaire</span>
+                            </li>
+                          </ul>
+                          
+                          <Link
+                            href="/pricing"
+                            className="w-full inline-flex justify-center px-5 py-3 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium transition-all duration-200 hover:shadow-md"
+                          >
+                            Passer au Premium
+                          </Link>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Vous avez des questions ? <a href="#" className="text-primary-600 dark:text-primary-400 hover:underline">Consultez notre FAQ</a> ou <a href="#" className="text-primary-600 dark:text-primary-400 hover:underline">contactez-nous</a>.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
