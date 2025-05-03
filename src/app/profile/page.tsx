@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function ProfilePage() {
   const { data: session, update } = useSession();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [formData, setFormData] = useState({
@@ -19,13 +17,6 @@ export default function ProfilePage() {
   const [isLoadingWallets, setIsLoadingWallets] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
 
-  // Correction de l'erreur: utiliser useEffect pour la redirection
-  useEffect(() => {
-    if (!session) {
-      router.push("/login");
-    }
-  }, [session, router]);
-  
   // Charger les données de l'utilisateur
   useEffect(() => {
     if (session?.user) {
@@ -117,9 +108,21 @@ export default function ProfilePage() {
     return `${address.substring(0, 8)}...${address.substring(address.length - 6)}`;
   };
 
-  // Retourner null immédiatement pour éviter d'effectuer un rendu si pas de session
+  // Si aucune session, afficher un message de chargement
   if (!session) {
-    return null;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="animate-spin h-12 w-12 mx-auto mb-4 text-primary-600 dark:text-primary-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <p className="text-gray-600 dark:text-gray-300">Chargement de votre profil...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -129,16 +132,19 @@ export default function ProfilePage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Paramètres du compte</h1>
-            <p className="mt-1 text-gray-600 dark:text-gray-400">Gérez votre profil et vos préférences</p>
+            <p className="mt-1 text-gray-600 dark:text-gray-300">Gérez votre profil et vos préférences</p>
           </div>
           
           {/* Boutons d'action */}
           <div className="flex items-center space-x-3">
-            <Link href="/dashboard" className="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">
+            <Link 
+              href="/dashboard" 
+              className="inline-flex items-center px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+            >
               <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
-              Retour au dashboard
+              Dashboard
             </Link>
           </div>
         </div>
@@ -339,13 +345,14 @@ export default function ProfilePage() {
                         </label>
                         <div className="flex items-center mt-2">
                           {session.user.image ? (
-                            <Image
-                              src={session.user.image}
-                              alt={session.user.name || "Profile"}
-                              width={64}
-                              height={64}
-                              className="rounded-full border-2 border-gray-200 dark:border-gray-600"
-                            />
+                            <div className="relative w-16 h-16 rounded-full overflow-hidden shadow-md border-2 border-primary-200 dark:border-primary-800">
+                              <Image
+                                src={session.user.image}
+                                alt={session.user.name || "Profile"}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
                           ) : (
                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center text-white text-xl font-semibold shadow-md">
                               {(session.user.name?.charAt(0) || session.user.email?.charAt(0) || "U").toUpperCase()}
@@ -355,14 +362,20 @@ export default function ProfilePage() {
                             <div className="flex space-x-2">
                               <button
                                 type="button"
-                                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                                className="inline-flex items-center px-3 py-2 border border-primary-300 dark:border-primary-600 shadow-sm text-sm font-medium rounded-lg text-primary-700 dark:text-primary-300 bg-white dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors duration-200"
                               >
+                                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
                                 Changer
                               </button>
                               <button
                                 type="button"
-                                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
                               >
+                                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                                 Supprimer
                               </button>
                             </div>
@@ -377,7 +390,7 @@ export default function ProfilePage() {
                         <button
                           type="submit"
                           disabled={isLoading}
-                          className="inline-flex justify-center items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium relative"
+                          className="inline-flex justify-center items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium relative transition-all duration-200 hover:shadow-md"
                         >
                           {isLoading ? (
                             <>
@@ -388,7 +401,12 @@ export default function ProfilePage() {
                               <span>Enregistrement...</span>
                             </>
                           ) : (
-                            "Enregistrer les modifications"
+                            <>
+                              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              Enregistrer les modifications
+                            </>
                           )}
                         </button>
                       </div>
@@ -408,7 +426,7 @@ export default function ProfilePage() {
                     </h2>
                     <Link 
                       href="/dashboard" 
-                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                     >
                       <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -425,7 +443,7 @@ export default function ProfilePage() {
                       </svg>
                     </div>
                   ) : wallets.length === 0 ? (
-                    <div className="py-8 text-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl">
+                    <div className="py-8 text-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700/20">
                       <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
@@ -438,7 +456,7 @@ export default function ProfilePage() {
                       <div className="mt-6">
                         <Link
                           href="/dashboard"
-                          className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                          className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md"
                         >
                           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -450,9 +468,9 @@ export default function ProfilePage() {
                   ) : (
                     <div className="space-y-4">
                       {wallets.map((wallet) => (
-                        <div key={wallet.id} className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div key={wallet.id} className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-md transition-all duration-200">
                           <div className="flex items-center">
-                            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 mr-4">
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 mr-4 shadow-sm">
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                               </svg>
@@ -478,12 +496,12 @@ export default function ProfilePage() {
                               </span>
                             </div>
                             <div className="flex-shrink-0 flex space-x-2">
-                              <button className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-md">
+                              <button className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200">
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
                               </button>
-                              <button className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 rounded-md">
+                              <button className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200">
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
@@ -552,8 +570,11 @@ export default function ProfilePage() {
                         <div className="flex justify-end">
                           <button
                             type="submit"
-                            className="inline-flex justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium"
+                            className="inline-flex justify-center items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium transition-all duration-200 hover:shadow-md"
                           >
+                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
                             Mettre à jour le mot de passe
                           </button>
                         </div>
@@ -590,8 +611,11 @@ export default function ProfilePage() {
                       <div className="mt-4 flex justify-end">
                         <button
                           type="button"
-                          className="inline-flex justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 font-medium"
+                          className="inline-flex items-center justify-center px-4 py-2 border border-red-300 dark:border-red-600 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
                         >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
                           Déconnecter toutes les autres sessions
                         </button>
                       </div>
@@ -609,8 +633,11 @@ export default function ProfilePage() {
                       <div className="mt-4">
                         <button
                           type="button"
-                          className="inline-flex justify-center px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 font-medium"
+                          className="inline-flex items-center justify-center px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
                         >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
                           Supprimer mon compte
                         </button>
                       </div>
@@ -641,192 +668,3 @@ export default function ProfilePage() {
                                 <h3 className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Plan Premium</h3>
                               </div>
                               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                Prochain renouvellement le 15 mai 2025
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <span className="text-2xl font-bold text-gray-900 dark:text-white">9,99€</span>
-                              <span className="text-sm text-gray-500 dark:text-gray-400">/mois</span>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
-                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-                              Inclus dans votre abonnement :
-                            </h4>
-                            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                              <li className="flex items-start">
-                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Transactions illimitées
-                              </li>
-                              <li className="flex items-start">
-                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Analyse multi-blockchain
-                              </li>
-                              <li className="flex items-start">
-                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Rapports fiscaux complets (PDF, CSV, Excel)
-                              </li>
-                              <li className="flex items-start">
-                                <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Support prioritaire
-                              </li>
-                            </ul>
-                          </div>
-                          
-                          <div className="mt-6 flex flex-col sm:flex-row sm:justify-between gap-4">
-                            <button
-                              type="button"
-                              className="inline-flex justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium"
-                            >
-                              Gérer le mode de paiement
-                            </button>
-                            <button
-                              type="button"
-                              className="inline-flex justify-center px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg shadow-sm text-sm text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 font-medium"
-                            >
-                              Annuler l'abonnement
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-6">
-                        <h4 className="font-medium text-gray-900 dark:text-white mb-4">
-                          Historique de facturation
-                        </h4>
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
-                          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead className="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                  Date
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                  Montant
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                  Statut
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                  Facture
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                              {[
-                                { id: 1, date: "15 avril 2025", amount: "9,99€", status: "Payé" },
-                                { id: 2, date: "15 mars 2025", amount: "9,99€", status: "Payé" },
-                                { id: 3, date: "15 février 2025", amount: "9,99€", status: "Payé" }
-                              ].map((invoice) => (
-                                <tr key={invoice.id}>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                                    {invoice.date}
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
-                                    {invoice.amount}
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
-                                      {invoice.status}
-                                    </span>
-                                  </td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                                    <button
-                                      type="button"
-                                      className="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 font-medium"
-                                    >
-                                      Télécharger
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      <div className="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg text-yellow-800 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/30">
-                        <div className="flex">
-                          <svg className="h-5 w-5 text-yellow-400 dark:text-yellow-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <p className="text-sm">
-                            Vous utilisez actuellement le plan <span className="font-medium">Gratuit</span>. Passez au plan Premium pour accéder à toutes les fonctionnalités.
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
-                          <h3 className="text-lg font-bold">Plan Premium</h3>
-                          <p className="text-sm opacity-90">Accès complet à toutes les fonctionnalités</p>
-                        </div>
-                        <div className="p-6">
-                          <div className="flex items-center mb-6">
-                            <span className="text-3xl font-bold text-gray-900 dark:text-white">9,99€</span>
-                            <span className="text-gray-500 dark:text-gray-400 ml-2">/mois</span>
-                          </div>
-                          
-                          <ul className="space-y-3 mb-6">
-                            <li className="flex items-start">
-                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                              <span className="text-gray-700 dark:text-gray-300">Transactions illimitées</span>
-                            </li>
-                            <li className="flex items-start">
-                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                              <span className="text-gray-700 dark:text-gray-300">Analyse multi-blockchain</span>
-                            </li>
-                            <li className="flex items-start">
-                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                              <span className="text-gray-700 dark:text-gray-300">Rapports fiscaux complets (PDF, CSV, Excel)</span>
-                            </li>
-                            <li className="flex items-start">
-                              <svg className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                              <span className="text-gray-700 dark:text-gray-300">Support prioritaire</span>
-                            </li>
-                          </ul>
-                          
-                          <Link
-                            href="/pricing"
-                            className="w-full inline-flex justify-center px-5 py-3 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 font-medium"
-                          >
-                            Passer au Premium
-                          </Link>
-                        </div>
-                      </div>
-                      
-                      <div className="text-center">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Vous avez des questions ? <a href="#" className="text-primary-600 dark:text-primary-400 hover:underline">Consultez notre FAQ</a> ou <a href="#" className="text-primary-600 dark:text-primary-400 hover:underline">contactez-nous</a>.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
