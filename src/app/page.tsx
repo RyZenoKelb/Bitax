@@ -48,57 +48,53 @@ interface FaqItem {
   answer: string;
 }
 
-// Interface pour les hexagones
-interface Hexagon {
+// Interface pour les blocs blockchain
+interface CryptoBlock {
   x: number;
   y: number;
+  hash: string;
+  timestamp: number;
   size: number;
-  baseSize: number;
+  color: string;
   opacity: number;
-  speedX: number;
-  speedY: number;
-  pulseSpeed: number;
-  pulseAmount: number;
-  pulsePhase: number;
-  rotation: number;
   rotationSpeed: number;
+  rotation: number;
+  pulsePhase: number;
   isActive: boolean;
 }
 
-// Interface pour les connexions entre hexagones
-interface Connection {
-  from: number;
-  to: number;
-  opacity: number;
-  active: boolean;
-  lastPacketTime: number;
-  packetInterval: number;
-}
-
-// Interface pour les particules
-interface Particle {
-  x: number;
-  y: number;
-  size: number;
-  speedX: number;
-  speedY: number;
+// Interface pour les chaînes de blocs
+interface BlockChain {
+  blocks: CryptoBlock[];
   color: string;
-}
-
-// Interface pour les paquets de données
-interface DataPacket {
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
-  x: number;
-  y: number;
+  route: { x: number; y: number }[];
   progress: number;
   speed: number;
+}
+
+// Interface pour les particules crypto
+interface CryptoParticle {
+  id: number;
+  x: number;
+  y: number;
   size: number;
+  symbol: string;
   color: string;
-  from: number;
-  to: number;
+  speedX: number;
+  speedY: number;
+  rotation: number;
+  rotationSpeed: number;
+  opacity: number;
+  fadeDirection: number;
+}
+
+// Interface pour les lignes de code défilantes
+interface CodeLine {
+  y: number;
+  code: string;
+  speed: number;
+  opacity: number;
+  color: string;
 }
 
 export default function Home() {
@@ -129,7 +125,7 @@ export default function Home() {
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   
-  // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
+  // Effet pour l'animation cryptographique avancée
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -146,331 +142,343 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments visuels améliorés
-    const hexagons: Hexagon[] = [];
-    const connections: Connection[] = [];
-    const particles: Particle[] = [];
-    const dataPackets: DataPacket[] = [];
-      
-    // Créer des hexagones (symboles de blockchain)
-    const createHexagons = () => {
-      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
-      
-      for (let i = 0; i < hexCount; i++) {
+    // Configuration des éléments cryptographiques
+    const cryptoBlocks: CryptoBlock[] = [];
+    const blockChains: BlockChain[] = [];
+    const cryptoParticles: CryptoParticle[] = [];
+    const codeLines: CodeLine[] = [];
+    
+    // Symboles crypto
+    const cryptoSymbols = ['₿', 'Ξ', '◎', '⚡', '♦', '▲', '◆', '◈'];
+    
+    // Codes défilants
+    const codeSamples = [
+      'pragma solidity ^0.8.0;',
+      'contract NFTMarket {',
+      'function mint() external',
+      'require(msg.value >= ',
+      'emit Transfer(addr)',
+      'mapping(address =>',
+      'uint256 public price',
+      'constructor() public',
+      'block.timestamp',
+      'block.difficulty',
+      'block.coinbase',
+      'transaction.hash',
+      'web3.eth.accounts',
+      'crypto.subtle.digest',
+      'SHA256(data).hex',
+      'keccak256(address)',
+      'rlp.encode(block)',
+      'proof.verify()',
+      'consensus.sync()',
+      'chain.validate()'
+    ];
+    
+    // Créer des blocs crypto animés
+    const createCryptoBlocks = () => {
+      for (let i = 0; i < 15; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const size = Math.random() * 25 + 20; // Hexagones plus grands
-        const opacity = Math.random() * 0.3 + 0.15;
-        const speedX = (Math.random() - 0.5) * 0.4;
-        const speedY = (Math.random() - 0.5) * 0.4;
-        const pulseSpeed = Math.random() * 0.01 + 0.005;
-        const pulseAmount = Math.random() * 0.3 + 0.1;
-        const baseSize = size;
-        const rotationSpeed = (Math.random() - 0.5) * 0.005;
-        const rotation = Math.random() * Math.PI * 2;
-        
-        hexagons.push({ 
-          x, y, size, baseSize, opacity, speedX, speedY, 
-          pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
-          rotation, rotationSpeed, 
-          isActive: Math.random() > 0.7 // Certains hexagones sont "actifs"
-        });
-      }
-    };
-    
-    // Créer des connexions entre hexagones (simuler une blockchain)
-    const createConnections = () => {
-      for (let i = 0; i < hexagons.length; i++) {
-        for (let j = i + 1; j < hexagons.length; j++) {
-          if (Math.random() > 0.5) {
-            connections.push({
-              from: i,
-              to: j,
-              opacity: Math.random() * 0.2 + 0.05,
-              active: false,
-              lastPacketTime: 0,
-              packetInterval: Math.random() * 8000 + 2000, // Intervalle entre les paquets
-            });
-          }
-        }
-      }
-    };
-    
-    // Créer particules normales (effet visuel)
-    const createParticles = () => {
-      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 60);
-      
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 2 + 0.5;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const speedX = (Math.random() - 0.5) * 0.6;
-        const speedY = (Math.random() - 0.5) * 0.6;
-        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
-
-        particles.push({
+        const hash = Array(8).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+        cryptoBlocks.push({
           x,
           y,
-          size,
-          speedX,
-          speedY,
-          color
+          hash,
+          timestamp: Date.now(),
+          size: Math.random() * 30 + 20,
+          color: ['#F7931A', '#627EEA', '#00FFA3', '#8247E5'][Math.floor(Math.random() * 4)],
+          opacity: Math.random() * 0.5 + 0.3,
+          rotationSpeed: (Math.random() - 0.5) * 0.002,
+          rotation: Math.random() * Math.PI * 2,
+          pulsePhase: Math.random() * Math.PI * 2,
+          isActive: Math.random() > 0.7
         });
       }
     };
-
-    // Fonction pour créer un "paquet de données" transitant entre deux hexagones
-    const createDataPacket = (from: number, to: number) => {
-      const fromHex = hexagons[from];
-      const toHex = hexagons[to];
-      
-      dataPackets.push({
-        fromX: fromHex.x,
-        fromY: fromHex.y,
-        toX: toHex.x,
-        toY: toHex.y,
-        x: fromHex.x,
-        y: fromHex.y,
-        progress: 0,
-        speed: Math.random() * 0.01 + 0.005,
-        size: Math.random() * 4 + 2,
-        color: Math.random() > 0.5 ? 
-          'rgba(147, 51, 234, 0.8)' : // Violet
-          'rgba(99, 102, 241, 0.8)', // Indigo
-        from,
-        to
-      });
+    
+    // Créer des chaînes de blocs
+    const createBlockChains = () => {
+      const chainColors = ['#F7931A', '#627EEA', '#00FFA3', '#8247E5'];
+      for (let i = 0; i < 3; i++) {
+        const route: { x: number; y: number }[] = [];
+        const startX = -200;
+        const startY = Math.random() * canvas.height;
+        const endX = canvas.width + 200;
+        const endY = Math.random() * canvas.height;
+        
+        // Créer une route sinusoïdale
+        for (let j = 0; j <= 50; j++) {
+          const t = j / 50;
+          const x = startX + (endX - startX) * t;
+          const y = startY + (endY - startY) * t + Math.sin(t * Math.PI * 4) * 50;
+          route.push({ x, y });
+        }
+        
+        blockChains.push({
+          blocks: [],
+          color: chainColors[i % chainColors.length],
+          route,
+          progress: 0,
+          speed: 0.0005 + Math.random() * 0.0005
+        });
+      }
     };
-
-    createHexagons();
-    createConnections();
-    createParticles();
-
-    // Dessiner un hexagone avec rotation
-    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
-      const sides = 6;
+    
+    // Créer des particules crypto
+    const createCryptoParticles = () => {
+      for (let i = 0; i < 30; i++) {
+        cryptoParticles.push({
+          id: i,
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 20 + 10,
+          symbol: cryptoSymbols[Math.floor(Math.random() * cryptoSymbols.length)],
+          color: ['#F7931A', '#627EEA', '#00FFA3', '#8247E5', '#FF3D71'][Math.floor(Math.random() * 5)],
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          rotation: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.02,
+          opacity: Math.random() * 0.6 + 0.2,
+          fadeDirection: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+    };
+    
+    // Créer des lignes de code
+    const createCodeLines = () => {
+      for (let i = 0; i < 20; i++) {
+        codeLines.push({
+          y: Math.random() * canvas.height,
+          code: codeSamples[Math.floor(Math.random() * codeSamples.length)],
+          speed: Math.random() * 0.5 + 0.1,
+          opacity: Math.random() * 0.1 + 0.05,
+          color: ['#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD'][Math.floor(Math.random() * 4)]
+        });
+      }
+    };
+    
+    // Dessiner un bloc crypto
+    const drawCryptoBlock = (block: CryptoBlock) => {
       ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
+      ctx.translate(block.x, block.y);
+      ctx.rotate(block.rotation);
       
-      // Hexagone principal
-      ctx.beginPath();
-      for (let i = 0; i <= sides; i++) {
-        const angle = i * 2 * Math.PI / sides;
-        const pointX = size * Math.cos(angle);
-        const pointY = size * Math.sin(angle);
-        
-        if (i === 0) {
-          ctx.moveTo(pointX, pointY);
-        } else {
-          ctx.lineTo(pointX, pointY);
-        }
-      }
+      // Dessiner le bloc principal
+      const gradient = ctx.createLinearGradient(-block.size/2, -block.size/2, block.size/2, block.size/2);
+      gradient.addColorStop(0, block.color);
+      gradient.addColorStop(1, block.color + '40');
       
-      // Style pour hexagone actif/inactif
-      if (isActive) {
-        // Hexagone actif - double style
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 0.15})`;
-      } else {
-        // Hexagone inactif
-        ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
-        ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
-      }
+      ctx.fillStyle = gradient;
+      ctx.globalAlpha = block.opacity;
+      ctx.fillRect(-block.size/2, -block.size/2, block.size, block.size);
       
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.fill();
+      // Effet de brillance
+      ctx.strokeStyle = block.color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-block.size/2, -block.size/2, block.size, block.size);
       
-      // Détail intérieur pour les hexagones actifs
-      if (isActive) {
-        ctx.beginPath();
-        for (let i = 0; i <= sides; i++) {
-          const angle = i * 2 * Math.PI / sides;
-          const pointX = size * 0.7 * Math.cos(angle);
-          const pointY = size * 0.7 * Math.sin(angle);
-          
-          if (i === 0) {
-            ctx.moveTo(pointX, pointY);
-          } else {
-            ctx.lineTo(pointX, pointY);
-          }
-        }
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 0.8})`;
-        ctx.stroke();
-        
-        // Point central pulsant
-        ctx.beginPath();
-        ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 2})`;
-        ctx.fill();
-      }
+      // Dessiner le hash
+      ctx.fillStyle = '#FFFFFF';
+      ctx.globalAlpha = block.opacity * 0.8;
+      ctx.font = 'bold 8px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(block.hash.substring(0, 8), 0, 0);
       
       ctx.restore();
     };
-
-    // Dessiner un paquet de données
-    const drawDataPacket = (packet: DataPacket) => {
+    
+    // Dessiner une chaine de blocs
+    const drawBlockChain = (chain: BlockChain) => {
+      // Dessiner le chemin
+      ctx.strokeStyle = chain.color + '30';
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
-      ctx.fillStyle = packet.color;
-      ctx.fill();
-      
-      // Effet de traînée
-      ctx.beginPath();
-      const trailLength = 15;
-      ctx.moveTo(packet.x, packet.y);
-      
-      // Calculer point arrière basé sur la direction du mouvement
-      const dx = packet.toX - packet.fromX;
-      const dy = packet.toY - packet.fromY;
-      const angle = Math.atan2(dy, dx);
-      
-      const trailX = packet.x - Math.cos(angle) * trailLength;
-      const trailY = packet.y - Math.sin(angle) * trailLength;
-      
-      ctx.lineTo(trailX, trailY);
-      ctx.strokeStyle = packet.color.replace('0.8', '0.3');
-      ctx.lineWidth = packet.size * 0.7;
+      ctx.moveTo(chain.route[0].x, chain.route[0].y);
+      for (let i = 1; i < chain.route.length; i++) {
+        ctx.lineTo(chain.route[i].x, chain.route[i].y);
+      }
       ctx.stroke();
+      
+      // Dessiner les blocs sur le chemin
+      chain.blocks.forEach(block => {
+        drawCryptoBlock(block);
+      });
+      
+      // Animation de lumière voyageuse
+      const lightPos = chain.route[Math.floor(chain.progress * (chain.route.length - 1))];
+      if (lightPos) {
+        const gradient = ctx.createRadialGradient(lightPos.x, lightPos.y, 0, lightPos.x, lightPos.y, 30);
+        gradient.addColorStop(0, chain.color);
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.beginPath();
+        ctx.arc(lightPos.x, lightPos.y, 30, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.globalAlpha = 0.6;
+        ctx.fill();
+      }
     };
-
-    // Animation timestamp pour gestion du temps
+    
+    // Dessiner une particule crypto
+    const drawCryptoParticle = (particle: CryptoParticle) => {
+      ctx.save();
+      ctx.translate(particle.x, particle.y);
+      ctx.rotate(particle.rotation);
+      ctx.globalAlpha = particle.opacity;
+      
+      // Créer un gradient pour la particule
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, particle.size);
+      gradient.addColorStop(0, particle.color);
+      gradient.addColorStop(0.5, particle.color + '80');
+      gradient.addColorStop(1, 'transparent');
+      
+      ctx.fillStyle = gradient;
+      ctx.fillRect(-particle.size/2, -particle.size/2, particle.size, particle.size);
+      
+      // Dessiner le symbole
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = `bold ${particle.size * 0.7}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(particle.symbol, 0, 0);
+      
+      ctx.restore();
+    };
+    
+    // Dessiner une ligne de code
+    const drawCodeLine = (line: CodeLine) => {
+      ctx.save();
+      ctx.globalAlpha = line.opacity;
+      ctx.fillStyle = line.color;
+      ctx.font = '14px "JetBrains Mono", monospace';
+      ctx.fillText(line.code, -100, line.y);
+      ctx.restore();
+    };
+    
+    createCryptoBlocks();
+    createBlockChains();
+    createCryptoParticles();
+    createCodeLines();
+    
     let lastTime = 0;
     
-    // Animer tous les éléments avec timestamp
+    // Animation principale
     const animate = (timestamp: number) => {
       const deltaTime = timestamp - lastTime;
       lastTime = timestamp;
       
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Effacer le canvas avec un effet de trail
+      ctx.fillStyle = 'rgba(13, 11, 34, 0.03)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Mettre à jour et dessiner les connexions
-      connections.forEach((conn, index) => {
-        const fromHex = hexagons[conn.from];
-        const toHex = hexagons[conn.to];
+      // Dessiner le grid de fond
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      const gridSize = 50;
+      for (let x = 0; x <= canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      
+      // Animer les lignes de code
+      codeLines.forEach(line => {
+        line.y += line.speed;
+        if (line.y > canvas.height + 20) {
+          line.y = -20;
+          line.code = codeSamples[Math.floor(Math.random() * codeSamples.length)];
+        }
+        drawCodeLine(line);
+      });
+      
+      // Animer les blocs crypto
+      cryptoBlocks.forEach(block => {
+        block.rotation += block.rotationSpeed;
+        const pulse = Math.sin(timestamp * 0.002 + block.pulsePhase) * 0.1 + 1;
+        block.size = (block.size / pulse) * pulse;
         
-        // Calculer la distance
-        const distance = Math.sqrt(
-          Math.pow(fromHex.x - toHex.x, 2) + 
-          Math.pow(fromHex.y - toHex.y, 2)
-        );
+        drawCryptoBlock(block);
         
-        // Ne dessiner la connexion que si les hexagones sont assez proches
-        if (distance < 350) {
-          ctx.beginPath();
-          ctx.moveTo(fromHex.x, fromHex.y);
-          ctx.lineTo(toHex.x, toHex.y);
-          
-          // Style de ligne basé sur l'activité
-          if (conn.active) {
-            ctx.strokeStyle = `rgba(147, 51, 234, ${conn.opacity * 2})`;
-            ctx.lineWidth = 1.5;
+        // Créer des connections entre les blocs
+        cryptoBlocks.forEach(otherBlock => {
+          if (block !== otherBlock) {
+            const distance = Math.sqrt(
+              Math.pow(block.x - otherBlock.x, 2) + 
+              Math.pow(block.y - otherBlock.y, 2)
+            );
             
-            // Désactive la connexion après un certain temps
-            if (timestamp - conn.lastPacketTime > 1500) {
-              conn.active = false;
-            }
-          } else {
-            ctx.strokeStyle = `rgba(99, 102, 241, ${conn.opacity})`;
-            ctx.lineWidth = 0.8;
-            
-            // Créer un nouveau paquet à intervalle régulier
-            if (timestamp - conn.lastPacketTime > conn.packetInterval) {
-              conn.active = true;
-              conn.lastPacketTime = timestamp;
-              createDataPacket(conn.from, conn.to);
-              
-              // Augmente les chances d'activation connectée
-              connections.forEach(otherConn => {
-                // Si cette connexion partage un node avec la connexion active
-                if (otherConn !== conn && 
-                    (otherConn.from === conn.from || otherConn.from === conn.to ||
-                     otherConn.to === conn.from || otherConn.to === conn.to)) {
-                  if (Math.random() > 0.7) {
-                    otherConn.active = true;
-                    otherConn.lastPacketTime = timestamp;
-                    createDataPacket(otherConn.from, otherConn.to);
-                  }
-                }
-              });
+            if (distance < 200) {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - distance / 200) * 0.1})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(block.x, block.y);
+              ctx.lineTo(otherBlock.x, otherBlock.y);
+              ctx.stroke();
             }
           }
-          
-          ctx.stroke();
-        }
+        });
       });
       
-      // Mettre à jour et dessiner les paquets de données
-      for (let i = dataPackets.length - 1; i >= 0; i--) {
-        const packet = dataPackets[i];
-        packet.progress += packet.speed;
-        
-        // Mouvement le long de la ligne
-        packet.x = packet.fromX + (packet.toX - packet.fromX) * packet.progress;
-        packet.y = packet.fromY + (packet.toY - packet.fromY) * packet.progress;
-        
-        drawDataPacket(packet);
-        
-        // Supprimer le paquet s'il a atteint sa destination
-        if (packet.progress >= 1) {
-          // Activer brièvement l'hexagone de destination
-          hexagons[packet.to].isActive = true;
-          setTimeout(() => {
-            if (hexagons[packet.to]) hexagons[packet.to].isActive = Math.random() > 0.7;
-          }, 800);
-          
-          dataPackets.splice(i, 1);
+      // Animer les chaînes de blocs
+      blockChains.forEach(chain => {
+        chain.progress += chain.speed;
+        if (chain.progress >= 1) {
+          chain.progress = 0;
+          // Créer de nouveaux blocs
+          chain.blocks = [];
+          for (let i = 0; i < 5; i++) {
+            const routeIndex = Math.floor((i / 5) * chain.route.length);
+            const pos = chain.route[routeIndex];
+            chain.blocks.push({
+              x: pos.x,
+              y: pos.y,
+              hash: Array(8).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join(''),
+              timestamp: Date.now(),
+              size: 15,
+              color: chain.color,
+              opacity: 0.8,
+              rotationSpeed: 0,
+              rotation: 0,
+              pulsePhase: 0,
+              isActive: true
+            });
+          }
         }
-      }
+        drawBlockChain(chain);
+      });
       
-      // Mettre à jour et dessiner les hexagones
-      hexagons.forEach(hex => {
-        hex.x += hex.speedX;
-        hex.y += hex.speedY;
-        hex.rotation += hex.rotationSpeed;
+      // Animer les particules crypto
+      cryptoParticles.forEach(particle => {
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+        particle.rotation += particle.rotationSpeed;
         
-        // Effet de pulsation
-        hex.size = hex.baseSize + Math.sin(timestamp * hex.pulseSpeed + hex.pulsePhase) * hex.baseSize * hex.pulseAmount;
+        // Effet de fade
+        particle.opacity += particle.fadeDirection * 0.002;
+        if (particle.opacity > 0.8 || particle.opacity < 0.2) {
+          particle.fadeDirection *= -1;
+        }
         
         // Rebond sur les bords
-        if (hex.x < 0 || hex.x > canvas.width) hex.speedX *= -1;
-        if (hex.y < 0 || hex.y > canvas.height) hex.speedY *= -1;
+        if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
         
-        drawHexagon(hex.x, hex.y, hex.size, hex.rotation, hex.opacity, hex.isActive);
+        drawCryptoParticle(particle);
       });
       
-      // Mettre à jour et dessiner les particules
-      particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-
-        // Rebond sur les bords
-        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-
-        // Dessiner particule
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
       requestAnimationFrame(animate);
     };
-
-    // Démarrer l'animation initiale
-    requestAnimationFrame(animate);
     
-    // Générer quelques connexions actives initialement
-    setTimeout(() => {
-      for (let i = 0; i < 3; i++) {
-        const connIndex = Math.floor(Math.random() * connections.length);
-        connections[connIndex].active = true;
-        connections[connIndex].lastPacketTime = performance.now();
-        createDataPacket(connections[connIndex].from, connections[connIndex].to);
-      }
-    }, 500);
+    requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -649,56 +657,24 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      {/* Background moderne avec animation blockchain au lieu d'étoiles */}
-      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
-        {/* Gradient d'ambiance */}
-        <motion.div className="absolute top-0 left-0 w-full h-full">
-          <motion.div 
-            className="absolute top-0 right-0 w-1/2 h-1/2 bg-indigo-600/10 rounded-full filter blur-[150px]"
-            animate={{ 
-              x: [0, 30, 0],
-              y: [0, -30, 0],
-            }}
-            transition={{ 
-              repeat: Infinity, 
-              duration: 30,
-              ease: "easeInOut" 
-            }}
-          ></motion.div>
-          <motion.div 
-            className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-600/10 rounded-full filter blur-[150px]"
-            animate={{ 
-              x: [0, -30, 0],
-              y: [0, 30, 0],
-            }}
-            transition={{ 
-              repeat: Infinity, 
-              duration: 35,
-              ease: "easeInOut",
-              delay: 5
-            }}
-          ></motion.div>
-          <motion.div 
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 bg-purple-600/10 rounded-full filter blur-[150px]"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.6, 0.8, 0.6],
-            }}
-            transition={{ 
-              repeat: Infinity, 
-              duration: 25,
-              ease: "easeInOut",
-              delay: 10
-            }}
-          ></motion.div>
+      {/* Background avancé avec animation cryptographique */}
+      <div className="fixed inset-0 -z-20 overflow-hidden">
+        {/* Gradients de base */}
+        <motion.div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-950 via-purple-900 to-blue-900" />
+          <div className="absolute top-0 left-0 w-full h-full opacity-70">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-800/30 rounded-full filter blur-3xl animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-800/30 rounded-full filter blur-3xl animate-pulse delay-300" />
+            <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-indigo-800/20 rounded-full filter blur-3xl animate-pulse delay-500" />
+          </div>
         </motion.div>
         
-        {/* Canvas pour les animations blockchain et particules */}
+        {/* Canvas pour les animations crypto */}
         <canvas 
           ref={canvasRef} 
-          className="fixed inset-0 w-full h-full -z-10"
-          style={{ opacity: 0.7 }}
-        ></canvas>
+          className="fixed inset-0 w-full h-full"
+          style={{ background: 'transparent', mixBlendMode: 'screen' }}
+        />
       </div>
 
       {/* Header premium avec glassmorphism et effet de scroll */}
