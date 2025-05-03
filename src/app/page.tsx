@@ -48,6 +48,59 @@ interface FaqItem {
   answer: string;
 }
 
+// Interface pour les hexagones
+interface Hexagon {
+  x: number;
+  y: number;
+  size: number;
+  baseSize: number;
+  opacity: number;
+  speedX: number;
+  speedY: number;
+  pulseSpeed: number;
+  pulseAmount: number;
+  pulsePhase: number;
+  rotation: number;
+  rotationSpeed: number;
+  isActive: boolean;
+}
+
+// Interface pour les connexions entre hexagones
+interface Connection {
+  from: number;
+  to: number;
+  opacity: number;
+  active: boolean;
+  lastPacketTime: number;
+  packetInterval: number;
+}
+
+// Interface pour les particules
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+  color: string;
+}
+
+// Interface pour les paquets de données
+interface DataPacket {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  x: number;
+  y: number;
+  progress: number;
+  speed: number;
+  size: number;
+  color: string;
+  from: number;
+  to: number;
+}
+
 export default function Home() {
   // État pour gérer les étoiles avec le type correct
   const [stars, setStars] = useState<Star[]>([]);
