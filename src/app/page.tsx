@@ -175,9 +175,9 @@ export default function Home() {
         const size = Math.random() * 20 + 25; // Taille des noeuds
         const opacity = Math.random() * 0.3 + 0.2;
         const speedX = (Math.random() - 0.5) * 0.4;
-      }
-    };
-    
+        const speedY = (Math.random() - 0.5) * 0.4;
+        const pulseSpeed = Math.random() * 0.01 + 0.005;
+        const pulseAmount = Math.random() * 0.2 + 0.1;
     // Créer des connexions entre hexagones (simuler une blockchain)
     const createConnections = () => {
       for (let i = 0; i < hexagons.length; i++) {
