@@ -10,8 +10,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Inter', 'Inter', 'ui-sans-serif', 'system-ui'],
-        mono: ['Inter', 'ui-monospace', 'monospace'],
+        display: ['Orbitron', 'Inter', 'ui-sans-serif', 'system-ui'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
         // Couleur principale - Style Crypto Néon
