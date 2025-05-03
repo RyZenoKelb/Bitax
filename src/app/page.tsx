@@ -48,27 +48,57 @@ interface FaqItem {
   answer: string;
 }
 
-// Interface pour les formes géométriques financières
-interface FinancialShape {
+// Interface pour les hexagones
+interface Hexagon {
   x: number;
   y: number;
-  width: number;
-  height: number;
-  type: 'chart' | 'table' | 'document' | 'graph';
-  rotation: number;
+  size: number;
+  baseSize: number;
   opacity: number;
-  color: string;
-  scale: number;
+  speedX: number;
+  speedY: number;
+  pulseSpeed: number;
+  pulseAmount: number;
+  pulsePhase: number;
+  rotation: number;
+  rotationSpeed: number;
+  isActive: boolean;
 }
 
-// Interface pour les lignes de données
-interface DataLine {
-  y: number;
-  data: string;
-  speed: number;
+// Interface pour les connexions entre hexagones
+interface Connection {
+  from: number;
+  to: number;
   opacity: number;
+  active: boolean;
+  lastPacketTime: number;
+  packetInterval: number;
+}
+
+// Interface pour les particules
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
   color: string;
-  width: number;
+}
+
+// Interface pour les paquets de données
+interface DataPacket {
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  x: number;
+  y: number;
+  progress: number;
+  speed: number;
+  size: number;
+  color: string;
+  from: number;
+  to: number;
 }
 
 export default function Home() {
@@ -99,7 +129,7 @@ export default function Home() {
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   
-  // Effet pour l'animation financière professionnelle
+  // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -116,191 +146,331 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments financiers
-    const financialShapes: FinancialShape[] = [];
-    const dataLines: DataLine[] = [];
-    
-    // Données fiscales défilantes
-    const financialData = [
-      '€12,345 - Plus-value',
-      'Déclaration 2024',
-      'Taux imposition 30%',
-      '47 transactions',
-      'Régime réel',
-      'Flat tax auto',
-      '€8,950 - Moins-value',
-      'Seuil déclaratif',
-      'Abattements applicables',
-      '23% gains long terme',
-      'Article 150-0 D bis',
-      'Form 2086'
-    ];
-    
-    // Créer des formes financières abstraites
-    const createFinancialShapes = () => {
-      for (let i = 0; i < 8; i++) {
+    // Configuration des éléments visuels améliorés
+    const hexagons: Hexagon[] = [];
+    const connections: Connection[] = [];
+    const particles: Particle[] = [];
+    const dataPackets: DataPacket[] = [];
+      
+    // Créer des hexagones (symboles de blockchain)
+    const createHexagons = () => {
+      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
+      
+      for (let i = 0; i < hexCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const types: ('chart' | 'table' | 'document' | 'graph')[] = ['chart', 'table', 'document', 'graph'];
-        const type = types[Math.floor(Math.random() * types.length)];
+        const size = Math.random() * 25 + 20; // Hexagones plus grands
+        const opacity = Math.random() * 0.3 + 0.15;
+        const speedX = (Math.random() - 0.5) * 0.4;
+        const speedY = (Math.random() - 0.5) * 0.4;
+        const pulseSpeed = Math.random() * 0.01 + 0.005;
+        const pulseAmount = Math.random() * 0.3 + 0.1;
+        const baseSize = size;
+        const rotationSpeed = (Math.random() - 0.5) * 0.005;
+        const rotation = Math.random() * Math.PI * 2;
         
-        financialShapes.push({
+        hexagons.push({ 
+          x, y, size, baseSize, opacity, speedX, speedY, 
+          pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
+          rotation, rotationSpeed, 
+          isActive: Math.random() > 0.7 // Certains hexagones sont "actifs"
+        });
+      }
+    };
+    
+    // Créer des connexions entre hexagones (simuler une blockchain)
+    const createConnections = () => {
+      for (let i = 0; i < hexagons.length; i++) {
+        for (let j = i + 1; j < hexagons.length; j++) {
+          if (Math.random() > 0.5) {
+            connections.push({
+              from: i,
+              to: j,
+              opacity: Math.random() * 0.2 + 0.05,
+              active: false,
+              lastPacketTime: 0,
+              packetInterval: Math.random() * 8000 + 2000, // Intervalle entre les paquets
+            });
+          }
+        }
+      }
+    };
+    
+    // Créer particules normales (effet visuel)
+    const createParticles = () => {
+      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 60);
+      
+      for (let i = 0; i < particleCount; i++) {
+        const size = Math.random() * 2 + 0.5;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speedX = (Math.random() - 0.5) * 0.6;
+        const speedY = (Math.random() - 0.5) * 0.6;
+        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
+
+        particles.push({
           x,
           y,
-          width: 60 + Math.random() * 80,
-          height: 40 + Math.random() * 60,
-          type,
-          rotation: Math.random() * 45 - 22.5,
-          opacity: 0.05 + Math.random() * 0.1,
-          color: ['#3949ab', '#0891b2', '#1e293b', '#4f46e5'][Math.floor(Math.random() * 4)],
-          scale: 1
+          size,
+          speedX,
+          speedY,
+          color
         });
       }
     };
-    
-    // Créer des lignes de données
-    const createDataLines = () => {
-      for (let i = 0; i < 10; i++) {
-        dataLines.push({
-          y: Math.random() * canvas.height,
-          data: financialData[Math.floor(Math.random() * financialData.length)],
-          speed: 0.1 + Math.random() * 0.3,
-          opacity: 0.05 + Math.random() * 0.05,
-          color: '#64748b',
-          width: Math.random() * canvas.width
-        });
-      }
-    };
-    
-    // Dessiner une forme financière
-    const drawFinancialShape = (shape: FinancialShape) => {
-      ctx.save();
-      ctx.translate(shape.x, shape.y);
-      ctx.rotate(shape.rotation * Math.PI / 180);
-      ctx.globalAlpha = shape.opacity;
-      ctx.fillStyle = shape.color;
-      ctx.strokeStyle = shape.color;
-      ctx.lineWidth = 1;
+
+    // Fonction pour créer un "paquet de données" transitant entre deux hexagones
+    const createDataPacket = (from: number, to: number) => {
+      const fromHex = hexagons[from];
+      const toHex = hexagons[to];
       
-      switch (shape.type) {
-        case 'chart':
-          // Graphique à barres
-          for (let i = 0; i < 5; i++) {
-            const height = shape.height * (0.3 + Math.random() * 0.7);
-            ctx.fillRect(i * (shape.width / 5), shape.height - height, shape.width / 5 - 4, height);
-          }
-          break;
+      dataPackets.push({
+        fromX: fromHex.x,
+        fromY: fromHex.y,
+        toX: toHex.x,
+        toY: toHex.y,
+        x: fromHex.x,
+        y: fromHex.y,
+        progress: 0,
+        speed: Math.random() * 0.01 + 0.005,
+        size: Math.random() * 4 + 2,
+        color: Math.random() > 0.5 ? 
+          'rgba(147, 51, 234, 0.8)' : // Violet
+          'rgba(99, 102, 241, 0.8)', // Indigo
+        from,
+        to
+      });
+    };
+
+    createHexagons();
+    createConnections();
+    createParticles();
+
+    // Dessiner un hexagone avec rotation
+    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
+      const sides = 6;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      
+      // Hexagone principal
+      ctx.beginPath();
+      for (let i = 0; i <= sides; i++) {
+        const angle = i * 2 * Math.PI / sides;
+        const pointX = size * Math.cos(angle);
+        const pointY = size * Math.sin(angle);
+        
+        if (i === 0) {
+          ctx.moveTo(pointX, pointY);
+        } else {
+          ctx.lineTo(pointX, pointY);
+        }
+      }
+      
+      // Style pour hexagone actif/inactif
+      if (isActive) {
+        // Hexagone actif - double style
+        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 1.5})`;
+        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 0.15})`;
+      } else {
+        // Hexagone inactif
+        ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
+        ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
+      }
+      
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fill();
+      
+      // Détail intérieur pour les hexagones actifs
+      if (isActive) {
+        ctx.beginPath();
+        for (let i = 0; i <= sides; i++) {
+          const angle = i * 2 * Math.PI / sides;
+          const pointX = size * 0.7 * Math.cos(angle);
+          const pointY = size * 0.7 * Math.sin(angle);
           
-        case 'table':
-          // Tableau
-          for (let i = 0; i <= 3; i++) {
-            for (let j = 0; j <= 2; j++) {
-              ctx.strokeRect(i * (shape.width / 3), j * (shape.height / 3), shape.width / 3, shape.height / 3);
-            }
+          if (i === 0) {
+            ctx.moveTo(pointX, pointY);
+          } else {
+            ctx.lineTo(pointX, pointY);
           }
-          break;
-          
-        case 'document':
-          // Document avec coin replié
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.lineTo(shape.width - 10, 0);
-          ctx.lineTo(shape.width, 10);
-          ctx.lineTo(shape.width, shape.height);
-          ctx.lineTo(0, shape.height);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-          // Lignes de texte
-          for (let i = 0; i < 4; i++) {
-            ctx.strokeRect(10, 10 + i * 10, shape.width - 20, 5);
-          }
-          break;
-          
-        case 'graph':
-          // Graphique linéaire
-          ctx.beginPath();
-          ctx.moveTo(0, shape.height);
-          for (let i = 0; i <= 10; i++) {
-            const x = i * (shape.width / 10);
-            const y = shape.height - Math.random() * shape.height;
-            ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-          break;
+        }
+        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 0.8})`;
+        ctx.stroke();
+        
+        // Point central pulsant
+        ctx.beginPath();
+        ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 2})`;
+        ctx.fill();
       }
       
       ctx.restore();
     };
-    
-    // Dessiner une ligne de données
-    const drawDataLine = (line: DataLine) => {
-      ctx.save();
-      ctx.globalAlpha = line.opacity;
-      ctx.fillStyle = line.color;
-      ctx.font = '12px monospace';
-      ctx.fillText(line.data, -line.width, line.y);
-      ctx.restore();
+
+    // Dessiner un paquet de données
+    const drawDataPacket = (packet: DataPacket) => {
+      ctx.beginPath();
+      ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
+      ctx.fillStyle = packet.color;
+      ctx.fill();
+      
+      // Effet de traînée
+      ctx.beginPath();
+      const trailLength = 15;
+      ctx.moveTo(packet.x, packet.y);
+      
+      // Calculer point arrière basé sur la direction du mouvement
+      const dx = packet.toX - packet.fromX;
+      const dy = packet.toY - packet.fromY;
+      const angle = Math.atan2(dy, dx);
+      
+      const trailX = packet.x - Math.cos(angle) * trailLength;
+      const trailY = packet.y - Math.sin(angle) * trailLength;
+      
+      ctx.lineTo(trailX, trailY);
+      ctx.strokeStyle = packet.color.replace('0.8', '0.3');
+      ctx.lineWidth = packet.size * 0.7;
+      ctx.stroke();
     };
-    
-    createFinancialShapes();
-    createDataLines();
-    
+
+    // Animation timestamp pour gestion du temps
     let lastTime = 0;
     
-    // Animation principale
+    // Animer tous les éléments avec timestamp
     const animate = (timestamp: number) => {
       const deltaTime = timestamp - lastTime;
       lastTime = timestamp;
       
-      // Effacer le canvas avec un effet de trail
-      ctx.fillStyle = 'rgba(13, 11, 34, 0.03)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Animer les lignes de données
-      dataLines.forEach(line => {
-        line.width += line.speed;
-        if (line.width > canvas.width + 200) {
-          line.width = -200;
-          line.data = financialData[Math.floor(Math.random() * financialData.length)];
-        }
-        drawDataLine(line);
-      });
-      
-      // Animer les formes financières
-      financialShapes.forEach(shape => {
-        shape.scale = 1 + Math.sin(timestamp * 0.0005) * 0.05;
-        ctx.save();
-        ctx.translate(shape.x, shape.y);
-        ctx.scale(shape.scale, shape.scale);
-        ctx.translate(-shape.x, -shape.y);
-        drawFinancialShape(shape);
-        ctx.restore();
+      // Mettre à jour et dessiner les connexions
+      connections.forEach((conn, index) => {
+        const fromHex = hexagons[conn.from];
+        const toHex = hexagons[conn.to];
         
-        // Créer des connections entre les formes (représentant des flux de données)
-        financialShapes.forEach(otherShape => {
-          if (shape !== otherShape) {
-            const distance = Math.sqrt(
-              Math.pow(shape.x - otherShape.x, 2) + 
-              Math.pow(shape.y - otherShape.y, 2)
-            );
+        // Calculer la distance
+        const distance = Math.sqrt(
+          Math.pow(fromHex.x - toHex.x, 2) + 
+          Math.pow(fromHex.y - toHex.y, 2)
+        );
+        
+        // Ne dessiner la connexion que si les hexagones sont assez proches
+        if (distance < 350) {
+          ctx.beginPath();
+          ctx.moveTo(fromHex.x, fromHex.y);
+          ctx.lineTo(toHex.x, toHex.y);
+          
+          // Style de ligne basé sur l'activité
+          if (conn.active) {
+            ctx.strokeStyle = `rgba(147, 51, 234, ${conn.opacity * 2})`;
+            ctx.lineWidth = 1.5;
             
-            if (distance < 300) {
-              ctx.strokeStyle = `rgba(79, 70, 229, ${(1 - distance / 300) * 0.1})`;
-              ctx.lineWidth = 1;
-              ctx.beginPath();
-              ctx.moveTo(shape.x, shape.y);
-              ctx.lineTo(otherShape.x, otherShape.y);
-              ctx.stroke();
+            // Désactive la connexion après un certain temps
+            if (timestamp - conn.lastPacketTime > 1500) {
+              conn.active = false;
+            }
+          } else {
+            ctx.strokeStyle = `rgba(99, 102, 241, ${conn.opacity})`;
+            ctx.lineWidth = 0.8;
+            
+            // Créer un nouveau paquet à intervalle régulier
+            if (timestamp - conn.lastPacketTime > conn.packetInterval) {
+              conn.active = true;
+              conn.lastPacketTime = timestamp;
+              createDataPacket(conn.from, conn.to);
+              
+              // Augmente les chances d'activation connectée
+              connections.forEach(otherConn => {
+                // Si cette connexion partage un node avec la connexion active
+                if (otherConn !== conn && 
+                    (otherConn.from === conn.from || otherConn.from === conn.to ||
+                     otherConn.to === conn.from || otherConn.to === conn.to)) {
+                  if (Math.random() > 0.7) {
+                    otherConn.active = true;
+                    otherConn.lastPacketTime = timestamp;
+                    createDataPacket(otherConn.from, otherConn.to);
+                  }
+                }
+              });
             }
           }
-        });
+          
+          ctx.stroke();
+        }
       });
       
+      // Mettre à jour et dessiner les paquets de données
+      for (let i = dataPackets.length - 1; i >= 0; i--) {
+        const packet = dataPackets[i];
+        packet.progress += packet.speed;
+        
+        // Mouvement le long de la ligne
+        packet.x = packet.fromX + (packet.toX - packet.fromX) * packet.progress;
+        packet.y = packet.fromY + (packet.toY - packet.fromY) * packet.progress;
+        
+        drawDataPacket(packet);
+        
+        // Supprimer le paquet s'il a atteint sa destination
+        if (packet.progress >= 1) {
+          // Activer brièvement l'hexagone de destination
+          hexagons[packet.to].isActive = true;
+          setTimeout(() => {
+            if (hexagons[packet.to]) hexagons[packet.to].isActive = Math.random() > 0.7;
+          }, 800);
+          
+          dataPackets.splice(i, 1);
+        }
+      }
+      
+      // Mettre à jour et dessiner les hexagones
+      hexagons.forEach(hex => {
+        hex.x += hex.speedX;
+        hex.y += hex.speedY;
+        hex.rotation += hex.rotationSpeed;
+        
+        // Effet de pulsation
+        hex.size = hex.baseSize + Math.sin(timestamp * hex.pulseSpeed + hex.pulsePhase) * hex.baseSize * hex.pulseAmount;
+        
+        // Rebond sur les bords
+        if (hex.x < 0 || hex.x > canvas.width) hex.speedX *= -1;
+        if (hex.y < 0 || hex.y > canvas.height) hex.speedY *= -1;
+        
+        drawHexagon(hex.x, hex.y, hex.size, hex.rotation, hex.opacity, hex.isActive);
+      });
+      
+      // Mettre à jour et dessiner les particules
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        // Rebond sur les bords
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+        // Dessiner particule
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
       requestAnimationFrame(animate);
     };
-    
+
+    // Démarrer l'animation initiale
     requestAnimationFrame(animate);
+    
+    // Générer quelques connexions actives initialement
+    setTimeout(() => {
+      for (let i = 0; i < 3; i++) {
+        const connIndex = Math.floor(Math.random() * connections.length);
+        connections[connIndex].active = true;
+        connections[connIndex].lastPacketTime = performance.now();
+        createDataPacket(connections[connIndex].from, connections[connIndex].to);
+      }
+    }, 500);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -479,24 +649,56 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      {/* Background avancé avec animation fiscale */}
-      <div className="fixed inset-0 -z-20 overflow-hidden">
-        {/* Gradients de base */}
-        <motion.div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900" />
-          <div className="absolute top-0 left-0 w-full h-full opacity-40">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-800/20 rounded-full filter blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-sky-800/20 rounded-full filter blur-3xl animate-pulse delay-300" />
-            <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-slate-800/20 rounded-full filter blur-3xl animate-pulse delay-500" />
-          </div>
+      {/* Background moderne avec animation blockchain au lieu d'étoiles */}
+      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
+        {/* Gradient d'ambiance */}
+        <motion.div className="absolute top-0 left-0 w-full h-full">
+          <motion.div 
+            className="absolute top-0 right-0 w-1/2 h-1/2 bg-indigo-600/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              x: [0, 30, 0],
+              y: [0, -30, 0],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 30,
+              ease: "easeInOut" 
+            }}
+          ></motion.div>
+          <motion.div 
+            className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-600/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              x: [0, -30, 0],
+              y: [0, 30, 0],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 35,
+              ease: "easeInOut",
+              delay: 5
+            }}
+          ></motion.div>
+          <motion.div 
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 bg-purple-600/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.6, 0.8, 0.6],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 25,
+              ease: "easeInOut",
+              delay: 10
+            }}
+          ></motion.div>
         </motion.div>
         
-        {/* Canvas pour les animations financières */}
+        {/* Canvas pour les animations blockchain et particules */}
         <canvas 
           ref={canvasRef} 
-          className="fixed inset-0 w-full h-full"
-          style={{ background: 'transparent', mixBlendMode: 'screen' }}
-        />
+          className="fixed inset-0 w-full h-full -z-10"
+          style={{ opacity: 0.7 }}
+        ></canvas>
       </div>
 
       {/* Header premium avec glassmorphism et effet de scroll */}
@@ -600,7 +802,7 @@ export default function Home() {
                     className="w-full py-2.5 text-center text-white/80 border border-white/20 rounded-lg hover:bg-white/5 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
-                    Connexion
+                    Sign In
                   </Link>
                   
                   <Link 
@@ -608,7 +810,7 @@ export default function Home() {
                     className="w-full py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg"
                     onClick={() => setMenuOpen(false)}
                   >
-                    S'inscrire
+                    Sign Up
                   </Link>
                 </div>
               </div>
@@ -1332,7 +1534,22 @@ export default function Home() {
               <div className="flex space-x-4">
                 <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.44 3.06H5.56C4.15 3.06 3 4.21 3 5.62v12.88c0 1.41 1.15 2.56 2.56 2.56h12.88c1.41 0 2.56-1.15 2.56-2.56V5.62c0-1.41-1.15-2.56-2.56-2.56zm0 2.56v3.81h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v3.82h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v.99H5.56V5.62h12.88z" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.77 5.03l1.4 1.4L8.43 19.17l-5.6-5.6 1.4-1.4 4.2 4.2L19.77 5.03m0-2.83L8.43 13.54l-4.2-4.2L0 13.57 8.43 22 24 6.43 19.77 2.2z" />
                   </svg>
                 </a>
               </div>
