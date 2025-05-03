@@ -224,19 +224,19 @@ export default function Home() {
         const y = Math.random() * canvas.height;
         const speedX = (Math.random() - 0.5) * 0.5;
         const speedY = (Math.random() - 0.5) * 0.5;
-      dataPackets.push({
-        fromX: fromHex.x,
-        fromY: fromHex.y,
-        toX: toHex.x,
-        toY: toHex.y,
-        x: fromHex.x,
-        y: fromHex.y,
-        progress: 0,
-        speed: Math.random() * 0.01 + 0.005,
-        size: Math.random() * 4 + 2,
-        color: Math.random() > 0.5 ? 
-          'rgba(147, 51, 234, 0.8)' : // Violet
-          'rgba(99, 102, 241, 0.8)', // Indigo
+        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.4 + 0.2})`;
+
+        particles.push({
+          x, y, size, speedX, speedY, color
+        });
+      }
+    };
+
+    // Fonction pour créer une "transaction" entre deux noeuds
+    const createTransaction = (from, to) => {
+      const fromNode = cryptoNodes[from];
+      const toNode = cryptoNodes[to];
+      
         from,
         to
       });
