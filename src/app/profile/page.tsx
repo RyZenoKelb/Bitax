@@ -19,6 +19,13 @@ export default function ProfilePage() {
   const [isLoadingWallets, setIsLoadingWallets] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
 
+  // Correction de l'erreur: utiliser useEffect pour la redirection
+  useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
+  }, [session, router]);
+  
   // Charger les données de l'utilisateur
   useEffect(() => {
     if (session?.user) {
@@ -110,9 +117,8 @@ export default function ProfilePage() {
     return `${address.substring(0, 8)}...${address.substring(address.length - 6)}`;
   };
 
-  // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+  // Retourner null immédiatement pour éviter d'effectuer un rendu si pas de session
   if (!session) {
-    router.push("/login");
     return null;
   }
 
