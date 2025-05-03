@@ -304,24 +304,24 @@ export default function Home() {
       
       // Symbole de crypto au centre
       ctx.font = `bold ${currentSize * 0.6}px "Arial", sans-serif`;
+      ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 2.5})`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(symbolInfo.symbol, 0, 0);
+      
+      // Effet supplémentaire pour les noeuds actifs
+      if (isActive) {
+        ctx.beginPath();
+        ctx.arc(0, 0, currentSize * 1.1, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${opacity * 0.3})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
       }
       
       ctx.restore();
     };
 
-    // Dessiner un paquet de données
-    const drawDataPacket = (packet: DataPacket) => {
-      ctx.beginPath();
-      ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
-      ctx.fillStyle = packet.color;
-      ctx.fill();
-      
-      // Effet de traînée
-      ctx.beginPath();
-      const trailLength = 15;
-      ctx.moveTo(packet.x, packet.y);
-      
-      // Calculer point arrière basé sur la direction du mouvement
+    // Convertir couleur HEX en RGB
       const dx = packet.toX - packet.fromX;
       const dy = packet.toY - packet.fromY;
       const angle = Math.atan2(dy, dx);
