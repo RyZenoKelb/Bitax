@@ -33,7 +33,8 @@ export default function FeaturesPage() {
           </p>
         </div>
       </section>
-
+      
+      {/* Section fonctionnalités principales */}
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
