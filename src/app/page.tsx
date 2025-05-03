@@ -220,7 +220,7 @@ export default function Home() {
     };
 
     // Fonction pour créer un "paquet de données" transitant entre deux hexagones
-    const createDataPacket = (from, to) => {
+    const createDataPacket = (from: number, to: number) => {
       const fromHex = hexagons[from];
       const toHex = hexagons[to];
       
