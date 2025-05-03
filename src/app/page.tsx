@@ -147,11 +147,11 @@ export default function Home() {
     window.addEventListener('resize', resizeCanvas);
 
     // Configuration des éléments visuels améliorés
-    const hexagons = [];
-    const connections = [];
-    const particles = [];
-    const dataPackets = [];
-    
+    const hexagons: Hexagon[] = [];
+    const connections: Connection[] = [];
+    const particles: Particle[] = [];
+    const dataPackets: DataPacket[] = [];
+      
     // Créer des hexagones (symboles de blockchain)
     const createHexagons = () => {
       const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
