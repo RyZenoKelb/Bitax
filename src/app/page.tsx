@@ -148,51 +148,60 @@ export default function Home() {
     const cryptoParticles: CryptoParticle[] = [];
     const codeLines: CodeLine[] = [];
     
-    // Symboles crypto
-    const cryptoSymbols = ['₿', 'Ξ', '◎', '⚡', '♦', '▲', '◆', '◈'];
+    // Symboles crypto réalistes
+    const cryptoSymbols = ['₿', 'Ξ', '◎', '⟠', '×', '▣', '◈', '◆'];
     
-    // Codes défilants
+    // Codes blockchain défilants
     const codeSamples = [
-      'pragma solidity ^0.8.0;',
-      'contract NFTMarket {',
-      'function mint() external',
-      'require(msg.value >= ',
-      'emit Transfer(addr)',
-      'mapping(address =>',
-      'uint256 public price',
-      'constructor() public',
-      'block.timestamp',
-      'block.difficulty',
-      'block.coinbase',
-      'transaction.hash',
-      'web3.eth.accounts',
-      'crypto.subtle.digest',
-      'SHA256(data).hex',
-      'keccak256(address)',
-      'rlp.encode(block)',
-      'proof.verify()',
-      'consensus.sync()',
-      'chain.validate()'
+      '0xTransferEvent(…)',
+      'Block #7,982,345',
+      'Gas: 21000 gwei',
+      '0x1234...abcd',
+      'Contract Verified ✓',
+      'Mining reward: 2 ETH',
+      'Difficulty: 14.5T',
+      'Hashrate: 800 TH/s',
+      'Chain ID: 1',
+      '0xLiquidityPool',
+      'Staking APY: 7.2%',
+      'Network: Mainnet',
+      '1,000,000 TPS',
+      'Consensus: PoS',
+      'Smart Contract',
+      'DeFi Protocol',
+      'NFT Mint Active',
+      'Bridge: ETH↔BSC',
+      'Oracle Price Feed',
+      'DAO Governance'
     ];
     
-    // Créer des blocs crypto animés
+    // Créer des éléments blockchain réalistes
     const createCryptoBlocks = () => {
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 10; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const hash = Array(8).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+        const hash = Array(6).fill(0).map(() => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+        const blockTypes = ['BTC', 'ETH', 'SOL', 'MATIC', 'AVAX'];
+        const blockType = blockTypes[Math.floor(Math.random() * blockTypes.length)];
+        
         cryptoBlocks.push({
           x,
           y,
-          hash,
+          hash: `${blockType}:${hash}`,
           timestamp: Date.now(),
-          size: Math.random() * 30 + 20,
-          color: ['#F7931A', '#627EEA', '#00FFA3', '#8247E5'][Math.floor(Math.random() * 4)],
-          opacity: Math.random() * 0.5 + 0.3,
-          rotationSpeed: (Math.random() - 0.5) * 0.002,
-          rotation: Math.random() * Math.PI * 2,
+          size: Math.random() * 20 + 25,
+          color: {
+            'BTC': '#F7931A',
+            'ETH': '#627EEA',
+            'SOL': '#00FFA3',
+            'MATIC': '#8247E5',
+            'AVAX': '#E84142'
+          }[blockType] || '#6A5ACD',
+          opacity: Math.random() * 0.2 + 0.4,
+          rotationSpeed: (Math.random() - 0.5) * 0.001,
+          rotation: 0,
           pulsePhase: Math.random() * Math.PI * 2,
-          isActive: Math.random() > 0.7
+          isActive: Math.random() > 0.6
         });
       }
     };
@@ -225,21 +234,21 @@ export default function Home() {
       }
     };
     
-    // Créer des particules crypto
+    // Créer des particules crypto discrètes
     const createCryptoParticles = () => {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 15; i++) {
         cryptoParticles.push({
           id: i,
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 20 + 10,
+          size: Math.random() * 12 + 6,
           symbol: cryptoSymbols[Math.floor(Math.random() * cryptoSymbols.length)],
-          color: ['#F7931A', '#627EEA', '#00FFA3', '#8247E5', '#FF3D71'][Math.floor(Math.random() * 5)],
-          speedX: (Math.random() - 0.5) * 0.3,
-          speedY: (Math.random() - 0.5) * 0.3,
+          color: ['#F7931A', '#627EEA', '#00FFA3', '#8247E5', '#6A5ACD'][Math.floor(Math.random() * 5)],
+          speedX: (Math.random() - 0.5) * 0.15,
+          speedY: (Math.random() - 0.5) * 0.15,
           rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.02,
-          opacity: Math.random() * 0.6 + 0.2,
+          rotationSpeed: (Math.random() - 0.5) * 0.01,
+          opacity: Math.random() * 0.3 + 0.1,
           fadeDirection: Math.random() > 0.5 ? 1 : -1
         });
       }
@@ -258,33 +267,62 @@ export default function Home() {
       }
     };
     
-    // Dessiner un bloc crypto
+    // Dessiner un bloc crypto style blockchain
     const drawCryptoBlock = (block: CryptoBlock) => {
       ctx.save();
       ctx.translate(block.x, block.y);
       ctx.rotate(block.rotation);
       
       // Dessiner le bloc principal
-      const gradient = ctx.createLinearGradient(-block.size/2, -block.size/2, block.size/2, block.size/2);
-      gradient.addColorStop(0, block.color);
-      gradient.addColorStop(1, block.color + '40');
+      const blockWidth = block.size * 1.5;
+      const blockHeight = block.size;
+      
+      // Dégradé du bloc
+      const gradient = ctx.createLinearGradient(-blockWidth/2, -blockHeight/2, blockWidth/2, blockHeight/2);
+      gradient.addColorStop(0, block.color + '20');
+      gradient.addColorStop(0.5, block.color + '40');
+      gradient.addColorStop(1, block.color + '20');
       
       ctx.fillStyle = gradient;
       ctx.globalAlpha = block.opacity;
-      ctx.fillRect(-block.size/2, -block.size/2, block.size, block.size);
       
-      // Effet de brillance
+      // Bloc avec coins arrondis
+      ctx.beginPath();
+      ctx.roundRect(-blockWidth/2, -blockHeight/2, blockWidth, blockHeight, 5);
+      ctx.fill();
+      
+      // Bordure
       ctx.strokeStyle = block.color;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(-block.size/2, -block.size/2, block.size, block.size);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
       
-      // Dessiner le hash
+      // Effet glitch/scan lines
+      ctx.globalAlpha = block.opacity * 0.3;
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(-blockWidth/2, -blockHeight/2 + (i * blockHeight/3));
+        ctx.lineTo(blockWidth/2, -blockHeight/2 + (i * blockHeight/3));
+        ctx.strokeStyle = block.color;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+      
+      // Dessiner l'identifiant du bloc
       ctx.fillStyle = '#FFFFFF';
-      ctx.globalAlpha = block.opacity * 0.8;
-      ctx.font = 'bold 8px monospace';
+      ctx.globalAlpha = block.opacity * 0.9;
+      ctx.font = '8px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(block.hash.substring(0, 8), 0, 0);
+      ctx.fillText(block.hash, 0, 0);
+      
+      // Effet de pulsation si actif
+      if (block.isActive) {
+        const pulse = Math.sin(Date.now() * 0.003 + block.pulsePhase) * 0.5 + 0.5;
+        ctx.globalAlpha = pulse * 0.4;
+        ctx.strokeStyle = block.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
       
       ctx.restore();
     };
