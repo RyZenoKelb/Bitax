@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 
 // Définir l'interface pour les étoiles
 interface Star {
@@ -14,12 +15,65 @@ interface Star {
   animationDelay: string;
 }
 
+// Interface pour les fonctionnalités
+interface Feature {
+  id: number;
+  title: string;
+  description: string;
+  icon: JSX.Element;
+}
+
+// Interface pour les avantages
+interface Benefit {
+  id: number;
+  title: string;
+  description: string;
+  icon: JSX.Element;
+}
+
+// Interface pour les témoignages
+interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  content: string;
+  avatar: string;
+}
+
+// Interface pour FAQ
+interface FaqItem {
+  id: number;
+  question: string;
+  answer: string;
+}
+
 export default function Home() {
   // État pour gérer les étoiles avec le type correct
   const [stars, setStars] = useState<Star[]>([]);
   
   // Référence pour le canvas d'animation
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  // Référence pour contrôler le scroll
+  const targetRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
+  
+  // État pour savoir si la navbar est en mode scroll
+  const [scrolled, setScrolled] = useState(false);
+  
+  // État pour le menu mobile
+  const [menuOpen, setMenuOpen] = useState(false);
+  
+  // Hook de scroll pour les effets parallaxe
+  const { scrollY } = useScroll();
+  
+  // Transformations basées sur le scroll pour l'effet parallaxe
+  const y1 = useTransform(scrollY, [0, 1000], [0, -200]);
+  const y2 = useTransform(scrollY, [0, 1000], [0, -100]);
+  const y3 = useTransform(scrollY, [0, 1000], [0, -50]);
+  const opacity1 = useTransform(scrollY, [0, 100, 200], [1, 0.5, 0]);
+  const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
+  const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   
   // Créer les étoiles uniquement côté client (pour éviter les erreurs d'hydratation)
   useEffect(() => {
@@ -139,27 +193,226 @@ export default function Home() {
     };
   }, []);
   
+  // Effet pour détecter le scroll et changer le style de la navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
+  // Données pour les fonctionnalités
+  const features: Feature[] = [
+    {
+      id: 1,
+      title: "Connectez vos wallets",
+      description: "Intégration sécurisée avec Metamask, Coinbase Wallet et autres portefeuilles populaires.",
+      icon: (
+        <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+        </svg>
+      )
+    },
+    {
+      id: 2,
+      title: "Scannez vos transactions",
+      description: "Analyse automatique de vos transactions sur Ethereum, Polygon, Arbitrum, Optimism et Base.",
+      icon: (
+        <svg className="w-10 h-10 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+      )
+    },
+    {
+      id: 3,
+      title: "Visualisez vos données",
+      description: "Graphiques interactifs et tableaux de bord pour suivre l'évolution de votre portefeuille.",
+      icon: (
+        <svg className="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+        </svg>
+      )
+    },
+    {
+      id: 4,
+      title: "Générez vos rapports fiscaux",
+      description: "Création automatique de rapports conformes à la législation fiscale française.",
+      icon: (
+        <svg className="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      )
+    }
+  ];
+  
+  // Données pour les avantages
+  const benefits: Benefit[] = [
+    {
+      id: 1,
+      title: "Gain de temps considérable",
+      description: "Automatisez votre déclaration fiscale et économisez des heures de calculs manuels.",
+      icon: (
+        <svg className="w-12 h-12 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
+    },
+    {
+      id: 2,
+      title: "Réduction des erreurs",
+      description: "Éliminez les risques d'erreurs de calcul qui pourraient vous coûter cher.",
+      icon: (
+        <svg className="w-12 h-12 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      )
+    },
+    {
+      id: 3,
+      title: "Conformité fiscale garantie",
+      description: "Respectez les obligations fiscales avec des rapports adaptés à la législation française.",
+      icon: (
+        <svg className="w-12 h-12 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
+    },
+    {
+      id: 4,
+      title: "Support multiplateforme",
+      description: "Accédez à vos données depuis n'importe quel appareil, à tout moment.",
+      icon: (
+        <svg className="w-12 h-12 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      )
+    }
+  ];
+  
+  // Données pour les témoignages
+  const testimonials: Testimonial[] = [
+    {
+      id: 1,
+      name: "Thomas Dubois",
+      role: "Investisseur crypto depuis 2017",
+      content: "Bitax m'a fait gagner un temps précieux pendant la période de déclaration fiscale. Plus de tableurs compliqués, tout est automatisé!",
+      avatar: "/avatars/user1.png"
+    },
+    {
+      id: 2,
+      name: "Sophie Martin",
+      role: "Trader indépendante",
+      content: "Je recommande vivement Bitax pour sa simplicité et sa précision. Le support client est également très réactif.",
+      avatar: "/avatars/user2.png"
+    },
+    {
+      id: 3,
+      name: "Alexandre Petit",
+      role: "Consultant blockchain",
+      content: "En tant que professionnel, j'apprécie particulièrement les rapports détaillés et la prise en charge de multiples blockchains.",
+      avatar: "/avatars/user3.png"
+    }
+  ];
+  
+  // Données pour la FAQ
+  const faqItems: FaqItem[] = [
+    {
+      id: 1,
+      question: "Comment Bitax protège-t-il mes données personnelles?",
+      answer: "Bitax utilise un chiffrement de bout en bout et ne stocke jamais vos clés privées. Nous sommes conformes au RGPD et mettons en œuvre les meilleures pratiques de sécurité de l'industrie."
+    },
+    {
+      id: 2,
+      question: "Quelles blockchains sont prises en charge?",
+      answer: "Actuellement, Bitax prend en charge Ethereum, Polygon, Arbitrum, Optimism et Base. Nous ajoutons régulièrement de nouvelles blockchains en fonction des demandes de notre communauté."
+    },
+    {
+      id: 3,
+      question: "Les rapports générés sont-ils conformes à la législation française?",
+      answer: "Oui, nos rapports sont spécialement conçus pour respecter les exigences fiscales françaises concernant les crypto-actifs, y compris le régime d'imposition des plus-values."
+    },
+    {
+      id: 4,
+      question: "Puis-je utiliser Bitax gratuitement?",
+      answer: "Bitax propose une version gratuite avec des fonctionnalités de base et une limite de transactions. Pour un usage professionnel ou un volume important de transactions, nous proposons des forfaits premium avec des fonctionnalités avancées."
+    }
+  ];
+  
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  
+  const toggleFaq = (id: number) => {
+    if (expandedFaq === id) {
+      setExpandedFaq(null);
+    } else {
+      setExpandedFaq(id);
+    }
+  };
+  
   return (
-    <div className="min-h-screen overflow-hidden relative font-poppins">
+    <div className="min-h-screen overflow-x-hidden font-poppins" ref={mainRef}>
       {/* Background élégant avec étoiles animées */}
-      <div className="absolute inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
+      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
         {/* Gradient d'ambiance */}
-        <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-indigo-600/10 rounded-full filter blur-[150px] animate-float"></div>
-          <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-600/10 rounded-full filter blur-[150px] animate-float-delayed"></div>
-        </div>
+        <motion.div className="absolute top-0 left-0 w-full h-full">
+          <motion.div 
+            className="absolute top-0 right-0 w-1/2 h-1/2 bg-indigo-600/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              x: [0, 30, 0],
+              y: [0, -30, 0],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 30,
+              ease: "easeInOut" 
+            }}
+          ></motion.div>
+          <motion.div 
+            className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-blue-600/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              x: [0, -30, 0],
+              y: [0, 30, 0],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 35,
+              ease: "easeInOut",
+              delay: 5
+            }}
+          ></motion.div>
+          <motion.div 
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 bg-purple-600/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.6, 0.8, 0.6],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 25,
+              ease: "easeInOut",
+              delay: 10
+            }}
+          ></motion.div>
+        </motion.div>
         
         {/* Canvas pour les particules animées */}
         <canvas 
           ref={canvasRef} 
-          className="absolute inset-0 w-full h-full -z-10"
+          className="fixed inset-0 w-full h-full -z-10"
           style={{ opacity: 0.7 }}
         ></canvas>
         
         {/* Étoiles animées en CSS pur */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="fixed inset-0 overflow-hidden">
           {stars.map(star => (
-            <div 
+            <motion.div 
               key={star.id}
               className="absolute rounded-full bg-white animate-twinkle" 
               style={{
@@ -170,13 +423,27 @@ export default function Home() {
                 opacity: star.opacity,
                 animationDelay: star.animationDelay,
               }}
-            ></div>
+              animate={{
+                opacity: [star.opacity, star.opacity * 0.3, star.opacity],
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 3 + Math.random() * 3,
+                ease: "easeInOut",
+              }}
+            ></motion.div>
           ))}
         </div>
       </div>
 
-      {/* Header premium avec glassmorphism */}
-      <header className="fixed top-0 left-0 w-full py-4 px-4 sm:px-6 lg:px-8 z-50 transition-all duration-300 bg-black/10 backdrop-blur-xl border-b border-white/5">
+      {/* Header premium avec glassmorphism et effet de scroll */}
+      <motion.header 
+        className={`fixed top-0 left-0 w-full py-4 px-4 sm:px-6 lg:px-8 z-50 transition-all duration-300 ${
+          scrolled 
+            ? 'bg-black/40 backdrop-blur-xl py-3 border-b border-white/10' 
+            : 'bg-transparent py-5'
+        }`}
+      >
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center">
             <Link href="/" className="group">
@@ -208,46 +475,122 @@ export default function Home() {
               </Link>
             ))}
             
+            {/* Boutons Sign In/Sign Up inspirés de l'image de référence */}
             <div className="flex items-center space-x-4 ml-8">
               <Link 
                 href="/login" 
-                className="relative px-6 py-2 overflow-hidden rounded-full bg-white/5 text-white/90 backdrop-blur-md border border-white/10 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-glow-sm hover:scale-105 group"
+                className="relative px-6 py-2 overflow-hidden rounded-full border border-white/20 text-white font-medium transition-all duration-300 hover:border-white/40 hover:bg-white/5 group"
               >
-                <span className="relative z-10">Connexion</span>
+                <span className="relative z-10">Sign In</span>
               </Link>
               
               <Link 
                 href="/register" 
                 className="relative px-6 py-2 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105 group"
               >
-                <span className="relative z-10">S'inscrire</span>
+                <span className="relative z-10">Sign Up</span>
                 <span className="absolute top-0 right-full w-full h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-500 group-hover:right-0"></span>
               </Link>
             </div>
           </nav>
 
           {/* Bouton menu mobile avec animation */}
-          <button className="md:hidden flex flex-col items-center justify-center w-10 h-10 relative group">
-            <span className="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-hover:bg-indigo-400 group-hover:translate-y-1"></span>
-            <span className="w-6 h-0.5 bg-white rounded-full mt-1.5 transition-all duration-300 group-hover:bg-indigo-400"></span>
-            <span className="w-6 h-0.5 bg-white rounded-full mt-1.5 transition-all duration-300 group-hover:bg-indigo-400 group-hover:-translate-y-1"></span>
+          <button 
+            className="md:hidden flex flex-col items-center justify-center w-10 h-10 relative group"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span className={`w-6 h-0.5 bg-white rounded-full transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+            <span className={`w-6 h-0.5 bg-white rounded-full mt-1.5 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`w-6 h-0.5 bg-white rounded-full mt-1.5 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
           </button>
         </div>
-      </header>
+        
+        {/* Menu mobile */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden container mx-auto mt-4 bg-black/60 backdrop-blur-lg rounded-lg overflow-hidden"
+            >
+              <div className="py-4 px-6 space-y-3">
+                {[
+                  { name: 'Fonctionnalités', href: '/fonctionnalites' },
+                  { name: 'Tarifs', href: '/tarifs' },
+                  { name: 'Guide', href: '/guide' }
+                ].map((item) => (
+                  <Link 
+                    key={item.name} 
+                    href={item.href}
+                    className="block py-2 text-white/80 hover:text-white transition-colors"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                
+                <div className="pt-4 border-t border-white/10 flex flex-col space-y-3">
+                  <Link 
+                    href="/login" 
+                    className="w-full py-2.5 text-center text-white/80 border border-white/20 rounded-lg hover:bg-white/5 transition-colors"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  
+                  <Link 
+                    href="/register" 
+                    className="w-full py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.header>
 
-      {/* Hero Section avec effet premium */}
-      <main className="min-h-screen flex items-center justify-center px-4 pt-20">
+      {/* Hero Section avec effet premium et parallaxe */}
+      <motion.section 
+        className="min-h-screen flex items-center justify-center px-4 pt-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        ref={targetRef}
+      >
         <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="text-center lg:text-left pt-8 lg:pt-0">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight tracking-tight">
+          <motion.div 
+            className="text-center lg:text-left pt-8 lg:pt-0"
+            style={{ y: y1 }}
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight tracking-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
               <span className="text-white">Votre fiscalité crypto, </span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">simplifiée</span>
-            </h2>
-            <p className="text-xl text-blue-100/90 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-blue-100/90 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
               Bitax automatise la déclaration de vos cryptomonnaies et calcule vos plus-values en quelques clics.
-            </p>
+            </motion.p>
             
-            <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start mb-12">
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
               {/* Bouton principal avec animation avancée */}
               <Link href="/register" className="relative overflow-hidden group rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 p-0.5 shadow-xl hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105">
                 <div className="relative flex items-center justify-center space-x-2 px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600/90 to-purple-600/90 text-white font-medium overflow-hidden">
@@ -270,10 +613,15 @@ export default function Home() {
                   <span>Comment ça marche</span>
                 </div>
               </Link>
-            </div>
+            </motion.div>
             
             {/* Badges de cryptomonnaies premium */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-6">
+            <motion.div 
+              className="flex flex-wrap justify-center lg:justify-start gap-4 mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+            >
               {/* Ethereum */}
               <div className="crypto-badge group">
                 <div className="crypto-badge-inner">
@@ -375,17 +723,28 @@ export default function Home() {
                   <span className="text-sm font-medium">SOL</span>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
           
           {/* Dashboard 3D ultra moderne avec effet glassmorphism */}
-          <div className="relative w-full h-[500px]">
+          <motion.div 
+            className="relative w-full h-[500px]"
+            style={{ y: y2, scale: scale1 }}
+          >
             {/* Effet de glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[70%] bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full blur-[100px] animate-pulse-slow"></div>
             
             {/* Dashboard card */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] perspective-1000">
-              <div className="dashboard-card relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:rotate-y-0 hover:scale-105 hover:shadow-glow-xl rotate-y-10">
+              <motion.div 
+                className="dashboard-card relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-700 hover:rotate-y-0 hover:scale-105 hover:shadow-glow-xl rotate-y-10"
+                whileHover={{ 
+                  rotateY: 0,
+                  scale: 1.05,
+                  transition: { duration: 0.5 }
+                }}
+                initial={{ rotateY: 15 }}
+              >
                 {/* Effet de reflet */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -512,11 +871,623 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
+      
+      {/* Section Fonctionnalités avec effet parallaxe */}
+      <motion.section 
+        className="py-20 relative"
+        style={{ opacity: opacity2 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Fonctionnalités puissantes
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Découvrez tout ce que Bitax peut faire pour simplifier votre fiscalité crypto.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature) => (
+              <motion.div 
+                key={feature.id}
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 group"
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * feature.id, duration: 0.5 }}
+              >
+                <div className="mb-4 rounded-lg p-3 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-white/5 w-fit">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors duration-300">
+                  {feature.title}
+                </h3>
+                <p className="text-blue-100/70 group-hover:text-blue-100/90 transition-colors duration-300">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* Section Comment ça marche avec étapes */}
+      <motion.section 
+        className="py-20 relative"
+        style={{ y: y3 }}
+      >
+        <div className="absolute top-0 right-0 w-full h-full overflow-hidden -z-10">
+          <div className="absolute -top-[10%] -right-[5%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
+          <div className="absolute -bottom-[10%] -left-[5%] w-1/3 h-1/3 bg-purple-600/10 rounded-full filter blur-[100px]"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Comment ça marche
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Bitax rend la fiscalité crypto simple et accessible à tous en quelques étapes faciles.
+            </p>
+          </div>
+          
+          <div className="relative">
+            {/* Ligne de connexion */}
+            <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-indigo-500/30 transform -translate-y-1/2 z-0"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+              {[
+                {
+                  step: 1,
+                  title: "Connectez votre wallet",
+                  description: "Liez en toute sécurité votre wallet crypto via Web3 sans partager vos clés privées.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                  )
+                },
+                {
+                  step: 2,
+                  title: "Scannez vos transactions",
+                  description: "Bitax récupère automatiquement l'historique de vos transactions sur plusieurs blockchains.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )
+                },
+                {
+                  step: 3,
+                  title: "Analysez vos données",
+                  description: "Visualisez vos transactions et laissez notre algorithme calculer vos plus-values.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  )
+                },
+                {
+                  step: 4,
+                  title: "Générez votre rapport",
+                  description: "Obtenez un rapport fiscal complet prêt à être utilisé pour votre déclaration d'impôts.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  )
+                }
+              ].map((item, index) => (
+                <motion.div 
+                  key={index}
+                  className="flex flex-col items-center text-center relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 * index, duration: 0.5 }}
+                >
+                  <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
+                    <div className="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center">
+                      <div className="text-white text-2xl font-bold">{item.step}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 h-full">
+                    <div className="mb-4">
+                      {item.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-blue-100/70">
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
-      </main>
+      </motion.section>
+      
+      {/* Section Avantages avec effet parallaxe */}
+      <motion.section 
+        className="py-20 relative"
+        style={{ y: y2 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Pourquoi choisir Bitax
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Optimisez votre gestion fiscale et gagnez du temps grâce à nos solutions spécialisées.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+            {benefits.map((benefit) => (
+              <motion.div 
+                key={benefit.id}
+                className="flex gap-6"
+                initial={{ opacity: 0, x: benefit.id % 2 === 0 ? 20 : -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * benefit.id, duration: 0.5 }}
+              >
+                <div className="shrink-0">
+                  <div className="bg-gradient-to-r from-indigo-900/20 to-purple-900/20 border border-white/5 rounded-lg p-3 w-16 h-16 flex items-center justify-center">
+                    {benefit.icon}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-blue-100/70">
+                    {benefit.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* Section Témoignages avec effet parallaxe */}
+      <motion.section 
+        className="py-20 relative"
+        style={{ y: y3 }}
+      >
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+          <div className="absolute -bottom-[10%] -right-[5%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Ce que disent nos utilisateurs
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Découvrez l'expérience de nos utilisateurs avec Bitax.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial) => (
+              <motion.div 
+                key={testimonial.id}
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * testimonial.id, duration: 0.5 }}
+                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-bold text-white">
+                      {testimonial.name}
+                    </h3>
+                    <p className="text-sm text-blue-100/70">
+                      {testimonial.role}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-blue-100/80 italic">
+                  "{testimonial.content}"
+                </p>
+                <div className="mt-4 flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg key={star} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* Section FAQ avec effet accordéon */}
+      <motion.section 
+        className="py-20 relative"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Questions fréquentes
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Tout ce que vous devez savoir sur Bitax et la fiscalité crypto.
+            </p>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
+            {faqItems.map((item) => (
+              <motion.div 
+                key={item.id}
+                className="mb-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * item.id, duration: 0.5 }}
+              >
+                <button 
+                  className="w-full text-left py-4 px-6 flex justify-between items-center text-white font-medium"
+                  onClick={() => toggleFaq(item.id)}
+                >
+                  <span>{item.question}</span>
+                  <svg 
+                    className={`w-5 h-5 transition-transform duration-300 ${expandedFaq === item.id ? 'transform rotate-180' : ''}`} 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ${
+                    expandedFaq === item.id ? 'max-h-72' : 'max-h-0'
+                  }`}
+                >
+                  <div className="py-4 px-6 text-blue-100/80 border-t border-white/5">
+                    {item.answer}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* CTA Section avec effet parallaxe */}
+      <motion.section 
+        className="py-20 relative"
+        style={{ y: y2 }}
+      >
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+          <div className="absolute -top-[10%] left-[10%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
+          <div className="absolute -bottom-[10%] right-[10%] w-1/3 h-1/3 bg-purple-600/10 rounded-full filter blur-[100px]"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 border border-white/10 rounded-2xl p-8 lg:p-12 text-center backdrop-blur-lg">
+            <motion.h2 
+              className="text-3xl sm:text-4xl font-bold mb-4 text-white"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              Prêt à simplifier votre fiscalité crypto ?
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-blue-100/80 max-w-2xl mx-auto mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              Rejoignez des milliers d'utilisateurs qui font confiance à Bitax pour gérer leur fiscalité crypto en toute simplicité.
+            </motion.p>
+            <motion.div 
+              className="flex flex-col sm:flex-row justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <Link 
+                href="/register" 
+                className="relative overflow-hidden group rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-3 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+              >
+                Créer un compte gratuitement
+                <div className="absolute top-0 left-0 w-full h-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+              </Link>
+              
+              <Link 
+                href="/tarifs" 
+                className="relative overflow-hidden group rounded-full bg-white/10 border border-white/20 backdrop-blur-md px-8 py-3 text-white font-medium transition-all duration-300 hover:bg-white/20"
+              >
+                Découvrir nos tarifs
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* Footer avec effet parallaxe */}
+      <motion.footer 
+        className="py-12 border-t border-white/10 relative"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <Link href="/" className="group inline-block mb-6">
+                <div className="flex items-center">
+                  <div className="flex flex-col">
+                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</h1>
+                    <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
+                  </div>
+                </div>
+              </Link>
+              <p className="text-blue-100/70 mb-6 max-w-md">
+                Simplifiez votre fiscalité crypto avec notre plateforme intuitive. Connectez vos wallets, analysez vos transactions et générez des rapports fiscaux en quelques clics.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.44 3.06H5.56C4.15 3.06 3 4.21 3 5.62v12.88c0 1.41 1.15 2.56 2.56 2.56h12.88c1.41 0 2.56-1.15 2.56-2.56V5.62c0-1.41-1.15-2.56-2.56-2.56zm0 2.56v3.81h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v3.82h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v.99H5.56V5.62h12.88z" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.77 5.03l1.4 1.4L8.43 19.17l-5.6-5.6 1.4-1.4 4.2 4.2L19.77 5.03m0-2.83L8.43 13.54l-4.2-4.2L0 13.57 8.43 22 24 6.43 19.77 2.2z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Navigation</h3>
+              <ul className="space-y-3">
+                {[
+                  { name: 'Accueil', href: '/' },
+                  { name: 'Fonctionnalités', href: '/fonctionnalites' },
+                  { name: 'Tarifs', href: '/tarifs' },
+                  { name: 'Guide', href: '/guide' },
+                  { name: 'Support', href: '/support' }
+                ].map((item, index) => (
+                  <li key={index}>
+                    <Link 
+                      href={item.href}
+                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Légal</h3>
+              <ul className="space-y-3">
+                {[
+                  { name: 'Conditions d\'utilisation', href: '/terms' },
+                  { name: 'Politique de confidentialité', href: '/privacy' },
+                  { name: 'Mentions légales', href: '/legal' },
+                  { name: 'Cookies', href: '/cookies' }
+                ].map((item, index) => (
+                  <li key={index}>
+                    <Link 
+                      href={item.href}
+                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Contact</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <a href="mailto:contact@bitax.fr" className="text-blue-100/70 hover:text-white transition-colors duration-300">
+                    contact@bitax.fr
+                  </a>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    (+33) 01 23 45 67 89
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    8 Rue de la Cryptographie<br />
+                    75008 Paris, France
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-blue-100/50 text-sm mb-4 md:mb-0">
+              &copy; {new Date().getFullYear()} Bitax. Tous droits réservés.
+            </p>
+            <div className="flex space-x-6">
+              <Link href="/legal" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
+                Mentions légales
+              </Link>
+              <Link href="/privacy" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
+                Politique de confidentialité
+              </Link>
+              <Link href="/contact" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
+                Contact
+              </Link>
+            </div>
+          </div>
+        </div>
+      </motion.footer>
+      
+      {/* Ajoutez des styles CSS globaux pour les classes personnalisées */}
+      <style jsx global>{`
+        /* Styles pour les badges de crypto */
+        .crypto-badge {
+          @apply flex items-center backdrop-blur-md bg-white/5 rounded-full px-3 py-1.5 border border-white/10 transition-all duration-300;
+        }
+        
+        .crypto-badge:hover {
+          @apply bg-white/10 border-white/20 transform -translate-y-1;
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        
+        .crypto-badge-inner {
+          @apply flex items-center;
+        }
+        
+        .crypto-svg-fill {
+          transition: all 0.3s ease;
+        }
+        
+        .crypto-badge:hover .crypto-svg-fill {
+          filter: brightness(1.2);
+        }
+        
+        /* Animation de scintillement pour les étoiles */
+        @keyframes twinkle {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.3;
+          }
+        }
+        
+        .animate-twinkle {
+          animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        /* Animation pour les éléments flottants */
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+        
+        .animate-float {
+          animation: float 10s ease-in-out infinite;
+        }
+        
+        .animate-float-delayed {
+          animation: float 15s ease-in-out infinite reverse;
+        }
+        
+        /* Animation pour le pulse lent */
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 0.5;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Effet néomorphique pour les éléments du dashboard */
+        .dashboard-item-glow {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .dashboard-item-glow::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 60%);
+          opacity: 0;
+          transition: opacity 0.3s ease-in-out;
+        }
+        
+        .dashboard-item-glow:hover::before {
+          opacity: 1;
+        }
+        
+        /* Effet d'ombre interne pour les éléments du dashboard */
+        .shadow-inner-white {
+          box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Transformation 3D */
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+        
+        .rotate-y-10 {
+          transform: rotateY(10deg);
+        }
+        
+        .rotate-y-0 {
+          transform: rotateY(0deg);
+        }
+        
+        /* Shadow glow */
+        .shadow-glow-sm {
+          box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .shadow-glow-xl {
+          box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+        }
+      `}</style>
     </div>
   );
 }
