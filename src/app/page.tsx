@@ -310,7 +310,7 @@ export default function Home() {
     };
 
     // Dessiner un paquet de données
-    const drawDataPacket = (packet) => {
+    const drawDataPacket = (packet: DataPacket) => {
       ctx.beginPath();
       ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
       ctx.fillStyle = packet.color;
