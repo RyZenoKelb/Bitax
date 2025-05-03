@@ -373,7 +373,7 @@ export default function App({ Component, pageProps }: AppProps) {
                   Mon profil
                 </Link>
                 <Link 
-                  href="/settings" 
+                  href="/profile" 
                   className={`flex items-center px-3 py-2.5 rounded-lg ${
                     theme === 'dark'
                       ? 'text-gray-300 hover:bg-gray-800 hover:text-white'
