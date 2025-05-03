@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import AuthProvider from '@/components/AuthProvider';
-import Chatbot from '@/components/Chatbot';
 import '../styles/globals.css';
 
 export const metadata = {
@@ -24,9 +23,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <AuthProvider>
           {children}
-          <Chatbot />
         </AuthProvider>
       </body>
     </html>
   );
 }
+
