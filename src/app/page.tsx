@@ -163,8 +163,9 @@ export default function Home() {
         const opacity = Math.random() * 0.3 + 0.15;
         const speedX = (Math.random() - 0.5) * 0.4;
         const speedY = (Math.random() - 0.5) * 0.4;
-        const pulseSpeed = Math.random() * 0.01 + 0.005;
-        const pulseAmount = Math.random() * 0.3 + 0.1;
+        // Réduire la vitesse de pulsation
+        const pulseSpeed = Math.random() * 0.002 + 0.001;
+        const pulseAmount = Math.random() * 0.15 + 0.05;
         const baseSize = size;
         const rotationSpeed = (Math.random() - 0.5) * 0.005;
         const rotation = Math.random() * Math.PI * 2;
@@ -701,73 +702,71 @@ export default function Home() {
         ></canvas>
       </div>
 
-      {/* Header premium avec glassmorphism et effet de scroll */}
+      {/* Header premium avec glassmorphism et effet de scroll - Design plus pro */}
       <motion.header 
-        className={`fixed top-0 left-0 w-full py-4 px-4 sm:px-6 lg:px-8 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           scrolled 
-            ? 'bg-black/40 backdrop-blur-xl py-3 border-b border-white/10' 
-            : 'bg-transparent py-5'
+            ? 'bg-slate-900/70 backdrop-blur-lg border-b border-white/5' 
+            : 'bg-transparent'
         }`}
       >
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center">
-            <Link href="/" className="group">
-              <div className="flex items-center">
-                {/* Logo premium */}
-                <div className="flex flex-col">
-                  <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</h1>
-                  <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
-                  <div className="h-0.5 w-0 group-hover:w-full transition-all duration-300 ease-out bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500"></div>
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center group">
+                <div className="relative">
+                  <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-blue-400 tracking-tight">
+                    BITAX
+                  </span>
+                  <div className="h-px w-0 group-hover:w-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-blue-500"></div>
                 </div>
-              </div>
-            </Link>
-          </div>
-
-          {/* Navbar ultra moderne avec boutons en français */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {[
-              { name: 'Fonctionnalités', href: '/fonctionnalites' },
-              { name: 'Tarifs', href: '/tarifs' },
-              { name: 'Guide', href: '/guide' }
-            ].map((item) => (
-              <Link 
-                key={item.name} 
-                href={item.href}
-                className="relative px-3 py-1.5 text-sm font-medium text-white/90 hover:text-white transition-all duration-300 group"
-              >
-                <span>{item.name}</span>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300 ease-out"></span>
-              </Link>
-            ))}
-            
-            {/* Boutons Connexion/S'inscrire en français */}
-            <div className="flex items-center space-x-4 ml-8">
-              <Link 
-                href="/login" 
-                className="relative px-6 py-2 overflow-hidden rounded-full border border-white/20 text-white font-medium transition-all duration-300 hover:border-white/40 hover:bg-white/5 group"
-              >
-                <span className="relative z-10">Connexion</span>
-              </Link>
-              
-              <Link 
-                href="/register" 
-                className="relative px-6 py-2 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105 group"
-              >
-                <span className="relative z-10">S'inscrire</span>
-                <span className="absolute top-0 right-full w-full h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-500 group-hover:right-0"></span>
               </Link>
             </div>
-          </nav>
 
-          {/* Bouton menu mobile avec animation */}
-          <button 
-            className="md:hidden flex flex-col items-center justify-center w-10 h-10 relative group"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <span className={`w-6 h-0.5 bg-white rounded-full transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-            <span className={`w-6 h-0.5 bg-white rounded-full mt-1.5 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}></span>
-            <span className={`w-6 h-0.5 bg-white rounded-full mt-1.5 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-          </button>
+            {/* Navbar ultra moderne avec boutons en français - Design plus pro */}
+            <nav className="hidden md:flex items-center space-x-1">
+              {[
+                { name: 'Fonctionnalités', href: '/fonctionnalites' },
+                { name: 'Tarifs', href: '/tarifs' },
+                { name: 'Guide', href: '/guide' }
+              ].map((item) => (
+                <Link 
+                  key={item.name} 
+                  href={item.href}
+                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5"
+                >
+                  {item.name}
+                </Link>
+              ))}
+              
+              {/* Boutons Connexion/S'inscrire en français - Design plus pro */}
+              <div className="flex items-center space-x-3 ml-6">
+                <Link 
+                  href="/login" 
+                  className="px-6 py-2 rounded-lg border border-white/10 text-white/90 font-medium transition-all duration-300 hover:border-white/20 hover:bg-white/5"
+                >
+                  Connexion
+                </Link>
+                
+                <Link 
+                  href="/register" 
+                  className="px-6 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/40"
+                >
+                  S'inscrire
+                </Link>
+              </div>
+            </nav>
+
+            {/* Bouton menu mobile */}
+            <button 
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/5 transition-colors"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <span className={`block w-5 h-0.5 bg-white rounded-full transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+              <span className={`block w-5 h-0.5 bg-white rounded-full mt-1 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}></span>
+              <span className={`block w-5 h-0.5 bg-white rounded-full mt-1 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+            </button>
+          </div>
         </div>
         
         {/* Menu mobile */}
@@ -778,9 +777,9 @@ export default function Home() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden container mx-auto mt-4 bg-black/60 backdrop-blur-lg rounded-lg overflow-hidden"
+              className="md:hidden bg-slate-900/80 backdrop-blur-lg border-b border-white/5"
             >
-              <div className="py-4 px-6 space-y-3">
+              <div className="px-6 py-4 space-y-3">
                 {[
                   { name: 'Fonctionnalités', href: '/fonctionnalites' },
                   { name: 'Tarifs', href: '/tarifs' },
@@ -796,21 +795,21 @@ export default function Home() {
                   </Link>
                 ))}
                 
-                <div className="pt-4 border-t border-white/10 flex flex-col space-y-3">
+                <div className="pt-2 space-y-2">
                   <Link 
                     href="/login" 
-                    className="w-full py-2.5 text-center text-white/80 border border-white/20 rounded-lg hover:bg-white/5 transition-colors"
+                    className="block py-2.5 text-center text-white/80 border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
-                    Sign In
+                    Connexion
                   </Link>
                   
                   <Link 
                     href="/register" 
-                    className="w-full py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-lg"
+                    className="block py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-lg"
                     onClick={() => setMenuOpen(false)}
                   >
-                    Sign Up
+                    S'inscrire
                   </Link>
                 </div>
               </div>
@@ -841,6 +840,22 @@ export default function Home() {
               <span className="text-white">Votre fiscalité crypto, </span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">simplifiée</span>
             </motion.h2>
+            
+            {/* Ajout du badge "Conforme à la fiscalité française" */}
+            <motion.div 
+              className="mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              <div className="inline-flex items-center px-6 py-2 rounded-full bg-green-900/20 border border-green-800/30 backdrop-blur-sm">
+                <svg className="w-5 h-5 mr-2 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-green-300 font-medium">Conforme à la fiscalité française</span>
+              </div>
+            </motion.div>
+            
             <motion.p 
               className="text-xl text-blue-100/90 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
@@ -856,17 +871,17 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              {/* Bouton principal avec animation avancée */}
+              {/* Bouton principal avec animation améliorée */}
               <Link 
                 href="/register" 
-                className="relative px-6 py-3 overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+                className="px-8 py-3.5 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
               >
-                <span>Commencer gratuitement</span>
+                Commencer gratuitement
               </Link>
               
               {/* Bouton secondaire glassmorphism */}
-              <Link href="/guide" className="relative group rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105">
-                <div className="relative flex items-center justify-center space-x-2 px-8 py-3 text-white">
+              <Link href="/guide" className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105">
+                <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -875,38 +890,38 @@ export default function Home() {
               </Link>
             </motion.div>
             
-            {/* Badges de cryptomonnaies simplifiés et améliorés */}
+            {/* Badges de cryptomonnaies avec logos corrigés et taille réduite */}
             <motion.div 
-              className="flex flex-wrap justify-center lg:justify-start gap-8 mb-8"
+              className="flex flex-wrap justify-center lg:justify-start gap-6 mb-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
               {/* Ethereum */}
               <motion.div 
-                className="crypto-icon-badge" 
-                whileHover={{ scale: 1.15, y: -8 }}
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-blue-900/20 backdrop-blur-sm border border-blue-800/30 flex items-center justify-center" 
+                whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <svg className="w-12 h-12" viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg">
-                  <g>
-                    <polygon fill="#343434" fillRule="nonzero" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"/>
-                    <polygon fill="#8C8C8C" fillRule="nonzero" points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"/>
-                    <polygon fill="#3C3C3B" fillRule="nonzero" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"/>
-                    <polygon fill="#8C8C8C" fillRule="nonzero" points="392.07,1277.38 392.07,956.52 -0,724.89"/>
-                    <polygon fill="#141414" fillRule="nonzero" points="392.07,882.29 784.13,650.54 392.07,472.33"/>
-                    <polygon fill="#393939" fillRule="nonzero" points="0,650.54 392.07,882.29 392.07,472.33"/>
+                <svg className="w-5 h-5" viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="#627EEA">
+                    <polygon fillOpacity=".6" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"/>
+                    <polygon points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"/>
+                    <polygon fillOpacity=".45" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"/>
+                    <polygon fillOpacity=".8" points="392.07,1277.38 392.07,956.52 -0,724.89"/>
+                    <polygon fillOpacity=".45" points="392.07,882.29 784.13,650.54 392.07,472.33"/>
+                    <polygon fillOpacity=".6" points="0,650.54 392.07,882.29 392.07,472.33"/>
                   </g>
                 </svg>
               </motion.div>
               
               {/* Polygon/Matic */}
               <motion.div 
-                className="crypto-icon-badge"
-                whileHover={{ scale: 1.15, y: -8 }}
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-purple-900/20 backdrop-blur-sm border border-purple-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <svg className="w-12 h-12" viewBox="0 0 38.4 33.5" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-5 h-5" viewBox="0 0 38.4 33.5" xmlns="http://www.w3.org/2000/svg">
                   <path fill="#8247E5" d="M29,10.2c-0.7-0.4-1.6-0.4-2.4,0L21,13.5l-3.8,2.1l-5.5,3.3c-0.7,0.4-1.6,0.4-2.4,0L5,16.3
                     c-0.7-0.4-1.2-1.2-1.2-2.1v-5c0-0.8,0.4-1.6,1.2-2.1l4.3-2.5c0.7-0.4,1.6-0.4,2.4,0L16,7.2c0.7,0.4,1.2,1.2,1.2,2.1v3.3l3.8-2.2V7
                     c0-0.8-0.4-1.6-1.2-2.1l-8-4.7c-0.7-0.4-1.6-0.4-2.4,0L1.2,5C0.4,5.4,0,6.2,0,7v9.4c0,0.8,0.4,1.6,1.2,2.1l8.1,4.7
@@ -918,74 +933,58 @@ export default function Home() {
               
               {/* Arbitrum */}
               <motion.div 
-                className="crypto-icon-badge"
-                whileHover={{ scale: 1.15, y: -8 }}
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-blue-900/20 backdrop-blur-sm border border-blue-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <svg className="w-12 h-12" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M512 1024C794.769 1024 1024 794.769 1024 512C1024 229.23 794.769 0 512 0C229.23 0 0 229.23 0 512C0 794.769 229.23 1024 512 1024Z" fill="#2D374B"/>
-                  <path d="M512 1024C794.769 1024 1024 794.769 1024 512C1024 229.23 794.769 0 512 0C229.23 0 0 229.23 0 512C0 794.769 229.23 1024 512 1024Z" fill="#28A0F0"/>
-                  <path d="M672.2 499.1V619.8L568.3 680.1V559.4L672.2 499.1Z" fill="white"/>
-                  <path d="M568.3 680.1V559.4L466.5 498V618.7L568.3 680.1Z" fill="#96BEDC"/>
-                  <path d="M672.2 378.5V499.1L568.3 559.4V438.8L672.2 378.5Z" fill="#96BEDC"/>
-                  <path d="M568.3 438.8V559.4L466.5 498V377.3L568.3 438.8Z" fill="white"/>
-                  <path d="M466.5 618.7V498L357.8 434.3V555L466.5 618.7Z" fill="white"/>
-                  <path d="M466.5 377.3V498L357.8 434.3V313.7L466.5 377.3Z" fill="#96BEDC"/>
+                <svg className="w-5 h-5" viewBox="0 0 2500 2500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1250 0C559.644 0 0 559.644 0 1250C0 1940.36 559.644 2500 1250 2500C1940.36 2500 2500 1940.36 2500 1250C2500 559.644 1940.36 0 1250 0Z" fill="#28A0F0"/>
+                  <path d="M633.2 1250L1250 1866.8L1866.8 1250L1250 633.2L633.2 1250Z" fill="white"/>
+                  <path d="M633.2 1250L1250 1866.8L1866.8 1250H633.2Z" fill="#0C1424"/>
+                  <path d="M633.2 1250L1250 633.2L1866.8 1250H633.2Z" fill="#0C1424" fillOpacity="0.2"/>
                 </svg>
               </motion.div>
               
               {/* Optimism */}
               <motion.div 
-                className="crypto-icon-badge"
-                whileHover={{ scale: 1.15, y: -8 }}
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-red-900/20 backdrop-blur-sm border border-red-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <svg className="w-12 h-12" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 21.732 6.26801 28 14 28Z" fill="#FF0420"/>
-                  <path d="M9.08465 8.69519H12.6871C12.786 8.69519 12.8652 8.77448 12.8652 8.8933V11.5335C12.8652 11.6325 12.7859 11.7118 12.6871 11.7118H9.08465C8.98583 11.7118 8.90654 11.6325 8.90654 11.5335V8.8933C8.90654 8.77448 8.98583 8.69519 9.08465 8.69519Z" fill="white"/>
-                  <path d="M13.6739 8.69519H17.2764C17.3752 8.69519 17.4545 8.77448 17.4545 8.8933V11.5335C17.4545 11.6325 17.3752 11.7118 17.2764 11.7118H13.6739C13.5751 11.7118 13.4958 11.6325 13.4958 11.5335V8.8933C13.4958 8.77448 13.5751 8.69519 13.6739 8.69519Z" fill="white"/>
-                  <path d="M9.08465 12.4812H12.6871C12.786 12.4812 12.8652 12.5605 12.8652 12.6593V15.2995C12.8652 15.3984 12.7859 15.4777 12.6871 15.4777H9.08465C8.98583 15.4777 8.90654 15.3984 8.90654 15.2995V12.6593C8.90654 12.5605 8.98583 12.4812 9.08465 12.4812Z" fill="white"/>
-                  <path d="M13.6739 12.4812H17.2764C17.3752 12.4812 17.4545 12.5605 17.4545 12.6593V15.2995C17.4545 15.3984 17.3752 15.4777 17.2764 15.4777H13.6739C13.5751 15.4777 13.4958 15.3984 13.4958 15.2995V12.6593C13.4958 12.5605 13.5751 12.4812 13.6739 12.4812Z" fill="white"/>
-                  <path d="M9.08465 16.2674H12.6871C12.786 16.2674 12.8652 16.3467 12.8652 16.4455V19.0857C12.8652 19.1845 12.7859 19.2638 12.6871 19.2638H9.08465C8.98583 19.2638 8.90654 19.1845 8.90654 19.0857V16.4455C8.90654 16.3467 8.98583 16.2674 9.08465 16.2674Z" fill="white"/>
-                  <path d="M13.6739 16.2674H17.2764C17.3752 16.2674 17.4545 16.3467 17.4545 16.4455V19.0857C17.4545 19.1845 17.3752 19.2638 17.2764 19.2638H13.6739C13.5751 19.2638 13.4958 19.1845 13.4958 19.0857V16.4455C13.4958 16.3467 13.5751 16.2674 13.6739 16.2674Z" fill="white"/>
+                <svg className="w-5 h-5" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="250" cy="250" r="250" fill="#FF0420"/>
+                  <path d="M168.5 200.5C168.5 177.9 186.4 160 209 160H291C313.6 160 331.5 177.9 331.5 200.5C331.5 223.1 313.6 241 291 241H209C186.4 241 168.5 223.1 168.5 200.5Z" fill="white"/>
+                  <path d="M168.5 299.5C168.5 276.9 186.4 259 209 259H291C313.6 259 331.5 276.9 331.5 299.5C331.5 322.1 313.6 340 291 340H209C186.4 340 168.5 322.1 168.5 299.5Z" fill="white"/>
                 </svg>
               </motion.div>
               
               {/* Base */}
               <motion.div 
-                className="crypto-icon-badge"
-                whileHover={{ scale: 1.15, y: -8 }}
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-blue-900/20 backdrop-blur-sm border border-blue-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <svg className="w-12 h-12" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M19 38C29.4934 38 38 29.4934 38 19C38 8.50659 29.4934 0 19 0C8.50659 0 0 8.50659 0 19C0 29.4934 8.50659 38 19 38ZM19.7146 7.60573L29.1945 22.8486C29.8464 23.8368 29.1278 25.1395 27.9506 25.1395H8.04937C6.87215 25.1395 6.15358 23.8368 6.8055 22.8486L16.2854 7.60573C16.9313 6.6249 18.0687 6.6249 18.7146 7.60573H19.7146Z" fill="#0052FF"/>
+                <svg className="w-5 h-5" viewBox="0 0 2000 2000" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M1000 2000C1552.28 2000 2000 1552.28 2000 1000C2000 447.715 1552.28 0 1000 0C447.715 0 0 447.715 0 1000C0 1552.28 447.715 2000 1000 2000ZM1041.2 400C1407.7 400 1631.9 612.2 1662.5 972.7C1690.1 1295 1535.6 1600 1000 1600C464.4 1600 309.9 1295 337.5 972.7C368.1 612.2 592.3 400 958.8 400H1041.2Z" fill="#0052FF"/>
                 </svg>
               </motion.div>
               
               {/* Solana */}
               <motion.div 
-                className="crypto-icon-badge"
-                whileHover={{ scale: 1.15, y: -8 }}
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-gradient-to-br from-purple-900/20 to-blue-900/20 backdrop-blur-sm border border-purple-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <svg className="w-12 h-12" viewBox="0 0 397.7 311.7" xmlns="http://www.w3.org/2000/svg">
-                  <linearGradient id="solGradientA" gradientUnits="userSpaceOnUse" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)">
+                <svg className="w-5 h-5" viewBox="0 0 397.7 311.7" xmlns="http://www.w3.org/2000/svg">
+                  <linearGradient id="solGradientUse" gradientUnits="userSpaceOnUse" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)">
                     <stop offset="0" style={{ stopColor: '#00FFA3' }}/>
                     <stop offset="1" style={{ stopColor: '#DC1FFF' }}/>
                   </linearGradient>
-                  <path fill="url(#solGradientA)" d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
+                  <path fill="url(#solGradientUse)" d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
                     c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z"/>
-                  <linearGradient id="solGradientB" gradientUnits="userSpaceOnUse" x1="264.8291" y1="401.6014" x2="45.163" y2="-19.1475" gradientTransform="matrix(1 0 0 -1 0 314)">
-                    <stop offset="0" style={{ stopColor: '#00FFA3' }}/>
-                    <stop offset="1" style={{ stopColor: '#DC1FFF' }}/>
-                  </linearGradient>
-                  <path fill="url(#solGradientB)" d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
+                  <path fill="url(#solGradientUse)" d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
                     c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z"/>
-                  <linearGradient id="solGradientC" gradientUnits="userSpaceOnUse" x1="312.5484" y1="376.688" x2="92.8822" y2="-44.061" gradientTransform="matrix(1 0 0 -1 0 314)">
-                    <stop offset="0" style={{ stopColor: '#00FFA3' }}/>
-                    <stop offset="1" style={{ stopColor: '#DC1FFF' }}/>
-                  </linearGradient>
-                  <path fill="url(#solGradientC)" d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4
+                  <path fill="url(#solGradientUse)" d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4
                     c5.8,0,8.7-7,4.6-11.1L333.1,120.1z"/>
                 </svg>
               </motion.div>
@@ -1521,11 +1520,9 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div className="md:col-span-2">
               <Link href="/" className="group inline-block mb-6">
-                <div className="flex items-center">
-                  <div className="flex flex-col">
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</h1>
-                    <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
-                  </div>
+                <div className="relative">
+                  <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</span>
+                  <div className="h-px w-0 group-hover:w-full transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500"></div>
                 </div>
               </Link>
               <p className="text-blue-100/70 mb-6 max-w-md">
