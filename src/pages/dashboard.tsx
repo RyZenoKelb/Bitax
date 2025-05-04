@@ -590,7 +590,7 @@ export default function Dashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Réseaux blockchain
-            </h2>
+                </h2>
             
             <div className="space-x-2">
               {!isPremiumUser && (
@@ -607,16 +607,16 @@ export default function Dashboard() {
                 </button>
               )}
             </div>
-          </div>
-          
+                </div>
+                
           <div className="p-5">
             <div className="flex flex-wrap gap-2 mb-4">
-              {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
-                <button
-                  key={network}
-                  onClick={() => handleScanNetwork(network as NetworkType)}
+                    {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
+                      <button
+                        key={network}
+                        onClick={() => handleScanNetwork(network as NetworkType)}
                   className={`relative flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    activeNetwork === network 
+                          activeNetwork === network 
                       ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-500 ring-offset-2 ring-offset-gray-900' 
                       : 'bg-gray-700/70 text-gray-200 hover:bg-gray-700 hover:text-white'
                   }`}
@@ -635,56 +635,56 @@ export default function Dashboard() {
                   ></span>
                   {network.charAt(0).toUpperCase() + network.slice(1)}
                   
-                  {activeNetwork === network && isLoading && (
+                        {activeNetwork === network && isLoading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-blue-600/90 rounded-lg backdrop-blur-sm">
-                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-            
+                            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                onClick={() => handleScanNetwork(activeNetwork)}
-                disabled={isLoading}
+                  <button
+                    onClick={() => handleScanNetwork(activeNetwork)}
+                    disabled={isLoading}
                 className="flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200 disabled:opacity-70"
-              >
-                {isLoading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Scan en cours...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Scan en cours...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Scanner {activeNetwork.toUpperCase()}
-                  </>
-                )}
-              </button>
-              
-              <button
-                onClick={() => {
-                  ['eth', 'polygon', 'arbitrum', 'optimism', 'base'].forEach(network => {
-                    handleScanNetwork(network as NetworkType);
-                  });
-                }}
-                disabled={isLoading}
+                        </svg>
+                        Scanner {activeNetwork.toUpperCase()}
+                      </>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      ['eth', 'polygon', 'arbitrum', 'optimism', 'base'].forEach(network => {
+                        handleScanNetwork(network as NetworkType);
+                      });
+                    }}
+                    disabled={isLoading}
                 className="flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200 disabled:opacity-70"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
                 Multi-chain Turbo Scan
-              </button>
+                  </button>
             </div>
             
             {transactions.length > 0 && (
@@ -698,10 +698,10 @@ export default function Dashboard() {
                     className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500" 
                     style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}
                   ></div>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
         </div>
         
         {/* Contenu principal */}
@@ -715,9 +715,9 @@ export default function Dashboard() {
               <p className="mt-6 text-lg font-medium text-gray-300">Analyse des transactions en cours...</p>
               <p className="mt-2 text-sm text-gray-400">Veuillez patienter pendant que nous analysons vos données blockchain</p>
             </div>
-          </div>
-        ) : (
-          <>
+            </div>
+          ) : (
+            <>
             {transactions.length > 0 ? (
               <>
                 {/* Cartes de statistiques */}
@@ -816,8 +816,8 @@ export default function Dashboard() {
                     />
                   </div>
                 </div>
-                
-                {/* Liste des transactions */}
+                    
+                    {/* Liste des transactions */}
                 <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 overflow-hidden">
                   <div className="p-6 border-b border-gray-700/50 flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-white">
@@ -850,8 +850,8 @@ export default function Dashboard() {
                     />
                   </div>
                 </div>
-              </>
-            ) : (
+                  </>
+                ) : (
               <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-12">
                 <div className="flex flex-col items-center justify-center text-center">
                   <div className="w-24 h-24 bg-gray-700/70 rounded-full flex items-center justify-center mb-6">
@@ -861,9 +861,9 @@ export default function Dashboard() {
                   </div>
                   <h3 className="text-xl font-medium text-white mb-2">Aucune transaction trouvée</h3>
                   <p className="text-gray-400 max-w-md mx-auto mb-6">
-                    Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork}.
-                    <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
-                  </p>
+                      Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork}.
+                      <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
+                    </p>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       onClick={() => handleScanNetwork(activeNetwork)}
@@ -890,12 +890,12 @@ export default function Dashboard() {
                       Essayer un autre réseau
                     </button>
                   </div>
+                  </div>
                 </div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+              )}
+            </>
+          )}
+        </div>
       
       {/* Afficher l'assistant d'onboarding pour les nouveaux utilisateurs */}
       {showOnboarding && (
