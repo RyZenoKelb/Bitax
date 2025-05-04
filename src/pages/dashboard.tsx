@@ -541,83 +541,96 @@ export default function Dashboard() {
 
   // Affichage du tableau de bord pour les utilisateurs connectés
   return (
-    <div className="space-y-8">
-      {/* Afficher l'assistant d'onboarding pour les nouveaux utilisateurs */}
-      {showOnboarding && (
-        <OnboardingWizard 
-          onComplete={handleOnboardingComplete} 
-          onConnect={handleWalletConnect} 
-          skipOnboarding={() => setShowOnboarding(false)}
-        />
-      )}
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Colonne latérale */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Panneau de connexion wallet - ceci ne sera pas affiché car isWalletConnected est déjà true */}
-          {!isWalletConnected ? (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Connectez votre wallet
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Pour commencer, connectez votre wallet crypto pour analyser vos transactions.
-                </p>
-                <WalletConnectButton 
-                  onConnect={handleWalletConnect}
-                  variant="primary"
-                  fullWidth
-                  size="lg"
-                />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      {/* Bandeau supérieur avec informations principales */}
+      <div className="bg-white dark:bg-gray-800 shadow-md border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center p-2 bg-blue-50 dark:bg-blue-900/30 rounded-full">
+                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">Tableau de bord fiscal</h1>
+                {transactions.length > 0 && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{transactions.length} transactions • Dernière mise à jour: {new Date().toLocaleDateString()}</p>
+                )}
               </div>
             </div>
-          ) : (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Wallet connecté
+            
+            {/* Wallet info avec badge animé */}
+            <div className="flex items-center mt-4 md:mt-0 bg-gray-50 dark:bg-gray-700 p-2 px-4 rounded-full">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">Wallet connecté:</span>
+              <span className="text-sm font-mono text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-600 py-0.5 px-2 rounded">
+                {walletAddress.substring(0, 6)}...{walletAddress.substring(walletAddress.length - 4)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Contenu principal */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-12 gap-6">
+          {/* Panneau latéral */}
+          <div className="col-span-12 lg:col-span-3 space-y-6">
+            {/* Carte de sélection de réseau */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="p-5 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  <svg className="w-5 h-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Explorateur de réseaux
                 </h2>
-                <div className="flex items-center mb-4">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                  <p className="text-gray-600 dark:text-gray-300 font-medium">
-                    {walletAddress.substring(0, 8)}...{walletAddress.substring(walletAddress.length - 6)}
-                  </p>
+              </div>
+              
+              <div className="p-5">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
+                    <button
+                      key={network}
+                      onClick={() => handleScanNetwork(network as NetworkType)}
+                      className={`relative flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        activeNetwork === network 
+                          ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-800' 
+                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                    >
+                      {/* Indicateur coloré pour chaque réseau */}
+                      <span className="w-4 h-4 mr-1.5 rounded-full bg-opacity-80"
+                        style={{
+                          backgroundColor: {
+                            'eth': '#627EEA',
+                            'polygon': '#8247E5',
+                            'arbitrum': '#28A0F0',
+                            'optimism': '#FF0420',
+                            'base': '#0052FF'
+                          }[network]
+                        }}
+                      ></span>
+                      {network.charAt(0).toUpperCase() + network.slice(1)}
+                      
+                      {activeNetwork === network && isLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-blue-600 bg-opacity-90 rounded-lg">
+                          <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                  ))}
                 </div>
                 
-                {/* Sélection du réseau */}
-                <div className="mt-6">
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Scanner un réseau
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
-                      <button
-                        key={network}
-                        onClick={() => handleScanNetwork(network as NetworkType)}
-                        className={`relative flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg ${
-                          activeNetwork === network 
-                            ? 'bg-bitax-primary-600 text-white shadow-sm' 
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                        }`}
-                      >
-                        {activeNetwork === network && isLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-bitax-primary-600 bg-opacity-90 rounded-lg">
-                            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </div>
-                        )}
-                        {network.charAt(0).toUpperCase() + network.slice(1)}
-                      </button>
-                    ))}
-                  </div>
-                  
+                <div className="space-y-3">
                   <button
                     onClick={() => handleScanNetwork(activeNetwork)}
                     disabled={isLoading}
-                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                    className="w-full flex items-center justify-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200 disabled:opacity-70"
                   >
                     {isLoading ? (
                       <>
@@ -630,7 +643,7 @@ export default function Dashboard() {
                     ) : (
                       <>
                         <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         Scanner {activeNetwork.toUpperCase()}
                       </>
@@ -639,126 +652,282 @@ export default function Dashboard() {
                   
                   <button
                     onClick={() => {
-                      // Fonction pour scanner toutes les blockchains en parallèle
                       ['eth', 'polygon', 'arbitrum', 'optimism', 'base'].forEach(network => {
                         handleScanNetwork(network as NetworkType);
                       });
                     }}
                     disabled={isLoading}
-                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                    className="w-full flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-medium rounded-lg shadow-sm transition-all duration-200 disabled:opacity-70"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    Scan automatique multi-chain
+                    Multi-chain Turbo Scan
                   </button>
                 </div>
               </div>
               
-              {/* Statistiques */}
               {transactions.length > 0 && (
-                <div className="bg-gray-50 dark:bg-bitax-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Transactions trouvées</span>
+                <div className="px-5 py-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Transactions analysées</span>
                     <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">
-                    <div className="bg-bitax-primary-600 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}
+                    ></div>
                   </div>
                 </div>
               )}
             </div>
-          )}
-          
-          {/* Bannière Premium */}
-          {!isPremiumUser && (
-            <PremiumUnlock onUnlock={handleUnlockPremium} />
-          )}
-        </div>
-        
-        {/* Contenu principal */}
-        <div className="lg:col-span-2 space-y-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Tableau de bord fiscal
-          </h1>
-          
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
-              <div className="flex items-center">
-                <svg className="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p>{error}</p>
+            
+            {/* Bannière Premium */}
+            {!isPremiumUser && <PremiumUnlock onUnlock={handleUnlockPremium} />}
+            
+            {/* Widget d'aide rapide */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-sm border border-blue-100 dark:border-blue-800/30 p-5">
+              <div className="flex items-start space-x-4">
+                <div className="p-2 bg-blue-100 dark:bg-blue-700 rounded-lg">
+                  <svg className="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">Conseil fiscal</h3>
+                  <p className="mt-1 text-xs text-blue-600 dark:text-blue-300">
+                    Utilisez la méthode FIFO pour vos calculs fiscaux en France pour optimiser votre déclaration crypto.
+                  </p>
+                  <a href="/guide" className="mt-2 inline-flex items-center text-xs font-medium text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                    En savoir plus
+                    <svg className="ml-1 w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             </div>
-          )}
+          </div>
           
-          {isLoading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="w-12 h-12 border-4 border-bitax-primary-200 border-t-bitax-primary-600 rounded-full animate-spin"></div>
-              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des transactions...</p>
-            </div>
-          ) : (
-            <>
-              {isWalletConnected ? (
-                transactions.length > 0 ? (
-                  <>
-                    {/* Résumé des transactions */}
-                    <TransactionSummary 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
-                    
-                    {/* Tableau de bord fiscal */}
-                    <TaxDashboard 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                      walletAddress={walletAddress}
-                    />
-                    
-                    {/* Liste des transactions */}
-                    <TransactionList 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
-                  </>
-                ) : (
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                    <svg className="w-16 h-16 mx-auto text-bitax-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <h3 className="mt-4 text-xl font-medium text-bitax-gray-900 dark:text-white">Aucune transaction trouvée</h3>
-                    <p className="mt-2 text-bitax-gray-500 dark:text-bitax-gray-400">
-                      Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork}.
-                      <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
-                    </p>
-                    <button
-                      onClick={() => handleScanNetwork(activeNetwork)}
-                      className="mt-6 px-4 py-2 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white rounded-lg"
-                    >
-                      Scanner à nouveau
-                    </button>
-                  </div>
-                )
-              ) : (
-                <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                  <h3 className="text-xl font-medium text-bitax-gray-900 dark:text-white">Bienvenue sur Bitax</h3>
-                  <p className="mt-2 text-bitax-gray-600 dark:text-bitax-gray-400">
-                    Connectez votre wallet pour commencer à analyser vos transactions et générer votre rapport fiscal.
-                  </p>
-                  <div className="mt-6">
-                    <WalletConnectButton
-                      onConnect={handleWalletConnect}
-                      variant="primary"
-                      size="lg"
-                    />
+          {/* Zone principale */}
+          <div className="col-span-12 lg:col-span-9 space-y-6">
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 mr-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="font-medium">{error}</p>
+                    <p className="mt-1 text-sm opacity-80">Vérifiez votre connexion internet et réessayez.</p>
                   </div>
                 </div>
-              )}
-            </>
-          )}
+              </div>
+            )}
+            
+            {isLoading ? (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12">
+                <div className="flex flex-col items-center justify-center">
+                  <div className="relative w-20 h-20">
+                    <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-blue-200 dark:border-blue-800 opacity-20"></div>
+                    <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-t-blue-600 animate-spin"></div>
+                  </div>
+                  <p className="mt-6 text-lg font-medium text-gray-700 dark:text-gray-300">Analyse des transactions en cours...</p>
+                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Veuillez patienter pendant que nous analysons vos données blockchain</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                {transactions.length > 0 ? (
+                  <>
+                    {/* Cartes de statistiques */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {[
+                        {
+                          title: 'Balance totale',
+                          value: '12,452 €',
+                          change: '+14.5%',
+                          isPositive: true,
+                          icon: (
+                            <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          )
+                        },
+                        {
+                          title: 'Plus-values',
+                          value: '3,841 €',
+                          change: '+8.2%',
+                          isPositive: true,
+                          icon: (
+                            <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                          )
+                        },
+                        {
+                          title: 'Impôts estimés',
+                          value: '960 €',
+                          change: '-2.4%',
+                          isPositive: false,
+                          icon: (
+                            <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                            </svg>
+                          )
+                        }
+                      ].map((stat, index) => (
+                        <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{stat.title}</p>
+                              <p className="mt-1 text-2xl font-semibold text-gray-900 dark:text-white">{stat.value}</p>
+                            </div>
+                            <div className={`p-3 rounded-lg ${stat.isPositive ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
+                              {stat.icon}
+                            </div>
+                          </div>
+                          <div className="mt-4 flex items-center">
+                            <span className={`text-sm font-medium ${stat.isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                              {stat.change}
+                            </span>
+                            <span className="ml-1.5 text-xs text-gray-500 dark:text-gray-400">depuis 30 jours</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Tableau de bord fiscal avec graphique */}
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                      <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Synthèse fiscale</h2>
+                        <div className="flex space-x-2">
+                          <button className="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            Jour
+                          </button>
+                          <button className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+                            Mois
+                          </button>
+                          <button className="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            Année
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="p-6">
+                        <TaxDashboard 
+                          transactions={transactions}
+                          isPremiumUser={isPremiumUser}
+                          walletAddress={walletAddress}
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Résumé des transactions */}
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Résumé des transactions</h2>
+                      </div>
+                      
+                      <div className="p-6">
+                        <TransactionSummary 
+                          transactions={transactions}
+                          isPremiumUser={isPremiumUser}
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Liste des transactions */}
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                      <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Historique des transactions
+                        </h2>
+                        <div className="flex items-center space-x-2">
+                          <select className="text-sm bg-gray-100 dark:bg-gray-700 border-0 rounded-lg p-2 text-gray-600 dark:text-gray-300">
+                            <option>Tous les types</option>
+                            <option>Achats</option>
+                            <option>Ventes</option>
+                            <option>Transferts</option>
+                          </select>
+                          <button className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                          </button>
+                          <button className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <TransactionList 
+                          transactions={transactions}
+                          isPremiumUser={isPremiumUser}
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+                        <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">Aucune transaction trouvée</h3>
+                      <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
+                        Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork}.
+                        <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                          onClick={() => handleScanNetwork(activeNetwork)}
+                          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center justify-center"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                          </svg>
+                          Scanner à nouveau
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Changer de réseau
+                            const networks = ['eth', 'polygon', 'arbitrum', 'optimism', 'base'];
+                            const currentIndex = networks.indexOf(activeNetwork);
+                            const nextNetwork = networks[(currentIndex + 1) % networks.length];
+                            handleScanNetwork(nextNetwork as NetworkType);
+                          }}
+                          className="px-4 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium flex items-center justify-center"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                          </svg>
+                          Essayer un autre réseau
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
+      
+      {/* Afficher l'assistant d'onboarding pour les nouveaux utilisateurs */}
+      {showOnboarding && (
+        <OnboardingWizard 
+          onComplete={handleOnboardingComplete} 
+          onConnect={handleWalletConnect} 
+          skipOnboarding={() => setShowOnboarding(false)}
+        />
+      )}
     </div>
   );
 }
