@@ -1330,7 +1330,7 @@ export default function Home() {
       
       {/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
       <motion.section 
-        className="py- relative"
+        className="py-30 relative"
         style={{ y: y3 }}
       >
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
@@ -1389,7 +1389,7 @@ export default function Home() {
       
       {/* Section FAQ avec effet accordéon */}
       <motion.section 
-        className="py-60 relative"
+        className="py- relative"
         style={{ y: y1 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
