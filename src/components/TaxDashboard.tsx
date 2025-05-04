@@ -245,7 +245,7 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
   // Affichage de chargement
   if (isLoading) {
     return (
-      <div className="w-full mt-6 p-6 bg-white dark:bg-bitax-gray-800 rounded-xl shadow-md text-center">
+      <div className="w-full mt-6 p-6 bg-transparent rounded-xl shadow-md text-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-600 dark:border-blue-500 border-dashed rounded-full animate-spin"></div>
           <p className="text-blue-600 dark:text-blue-400 font-medium">Calcul fiscal en cours...</p>
@@ -271,7 +271,7 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
   // Pas de données disponibles
   if (!taxSummary) {
     return (
-      <div className="w-full mt-6 p-6 bg-white dark:bg-bitax-gray-800 rounded-xl shadow-md text-center text-gray-500 dark:text-gray-400">
+      <div className="w-full mt-6 p-6 bg-transparent rounded-xl shadow-md text-center text-gray-500 dark:text-gray-400">
         <p>Aucune donnée fiscale disponible. Veuillez scanner vos transactions.</p>
       </div>
     );
@@ -282,10 +282,10 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
       {/* En-tête avec titre et actions */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-white">
+          <h2 className="text-2xl font-display font-bold text-white">
             Rapport Fiscal {selectedYear !== 'all' ? selectedYear : ''}
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-gray-400 mt-1">
             {walletAddress.substring(0, 6)}...{walletAddress.substring(walletAddress.length - 4)} • {calculationMethod} • {currency.toUpperCase()}
           </p>
         </div>
@@ -308,11 +308,11 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
               </button>
               
               {isExporting && (
-                <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white dark:bg-bitax-gray-800 border border-gray-200 dark:border-gray-700 z-10">
+                <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-transparent border border-gray-700 z-10">
                   <div className="py-1">
                     <button
                       onClick={handleExportPDF}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
                     >
                       <svg className="w-4 h-4 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -321,7 +321,7 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                     </button>
                     <button
                       onClick={handleExportExcel}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
                     >
                       <svg className="w-4 h-4 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -330,17 +330,17 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                     </button>
                     <button
                       onClick={handleExportCSV}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
                     >
                       <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                       </svg>
                       CSV
                     </button>
-                    <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+                    <div className="border-t border-gray-700 my-1"></div>
                     <button
                       onClick={handleCompleteExport}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
                     >
                       <svg className="w-4 h-4 mr-2 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
@@ -356,11 +356,11 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
       </div>
       
       {/* Panneau de contrôle */}
-      <div className="bg-white dark:bg-bitax-gray-800 rounded-xl shadow-md p-6">
+      <div className="bg-transparent rounded-xl shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Navigation */}
           <div className="md:col-span-1">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-3">
+            <h3 className="text-sm font-medium text-gray-500 uppercase mb-3">
               Visualisations
             </h3>
             <nav className="space-y-1">
@@ -368,8 +368,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 onClick={() => setActiveView('summary')}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg ${
                   activeView === 'summary' 
-                    ? 'bg-bitax-primary-100 dark:bg-bitax-primary-900/40 text-bitax-primary-700 dark:text-bitax-primary-300' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'bg-bitax-primary-100 text-bitax-primary-700' 
+                    : 'text-gray-300 hover:bg-gray-700'
                 }`}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -381,8 +381,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 onClick={() => setActiveView('transactions')}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg ${
                   activeView === 'transactions' 
-                    ? 'bg-bitax-primary-100 dark:bg-bitax-primary-900/40 text-bitax-primary-700 dark:text-bitax-primary-300' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'bg-bitax-primary-100 text-bitax-primary-700' 
+                    : 'text-gray-300 hover:bg-gray-700'
                 }`}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -394,8 +394,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 onClick={() => setActiveView('charts')}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg ${
                   activeView === 'charts' 
-                    ? 'bg-bitax-primary-100 dark:bg-bitax-primary-900/40 text-bitax-primary-700 dark:text-bitax-primary-300' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'bg-bitax-primary-100 text-bitax-primary-700' 
+                    : 'text-gray-300 hover:bg-gray-700'
                 }`}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -408,8 +408,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 onClick={() => setActiveView('settings')}
                 className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg ${
                   activeView === 'settings' 
-                    ? 'bg-bitax-primary-100 dark:bg-bitax-primary-900/40 text-bitax-primary-700 dark:text-bitax-primary-300' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'bg-bitax-primary-100 text-bitax-primary-700' 
+                    : 'text-gray-300 hover:bg-gray-700'
                 }`}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -422,19 +422,19 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
             
             {/* Filtres */}
             <div className="mt-6 space-y-4">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase mb-3">
+              <h3 className="text-sm font-medium text-gray-500 uppercase mb-3">
                 Filtres
               </h3>
               
               <div>
-                <label htmlFor="year" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
                   Année fiscale
                 </label>
                 <select
                   id="year"
                   value={selectedYear}
                   onChange={e => setSelectedYear(e.target.value as YearOption)}
-                  className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 text-sm bg-white dark:bg-bitax-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full rounded-md border border-gray-700 py-2 px-3 text-sm bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   {yearOptions.map(option => (
                     <option key={option.value} value={option.value}>{option.label}</option>
@@ -451,48 +451,48 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
               <div className="space-y-6">
                 {/* Métriques clés */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+                  <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
                     <div className="flex justify-between">
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Plus-values</p>
-                      <div className="bg-green-100 dark:bg-green-900/30 rounded-full p-1">
-                        <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <p className="text-sm font-medium text-gray-500">Plus-values</p>
+                      <div className="bg-green-100 rounded-full p-1">
+                        <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
                         </svg>
                       </div>
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-green-600 dark:text-green-400">{formatAmount(taxSummary.totalGains)}</p>
-                    <div className="mt-1 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-2 text-2xl font-bold text-green-600">{formatAmount(taxSummary.totalGains)}</p>
+                    <div className="mt-1 flex items-center text-xs text-gray-500">
                       <span>Total des gains lors des cessions</span>
                     </div>
                   </div>
                   
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+                  <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
                     <div className="flex justify-between">
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Moins-values</p>
-                      <div className="bg-red-100 dark:bg-red-900/30 rounded-full p-1">
-                        <svg className="w-4 h-4 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <p className="text-sm font-medium text-gray-500">Moins-values</p>
+                      <div className="bg-red-100 rounded-full p-1">
+                        <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>
                       </div>
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-red-600 dark:text-red-400">{formatAmount(taxSummary.totalLosses)}</p>
-                    <div className="mt-1 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-2 text-2xl font-bold text-red-600">{formatAmount(taxSummary.totalLosses)}</p>
+                    <div className="mt-1 flex items-center text-xs text-gray-500">
                       <span>Total des pertes lors des cessions</span>
                     </div>
                   </div>
                   
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+                  <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
                     <div className="flex justify-between">
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Résultat net</p>
+                      <p className="text-sm font-medium text-gray-500">Résultat net</p>
                       <div className={`${
                         taxSummary.netGainOrLoss >= 0 
-                          ? 'bg-blue-100 dark:bg-blue-900/30' 
-                          : 'bg-gray-100 dark:bg-gray-700'
+                          ? 'bg-blue-100' 
+                          : 'bg-gray-700'
                         } rounded-full p-1`}>
                         <svg className={`w-4 h-4 ${
                           taxSummary.netGainOrLoss >= 0 
-                            ? 'text-blue-600 dark:text-blue-400' 
-                            : 'text-gray-600 dark:text-gray-400'
+                            ? 'text-blue-600' 
+                            : 'text-gray-600'
                           }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
@@ -500,27 +500,27 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                     </div>
                     <p className={`mt-2 text-2xl font-bold ${
                       taxSummary.netGainOrLoss >= 0 
-                        ? 'text-blue-600 dark:text-blue-400' 
-                        : 'text-gray-600 dark:text-gray-400'
+                        ? 'text-blue-600' 
+                        : 'text-gray-600'
                       }`}>
                       {formatAmount(taxSummary.netGainOrLoss)}
                     </p>
-                    <div className="mt-1 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                    <div className="mt-1 flex items-center text-xs text-gray-500">
                       <span>Différence entre gains et pertes</span>
                     </div>
                   </div>
                   
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
+                  <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
                     <div className="flex justify-between">
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Évènements</p>
-                      <div className="bg-purple-100 dark:bg-purple-900/30 rounded-full p-1">
-                        <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <p className="text-sm font-medium text-gray-500">Évènements</p>
+                      <div className="bg-purple-100 rounded-full p-1">
+                        <svg className="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                       </div>
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-purple-600 dark:text-purple-400">{filteredEvents.length}</p>
-                    <div className="mt-1 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-2 text-2xl font-bold text-purple-600">{filteredEvents.length}</p>
+                    <div className="mt-1 flex items-center text-xs text-gray-500">
                       <span>Transactions taxables identifiées</span>
                     </div>
                   </div>
@@ -528,8 +528,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 
                 {/* Distribution des gains */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-                    <h3 className="text-base font-medium text-gray-900 dark:text-white mb-4">Distribution des gains</h3>
+                  <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
+                    <h3 className="text-base font-medium text-white mb-4">Distribution des gains</h3>
                     
                     <div className="flex flex-col md:flex-row items-center md:space-x-6">
                       <div className="h-48 w-full md:w-1/2">
@@ -560,17 +560,17 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                       <div className="space-y-4 w-full md:w-1/2">
                         <div>
                           <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center">
-                              <span className="block w-3 h-3 rounded-full bg-green-500 dark:bg-green-400 mr-2"></span>
+                            <span className="text-sm font-medium text-gray-600 flex items-center">
+                              <span className="block w-3 h-3 rounded-full bg-green-500 mr-2"></span>
                               Plus-values long terme
                             </span>
-                            <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                            <span className="text-sm font-medium text-green-600">
                               {formatAmount(taxSummary.longTermGains)}
                             </span>
                           </div>
-                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                          <div className="w-full bg-gray-700/70 rounded-full h-1.5">
                             <div 
-                              className="bg-green-500 dark:bg-green-400 h-1.5 rounded-full" 
+                              className="bg-green-500 h-1.5 rounded-full" 
                               style={{ width: `${(taxSummary.longTermGains / (taxSummary.totalGains || 1)) * 100}%` }}
                             ></div>
                           </div>
@@ -578,17 +578,17 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                         
                         <div>
                           <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center">
-                              <span className="block w-3 h-3 rounded-full bg-blue-500 dark:bg-blue-400 mr-2"></span>
+                            <span className="text-sm font-medium text-gray-600 flex items-center">
+                              <span className="block w-3 h-3 rounded-full bg-blue-500 mr-2"></span>
                               Plus-values court terme
                             </span>
-                            <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                            <span className="text-sm font-medium text-blue-600">
                               {formatAmount(taxSummary.shortTermGains)}
                             </span>
                           </div>
-                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                          <div className="w-full bg-gray-700/70 rounded-full h-1.5">
                             <div 
-                              className="bg-blue-500 dark:bg-blue-400 h-1.5 rounded-full" 
+                              className="bg-blue-500 h-1.5 rounded-full" 
                               style={{ width: `${(taxSummary.shortTermGains / (taxSummary.totalGains || 1)) * 100}%` }}
                             ></div>
                           </div>
@@ -596,17 +596,17 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                         
                         <div>
                           <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center">
-                              <span className="block w-3 h-3 rounded-full bg-red-500 dark:bg-red-400 mr-2"></span>
+                            <span className="text-sm font-medium text-gray-600 flex items-center">
+                              <span className="block w-3 h-3 rounded-full bg-red-500 mr-2"></span>
                               Moins-values totales
                             </span>
-                            <span className="text-sm font-medium text-red-600 dark:text-red-400">
+                            <span className="text-sm font-medium text-red-600">
                               {formatAmount(taxSummary.totalLosses)}
                             </span>
                           </div>
-                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                          <div className="w-full bg-gray-700/70 rounded-full h-1.5">
                             <div 
-                              className="bg-red-500 dark:bg-red-400 h-1.5 rounded-full" 
+                              className="bg-red-500 h-1.5 rounded-full" 
                               style={{ width: `${(taxSummary.totalLosses / (taxSummary.totalGains + taxSummary.totalLosses || 1)) * 100}%` }}
                             ></div>
                           </div>
@@ -615,20 +615,20 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                     </div>
                   </div>
                   
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-                    <h3 className="text-base font-medium text-gray-900 dark:text-white mb-4">Méthode de calcul</h3>
+                  <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
+                    <h3 className="text-base font-medium text-white mb-4">Méthode de calcul</h3>
                     
                     <div className="relative">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center">
-                          <div className="w-12 h-12 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg mr-4">
+                          <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-lg mr-4">
                             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
                           </div>
                           <div>
-                            <h4 className="text-lg font-medium text-gray-900 dark:text-white">{calculationMethod}</h4>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <h4 className="text-lg font-medium text-white">{calculationMethod}</h4>
+                            <p className="text-sm text-gray-500">
                               {calculationMethod === 'FIFO' && 'Premier entré, premier sorti'}
                               {calculationMethod === 'LIFO' && 'Dernier entré, premier sorti'}
                               {calculationMethod === 'HIFO' && 'Prix d\'achat le plus élevé'}
@@ -639,7 +639,7 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                         
                         <button
                           onClick={() => setShowMethodInfo(!showMethodInfo)}
-                          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                          className="text-gray-500 hover:text-gray-300"
                         >
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -648,7 +648,7 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                       </div>
                       
                       {showMethodInfo && (
-                        <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4 text-sm text-gray-600 dark:text-gray-300">
+                        <div className="bg-gray-700/30 rounded-lg p-4 text-sm text-gray-300">
                           {calculationMethod === 'FIFO' && (
                             <>
                               <p className="mb-2">
@@ -693,14 +693,14 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                       )}
                     </div>
                     
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Autres méthodes disponibles</h4>
+                    <div className="mt-4 pt-4 border-t border-gray-700">
+                      <h4 className="text-sm font-medium text-gray-300 mb-2">Autres méthodes disponibles</h4>
                       <div className="grid grid-cols-2 gap-2">
                         {['FIFO', 'LIFO', 'HIFO', 'WAC'].filter(method => method !== calculationMethod).map(method => (
                           <button
                             key={method}
                             onClick={() => setCalculationMethod(method as CalculationMethod)}
-                            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                            className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-700 text-gray-300 hover:bg-gray-700 transition-colors duration-200"
                           >
                             {method}
                           </button>
@@ -711,49 +711,49 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 </div>
                 
                 {/* Transactions récentes */}
-                <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-                  <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                    <h3 className="text-base font-medium text-gray-900 dark:text-white">Événements taxables récents</h3>
+                <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm overflow-hidden">
+                  <div className="flex justify-between items-center px-4 py-3 border-b border-gray-700">
+                    <h3 className="text-base font-medium text-white">Événements taxables récents</h3>
                     <button
                       onClick={() => setActiveView('transactions')}
-                      className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                      className="text-sm text-blue-600 hover:text-blue-400"
                     >
                       Voir tout
                     </button>
                   </div>
                   
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                      <thead className="bg-gray-50 dark:bg-gray-800/50">
+                    <table className="min-w-full divide-y divide-gray-700">
+                      <thead className="bg-gray-800/50">
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Token</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Coût d'acquisition</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Produit de cession</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Gain/Perte</th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Token</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coût d'acquisition</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit de cession</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gain/Perte</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white dark:bg-transparent divide-y divide-gray-200 dark:divide-gray-700">
+                      <tbody className="bg-transparent divide-y divide-gray-700">
                         {displayedEvents.slice(0, 5).map((event, index) => (
-                          <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          <tr key={index} className="hover:bg-gray-800/50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {new Date(event.date).toLocaleDateString()}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                               {event.token}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {formatAmount(event.acquisitionCost)}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {formatAmount(event.proceeds)}
                             </td>
-                            <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${event.gainOrLoss >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${event.gainOrLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                               {formatAmount(event.gainOrLoss)}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                              <span className={`px-2 py-1 rounded-full text-xs ${event.isLongTerm ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'}`}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <span className={`px-2 py-1 rounded-full text-xs ${event.isLongTerm ? 'bg-blue-100' : 'bg-purple-100'}`}>
                                 {event.isLongTerm ? 'Long terme' : 'Court terme'}
                               </span>
                             </td>
@@ -764,8 +764,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                   </div>
                   
                   {!isPremiumUser && filteredEvents.length > 5 && (
-                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-t border-yellow-100 dark:border-yellow-800/50 text-center">
-                      <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                    <div className="p-4 bg-gray-700/20 border-t border-gray-700 text-center">
+                      <p className="text-sm text-gray-300">
                         {filteredEvents.length - 5} événements taxables supplémentaires disponibles avec Bitax Premium
                       </p>
                     </div>
@@ -776,53 +776,53 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
             
             {/* Vue des transactions détaillées */}
             {activeView === 'transactions' && (
-              <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                  <h3 className="text-base font-medium text-gray-900 dark:text-white">Détail des événements taxables</h3>
+              <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm overflow-hidden">
+                <div className="px-4 py-3 border-b border-gray-700">
+                  <h3 className="text-base font-medium text-white">Détail des événements taxables</h3>
                 </div>
                 
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-800/50">
+                  <table className="min-w-full divide-y divide-gray-700">
+                    <thead className="bg-gray-800/50">
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Token</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Coût d'acquisition</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Produit de cession</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Gain/Perte</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Transaction</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Token</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coût d'acquisition</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit de cession</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gain/Perte</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white dark:bg-transparent divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody className="bg-transparent divide-y divide-gray-700">
                       {displayedEvents.map((event, index) => (
-                        <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        <tr key={index} className="hover:bg-gray-800/50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {new Date(event.date).toLocaleDateString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                             {event.token}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {formatAmount(event.acquisitionCost)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {formatAmount(event.proceeds)}
                           </td>
-                          <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${event.gainOrLoss >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                          <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${event.gainOrLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {formatAmount(event.gainOrLoss)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            <span className={`px-2 py-1 rounded-full text-xs ${event.isLongTerm ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'}`}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span className={`px-2 py-1 rounded-full text-xs ${event.isLongTerm ? 'bg-blue-100' : 'bg-purple-100'}`}>
                               {event.isLongTerm ? 'Long terme' : 'Court terme'}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <a 
                               href={`https://etherscan.io/tx/${event.transaction.hash}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                              className="text-blue-600 hover:text-blue-400"
                             >
                               {event.transaction.hash.substring(0, 8)}...
                             </a>
@@ -834,8 +834,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 </div>
                 
                 {!isPremiumUser && filteredEvents.length > 5 && (
-                  <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-t border-yellow-100 dark:border-yellow-800/50 text-center">
-                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                  <div className="p-4 bg-gray-700/20 border-t border-gray-700 text-center">
+                    <p className="text-sm text-gray-300">
                       {filteredEvents.length - 5} événements taxables supplémentaires disponibles avec Bitax Premium
                     </p>
                   </div>
@@ -847,8 +847,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
             {activeView === 'charts' && (
               <div className="space-y-6">
                 {/* Graphique d'évolution mensuelle */}
-                <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-                  <h3 className="text-base font-medium text-gray-900 dark:text-white mb-4">Évolution mensuelle</h3>
+                <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
+                  <h3 className="text-base font-medium text-white mb-4">Évolution mensuelle</h3>
                   
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
@@ -881,8 +881,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 </div>
                 
                 {/* Distribution par token */}
-                <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-                  <h3 className="text-base font-medium text-gray-900 dark:text-white mb-4">Distribution par token</h3>
+                <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-4">
+                  <h3 className="text-base font-medium text-white mb-4">Distribution par token</h3>
                   
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
@@ -920,8 +920,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                 </div>
                 
                 {!isPremiumUser && (
-                  <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-100 dark:border-yellow-800/50 rounded-xl text-center">
-                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                  <div className="p-4 bg-gray-700/20 border border-gray-700 rounded-xl text-center">
+                    <p className="text-sm text-gray-300">
                       Débloquez des graphiques et analyses supplémentaires avec Bitax Premium
                     </p>
                   </div>
@@ -931,68 +931,68 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
             
             {/* Vue des paramètres */}
             {activeView === 'settings' && (
-              <div className="bg-white dark:bg-bitax-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
-                <h3 className="text-base font-medium text-gray-900 dark:text-white mb-6">Paramètres du rapport</h3>
+              <div className="bg-transparent rounded-xl border border-gray-700 shadow-sm p-6">
+                <h3 className="text-base font-medium text-white mb-6">Paramètres du rapport</h3>
                 
                 <div className="space-y-6">
                   <div>
-                    <label htmlFor="calculation-method" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="calculation-method" className="block text-sm font-medium text-gray-700 mb-1">
                       Méthode de calcul
                     </label>
                     <select
                       id="calculation-method"
                       value={calculationMethod}
                       onChange={e => setCalculationMethod(e.target.value as CalculationMethod)}
-                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 text-sm bg-white dark:bg-bitax-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full rounded-md border border-gray-700 py-2 px-3 text-sm bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="FIFO">FIFO - Premier entré, premier sorti</option>
                       <option value="LIFO">LIFO - Dernier entré, premier sorti</option>
                       <option value="WAC">WAC - Prix moyen pondéré</option>
                       <option value="HIFO">HIFO - Prix d'achat le plus élevé</option>
                     </select>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-xs text-gray-500">
                       La méthode utilisée peut influencer significativement votre résultat fiscal.
                     </p>
                   </div>
                   
                   <div>
-                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
                       Devise
                     </label>
                     <select
                       id="currency"
                       value={currency}
                       onChange={e => setCurrency(e.target.value as CurrencyOption)}
-                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 text-sm bg-white dark:bg-bitax-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full rounded-md border border-gray-700 py-2 px-3 text-sm bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="eur">EUR - Euro</option>
                       <option value="usd">USD - Dollar américain</option>
                     </select>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-xs text-gray-500">
                       Devise utilisée pour l'évaluation des plus et moins-values.
                     </p>
                   </div>
                   
                   <div>
-                    <label htmlFor="year" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">
                       Année fiscale
                     </label>
                     <select
                       id="year"
                       value={selectedYear}
                       onChange={e => setSelectedYear(e.target.value as YearOption)}
-                      className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 text-sm bg-white dark:bg-bitax-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full rounded-md border border-gray-700 py-2 px-3 text-sm bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       {yearOptions.map(option => (
                         <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </select>
-                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-xs text-gray-500">
                       Filtrer les transactions par année pour votre déclaration fiscale.
                     </p>
                   </div>
                   
-                  <div className="pt-4 mt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-4 mt-6 border-t border-gray-700">
                     <button
                       onClick={calculateTaxes}
                       className="w-full py-2 px-4 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200 flex items-center justify-center"
@@ -1002,7 +1002,7 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
                       </svg>
                       Recalculer les données fiscales
                     </button>
-                    <p className="mt-2 text-xs text-center text-gray-500 dark:text-gray-400">
+                    <p className="mt-2 text-xs text-center text-gray-500">
                       Applique les nouveaux paramètres et recalcule toutes les plus/moins-values.
                     </p>
                   </div>
@@ -1015,8 +1015,8 @@ const TaxDashboard: React.FC<TaxDashboardProps> = ({
       
       {/* Footer avec lien premium si nécessaire */}
       {!isPremiumUser && (
-        <div className="mt-4 p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg text-center">
-          <p className="text-sm text-yellow-800 dark:text-yellow-300">
+        <div className="mt-4 p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg text-center">
+          <p className="text-sm text-yellow-800">
             <span className="font-medium">🔒 Certaines fonctionnalités sont limitées.</span> Débloquez le rapport complet et toutes les fonctionnalités avec Bitax Premium.
           </p>
           <button
