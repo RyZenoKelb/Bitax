@@ -685,14 +685,14 @@ export default function Dashboard() {
                     </svg>
                 Multi-chain Turbo Scan
                   </button>
-            </div>
-            
-            {transactions.length > 0 && (
+              </div>
+              
+              {transactions.length > 0 && (
               <div className="mt-4 pt-4 border-t border-gray-700/50">
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-sm text-gray-400">Transactions analysées</span>
                   <span className="text-lg font-bold text-white">{transactions.length}</span>
-                </div>
+                  </div>
                 <div className="w-full bg-gray-700/50 rounded-full h-2">
                   <div 
                     className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500" 
@@ -776,7 +776,7 @@ export default function Dashboard() {
                     </div>
                   ))}
                 </div>
-                
+                    
                 {/* Tableau de bord fiscal avec graphique */}
                 <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 overflow-hidden mb-8">
                   <div className="p-6 border-b border-gray-700/50 flex justify-between items-center">
