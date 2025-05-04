@@ -1389,7 +1389,7 @@ export default function Home() {
       
       {/* Section FAQ avec effet accordéon */}
       <motion.section 
-        className="py-30 relative"
+        className="py-15 relative"
         style={{ y: y1 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
