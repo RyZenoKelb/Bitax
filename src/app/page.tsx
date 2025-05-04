@@ -1330,7 +1330,7 @@ export default function Home() {
       
       {/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
       <motion.section 
-        className="py-20 relative"
+        className="py-50 relative"
         style={{ y: y3 }}
       >
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
