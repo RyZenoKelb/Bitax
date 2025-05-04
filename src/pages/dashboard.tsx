@@ -27,10 +27,7 @@ import {
 // Lazy loaded components
 const OnboardingWizard = dynamic(() => import('@/components/OnboardingWizard'), { ssr: false });
 const WalletConnectPanel = dynamic(() => import('@/components/WalletConnectPanel'));
-const TransactionAnalytics = dynamic(() => import('@/components/TransactionAnalytics'));
-const TaxOptimizationCenter = dynamic(() => import('@/components/TaxOptimizationCenter'));
-const PortfolioTracker = dynamic(() => import('@/components/PortfolioTracker'));
-const ComplianceMonitor = dynamic(() => import('@/components/ComplianceMonitor'));
+
 
 import WalletConnectButton from '@/components/WalletConnectButton';
 import TransactionSummary from '@/components/TransactionSummary';
