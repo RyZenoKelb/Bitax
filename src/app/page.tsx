@@ -713,12 +713,10 @@ export default function Home() {
         <div className="container mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              <Link href="/" className="flex items-center group">
-                <div className="relative">
-                  <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-blue-400 tracking-tight">
-                    BITAX
-                  </span>
-                  <div className="h-px w-0 group-hover:w-full transition-all duration-300 bg-gradient-to-r from-indigo-500 to-blue-500"></div>
+              <Link href="/" className="group">
+                <div className="flex flex-col">
+                  <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</h1>
+                  <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
                 </div>
               </Link>
             </div>
@@ -841,18 +839,21 @@ export default function Home() {
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">simplifiée</span>
             </motion.h2>
             
-            {/* Ajout du badge "Conforme à la fiscalité française" */}
+            {/* Badge avec drapeau français */}
             <motion.div 
               className="mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              <div className="inline-flex items-center px-6 py-2 rounded-full bg-green-900/20 border border-green-800/30 backdrop-blur-sm">
-                <svg className="w-5 h-5 mr-2 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="inline-flex items-center px-6 py-2 rounded-full bg-blue-900/20 border border-blue-800/30 backdrop-blur-sm">
+                <svg className="w-6 h-5 mr-2" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="9" height="6" fill="#FFFFFF"/>
+                  <rect width="9" height="6" fill="#00209F"/>
+                  <rect x="6" width="3" height="6" fill="#DE2910"/>
+                  <rect x="3" width="3" height="6" fill="#FFFFFF"/>
                 </svg>
-                <span className="text-green-300 font-medium">Conforme à la fiscalité française</span>
+                <span className="text-blue-200 font-medium">Conforme à la fiscalité française</span>
               </div>
             </motion.div>
             
@@ -1329,7 +1330,7 @@ export default function Home() {
       
       {/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
       <motion.section 
-        className="py-20 relative"
+        className="py-16 relative"
         style={{ y: y3 }}
       >
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
@@ -1388,7 +1389,7 @@ export default function Home() {
       
       {/* Section FAQ avec effet accordéon */}
       <motion.section 
-        className="py-20 relative"
+        className="py-10 relative"
         style={{ y: y1 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
