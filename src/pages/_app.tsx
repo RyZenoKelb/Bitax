@@ -418,11 +418,11 @@ export default function App({ Component, pageProps }: AppProps) {
                           enterTo="transform opacity-100 scale-100"
                           leave="transition ease-in duration-75"
                           leaveFrom="transform opacity-100 scale-100"
-          </div>
-        </main>
-        
-        {/* Footer futuriste amélioré */}
-        <footer className={`backdrop-blur-lg ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-t ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} py-8 transition-colors duration-300 relative z-10`}>
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <div className={`absolute right-0 mt-2 w-56 rounded-xl overflow-hidden shadow-lg py-1 ${
+                            theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+                          }`}>
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div>
