@@ -536,3 +536,10 @@ export default function App({ Component, pageProps }: AppProps) {
                       </button>
                     </div>
                   </div>
+                </div>
+                
+                {/* Menu mobile amélioré avec transition */}
+                <Transition
+                  show={isMenuOpen}
+                  enter="transition duration-200 ease-out"
+                  enterFrom="opacity-0 -translate-y-2"
