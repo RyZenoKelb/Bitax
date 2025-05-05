@@ -10,7 +10,7 @@ const BitaxLogo = ({ compact = false }: { compact?: boolean }) => {
     <div className={`flex items-center ${compact ? 'justify-center' : ''}`}>
       <div className="flex flex-col">
         <span className={`${compact ? 'text-xl' : 'text-2xl'} font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-400 tracking-tight`}>
-          {compact ? 'B' : 'BITAX'}
+          {compact ? 'BX' : 'BITAX'}
         </span>
         {!compact && (
           <span className="text-xs text-gray-400 dark:text-gray-500 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
