@@ -3,7 +3,7 @@ export { default as PremiumUnlock } from './PremiumUnlock';
 export { default as TransactionList } from './TransactionList';
 export { default as TransactionSummary } from './TransactionSummary';
 export { default as TaxDashboard } from './TaxDashboard';
-export { default as NetworkIcon } from './BlockchainIcons';
+export { default as BlockchainIcons } from './BlockchainIcons';
 export { default as WalletConnectPanel } from './WalletConnectPanel';
 export { default as OnboardingWizard } from './OnboardingWizard';
 export { default as DashboardHeader } from './DashboardHeader';
