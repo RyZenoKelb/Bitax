@@ -403,9 +403,9 @@ export default function App({ Component, pageProps }: AppProps) {
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-          </Transition>
-        </header>
-        
+                          </div>
+                          <span className="font-medium hidden sm:inline">Mon compte</span>
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         {/* Contenu principal avec animation d'entrée */}
         <main className="flex-grow py-6 px-4 sm:px-6 transition-all duration-300 relative">
           <div className="container mx-auto relative z-10">
