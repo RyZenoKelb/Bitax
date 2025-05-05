@@ -193,12 +193,12 @@ export default function App({ Component, pageProps }: AppProps) {
                         </Link>
                       </div>
                       
-                    <span className="font-medium hidden sm:inline">Mon compte</span>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
+                      <div className="flex items-center space-x-3">
+                        {/* Menu utilisateur amélioré */}
+                        <div className="relative">
+                          <button 
+                            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                            className={`flex items-center space-x-2 py-1.5 px-3 rounded-lg transition-all duration-200 ${
                   <Transition
                     show={isUserMenuOpen}
                     as={Fragment}
