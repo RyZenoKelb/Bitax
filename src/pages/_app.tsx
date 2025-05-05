@@ -204,8 +204,8 @@ export default function App({ Component, pageProps }: AppProps) {
                                 : 'hover:bg-gray-100 text-gray-700 border border-gray-200/80'
                             }`}
                           >
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
