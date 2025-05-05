@@ -170,16 +170,16 @@ export default function App({ Component, pageProps }: AppProps) {
                 onClose={() => setIsSidebarOpen(false)} 
               />
               
-                  >
-                    <span className="mr-1.5">{link.icon}</span>
-                    {link.name}
-                  </Link>
-                ))}
-              </nav>
-              
-              <div className="flex items-center space-x-3">
-                {/* Menu utilisateur amélioré */}
-                <div className="relative">
+              {/* Contenu principal avec la navbar modifiée */}
+              <div className="flex flex-col flex-1 md:ml-0">
+                {/* Header simplifié pour le dashboard */}
+                <header className={`backdrop-blur-xl ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-b ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} sticky top-0 z-40 transition-colors duration-300`}>
+                  <div className="container mx-auto px-4 py-3">
+                    <div className="flex items-center justify-between">
+                      {/* Bouton menu sidebar sur mobile */}
+                      <div className="flex items-center">
+                        <button 
+                          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                   <button 
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className={`flex items-center space-x-2 py-1.5 px-3 rounded-lg transition-all duration-200 ${
