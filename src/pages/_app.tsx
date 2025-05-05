@@ -206,10 +206,10 @@ export default function App({ Component, pageProps }: AppProps) {
                           >
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
                               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <div className={`absolute right-0 mt-2 w-56 rounded-xl overflow-hidden shadow-lg py-1 ${
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                            </div>
+                            <span className="font-medium hidden sm:inline">Mon compte</span>
                       theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
                     }`}>
                       <div className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} pb-2 pt-2 px-4 mb-1`}>
