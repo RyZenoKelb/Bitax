@@ -588,8 +588,8 @@ export default function Dashboard() {
           
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
-                    Scanner un réseau
-                  </h3>
+              <div className="w-12 h-12 border-4 border-bitax-primary-200 border-t-bitax-primary-600 rounded-full animate-spin"></div>
+              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des transactions...</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
                       <button
