@@ -393,7 +393,7 @@ const Dashboard: NextPageWithLayout = () => {
               {networks.map((network) => (
                 <button
                   key={network.id}
-                  onClick={() => setActiveNetwork(network.id)}
+                  onClick={() => setActiveNetwork(network.id as NetworkType)}
                   className={`flex items-center p-3 rounded-lg border-2 transition-all ${
                     activeNetwork === network.id
                       ? 'border-primary-500 bg-primary-50 dark:border-primary-400 dark:bg-primary-900/20'
