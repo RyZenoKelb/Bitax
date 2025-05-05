@@ -706,3 +706,9 @@ export default function App({ Component, pageProps }: AppProps) {
                     </div>
                   </div>
                   
+                  <div className={`pt-6 border-t ${theme === 'dark' ? 'border-gray-800/50' : 'border-gray-200/50'}`}></div>
+                    <div className="flex flex-col md:flex-row justify-between items-center">
+                      <p className={`text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'} mb-4 md:mb-0`}>
+                        &copy; {new Date().getFullYear()} Bitax. Tous droits réservés.
+                      </p>
+                      <div className="flex items-center space-x-6">
