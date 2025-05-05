@@ -541,7 +541,7 @@ export default function Dashboard() {
 
   // Affichage du tableau de bord pour les utilisateurs connectés
   return (
-    <div className="space-y-8">
+    <div className="max-w-full space-y-8">
       {/* Afficher l'assistant d'onboarding pour les nouveaux utilisateurs */}
       {showOnboarding && (
         <OnboardingWizard 
@@ -551,43 +551,43 @@ export default function Dashboard() {
         />
       )}
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Colonne latérale */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Panneau de connexion wallet - ceci ne sera pas affiché car isWalletConnected est déjà true */}
-          {!isWalletConnected ? (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Connectez votre wallet
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Pour commencer, connectez votre wallet crypto pour analyser vos transactions.
-                </p>
-                <WalletConnectButton 
-                  onConnect={handleWalletConnect}
-                  variant="primary"
-                  fullWidth
-                  size="lg"
-                />
+      <div className="grid grid-cols-1 gap-6">
+        {/* En-tête du tableau de bord */}
+        <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Tableau de bord fiscal
+              </h1>
+              <p className="mt-2 text-gray-600 dark:text-gray-300">
+                Analysez vos transactions et générez votre rapport fiscal.
+              </p>
+            </div>
+            <div className="mt-4 sm:mt-0">
+              <WalletConnectButton
+                onConnect={handleWalletConnect}
+                variant="primary"
+                size="lg"
+              />
+            </div>
+          </div>
+        </div>
+        
+        {/* Contenu principal */}
+        <div className="space-y-6">
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p>{error}</p>
               </div>
             </div>
-          ) : (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Wallet connecté
-                </h2>
-                <div className="flex items-center mb-4">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                  <p className="text-gray-600 dark:text-gray-300 font-medium">
-                    {walletAddress.substring(0, 8)}...{walletAddress.substring(walletAddress.length - 6)}
-                  </p>
-                </div>
-                
-                {/* Sélection du réseau */}
-                <div className="mt-6">
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          )}
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12">
                     Scanner un réseau
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
