@@ -610,13 +610,13 @@ export default function Dashboard() {
                     />
                     
                     {/* Liste des transactions */}
-                      </button>
-                    ))}
-                  </div>
-                  
-                  <button
-                    onClick={() => handleScanNetwork(activeNetwork)}
-                    disabled={isLoading}
+                    <TransactionList 
+                      transactions={transactions}
+                      isPremiumUser={isPremiumUser}
+                    />
+                  </>
+                ) : (
+                  <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
                     className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
                   >
                     {isLoading ? (

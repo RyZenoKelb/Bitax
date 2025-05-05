@@ -406,18 +406,18 @@ export default function App({ Component, pageProps }: AppProps) {
                           </div>
                           <span className="font-medium hidden sm:inline">Mon compte</span>
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        {/* Contenu principal avec animation d'entrée */}
-        <main className="flex-grow py-6 px-4 sm:px-6 transition-all duration-300 relative">
-          <div className="container mx-auto relative z-10">
-            {isLoaded ? (
-              <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
-                <Component {...pageProps} />
-              </div>
-            ) : (
-              <div className="opacity-0 translate-y-10">
-                <Component {...pageProps} />
-              </div>
-            )}
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        
+                        <Transition
+                          show={isUserMenuOpen}
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
           </div>
         </main>
         
