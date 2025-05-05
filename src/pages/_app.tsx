@@ -635,3 +635,12 @@ export default function App({ Component, pageProps }: AppProps) {
               {/* Footer futuriste amélioré */}
               <footer className={`backdrop-blur-lg ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-t ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} py-8 transition-colors duration-300 relative z-10`}>
                 <div className="container mx-auto px-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                    <div>
+                      <div className="flex items-center mb-4">
+                        <BitaxLogo isDarkMode={theme === 'dark'} />
+                      </div>
+                      <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-4`}>
+                        Révolutionnez votre fiscalité crypto avec notre plateforme dopée à l'IA. Analysez, visualisez, déclarez.
+                      </p>
+                      <div className="flex space-x-4">
