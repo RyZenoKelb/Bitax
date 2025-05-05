@@ -1,105 +1,216 @@
-import React, { useEffect } from 'react';
+// src/components/CustomStyles.tsx
+import React, { useEffect, useState } from 'react';
 
 /**
- * Composant qui injecte des styles CSS directement dans le DOM
- * Cette approche garantit que nos styles auront la priorité sur tous les autres
+ * Composant permettant d'injecter des styles CSS personnalisés
+ * dynamiquement et de gérer les thèmes de l'application.
  */
 const CustomStyles: React.FC = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
   useEffect(() => {
-    // Créer un élément style
-    const style = document.createElement('style');
+    // Détecter le thème actuel
+    const savedTheme = localStorage.getItem('bitax-theme') as 'light' | 'dark' | null;
     
-    // Définir les styles avec une priorité maximale
-    style.innerHTML = `
-      /* STYLES POUR LE MODE CLAIR - CORRECTION DES PROBLÈMES DE VISIBILITÉ */
-      
-      /* 1. Forcer le contraste et la visibilité des titres */
-      .light h1, 
-      .light h1[class*="text-3xl"],
-      .light h1[class*="font-bold"] {
-        color: #0f172a !important;
-        font-family: 'Orbitron', 'Plus Jakarta Sans', sans-serif !important;
-        font-weight: 800 !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-      }
-      
-      /* 2. Boutons de blockchain (ETH, Polygon, etc.) */
-      .light button[class*="relative flex items-center justify-center px-3 py-2"],
-      .light button[class*="bg-gray-100"] {
-        background-color: #e2e8f0 !important;
-        color: #1e293b !important;
-        border: 1px solid #94a3b8 !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-      }
-      
-      /* Bouton actif/sélectionné */
-      .light button[class*="bg-bitax-primary-600"] {
-        background-color: #4338ca !important;
-        color: white !important;
-        border: 1px solid #3730a3 !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
-      }
-      
-      /* 3. Bouton Scanner */
-      .light button[class*="w-full mt-3 flex items-center justify-center"],
-      .light button[class*="scanner"],
-      .light button[class*="Scanner"] {
-        background-color: #4f46e5 !important;
-        color: white !important;
-        border: 1px solid #4338ca !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
-        opacity: 1 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-      
-      /* 4. Scan automatique */
-      .light button[class*="Scan automatique"] {
-        background-color: #6366f1 !important;
-        color: white !important;
-        border: 1px solid #4f46e5 !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
-      }
-      
-      /* 5. Icône de thème (soleil/lune) */
-      .light button[aria-label="Toggle theme"],
-      .light button[class*="p-2 rounded-full"] {
-        background-color: #e2e8f0 !important;
-        color: #0f172a !important;
-        border: 1px solid #cbd5e1 !important;
-      }
-      
-      .light button[aria-label="Toggle theme"] svg,
-      .light button[class*="p-2 rounded-full"] svg,
-      .light .relative.w-5.h-5 {
-        color: #0f172a !important;
-        stroke-width: 2.5px !important;
-        opacity: 1 !important;
-      }
-      
-      /* Forcer l'affichage de tous les éléments importants */
-      .light .flex,
-      .light .inline-flex,
-      .light .grid,
-      .light button,
-      .light a,
-      .light svg {
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-    `;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+    }
     
-    // Ajouter l'élément style au head du document
-    document.head.appendChild(style);
+    // Observer les changements de thème
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const isDarkMode = document.documentElement.classList.contains('dark');
+          setTheme(isDarkMode ? 'dark' : 'light');
+        }
+      });
+    });
     
-    // Nettoyer lors du démontage du composant
+    observer.observe(document.documentElement, { attributes: true });
+    
     return () => {
-      document.head.removeChild(style);
+      observer.disconnect();
     };
   }, []);
-  
-  return null; // Ce composant ne rend rien visuellement
+
+  // Styles CSS spécifiques injectés dans le DOM
+  return (
+    <style jsx global>{`
+      /* Variables globales dynamiques basées sur le thème */
+      :root {
+        --header-bg: ${theme === 'dark' ? 'rgba(17, 24, 39, 0.8)' : 'rgba(255, 255, 255, 0.9)'};
+        --header-border: ${theme === 'dark' ? 'rgba(31, 41, 55, 0.3)' : 'rgba(229, 231, 235, 0.3)'};
+        --sidebar-bg: ${theme === 'dark' ? 'rgb(17, 24, 39)' : 'rgb(255, 255, 255)'};
+        --sidebar-border: ${theme === 'dark' ? 'rgba(31, 41, 55, 0.5)' : 'rgba(229, 231, 235, 0.5)'};
+        --card-bg: ${theme === 'dark' ? 'rgb(31, 41, 55)' : 'rgb(255, 255, 255)'};
+        --card-border: ${theme === 'dark' ? 'rgba(55, 65, 81, 0.5)' : 'rgba(229, 231, 235, 0.5)'};
+        --card-hover-shadow: ${theme === 'dark' 
+          ? '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1)' 
+          : '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'};
+      }
+      
+      /* Styles spécifiques pour le theme sombre */
+      .dark .dashboard-header {
+        background-color: var(--header-bg);
+        border-color: var(--header-border);
+        backdrop-filter: blur(16px);
+      }
+      
+      /* Animations globales */
+      .animate-slide-in-left {
+        animation: slideInLeft 0.3s ease-out forwards;
+      }
+      
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      
+      .animate-slide-in-right {
+        animation: slideInRight 0.3s ease-out forwards;
+      }
+      
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      
+      .animate-slide-in-top {
+        animation: slideInTop 0.3s ease-out forwards;
+      }
+      
+      @keyframes slideInTop {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .animate-slide-in-bottom {
+        animation: slideInBottom 0.3s ease-out forwards;
+      }
+      
+      @keyframes slideInBottom {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      /* Effets avancés pour l'UI */
+      .glassmorphism {
+        background: ${theme === 'dark' 
+          ? 'rgba(31, 41, 55, 0.7)' 
+          : 'rgba(255, 255, 255, 0.7)'};
+        backdrop-filter: blur(8px);
+        border: 1px solid ${theme === 'dark' 
+          ? 'rgba(55, 65, 81, 0.3)' 
+          : 'rgba(229, 231, 235, 0.5)'};
+      }
+      
+      /* Effets de hover améliorés */
+      .hover-lift {
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+      }
+      
+      .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-hover-shadow);
+      }
+      
+      /* Effet glow pour les éléments importants */
+      .glow-on-hover:hover {
+        box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
+      }
+      
+      /* Gradients spécifiques */
+      .gradient-primary {
+        background: linear-gradient(135deg, #4663f5, #1672ff);
+      }
+      
+      .gradient-secondary {
+        background: linear-gradient(135deg, #1672ff, #9361fc);
+      }
+      
+      .gradient-premium {
+        background: linear-gradient(135deg, #9361fc, #4663f5);
+      }
+      
+      /* Éléments spécifiques */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: ${theme === 'dark' ? 'rgba(31, 41, 55, 0.2)' : 'rgba(229, 231, 235, 0.2)'};
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: ${theme === 'dark' ? 'rgba(55, 65, 81, 0.6)' : 'rgba(156, 163, 175, 0.6)'};
+        border-radius: 3px;
+      }
+      
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: ${theme === 'dark' ? 'rgba(75, 85, 99, 0.8)' : 'rgba(107, 114, 128, 0.8)'};
+      }
+      
+      /* Ajustements de focus pour meilleure accessibilité */
+      *:focus-visible {
+        outline: 2px solid rgb(79, 70, 229);
+        outline-offset: 2px;
+      }
+      
+      /* Animation d'arrière-plan subtile */
+      .animated-bg {
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .animated-bg::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 60%);
+        opacity: 0.4;
+        animation: rotateBackground 20s linear infinite;
+      }
+      
+      @keyframes rotateBackground {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    `}</style>
+  );
 };
 
 export default CustomStyles;
