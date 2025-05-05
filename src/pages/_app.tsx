@@ -199,11 +199,11 @@ export default function App({ Component, pageProps }: AppProps) {
                           <button 
                             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                             className={`flex items-center space-x-2 py-1.5 px-3 rounded-lg transition-all duration-200 ${
-                  <Transition
-                    show={isUserMenuOpen}
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
+                              theme === 'dark'
+                                ? 'hover:bg-gray-800 text-gray-300 border border-gray-800/40'
+                                : 'hover:bg-gray-100 text-gray-700 border border-gray-200/80'
+                            }`}
+                          >
                     enterTo="transform opacity-100 scale-100"
                     leave="transition ease-in duration-75"
                     leaveFrom="transform opacity-100 scale-100"
