@@ -601,3 +601,5 @@ export default function App({ Component, pageProps }: AppProps) {
                       <Link 
                         href="/logout" 
                         className={`flex items-center px-3 py-2.5 rounded-lg ${
+                          theme === 'dark'
+                            ? 'text-red-400 hover:bg-gray-800 hover:text-red-300'
