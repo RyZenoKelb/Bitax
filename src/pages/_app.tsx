@@ -619,3 +619,19 @@ export default function App({ Component, pageProps }: AppProps) {
 
               {/* Contenu principal avec animation d'entrée */}
               <main className="flex-grow py-6 px-4 sm:px-6 transition-all duration-300 relative">
+                <div className="container mx-auto relative z-10">
+                  {isLoaded ? (
+                    <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                      <Component {...pageProps} />
+                    </div>
+                  ) : (
+                    <div className="opacity-0 translate-y-10">
+                      <Component {...pageProps} />
+                    </div>
+                  )}
+                </div>
+              </main>
+              
+              {/* Footer futuriste amélioré */}
+              <footer className={`backdrop-blur-lg ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-t ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} py-8 transition-colors duration-300 relative z-10`}>
+                <div className="container mx-auto px-6">
