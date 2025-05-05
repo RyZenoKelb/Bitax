@@ -459,14 +459,14 @@ export default function App({ Component, pageProps }: AppProps) {
                             <div className={`border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} my-1`}></div>
                             <Link 
                               href="/logout" 
-                      <Link href={link.href} className={`flex items-center text-sm ${
-                        theme === 'dark' 
-                          ? 'text-gray-400 hover:text-primary-400' 
-                          : 'text-gray-600 hover:text-primary-600'
-                      } transition-colors duration-300`}>
-                        <span className="mr-2">{link.icon}</span>
-                        {link.name}
-                      </Link>
+                              className={`block px-4 py-2 text-sm ${
+                                theme === 'dark' 
+                                  ? 'text-red-400 hover:bg-gray-700 hover:text-red-300' 
+                                  : 'text-red-600 hover:bg-gray-100 hover:text-red-700'
+                              } flex items-center`}
+                              onClick={() => setIsUserMenuOpen(false)}
+                            >
+                              <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     </li>
                   ))}
                 </ul>
