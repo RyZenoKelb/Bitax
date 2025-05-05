@@ -423,7 +423,7 @@ export default function App({ Component, pageProps }: AppProps) {
                           <div className={`absolute right-0 mt-2 w-56 rounded-xl overflow-hidden shadow-lg py-1 ${
                             theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
                           }`}>
-          <div className="container mx-auto px-6">
+                            <div className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} pb-2 pt-2 px-4 mb-1`}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div>
                 <div className="flex items-center mb-4">
