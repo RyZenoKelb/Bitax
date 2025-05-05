@@ -345,19 +345,19 @@ export default function App({ Component, pageProps }: AppProps) {
                 
                 {/* Footer simplifié pour le dashboard */}
                 <footer className={`backdrop-blur-lg ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-t ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} py-4 transition-colors duration-300 relative z-10`}>
-                        ? 'bg-gray-800 text-primary-400 border-l-2 border-primary-500'
-                        : 'bg-gray-100 text-primary-700 border-l-2 border-primary-600'
-                      : theme === 'dark'
-                        ? 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <span className="mr-3">{link.icon}</span>
-                  {link.name}
-                </Link>
-              ))}
-              <div className={`mt-4 pt-4 border-t ${theme === 'dark' ? 'border-gray-800/50' : 'border-gray-200/50'}`}>
+                  <div className="container mx-auto px-6 text-center md:text-left">
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>
+                      &copy; {new Date().getFullYear()} Bitax. Tous droits réservés.
+                    </p>
+                  </div>
+                </footer>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Header avec navigation amélioré - pour les pages non-dashboard */}
+              <header className={`backdrop-blur-xl ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-b ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} sticky top-0 z-50 transition-colors duration-300`}>
+                <div className="container mx-auto px-4 py-3">
                 <Link 
                   href="/profile" 
                   className={`flex items-center px-3 py-2.5 rounded-lg ${
