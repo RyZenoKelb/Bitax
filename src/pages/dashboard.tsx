@@ -635,8 +635,8 @@ export default function Dashboard() {
                 )
               ) : (
                 <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                  </button>
-                  
+                  <h3 className="text-xl font-medium text-bitax-gray-900 dark:text-white">Bienvenue sur Bitax</h3>
+                  <p className="mt-2 text-bitax-gray-600 dark:text-bitax-gray-400">
                   <button
                     onClick={() => {
                       // Fonction pour scanner toutes les blockchains en parallèle
