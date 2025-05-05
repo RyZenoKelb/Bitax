@@ -10,7 +10,7 @@ const BitaxLogo = ({ compact = false }: { compact?: boolean }) => {
     <div className={`flex items-center ${compact ? 'justify-center' : ''}`}>
       <div className="flex flex-col">
         <span className={`${compact ? 'text-xl' : 'text-2xl'} font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-400 tracking-tight`}>
-          {compact ? 'BX' : 'BITAX'}
+          {compact ? 'B' : 'BITAX'}
         </span>
         {!compact && (
           <span className="text-xs text-gray-400 dark:text-gray-500 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
@@ -23,7 +23,7 @@ const BitaxLogo = ({ compact = false }: { compact?: boolean }) => {
 interface NavigationItem {
   name: string;
   href: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
   badge?: string | number;
 }
 
@@ -212,9 +212,12 @@ const Sidebar: React.FC = () => {
           leave="transition-opacity duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setIsMobileOpen(false)}
-        />
+        >
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setIsMobileOpen(false)}
+          />
+        </Transition>
       )}
 
       {/* Mobile toggle button */}
@@ -249,11 +252,13 @@ const Sidebar: React.FC = () => {
         leave="transition-all ease-in-out duration-200"
         leaveFrom={isMobile ? "translate-x-0" : ""}
         leaveTo={isMobile ? "-translate-x-full" : ""}
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col 
+        as="div"
+      >
+        <div className={`fixed inset-y-0 left-0 z-40 flex flex-col 
           ${isCollapsed ? 'w-16' : 'w-64'} 
           transition-all duration-300 ease-in-out
           bg-gray-900 dark:bg-gray-900 border-r border-gray-800/50 dark:border-gray-800/50`}
-      >
+        >
         {/* Sidebar header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-800/50 dark:border-gray-800/50">
           <div className="flex items-center">
