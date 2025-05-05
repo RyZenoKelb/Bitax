@@ -1,7 +1,7 @@
 // src/components/SupportedNetworks.tsx
 import React from 'react';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
-import NetworkIcon from '@/components/NetworkIcon';
+import NetworkIcon from '@/components/BlockchainIcons';
 
 interface SupportedNetworksProps {
   onSelect?: (network: NetworkType) => void;
