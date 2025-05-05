@@ -548,3 +548,11 @@ export default function App({ Component, pageProps }: AppProps) {
                   leaveFrom="opacity-100 translate-y-0"
                   leaveTo="opacity-0 -translate-y-2"
                 ></Transition>
+                  <div className={`px-4 pt-2 pb-4 space-y-1 ${theme === 'dark' ? 'bg-gray-900/95' : 'bg-white/95'} backdrop-blur-lg border-b ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} md:hidden`}>
+                    {navLinks.map((link) => (
+                      <Link 
+                        key={link.name}
+                        href={link.href} 
+                        className={`flex items-center px-3 py-2.5 rounded-lg ${
+                          router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/') 
+                            ? theme === 'dark'
