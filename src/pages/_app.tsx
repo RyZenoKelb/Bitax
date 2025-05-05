@@ -47,6 +47,10 @@ export default function App({ Component, pageProps }: AppProps) {
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
     setTheme(current => {
+      const newTheme = current === 'light' ? 'dark' : 'light';
+      localStorage.setItem('bitax-theme', newTheme);
+      return newTheme;
+    });
   };
 
   // Vérifier si l'utilisateur a déjà une préférence de thème
@@ -80,17 +84,13 @@ export default function App({ Component, pageProps }: AppProps) {
   // Fermer le menu mobile lors d'un changement de route
   useEffect(() => {
     setIsMenuOpen(false);
-  }, [Component]);
+    // Fermer la sidebar sur mobile lors d'un changement de route
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  }, [router.pathname]);
 
-  // Navigation links
-  const navLinks = [
-    { name: 'Dashboard', href: '/dashboard', icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-      </svg>
+  // Ouvrir la sidebar par défaut sur desktop pour les pages dashboard
     )},
     { name: 'Guide', href: '/guide', icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
