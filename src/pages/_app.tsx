@@ -677,3 +677,13 @@ export default function App({ Component, pageProps }: AppProps) {
                             } transition-colors duration-300`}>
                               <span className="mr-2">{link.icon}</span>
                               {link.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div></div>
+                      <h3 className={`text-lg font-display font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Légal</h3>
+                      <ul className="space-y-2.5">
+                        {[
