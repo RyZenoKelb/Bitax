@@ -667,3 +667,13 @@ export default function App({ Component, pageProps }: AppProps) {
                     
                     <div></div>
                       <h3 className={`text-lg font-display font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Navigation</h3>
+                      <ul className="space-y-2.5">
+                        {navLinks.map((link) => (
+                          <li key={link.name}></li>
+                            <Link href={link.href} className={`flex items-center text-sm ${
+                              theme === 'dark' 
+                                ? 'text-gray-400 hover:text-primary-400' 
+                                : 'text-gray-600 hover:text-primary-600'
+                            } transition-colors duration-300`}>
+                              <span className="mr-2">{link.icon}</span>
+                              {link.name}
