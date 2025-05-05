@@ -644,3 +644,6 @@ export default function App({ Component, pageProps }: AppProps) {
                         Révolutionnez votre fiscalité crypto avec notre plateforme dopée à l'IA. Analysez, visualisez, déclarez.
                       </p>
                       <div className="flex space-x-4">
+                        <a href="#" className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-gray-800 text-gray-400 hover:text-primary-400' : 'bg-gray-100 text-gray-600 hover:text-primary-600'} transition-colors duration-300`}>
+                          <span className="sr-only">Twitter</span>
+                          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
