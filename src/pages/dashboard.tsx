@@ -541,7 +541,7 @@ export default function Dashboard() {
 
   // Affichage du tableau de bord pour les utilisateurs connectés
   return (
-    <div className="max-w-full space-y-8">
+    <div className="space-y-8">
       {/* Afficher l'assistant d'onboarding pour les nouveaux utilisateurs */}
       {showOnboarding && (
         <OnboardingWizard 
@@ -551,70 +551,70 @@ export default function Dashboard() {
         />
       )}
       
-      <div className="grid grid-cols-1 gap-6">
-        {/* En-tête du tableau de bord */}
-        <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Tableau de bord fiscal
-              </h1>
-              <p className="mt-2 text-gray-600 dark:text-gray-300">
-                Analysez vos transactions et générez votre rapport fiscal.
-              </p>
-            </div>
-            <div className="mt-4 sm:mt-0">
-              <WalletConnectButton
-                onConnect={handleWalletConnect}
-                variant="primary"
-                size="lg"
-              />
-            </div>
-          </div>
-        </div>
-        
-        {/* Contenu principal */}
-        <div className="space-y-6">
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
-              <div className="flex items-center">
-                <svg className="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p>{error}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Colonne latérale */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Panneau de connexion wallet - ceci ne sera pas affiché car isWalletConnected est déjà true */}
+          {!isWalletConnected ? (
+            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  Connectez votre wallet
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Pour commencer, connectez votre wallet crypto pour analyser vos transactions.
+                </p>
+                <WalletConnectButton 
+                  onConnect={handleWalletConnect}
+                  variant="primary"
+                  fullWidth
+                  size="lg"
+                />
               </div>
             </div>
-          )}
-          
-          {isLoading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="w-12 h-12 border-4 border-bitax-primary-200 border-t-bitax-primary-600 rounded-full animate-spin"></div>
-              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des transactions...</p>
-            </div>
           ) : (
-            <>
-              {isWalletConnected ? (
-                transactions.length > 0 ? (
-                  <>
-                    {/* Résumé des transactions */}
-                    <TransactionSummary 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
-                    
-                    {/* Tableau de bord fiscal */}
-                    <TaxDashboard 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                      walletAddress={walletAddress}
-                    />
-                    
-                    {/* Liste des transactions */}
-                    <TransactionList 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
-                  </>
+            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Wallet connecté
+                </h2>
+                <div className="flex items-center mb-4">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  <p className="text-gray-600 dark:text-gray-300 font-medium">
+                    {walletAddress.substring(0, 8)}...{walletAddress.substring(walletAddress.length - 6)}
+                  </p>
+                </div>
+                
+                {/* Sélection du réseau */}
+                <div className="mt-6">
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Scanner un réseau
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
+                      <button
+                        key={network}
+                        onClick={() => handleScanNetwork(network as NetworkType)}
+                        className={`relative flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg ${
+                          activeNetwork === network 
+                            ? 'bg-bitax-primary-600 text-white shadow-sm' 
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        {activeNetwork === network && isLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-bitax-primary-600 bg-opacity-90 rounded-lg">
+                            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          </div>
+                        )}
+                        {network.charAt(0).toUpperCase() + network.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <button
                     onClick={() => handleScanNetwork(activeNetwork)}
                     disabled={isLoading}
                     className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
