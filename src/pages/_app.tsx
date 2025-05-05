@@ -687,3 +687,13 @@ export default function App({ Component, pageProps }: AppProps) {
                       <h3 className={`text-lg font-display font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Légal</h3>
                       <ul className="space-y-2.5">
                         {[
+                          { name: "Conditions d'utilisation", href: "#" },
+                          { name: "Politique de confidentialité", href: "#" },
+                          { name: "Mentions légales", href: "#" },
+                          { name: "Cookies", href: "#" }
+                        ].map((item, index) => (
+                          <li key={index}></li>
+                            <a href={item.href} className={`text-sm ${
+                              theme === 'dark' 
+                                ? 'text-gray-400 hover:text-primary-400' 
+                                : 'text-gray-600 hover:text-primary-600'
