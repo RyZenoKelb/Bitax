@@ -9,3 +9,5 @@ export { default as OnboardingWizard } from './OnboardingWizard';
 export { default as DashboardHeader } from './DashboardHeader';
 export { default as DataVisualization } from './DataVisualization';
 export { default as SupportedNetworks } from './SupportedNetworks';
+export { default as Sidebar } from './Sidebar';
+export { default as CustomStyles } from './CustomStyles';
