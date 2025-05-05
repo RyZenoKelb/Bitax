@@ -712,3 +712,6 @@ export default function App({ Component, pageProps }: AppProps) {
                         &copy; {new Date().getFullYear()} Bitax. Tous droits réservés.
                       </p>
                       <div className="flex items-center space-x-6">
+                        <a href="#" className={`text-sm ${theme === 'dark' ? 'text-gray-500 hover:text-primary-400' : 'text-gray-600 hover:text-primary-600'} transition-colors duration-300`}>
+                          Mentions légales
+                        </a>
