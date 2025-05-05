@@ -211,21 +211,21 @@ export default function App({ Component, pageProps }: AppProps) {
                             </div>
                             <span className="font-medium hidden sm:inline">Mon compte</span>
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    }`}>
-                      <div className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} pb-2 pt-2 px-4 mb-1`}>
-                        <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Mon compte Bitax</p>
-                        <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>john.doe@example.com</p>
-                      </div>
-                      <Link 
-                        href="/profile" 
-                        className={`block px-4 py-2 text-sm ${
-                          theme === 'dark' 
-                            ? 'text-gray-300 hover:bg-gray-700 hover:text-white' 
-                            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        } flex items-center`}
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+                          
+                          <Transition
+                            show={isUserMenuOpen}
+                            as={Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                          >
+                            <div className={`absolute right-0 mt-2 w-56 rounded-xl overflow-hidden shadow-lg py-1 ${
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                         Mon profil
