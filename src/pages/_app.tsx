@@ -715,3 +715,21 @@ export default function App({ Component, pageProps }: AppProps) {
                         <a href="#" className={`text-sm ${theme === 'dark' ? 'text-gray-500 hover:text-primary-400' : 'text-gray-600 hover:text-primary-600'} transition-colors duration-300`}>
                           Mentions légales
                         </a>
+                        <a href="#" className={`text-sm ${theme === 'dark' ? 'text-gray-500 hover:text-primary-400' : 'text-gray-600 hover:text-primary-600'} transition-colors duration-300`}>
+                          Politique de confidentialité
+                        </a>
+                        <a href="#" className={`text-sm ${theme === 'dark' ? 'text-gray-500 hover:text-primary-400' : 'text-gray-600 hover:text-primary-600'} transition-colors duration-300`}>
+                          Contact
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </footer>
+            </>
+          )}
+        </div>
+      </div>
+    </AuthProvider>
+  );
+}
