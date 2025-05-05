@@ -3,7 +3,7 @@ import React, { useState, useEffect, ReactElement } from 'react';
 import { ethers } from 'ethers';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import WalletConnectButton from '@/components/WalletConnectButton';
-import type { NextPageWithLayout } from '@/pages/_app';
+import type { NextPageWithLayout } from '@/pages/_app.';
 
 const Dashboard: NextPageWithLayout = () => {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
