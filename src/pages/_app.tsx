@@ -36,9 +36,9 @@ const BitaxLogo = ({ isDarkMode = true }: { isDarkMode?: boolean }) => {
 export default function App({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark'); // Toujours en dark mode pour le style cyberpunk
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
