@@ -272,15 +272,15 @@ export default function App({ Component, pageProps }: AppProps) {
                                 onClick={() => setIsUserMenuOpen(false)}
                               >
                                 <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  aria-label="Toggle theme"
-                >
-                  <div className="relative w-5 h-5">
-                    <Transition
-                      show={theme === 'dark'}
-                      enter="transition-opacity duration-300"
-                      enterFrom="opacity-0"
-                      enterTo="opacity-100"
-                      leave="transition-opacity duration-300"
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                Déconnexion
+                              </Link>
+                            </div>
+                          </Transition>
+                        </div>
+                        
+                        {/* Bouton toggle thème amélioré */}
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
                     >
