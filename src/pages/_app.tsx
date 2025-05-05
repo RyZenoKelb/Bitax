@@ -267,11 +267,11 @@ export default function App({ Component, pageProps }: AppProps) {
                                 className={`block px-4 py-2 text-sm ${
                                   theme === 'dark' 
                                     ? 'text-red-400 hover:bg-gray-700 hover:text-red-300' 
-                  className={`p-2.5 rounded-lg flex items-center justify-center transition-all duration-200 ${
-                    theme === 'dark'
-                      ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
-                  }`}
+                                    : 'text-red-600 hover:bg-gray-100 hover:text-red-700'
+                                } flex items-center`}
+                                onClick={() => setIsUserMenuOpen(false)}
+                              >
+                                <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   aria-label="Toggle theme"
                 >
                   <div className="relative w-5 h-5">
