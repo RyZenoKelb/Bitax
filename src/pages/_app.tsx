@@ -697,3 +697,12 @@ export default function App({ Component, pageProps }: AppProps) {
                               theme === 'dark' 
                                 ? 'text-gray-400 hover:text-primary-400' 
                                 : 'text-gray-600 hover:text-primary-600'
+                            } transition-colors duration-300`}>
+                              {item.name}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  
