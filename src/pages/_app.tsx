@@ -42,11 +42,11 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
   
   // Vérifier si on est sur la page dashboard
+  const isDashboardPage = router.pathname === '/dashboard' || router.pathname.startsWith('/dashboard/');
+
+  // Toggle du thème (light/dark)
+  const toggleTheme = () => {
     setTheme(current => {
-      const newTheme = current === 'light' ? 'dark' : 'light';
-      localStorage.setItem('bitax-theme', newTheme);
-      return newTheme;
-    });
   };
 
   // Vérifier si l'utilisateur a déjà une préférence de thème
