@@ -308,15 +308,15 @@ export default function App({ Component, pageProps }: AppProps) {
                             </Transition>
                             <Transition
                               show={theme === 'light'}
-                {/* Menu hamburger mobile amélioré */}
-                <button 
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className={`md:hidden p-2.5 rounded-lg ${
-                    theme === 'dark'
-                      ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
-                  } transition-all duration-200`}
-                  aria-expanded={isMenuOpen}
+                              enter="transition-opacity duration-300"
+                              enterFrom="opacity-0"
+                              enterTo="opacity-100"
+                              leave="transition-opacity duration-300"
+                              leaveFrom="opacity-100"
+                              leaveTo="opacity-0"
+                            >
+                              <div className="absolute inset-0">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 >
                   <span className="sr-only">Ouvrir le menu</span>
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
