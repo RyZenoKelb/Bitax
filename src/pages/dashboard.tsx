@@ -633,8 +633,8 @@ export default function Dashboard() {
                     </button>
                   </div>
                 )
-                      </>
-                    )}
+              ) : (
+                <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
                   </button>
                   
                   <button
