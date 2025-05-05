@@ -10,7 +10,7 @@ Generate clean, downloadable PDF reports
 
 Access premium features via a freemium model
 
-Built with Next.js, React, TailwindCSS, and powered by Moralis API.
+Built with Next.js, React, TailwindCSS, and powered by Moralis API
 
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\auto-commit.ps1
