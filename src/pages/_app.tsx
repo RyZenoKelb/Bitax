@@ -543,3 +543,8 @@ export default function App({ Component, pageProps }: AppProps) {
                   show={isMenuOpen}
                   enter="transition duration-200 ease-out"
                   enterFrom="opacity-0 -translate-y-2"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition duration-150 ease-in"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 -translate-y-2"
+                ></Transition>
