@@ -317,19 +317,19 @@ export default function App({ Component, pageProps }: AppProps) {
                             >
                               <div className="absolute inset-0">
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                >
-                  <span className="sr-only">Ouvrir le menu</span>
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          {/* Menu mobile amélioré avec transition */}
-          <Transition
-            show={isMenuOpen}
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                              </div>
+                            </Transition>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </header>
+                
+                {/* Contenu principal avec animation d'entrée - ajusté pour la sidebar */}
+                <main className="flex-grow py-6 px-4 sm:px-6 transition-all duration-300 relative">
             enter="transition duration-200 ease-out"
             enterFrom="opacity-0 -translate-y-2"
             enterTo="opacity-100 translate-y-0"
