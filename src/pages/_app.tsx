@@ -228,7 +228,7 @@ export default function App({ Component, pageProps }: AppProps) {
                             <div className={`absolute right-0 mt-2 w-56 rounded-xl overflow-hidden shadow-lg py-1 ${
                               theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
                             }`}>
-                        Mon profil
+                              <div className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} pb-2 pt-2 px-4 mb-1`}>
                       </Link>
                       <Link 
                         href="/profile" 
