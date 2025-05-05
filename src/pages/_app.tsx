@@ -210,7 +210,7 @@ export default function App({ Component, pageProps }: AppProps) {
                               </svg>
                             </div>
                             <span className="font-medium hidden sm:inline">Mon compte</span>
-                      theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     }`}>
                       <div className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} pb-2 pt-2 px-4 mb-1`}>
                         <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Mon compte Bitax</p>
