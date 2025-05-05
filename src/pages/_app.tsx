@@ -39,9 +39,9 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
-
-  // Toggle du thème (light/dark)
-  const toggleTheme = () => {
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
+  
+  // Vérifier si on est sur la page dashboard
     setTheme(current => {
       const newTheme = current === 'light' ? 'dark' : 'light';
       localStorage.setItem('bitax-theme', newTheme);
