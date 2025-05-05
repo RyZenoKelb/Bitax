@@ -556,3 +556,26 @@ export default function App({ Component, pageProps }: AppProps) {
                         className={`flex items-center px-3 py-2.5 rounded-lg ${
                           router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/') 
                             ? theme === 'dark'
+                              ? 'bg-gray-800 text-primary-400 border-l-2 border-primary-500'
+                              : 'bg-gray-100 text-primary-700 border-l-2 border-primary-600'
+                            : theme === 'dark'
+                              ? 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      ></Link>
+                        <span className="mr-3">{link.icon}</span>
+                        {link.name}
+                      </Link>
+                    ))}
+                    <div className={`mt-4 pt-4 border-t ${theme === 'dark' ? 'border-gray-800/50' : 'border-gray-200/50'}`}>
+                      <Link 
+                        href="/profile" 
+                        className={`flex items-center px-3 py-2.5 rounded-lg ${
+                          theme === 'dark'
+                            ? 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      ></Link>
+                        <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
