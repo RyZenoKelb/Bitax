@@ -281,15 +281,15 @@ export default function App({ Component, pageProps }: AppProps) {
                         </div>
                         
                         {/* Bouton toggle thème amélioré */}
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                    >
-                      <div className="absolute inset-0">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                      </div>
-                    </Transition>
+                        <button 
+                          onClick={toggleTheme}
+                          className={`p-2.5 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                            theme === 'dark'
+                              ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white' 
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+                          }`}
+                          aria-label="Toggle theme"
+                        >
                     <Transition
                       show={theme === 'light'}
                       enter="transition-opacity duration-300"
