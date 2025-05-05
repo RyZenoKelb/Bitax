@@ -83,10 +83,17 @@ export default function Dashboard() {
   };
 
   // Scanner un réseau spécifique
-  const handleScanNetwork = async (network: NetworkType) => {
-    setActiveNetwork(network);
-    if (walletAddress) {
-      await fetchTransactions(walletAddress, network);
+  const handleScanNetwork = async (network?: NetworkType) => {
+    if (network) {
+      setActiveNetwork(network);
+      if (walletAddress) {
+        await fetchTransactions(walletAddress, network);
+      }
+    } else {
+      // Scan multi-chain ou avec le réseau actif par défaut
+      if (walletAddress) {
+        await fetchTransactions(walletAddress, activeNetwork);
+      }
     }
   };
 
@@ -277,9 +284,7 @@ export default function Dashboard() {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Aperçu du portefeuille</h2>
         
-        <div className={`inline-flex rounded-lg border ${
-          theme === 'dark' ? 'border-gray-700' : 'border-gray-300'
-        } overflow-hidden`}>
+        <div className="inline-flex rounded-lg border border-gray-700 dark:border-gray-700 overflow-hidden">
           <button
             onClick={() => setViewMode('grid')}
             className={`px-3 py-1.5 text-sm ${
@@ -641,6 +646,4 @@ export default function Dashboard() {
   );
 };
 
-function theme(theme: any): string | number | boolean | readonly string[] | readonly number[] | readonly boolean[] | null | undefined {
-  throw new Error('Function not implemented.');
-}
+// Ne pas inclure cette fonction, elle cause une erreur
