@@ -603,3 +603,8 @@ export default function App({ Component, pageProps }: AppProps) {
                         className={`flex items-center px-3 py-2.5 rounded-lg ${
                           theme === 'dark'
                             ? 'text-red-400 hover:bg-gray-800 hover:text-red-300'
+                            : 'text-red-600 hover:bg-gray-100 hover:text-red-700'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      ></Link>
+                        <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
