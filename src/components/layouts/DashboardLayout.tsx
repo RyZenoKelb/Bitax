@@ -99,10 +99,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return router.pathname === href;
   };
 
-  // Wallet address (in real app, this would come from context/state)
-  const walletAddress = '0x1234...5678';
-  const userName = 'John Doe';
-  const userEmail = 'john.doe@example.com';
+  // Get wallet address from context if available
+  const walletAddress = sessionStorage.getItem('bitax-wallet') || '';
+  const userName = sessionUsageData?.name || 'Utilisateur';
+  const userEmail = sessionUsageData?.email || 'utilisateur@example.com';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark">
