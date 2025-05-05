@@ -290,15 +290,15 @@ export default function App({ Component, pageProps }: AppProps) {
                           }`}
                           aria-label="Toggle theme"
                         >
-                    <Transition
-                      show={theme === 'light'}
-                      enter="transition-opacity duration-300"
-                      enterFrom="opacity-0"
-                      enterTo="opacity-100"
-                      leave="transition-opacity duration-300"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                    >
+                          <div className="relative w-5 h-5">
+                            <Transition
+                              show={theme === 'dark'}
+                              enter="transition-opacity duration-300"
+                              enterFrom="opacity-0"
+                              enterTo="opacity-100"
+                              leave="transition-opacity duration-300"
+                              leaveFrom="opacity-100"
+                              leaveTo="opacity-0"
                       <div className="absolute inset-0">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
