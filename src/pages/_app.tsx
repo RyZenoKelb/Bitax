@@ -180,19 +180,19 @@ export default function App({ Component, pageProps }: AppProps) {
                       <div className="flex items-center">
                         <button 
                           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  <button 
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className={`flex items-center space-x-2 py-1.5 px-3 rounded-lg transition-all duration-200 ${
-                      theme === 'dark'
-                        ? 'hover:bg-gray-800 text-gray-300 border border-gray-800/40'
-                        : 'hover:bg-gray-100 text-gray-700 border border-gray-200/80'
-                    }`}
-                  >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
+                          className="p-2 mr-3 rounded-lg md:hidden"
+                        >
+                          <svg className="w-6 h-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                          </svg>
+                        </button>
+                        
+                        {/* Logo version mobile */}
+                        <Link href="/" className="md:hidden">
+                          <BitaxLogo isDarkMode={theme === 'dark'} />
+                        </Link>
+                      </div>
+                      
                     <span className="font-medium hidden sm:inline">Mon compte</span>
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
