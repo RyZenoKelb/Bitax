@@ -615,6 +615,113 @@ export default function Dashboard() {
                       isPremiumUser={isPremiumUser}
                     />
                   </>
+                    onClick={() => handleScanNetwork(activeNetwork)}
+                    disabled={isLoading}
+                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Scan en cours...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Scanner {activeNetwork.toUpperCase()}
+                      </>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      // Fonction pour scanner toutes les blockchains en parallèle
+                      ['eth', 'polygon', 'arbitrum', 'optimism', 'base'].forEach(network => {
+                        handleScanNetwork(network as NetworkType);
+                      });
+                    }}
+                    disabled={isLoading}
+                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Scan automatique multi-chain
+                  </button>
+                </div>
+              </div>
+              
+              {/* Statistiques */}
+              {transactions.length > 0 && (
+                <div className="bg-gray-50 dark:bg-bitax-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Transactions trouvées</span>
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">
+                    <div className="bg-bitax-primary-600 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Bannière Premium */}
+          {!isPremiumUser && (
+            <PremiumUnlock onUnlock={handleUnlockPremium} />
+          )}
+        </div>
+        
+        {/* Contenu principal */}
+        <div className="lg:col-span-2 space-y-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Tableau de bord fiscal
+          </h1>
+          
+          {error && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p>{error}</p>
+              </div>
+            </div>
+          )}
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="w-12 h-12 border-4 border-bitax-primary-200 border-t-bitax-primary-600 rounded-full animate-spin"></div>
+              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des transactions...</p>
+            </div>
+          ) : (
+            <>
+              {isWalletConnected ? (
+                transactions.length > 0 ? (
+                  <>
+                    {/* Résumé des transactions */}
+                    <TransactionSummary 
+                      transactions={transactions}
+                      isPremiumUser={isPremiumUser}
+                    />
+                    
+                    {/* Tableau de bord fiscal */}
+                    <TaxDashboard 
+                      transactions={transactions}
+                      isPremiumUser={isPremiumUser}
+                      walletAddress={walletAddress}
+                    />
+                    
+                    {/* Liste des transactions */}
+                    <TransactionList 
+                      transactions={transactions}
+                      isPremiumUser={isPremiumUser}
+                    />
+                  </>
                 ) : (
                   <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
                     <svg className="w-16 h-16 mx-auto text-bitax-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
