@@ -330,21 +330,21 @@ export default function App({ Component, pageProps }: AppProps) {
                 
                 {/* Contenu principal avec animation d'entrée - ajusté pour la sidebar */}
                 <main className="flex-grow py-6 px-4 sm:px-6 transition-all duration-300 relative">
-            enter="transition duration-200 ease-out"
-            enterFrom="opacity-0 -translate-y-2"
-            enterTo="opacity-100 translate-y-0"
-            leave="transition duration-150 ease-in"
-            leaveFrom="opacity-100 translate-y-0"
-            leaveTo="opacity-0 -translate-y-2"
-          >
-            <div className={`px-4 pt-2 pb-4 space-y-1 ${theme === 'dark' ? 'bg-gray-900/95' : 'bg-white/95'} backdrop-blur-lg border-b ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} md:hidden`}>
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name}
-                  href={link.href} 
-                  className={`flex items-center px-3 py-2.5 rounded-lg ${
-                    router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/') 
-                      ? theme === 'dark'
+                  <div className="container mx-auto relative z-10">
+                    {isLoaded ? (
+                      <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                        <Component {...pageProps} />
+                      </div>
+                    ) : (
+                      <div className="opacity-0 translate-y-10">
+                        <Component {...pageProps} />
+                      </div>
+                    )}
+                  </div>
+                </main>
+                
+                {/* Footer simplifié pour le dashboard */}
+                <footer className={`backdrop-blur-lg ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-t ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} py-4 transition-colors duration-300 relative z-10`}>
                         ? 'bg-gray-800 text-primary-400 border-l-2 border-primary-500'
                         : 'bg-gray-100 text-primary-700 border-l-2 border-primary-600'
                       : theme === 'dark'
