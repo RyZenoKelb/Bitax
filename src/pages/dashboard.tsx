@@ -340,7 +340,7 @@ export default function Dashboard() {
               balanceCurrency="EUR"
               transactionCount={transactions.length}
               isPremiumUser={isPremiumUser}
-              onScanRequest={handleScanNetwork}
+              onScanRequest={(network) => handleScanNetwork(network || activeNetwork)}
               onExportReport={() => console.log('Exporting report...')}
               isLoading={isLoading}
               lastUpdated={new Date()}
