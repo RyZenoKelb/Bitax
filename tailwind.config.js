@@ -1,3 +1,4 @@
+// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -14,112 +15,80 @@ module.exports = {
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
-        // Couleur principale - Style Crypto Néon
+        // Couleur principale - Style Bitax
         primary: {
-          50: '#f0e7ff',
-          100: '#e0cfff',
-          200: '#c4a3ff',
-          300: '#a571ff',
-          400: '#9340ff',
-          500: '#7B3FE4', // Violet électrique - couleur de base
-          600: '#6A2DD1',
-          700: '#5822B0',
-          800: '#3e1980',
-          900: '#2b1259',
+          50: '#f0f4ff',
+          100: '#dbe3fe',
+          200: '#baccfd',
+          300: '#8eabfc',
+          400: '#6284f9',
+          500: '#4663f5', // Violet-Bleu électrique - couleur de base
+          600: '#3c4adc',
+          700: '#3038bf',
+          800: '#2c329a',
+          900: '#1e234f',
         },
-        // Couleur secondaire - Cyan électrique
+        // Couleur secondaire - Bleu électrique
         secondary: {
-          50: '#e0fcff',
-          100: '#bef8ff',
-          200: '#8df1ff',
-          300: '#56e8ff',
-          400: '#29dfff',
-          500: '#0EEAFF',
-          600: '#00bfd2',
-          700: '#0093a0',
-          800: '#007180',
-          900: '#00525c',
+          50: '#edf8ff',
+          100: '#d6efff',
+          200: '#b3dfff',
+          300: '#83c9ff',
+          400: '#459fff',
+          500: '#1672ff', // Bleu électrique
+          600: '#0059ff',
+          700: '#0049da',
+          800: '#0840ad',
+          900: '#0d3a85',
         },
-        // Accent - Rose électrique
+        // Accent - Violet
         accent: {
-          50: '#fff0f5',
-          100: '#ffe1eb',
-          200: '#ffc2d7',
-          300: '#ff94b8',
-          400: '#ff5d90',
-          500: '#FF3D71',
-          600: '#eb1958',
-          700: '#cc0e48',
-          800: '#a90e40',
-          900: '#8f123a',
+          50: '#f3f1ff',
+          100: '#ece5ff',
+          200: '#dcd2ff',
+          300: '#c6b2ff',
+          400: '#ac8aff',
+          500: '#9361fc', // Violet électrique
+          600: '#813df7',
+          700: '#6d28d9',
+          800: '#5b21b6',
+          900: '#4c1d95',
         },
-        // Succès - Vert néon
-        success: {
-          50: '#ecfff7',
-          100: '#c9ffea',
-          200: '#9bfada',
-          300: '#5aefcc',
-          400: '#2ae0b5',
-          500: '#00E6C3',
-          600: '#00b494',
-          700: '#008f78',
-          800: '#007161',
-          900: '#005d51',
+        // Fond sombre
+        bitax: {
+          'dark': '#09091b',       // Fond principal
+          'dark-light': '#14152d', // Fond de carte
+          'dark-lighter': '#1e1f47',// Éléments interactifs
+          'card': '#14152a',       // Fond de carte
+          'border': 'rgba(255, 255, 255, 0.06)',
+          'button': '#2a2c57'
         },
-        // Avertissement - Orange vif
-        warning: {
-          50: '#fff8eb',
-          100: '#ffecc8',
-          200: '#ffdb91',
-          300: '#ffc352',
-          400: '#ffb545',
-          500: '#f99621',
-          600: '#dd7814',
-          700: '#b75711',
-          800: '#944314',
-          900: '#7a3816',
-        },
-        // Erreur - Rouge néon
-        danger: {
-          50: '#ffebee',
-          100: '#ffcdd2',
-          200: '#ff9a9e',
-          300: '#ff6b7a',
-          400: '#ff4d6e',
-          500: '#FF3D55',
-          600: '#e52e45',
-          700: '#c21f3a',
-          800: '#a11c33',
-          900: '#86192d',
-        },
-        // Tons de gris modifiés pour un look plus futuriste
-        gray: {
-          50: '#F5F4FE',
-          100: '#E7E6F5',
-          200: '#D0CDE9',
-          300: '#B6B3D6',
-          400: '#9997C0',
-          500: '#7C7AA3',
-          600: '#5B598F',
-          700: '#443F77',
-          800: '#2D2A54',
-          900: '#1A1742',
-        },
-        // Arrière-plans
-        dark: '#0D0B22', // Bleu très foncé
-        'dark-secondary': '#151339', // Bleu-violet foncé
-      },
-      boxShadow: {
-        'card': '0 8px 32px rgba(0, 0, 0, 0.2)',
-        'card-hover': '0 12px 40px rgba(0, 0, 0, 0.3)',
-        'btn': '0 4px 12px rgba(123, 63, 228, 0.25)',
-      },
-      opacity: {
-        '15': '0.15',
       },
       backgroundImage: {
+        'hero-pattern': "url('/grid.svg')",
+        'dot-pattern': "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232a50c6' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E\")",
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
+      boxShadow: {
+        'glow-primary': '0 0 15px rgba(70, 99, 245, 0.3), 0 0 30px rgba(70, 99, 245, 0.15)',
+        'glow-secondary': '0 0 15px rgba(22, 114, 255, 0.3), 0 0 30px rgba(22, 114, 255, 0.15)',
+        'glow-accent': '0 0 15px rgba(147, 97, 252, 0.3), 0 0 30px rgba(147, 97, 252, 0.15)',
+      },
+      keyframes: {
+        floatingParticles: {
+          '0%, 100%': { transform: 'translateY(0) translateX(0)' },
+          '25%': { transform: 'translateY(-10px) translateX(5px)' },
+          '50%': { transform: 'translateY(5px) translateX(-5px)' },
+          '75%': { transform: 'translateY(10px) translateX(10px)' },
+        },
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
+      animation: {
+        floatingParticles: 'floatingParticles 15s infinite ease-in-out',
+        shimmer: 'shimmer 2s infinite',
       },
     },
   },
