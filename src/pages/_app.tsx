@@ -3,7 +3,7 @@ import '@/styles/globals.css';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useState, useEffect, Fragment, ReactElement } from 'react';
+import { useState, useEffect, Fragment, ReactElement, ReactNode } from 'react';
 import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
