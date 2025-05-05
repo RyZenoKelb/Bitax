@@ -259,6 +259,7 @@ const Sidebar: React.FC = () => {
           transition-all duration-300 ease-in-out
           bg-gray-900 dark:bg-gray-900 border-r border-gray-800/50 dark:border-gray-800/50`}
         >
+        </div>
         {/* Sidebar header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-800/50 dark:border-gray-800/50">
           <div className="flex items-center">
