@@ -226,8 +226,8 @@ export default function App({ Component, pageProps }: AppProps) {
                             leaveTo="transform opacity-0 scale-95"
                           >
                             <div className={`absolute right-0 mt-2 w-56 rounded-xl overflow-hidden shadow-lg py-1 ${
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                              theme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+                            }`}>
                         Mon profil
                       </Link>
                       <Link 
