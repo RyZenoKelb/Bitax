@@ -99,6 +99,21 @@ export default function App({ Component, pageProps }: AppProps) {
 
   // Navigation links
   const navLinks = [
+    { name: 'Dashboard', href: '/dashboard', icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    )},
+    { name: 'Guide', href: '/guide', icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    )},
+    { name: 'Tarifs', href: '/pricing', icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     )},
@@ -144,32 +159,17 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-5"></div>
         </div>
         
-        {/* Header avec navigation amélioré */}
-        <header className={`backdrop-blur-xl ${theme === 'dark' ? 'bg-gray-900/80' : 'bg-white/90'} border-b ${theme === 'dark' ? 'border-gray-800/30' : 'border-gray-200/30'} sticky top-0 z-50 transition-colors duration-300`}>
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              {/* Logo amélioré */}
-              <Link href="/" className="group">
-                <div className="flex items-center">
-                  <BitaxLogo isDarkMode={theme === 'dark'} />
-                </div>
-              </Link>
+        <div className="flex flex-col min-h-screen">
+          {/* Si c'est la page dashboard, afficher la sidebar */}
+          {isDashboardPage ? (
+            <div className="flex flex-1">
+              {/* Sidebar pour le dashboard */}
+              <Sidebar 
+                theme={theme} 
+                isOpen={isSidebarOpen} 
+                onClose={() => setIsSidebarOpen(false)} 
+              />
               
-              {/* Navigation desktop nouvelle génération */}
-              <nav className="hidden md:flex items-center space-x-1">
-                {navLinks.map((link) => (
-                  <Link 
-                    key={link.name} 
-                    href={link.href}
-                    className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/') 
-                        ? theme === 'dark' 
-                          ? 'bg-gray-800/80 text-primary-400 border-b-2 border-primary-500' 
-                          : 'bg-gray-100/80 text-primary-700 border-b-2 border-primary-600'
-                        : theme === 'dark'
-                          ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' 
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/80'
-                    }`}
                   >
                     <span className="mr-1.5">{link.icon}</span>
                     {link.name}
