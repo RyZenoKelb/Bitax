@@ -2,7 +2,13 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 import { ethers } from 'ethers';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
+import DashboardHeader from '@/components/DashboardHeader';
+import DataVisualization from '@/components/DataVisualization';
+import TaxDashboard from '@/components/TaxDashboard';
 import WalletConnectButton from '@/components/WalletConnectButton';
+import WalletConnectPanel from '@/components/WalletConnectPanel';
+import TransactionSummary from '@/components/TransactionSummary';
+import { getTransactions, NetworkType } from '@/utils/transactions';
 import type { NextPageWithLayout } from '@/pages/_app';
 
 const Dashboard: NextPageWithLayout = () => {
@@ -10,21 +16,43 @@ const Dashboard: NextPageWithLayout = () => {
   const [walletAddress, setWalletAddress] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState<any[]>([]);
-  const [activeNetwork, setActiveNetwork] = useState('eth');
+  const [activeNetwork, setActiveNetwork] = useState<NetworkType>('eth');
+  const [isPremiumUser, setIsPremiumUser] = useState<boolean>(false);
+  const [balance, setBalance] = useState<number | undefined>(undefined);
+  const [lastUpdated, setLastUpdated] = useState<Date | undefined>(undefined);
 
-  // Metrics data
+  // Check premium status
+  useEffect(() => {
+    const premiumStatus = localStorage.getItem('bitax-premium') === 'true';
+    setIsPremiumUser(premiumStatus);
+  }, []);
+
+  // Basic visualization data for demonstration
+  const timeFrameOptions = [
+    { value: 'day', label: 'Journée' },
+    { value: 'week', label: 'Semaine' },
+    { value: 'month', label: 'Mois' },
+    { value: 'year', label: 'Année' }
+  ];
+
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<string>('month');
+
+  // Sample data for visualization
+  const dailyTransactions = Array.from({ length: 30 }, (_, i) => ({
+    date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    volume: Math.floor(Math.random() * 1000) + 200,
+    transactions: Math.floor(Math.random() * 50) + 5
+  }));
+
+  const tokenDistribution = [
+    { name: 'ETH', value: 35, color: '#627EEA' },
+    { name: 'BTC', value: 25, color: '#F7931A' },
+    { name: 'USDC', value: 20, color: '#2775CA' },
+    { name: 'USDT', value: 15, color: '#26A17B' },
+    { name: 'Autres', value: 5, color: '#9E9E9E' }
+  ];
+
   const metrics = [
-    {
-      label: 'Valeur totale du portefeuille',
-      value: '€12,450.88',
-      change: '+12.5%',
-      changeType: 'increase',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-    },
     {
       label: 'Plus-values imposables',
       value: '€3,245.67',
@@ -109,12 +137,21 @@ const Dashboard: NextPageWithLayout = () => {
   const handleWalletConnect = async (address: string, provider: ethers.BrowserProvider) => {
     setWalletAddress(address);
     setIsWalletConnected(true);
+    sessionStorage.setItem('bitax-wallet', address);
     // Simulate loading transactions
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      // Example balance simulation
+      setBalance(12450.88);
+      setLastUpdated(new Date());
+      setTimeout(() => {
+        setIsLoading(false);
+        setTransactions([]);
+      }, 1500);
+    } catch (error) {
+      console.error('Error loading data:', error);
       setIsLoading(false);
-      setTransactions([]);
-    }, 1500);
+    }
   };
 
   const getStatusIcon = (status: string) => {
@@ -252,9 +289,168 @@ const Dashboard: NextPageWithLayout = () => {
     );
   }
 
+  const handleScanRequest = async (network?: NetworkType) => {
+    if (network) {
+      setActiveNetwork(network);
+    }
+    // Implement actual network scanning
+    setIsLoading(true);
+    try {
+      // Simulate scanning
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setLastUpdated(new Date());
+    } catch (error) {
+      console.error('Error scanning network:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleExportReport = () => {
+    // Implement export functionality
+    console.log('Exporting report...');
+  };
+
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      {/* Metrics Grid */}
+    <div className="space-y-6">
+      {/* Dashboard Header */}
+      <DashboardHeader
+        walletAddress={walletAddress}
+        balance={balance}
+        balanceCurrency="EUR"
+        transactionCount={transactions.length}
+        isPremiumUser={isPremiumUser}
+        onScanRequest={handleScanRequest}
+        onExportReport={handleExportReport}
+        isLoading={isLoading}
+        lastUpdated={lastUpdated}
+      />
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Left Column - Charts & Analytics */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Transaction Volume Chart */}
+          <div className="bg-white dark:bg-dark-secondary rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Volume des transactions
+              </h2>
+              <div className="flex items-center space-x-2">
+                <select
+                  value={selectedTimeFrame}
+                  onChange={(e) => setSelectedTimeFrame(e.target.value)}
+                  className="text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  {timeFrameOptions.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <DataVisualization
+              data={dailyTransactions}
+              type="line"
+              height={300}
+              xAxisKey="date"
+              series={[
+                { dataKey: 'volume', name: 'Volume (€)', color: '#3B82F6' },
+                { dataKey: 'transactions', name: 'Nombre de transactions', color: '#10B981' }
+              ]}
+              showLegend={true}
+              showGridLines={true}
+              isAnimationActive={true}
+            />
+          </div>
+
+          {/* Token Distribution */}
+          <div className="bg-white dark:bg-dark-secondary rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+              Distribution des tokens
+            </h2>
+            <DataVisualization
+              data={tokenDistribution}
+              type="pie"
+              height={300}
+              labelKey="name"
+              valueKey="value"
+              colors={tokenDistribution.map(item => item.color)}
+              showLegend={true}
+              isAnimationActive={true}
+            />
+          </div>
+        </div>
+
+        {/* Right Column - Network Scanner */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Network Scanner */}
+          <div className="bg-white dark:bg-dark-secondary rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Scanner de réseaux
+            </h3>
+            
+            <div className="grid grid-cols-2 gap-3">
+              {networks.map((network) => (
+                <button
+                  key={network.id}
+                  onClick={() => setActiveNetwork(network.id)}
+                  className={`flex items-center p-3 rounded-lg border-2 transition-all ${
+                    activeNetwork === network.id
+                      ? 'border-primary-500 bg-primary-50 dark:border-primary-400 dark:bg-primary-900/20'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                  }`}
+                  disabled={isLoading}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium mr-3"
+                    style={{ backgroundColor: network.color }}
+                  >
+                    {network.name.substring(0, 1)}
+                  </div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    {network.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => handleScanRequest()}
+              disabled={isLoading}
+              className="w-full mt-6 py-3 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white font-medium rounded-lg shadow-sm transition-colors flex items-center justify-center"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Scan en cours...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Analyser {activeNetwork.charAt(0).toUpperCase() + activeNetwork.slice(1)}
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Transaction Summary */}
+      {transactions.length > 0 && (
+        <TransactionSummary
+          transactions={transactions}
+          isPremiumUser={isPremiumUser}
+        />
+      )}
+
+      {/* Tax Dashboard */}
+      <TaxDashboard
+        transactions={transactions}
+        isPremiumUser={isPremiumUser}
+        walletAddress={walletAddress}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {metrics.map((metric, index) => (
           <div
