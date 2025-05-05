@@ -467,16 +467,16 @@ export default function App({ Component, pageProps }: AppProps) {
                               onClick={() => setIsUserMenuOpen(false)}
                             >
                               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className={`text-lg font-display font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Légal</h3>
-                <ul className="space-y-2.5">
-                  {[
-                    { name: "Conditions d'utilisation", href: "#" },
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                              </svg>
+                              Déconnexion
+                            </Link>
+                          </div>
+                        </Transition>
+                      </div>
+                      
+                      {/* Bouton toggle thème amélioré */}
+                      <button 
                     { name: "Politique de confidentialité", href: "#" },
                     { name: "Mentions légales", href: "#" },
                     { name: "Cookies", href: "#" }
