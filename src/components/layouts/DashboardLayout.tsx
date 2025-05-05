@@ -101,8 +101,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   // Get wallet address from context if available
   const walletAddress = sessionStorage.getItem('bitax-wallet') || '';
-  const userName = sessionUsageData?.name || 'Utilisateur';
-  const userEmail = sessionUsageData?.email || 'utilisateur@example.com';
+  const userName = 'Utilisateur';
+  const userEmail = 'utilisateur@example.com';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark">
