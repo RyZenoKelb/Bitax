@@ -14,8 +14,6 @@ import PremiumUnlock from '@/components/PremiumUnlock';
 import OnboardingWizard from '@/components/OnboardingWizard';
 import { getTransactions, NetworkType } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
-
-// Nouvelles importations pour le dashboard amélioré
 import DashboardLayout from '@/components/DashboardLayout';
 
 export default function Dashboard() {
