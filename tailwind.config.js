@@ -120,6 +120,24 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        extend: {
+          animation: {
+            'grid-move': 'grid-move 60s linear infinite',
+            'float': 'float 6s ease-in-out infinite alternate',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            'grid-move': {
+              '0%': { backgroundPosition: '0 0' },
+              '100%': { backgroundPosition: '100px 100px' },
+            },
+            'float': {
+              '0%': { transform: 'translateY(0)' },
+              '100%': { transform: 'translateY(-10px)' },
+            },
+          },
+        },
+      }
       },
     },
   },
