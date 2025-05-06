@@ -1328,24 +1328,24 @@ export default function Home() {
         </div>
       </motion.section>
       
-      {/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
-      <motion.section 
-        className="py-20 relative"
-        style={{ y: y3 }}
-      >
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-          <div className="absolute -bottom-[10%] -right-[5%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
-        </div>
-        
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
-              Ce que disent nos utilisateurs
-            </h2>
-            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
-              Nos premiers utilisateurs auront bientôt la parole ici.
-            </p>
-          </div>
+{/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
+<motion.section 
+  className="py-20 -mt-16 relative"
+  style={{ y: y3 }}
+>
+  <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+    <div className="absolute -bottom-[10%] -right-[5%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
+  </div>
+  
+  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-16">
+      <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+        Ce que disent nos utilisateurs
+      </h2>
+      <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+        Nos premiers utilisateurs auront bientôt la parole ici.
+      </p>
+    </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((id) => (
