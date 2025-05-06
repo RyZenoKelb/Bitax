@@ -8,7 +8,7 @@ const DashboardStyles: React.FC = () => {
       <style jsx global>{`
         /* Importation des styles spécifiques au dashboard */
         @import url('/styles/dashboard.css');
-        @import url('/styles/buttons.css');
+        @import url('/styles/bouttons.css');
         
         /* Effets de background additionnels pour le dashboard */
         body {
