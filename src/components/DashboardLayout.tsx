@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import DashboardStyles from './DashboardStyles';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -159,7 +160,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
       <Head>
         <title>Bitax | Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
+      <DashboardStyles />
       
       {/* Overlay pour la sidebar mobile */}
       {isOpen && (
@@ -345,11 +352,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         
         {/* Main content area */}
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
-          {/* Effet de grille en arrière-plan */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-5"></div>
+          {/* Effets avancés en arrière-plan */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Grille de base */}
+            <div className="absolute inset-0 dark:bg-[url('/dashboard-grid.svg')] bg-[url('/dashboard-grid-light.svg')] bg-repeat opacity-5 animate-grid-move"></div>
+            
+            {/* Effets lumineux */}
             <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-b from-primary-900/20 to-transparent opacity-30 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-t from-secondary-900/20 to-transparent opacity-30 blur-3xl"></div>
+            
+            {/* Particules flottantes */}
+            <div className="absolute w-full h-full opacity-20 stars-container"></div>
+            
+            {/* Orbes lumineux subtilement animés */}
+            <div className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary-500/5 animate-pulse-slow blur-3xl"></div>
+            <div className="absolute bottom-1/3 left-1/3 w-96 h-96 rounded-full bg-secondary-500/5 animate-pulse-slow blur-3xl"></div>
           </div>
           
           {/* Contenu principal */}
