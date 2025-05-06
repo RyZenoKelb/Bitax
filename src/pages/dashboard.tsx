@@ -1,9 +1,10 @@
 // src/pages/dashboard.tsx
-// Contenu copié depuis index.tsx pour créer une route Dashboard
-
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
+import Head from 'next/head';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
 import WalletConnectButton from '@/components/WalletConnectButton';
 import WalletConnectPanel from '@/components/WalletConnectPanel';
 import TransactionSummary from '@/components/TransactionSummary';
@@ -13,6 +14,9 @@ import PremiumUnlock from '@/components/PremiumUnlock';
 import OnboardingWizard from '@/components/OnboardingWizard';
 import { getTransactions, NetworkType } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
+
+// Nouvelles importations pour le dashboard amélioré
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function Dashboard() {
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
@@ -96,452 +100,9 @@ export default function Dashboard() {
     localStorage.setItem('bitax-premium', 'true');
   };
 
-  // Si l'utilisateur n'est pas connecté, afficher une page d'accueil améliorée
-  if (!isWalletConnected) {
-    return (
-      <div className="space-y-16">
-        {/* Afficher l'assistant d'onboarding pour les nouveaux utilisateurs */}
-        {showOnboarding && (
-          <OnboardingWizard 
-            onComplete={handleOnboardingComplete} 
-            onConnect={handleWalletConnect} 
-            skipOnboarding={() => setShowOnboarding(false)}
-          />
-        )}
-        
-        {/* Hero Section améliorée */}
-        <section className="relative overflow-hidden py-12 sm:py-16 lg:py-20">
-          {/* Arrière-plan avec effet de gradient */}
-          <div className="absolute top-0 right-0 -z-10 opacity-20 dark:opacity-10">
-            <svg className="h-96 w-96 sm:h-[40rem] sm:w-[40rem]" width="960" height="637" viewBox="0 0 960 637" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g opacity="0.8" filter="url(#filter0_f_983_1700)">
-                <circle cx="538.5" cy="144.5" r="298.5" fill="#4285F4"/>
-              </g>
-              <defs>
-                <filter id="filter0_f_983_1700" x="40" y="-354" width="997" height="997" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                  <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                  <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-                  <feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_983_1700"/>
-                </filter>
-              </defs>
-            </svg>
-          </div>
-          
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6 tracking-tight">
-                  <span className="text-gray-900 dark:text-white">Simplifiez votre </span>
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">fiscalité crypto</span>
-                </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-                  Connectez votre wallet, analysez vos transactions et générez votre rapport fiscal en quelques clics.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                  <button 
-                    onClick={() => setShowOnboarding(true)}
-                    className="btn-primary"
-                  >
-                    Commencer maintenant
-                  </button>
-                  <Link href="/guide" className="btn-outline">
-                    Découvrir Bitax
-                  </Link>
-                </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  {[
-                    { metric: "5+", label: "Blockchains supportées" },
-                    { metric: "100%", label: "Conforme à la législation" },
-                    { metric: "24/7", label: "Support disponible" },
-                    { metric: "99.9%", label: "Précision des calculs" }
-                  ].map((item, index) => (
-                    <div key={index}>
-                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{item.metric}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="relative lg:pl-8">
-                <div className="relative z-10 bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                  <div className="p-6">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                      Connectez votre wallet
-                    </h2>
-                    <WalletConnectButton 
-                      onConnect={handleWalletConnect}
-                      variant="primary"
-                      fullWidth
-                      size="lg"
-                    />
-                    
-                    {/* Indicateurs de confiance */}
-                    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                        <div className="flex items-center">
-                          <svg className="w-4 h-4 text-green-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                          </svg>
-                          Connexion sécurisée
-                        </div>
-                        <div className="flex items-center">
-                          <svg className="w-4 h-4 text-green-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                          </svg>
-                          Données chiffrées
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Réseaux supportés */}
-                  <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Réseaux supportés</p>
-                    <div className="flex space-x-3">
-                      {[
-                        { name: "ETH", color: "#627EEA" },
-                        { name: "POLYGON", color: "#8247E5" },
-                        { name: "ARBITRUM", color: "#28A0F0" },
-                        { name: "OPTIMISM", color: "#FF0420" },
-                        { name: "BASE", color: "#0052FF" }
-                      ].map((network, i) => (
-                        <div 
-                          key={i} 
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium"
-                          style={{ backgroundColor: network.color }}
-                          title={network.name}
-                        >
-                          {network.name.substring(0, 1)}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Élément décoratif */}
-                <div className="absolute -z-10 -bottom-6 -right-6 w-40 h-40 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full blur-2xl opacity-70"></div>
-              </div>
-            </div>
-          </div>
-        </section>
-          
-        {/* Section Comment ça marche */}
-        <section className="py-16 bg-gray-50 dark:bg-gray-800/50 rounded-3xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Comment ça marche</h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Bitax simplifie le processus de déclaration fiscale pour vos crypto-monnaies en trois étapes simples.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: (
-                    <svg className="w-10 h-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  ),
-                  title: "Connectez votre wallet",
-                  description: "Bitax se connecte à votre wallet via une connexion sécurisée, sans jamais accéder à vos clés privées ou à vos fonds."
-                },
-                {
-                  icon: (
-                    <svg className="w-10 h-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                  ),
-                  title: "Analysez vos transactions",
-                  description: "Notre algorithme analyse automatiquement vos transactions sur différentes blockchains et identifie les événements taxables."
-                },
-                {
-                  icon: (
-                    <svg className="w-10 h-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  ),
-                  title: "Générez votre rapport",
-                  description: "Obtenez un rapport fiscal complet, téléchargeable en PDF, CSV ou Excel, prêt à être utilisé pour votre déclaration d'impôts."
-                }
-              ].map((step, index) => (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-                    {step.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{step.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
-                </div>
-              ))}
-            </div>
-            
-            <div className="text-center mt-12">
-              <button
-                onClick={() => setShowOnboarding(true)}
-                className="btn-primary"
-              >
-                Essayer maintenant
-              </button>
-            </div>
-          </div>
-        </section>
-          
-        {/* Section avantages */}
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Pourquoi choisir Bitax</h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Notre plateforme est conçue pour rendre la fiscalité crypto aussi simple et précise que possible.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: "🔍",
-                  title: "Analyse précise",
-                  description: "Algorithme avancé qui identifie correctement les événements taxables selon les dernières règles fiscales."
-                },
-                {
-                  icon: "🔐",
-                  title: "Sécurité maximale",
-                  description: "Vos clés privées et vos fonds restent toujours sous votre contrôle. Bitax ne stocke pas vos données sensibles."
-                },
-                {
-                  icon: "🌐",
-                  title: "Multi-blockchain",
-                  description: "Support des principales blockchains : Ethereum, Polygon, Arbitrum, Optimism, Base et plus encore."
-                },
-                {
-                  icon: "📊",
-                  title: "Visualisations claires",
-                  description: "Graphiques et rapports intuitifs pour comprendre facilement votre situation fiscale crypto."
-                },
-                {
-                  icon: "⚙️",
-                  title: "Méthodes d'évaluation",
-                  description: "Plusieurs méthodes de calcul fiscal disponibles : FIFO, LIFO, HIFO et prix moyen pondéré."
-                },
-                {
-                  icon: "📱",
-                  title: "Accessible partout",
-                  description: "Application web responsive accessible depuis tous vos appareils, ordinateur, tablette ou smartphone."
-                }
-              ].map((feature, index) => (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
-                  <div className="text-3xl mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-        
-        {/* Section tarifs simplifiée */}
-        <section className="py-16 bg-gradient-to-b from-white to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-3xl">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Plans tarifaires</h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Choisissez l'offre qui correspond le mieux à vos besoins.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Plan gratuit */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Gratuit</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">Pour essayer Bitax</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-gray-900 dark:text-white">0€</span>
-                </div>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Analyse limitée à 100 transactions</span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Rapport fiscal basique</span>
-                  </li>
-                </ul>
-                <Link href="/pricing" className="w-full btn-outline justify-center">
-                  Commencer gratuitement
-                </Link>
-              </div>
-              
-              {/* Plan premium */}
-              <div className="bg-gradient-to-b from-white to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-xl shadow-xl p-6 border border-blue-200 dark:border-blue-800 transform md:-translate-y-4 relative">
-                <div className="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 rounded-bl-xl rounded-tr-xl text-sm font-medium">
-                  Populaire
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Premium</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">Pour les investisseurs actifs</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-blue-600 dark:text-blue-400">9,99€</span>
-                  <span className="text-gray-500 dark:text-gray-400">/mois</span>
-                </div>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-blue-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Transactions illimitées</span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-blue-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Rapport fiscal complet</span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-blue-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Toutes les méthodes de calcul</span>
-                  </li>
-                </ul>
-                <Link href="/pricing" className="w-full btn-primary justify-center">
-                  S'abonner à Premium
-                </Link>
-              </div>
-              
-              {/* Plan entreprise */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Entreprise</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">Pour les professionnels</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-gray-900 dark:text-white">29,99€</span>
-                  <span className="text-gray-500 dark:text-gray-400">/mois</span>
-                </div>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Tout le contenu Premium</span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">API dédiée</span>
-                  </li>
-                  <li className="flex items-start">
-                    <svg className="h-5 w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Support dédié</span>
-                  </li>
-                </ul>
-                <Link href="/pricing" className="w-full btn-outline justify-center">
-                  Contacter les ventes
-                </Link>
-              </div>
-            </div>
-            
-            <div className="text-center mt-8">
-              <Link href="/pricing" className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-                Voir tous les détails des plans &rarr;
-              </Link>
-            </div>
-          </div>
-        </section>
-          
-        {/* Section témoignages */}
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Ce que disent nos utilisateurs</h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Découvrez comment Bitax aide des milliers d'utilisateurs à simplifier leur fiscalité crypto.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                {
-                  quote: "Bitax m'a fait économiser des heures de travail sur ma déclaration fiscale. Un outil indispensable !",
-                  author: "Thomas L.",
-                  role: "Trader Crypto",
-                  avatar: "T"
-                },
-                {
-                  quote: "Interface intuitive et rapport détaillé. Je recommande à tous les détenteurs de crypto-monnaies.",
-                  author: "Sophie M.",
-                  role: "Investisseuse",
-                  avatar: "S"
-                },
-                {
-                  quote: "Le suivi des transactions DeFi est impressionnant. Bitax comprend vraiment les besoins des utilisateurs.",
-                  author: "Marc D.",
-                  role: "Développeur Web3",
-                  avatar: "M"
-                }
-              ].map((testimonial, index) => (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-start mb-4">
-                    <svg className="h-12 w-12 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                    </svg>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 italic">"{testimonial.quote}"</p>
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="h-10 w-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-medium">
-                        {testimonial.avatar}
-                      </div>
-                    </div>
-                    <div className="ml-3">
-                      <h4 className="text-sm font-medium text-gray-900 dark:text-white">{testimonial.author}</h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-          
-        {/* CTA final */}
-        <section className="py-16 bg-blue-600 dark:bg-blue-800 rounded-3xl text-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold mb-6">Prêt à simplifier votre fiscalité crypto ?</h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              Commencez dès aujourd'hui et générez votre premier rapport fiscal en quelques minutes.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => setShowOnboarding(true)}
-                className="px-8 py-4 bg-white text-blue-600 hover:bg-blue-50 font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-              >
-                Essayer gratuitement
-              </button>
-              <Link 
-                href="/guide" 
-                className="px-8 py-4 bg-transparent hover:bg-blue-700 border-2 border-white font-bold rounded-xl transition-colors duration-300"
-              >
-                En savoir plus
-              </Link>
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
-  // Affichage du tableau de bord pour les utilisateurs connectés
-  return (
-    <div className="space-y-8">
+  // Contenu principal du dashboard
+  const dashboardContent = (
+    <>
       {/* Afficher l'assistant d'onboarding pour les nouveaux utilisateurs */}
       {showOnboarding && (
         <OnboardingWizard 
@@ -551,18 +112,21 @@ export default function Dashboard() {
         />
       )}
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Colonne latérale */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Colonne latérale - réduite à 1/4 pour donner plus d'espace au contenu principal */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Panneau de connexion wallet - ceci ne sera pas affiché car isWalletConnected est déjà true */}
+          {/* Panneau de connexion wallet - amélioré visuellement */}
           {!isWalletConnected ? (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden backdrop-blur-sm border border-gray-100 dark:border-gray-700">
               <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                  <svg className="w-6 h-6 mr-2 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
                   Connectez votre wallet
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Pour commencer, connectez votre wallet crypto pour analyser vos transactions.
+                  Pour commencer, connectez votre wallet crypto et analysez vos transactions.
                 </p>
                 <WalletConnectButton 
                   onConnect={handleWalletConnect}
@@ -571,53 +135,132 @@ export default function Dashboard() {
                   size="lg"
                 />
               </div>
+              
+              {/* Réseaux supportés - refonte avec design plus moderne */}
+              <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">Réseaux supportés</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { name: "Ethereum", color: "#627EEA", abbr: "ETH" },
+                    { name: "Polygon", color: "#8247E5", abbr: "POLY" },
+                    { name: "Arbitrum", color: "#28A0F0", abbr: "ARB" },
+                    { name: "Optimism", color: "#FF0420", abbr: "OPT" },
+                    { name: "Base", color: "#0052FF", abbr: "BASE" }
+                  ].map((network, i) => (
+                    <div 
+                      key={i} 
+                      className="flex items-center px-2 py-1 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 text-xs"
+                      title={network.name}
+                    >
+                      <div className="w-3 h-3 rounded-full mr-1.5" style={{ backgroundColor: network.color }}></div>
+                      <span className="font-medium">{network.abbr}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden backdrop-blur-sm border border-gray-100 dark:border-gray-700">
               <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3 flex items-center">
+                  <svg className="w-6 h-6 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
                   Wallet connecté
                 </h2>
-                <div className="flex items-center mb-4">
+                <div className="flex items-center mb-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
                   <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                  <p className="text-gray-600 dark:text-gray-300 font-medium">
-                    {walletAddress.substring(0, 8)}...{walletAddress.substring(walletAddress.length - 6)}
+                  <p className="text-gray-800 dark:text-gray-200 font-mono text-sm">
+                    {walletAddress.substring(0, 6)}...{walletAddress.substring(walletAddress.length - 4)}
                   </p>
+                  <button 
+                    className="ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    title="Copier l'adresse"
+                    onClick={() => {
+                      navigator.clipboard.writeText(walletAddress);
+                      // Vous pourriez ajouter une notification ici
+                    }}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
                 </div>
                 
-                {/* Sélection du réseau */}
-                <div className="mt-6">
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Scanner un réseau
+                {/* Sélection du réseau - design amélioré */}
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center">
+                    <svg className="w-4 h-4 mr-1 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    Sélectionner un réseau
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 gap-2 mb-3">
                     {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
                       <button
                         key={network}
                         onClick={() => handleScanNetwork(network as NetworkType)}
-                        className={`relative flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg ${
+                        className={`relative flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                           activeNetwork === network 
-                            ? 'bg-bitax-primary-600 text-white shadow-sm' 
+                            ? 'bg-primary-500 text-white shadow-md' 
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                         }`}
                       >
+                        {/* Icônes des réseaux - ajout visuel */}
+                        <div className="w-5 h-5 mr-2">
+                          {network === 'eth' && (
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                              <path d="M12 2L4 12L12 16L20 12L12 2Z" fill={activeNetwork === network ? "white" : "#627EEA"} />
+                              <path d="M12 16V22L20 12L12 16Z" fill={activeNetwork === network ? "white" : "#627EEA"} fillOpacity="0.8" />
+                              <path d="M12 16V22L4 12L12 16Z" fill={activeNetwork === network ? "white" : "#627EEA"} fillOpacity="0.6" />
+                            </svg>
+                          )}
+                          {network === 'polygon' && (
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                              <path d="M17.5 8.5L12 5L6.5 8.5V15.5L12 19L17.5 15.5V8.5Z" stroke={activeNetwork === network ? "white" : "#8247E5"} strokeWidth="2" />
+                              <path d="M12 5V12M12 12V19M12 12L17.5 15.5M12 12L6.5 15.5" stroke={activeNetwork === network ? "white" : "#8247E5"} strokeWidth="2" />
+                            </svg>
+                          )}
+                          {network === 'arbitrum' && (
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                              <circle cx="12" cy="12" r="9" fill={activeNetwork === network ? "white" : "#28A0F0"} fillOpacity="0.2" />
+                              <path d="M12 3V21M3 12H21" stroke={activeNetwork === network ? "white" : "#28A0F0"} strokeWidth="2" />
+                            </svg>
+                          )}
+                          {network === 'optimism' && (
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                              <circle cx="12" cy="12" r="9" fill={activeNetwork === network ? "white" : "#FF0420"} fillOpacity="0.2" />
+                              <path d="M8 12L11 15L16 9" stroke={activeNetwork === network ? "white" : "#FF0420"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                          {network === 'base' && (
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
+                              <rect x="5" y="5" width="14" height="14" rx="2" fill={activeNetwork === network ? "white" : "#0052FF"} fillOpacity="0.2" />
+                              <path d="M12 8V16M8 12H16" stroke={activeNetwork === network ? "white" : "#0052FF"} strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          )}
+                        </div>
+                        {/* Nom du réseau avec première lettre en majuscule */}
+                        {network.charAt(0).toUpperCase() + network.slice(1)}
+                        
+                        {/* Indicateur de chargement */}
                         {activeNetwork === network && isLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-bitax-primary-600 bg-opacity-90 rounded-lg">
-                            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary-500 bg-opacity-90 rounded-lg">
+                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                           </div>
                         )}
-                        {network.charAt(0).toUpperCase() + network.slice(1)}
                       </button>
                     ))}
                   </div>
                   
+                  {/* Boutons d'action pour scanner */}
                   <button
                     onClick={() => handleScanNetwork(activeNetwork)}
                     disabled={isLoading}
-                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                    className="w-full mb-2 flex items-center justify-center px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
                   >
                     {isLoading ? (
                       <>
@@ -645,42 +288,174 @@ export default function Dashboard() {
                       });
                     }}
                     disabled={isLoading}
-                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                    className="w-full flex items-center justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    Scan automatique multi-chain
+                    Scan multi-chain
                   </button>
                 </div>
               </div>
               
-              {/* Statistiques */}
+              {/* Statistiques - redesign professionnel */}
               {transactions.length > 0 && (
-                <div className="bg-gray-50 dark:bg-bitax-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Transactions trouvées</span>
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>
+                <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Transactions trouvées</span>
+                    <span className="text-lg font-bold text-primary-600 dark:text-primary-400">{transactions.length}</span>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">
-                    <div className="bg-bitax-primary-600 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                    <div 
+                      className="bg-primary-600 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  
+                  {/* Mini statistiques supplémentaires */}
+                  <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-2 border border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-500 dark:text-gray-400">Réseau</span>
+                        <span className="font-medium text-gray-800 dark:text-gray-200">{activeNetwork.toUpperCase()}</span>
+                      </div>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-2 border border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-500 dark:text-gray-400">Status</span>
+                        <span className="font-medium text-green-600 dark:text-green-400">Actif</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           )}
           
-          {/* Bannière Premium */}
+          {/* Bannière Premium - design amélioré */}
           {!isPremiumUser && (
-            <PremiumUnlock onUnlock={handleUnlockPremium} />
+            <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-32 h-32 transform translate-x-8 -translate-y-8">
+                <div className="w-full h-full bg-white opacity-10 rounded-full"></div>
+              </div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 transform -translate-x-8 translate-y-8">
+                <div className="w-full h-full bg-white opacity-10 rounded-full"></div>
+              </div>
+              <div className="p-6 relative z-10">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <h3 className="ml-3 text-lg font-bold text-white">Passez à Premium</h3>
+                </div>
+                <p className="text-white/90 text-sm mb-4">
+                  Débloquez toutes les fonctionnalités et analysez un nombre illimité de transactions.
+                </p>
+                <div className="space-y-3 mb-4">
+                  {[
+                    "Transactions illimitées",
+                    "Méthodes de calcul avancées",
+                    "Exports complets PDF/CSV"
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex items-start">
+                      <svg className="w-5 h-5 text-white mt-0.5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-white/90 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={handleUnlockPremium}
+                  className="w-full flex items-center justify-center px-4 py-2.5 bg-white hover:bg-white/90 text-indigo-600 text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Débloquer Premium
+                </button>
+              </div>
+            </div>
           )}
+          
+          {/* Widget informations crypto */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Cours Crypto</h3>
+            </div>
+            <div className="p-4 space-y-3">
+              {[
+                { symbol: "BTC", name: "Bitcoin", price: "51,243.75 €", change: "+1.2%", color: "text-green-500" },
+                { symbol: "ETH", name: "Ethereum", price: "2,829.16 €", change: "-0.5%", color: "text-red-500" },
+                { symbol: "SOL", name: "Solana", price: "124.50 €", change: "+4.7%", color: "text-green-500" }
+              ].map((crypto, idx) => (
+                <div key={idx} className="flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mr-3">
+                      <span className="font-semibold text-xs">{crypto.symbol}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{crypto.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{crypto.symbol}/EUR</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{crypto.price}</p>
+                    <p className={`text-xs ${crypto.color}`}>{crypto.change}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700">
+              <a href="#" className="text-xs text-primary-600 dark:text-primary-400 hover:underline flex items-center justify-center">
+                <span>Voir plus de cours</span>
+                <svg className="w-3 h-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
         
-        {/* Contenu principal */}
-        <div className="lg:col-span-2 space-y-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Tableau de bord fiscal
-          </h1>
+        {/* Contenu principal - redesign complet mais en préservant les fonctionnalités */}
+        <div className="lg:col-span-3 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+                <svg className="w-8 h-8 mr-3 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+                Tableau de bord fiscal
+              </h1>
+              <p className="mt-1 text-gray-600 dark:text-gray-400">
+                Visualisez et analysez vos transactions crypto
+              </p>
+            </div>
+            
+            {/* Actions rapides */}
+            <div className="flex flex-wrap gap-2">
+              <button className="inline-flex items-center px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Générer rapport
+              </button>
+              <button className="inline-flex items-center px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Exporter
+              </button>
+              <button className="inline-flex items-center px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Historique
+              </button>
+            </div>
+          </div>
           
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
@@ -694,64 +469,115 @@ export default function Dashboard() {
           )}
           
           {isLoading ? (
-            <div className="flex justify-center items-center py-12">
-              <div className="w-12 h-12 border-4 border-bitax-primary-200 border-t-bitax-primary-600 rounded-full animate-spin"></div>
-              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des transactions...</p>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center border border-gray-100 dark:border-gray-700">
+              <div className="flex flex-col items-center justify-center">
+                <div className="relative w-24 h-24 mb-6">
+                  <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
+                  <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-t-primary-500 animate-spin"></div>
+                  <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                    <svg className="w-10 h-10 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Chargement des transactions</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Nous analysons vos transactions sur {activeNetwork.toUpperCase()}...
+                </p>
+                <div className="w-64 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary-500 rounded-full animate-pulse" style={{ width: '70%' }}></div>
+                </div>
+              </div>
             </div>
           ) : (
             <>
               {isWalletConnected ? (
                 transactions.length > 0 ? (
                   <>
-                    {/* Résumé des transactions */}
-                    <TransactionSummary 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
+                    {/* Résumé des transactions - préservé mais avec un wrapper stylisé */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-5">
+                      <TransactionSummary 
+                        transactions={transactions}
+                        isPremiumUser={isPremiumUser}
+                      />
+                    </div>
                     
-                    {/* Tableau de bord fiscal */}
-                    <TaxDashboard 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                      walletAddress={walletAddress}
-                    />
+                    {/* Tableau de bord fiscal - préservé mais avec un wrapper stylisé */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-5">
+                      <TaxDashboard 
+                        transactions={transactions}
+                        isPremiumUser={isPremiumUser}
+                        walletAddress={walletAddress}
+                      />
+                    </div>
                     
-                    {/* Liste des transactions */}
-                    <TransactionList 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
+                    {/* Liste des transactions - préservé mais avec un wrapper stylisé */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-5">
+                      <TransactionList 
+                        transactions={transactions}
+                        isPremiumUser={isPremiumUser}
+                      />
+                    </div>
                   </>
                 ) : (
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                    <svg className="w-16 h-16 mx-auto text-bitax-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <h3 className="mt-4 text-xl font-medium text-bitax-gray-900 dark:text-white">Aucune transaction trouvée</h3>
-                    <p className="mt-2 text-bitax-gray-500 dark:text-bitax-gray-400">
-                      Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork}.
-                      <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
-                    </p>
-                    <button
-                      onClick={() => handleScanNetwork(activeNetwork)}
-                      className="mt-6 px-4 py-2 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white rounded-lg"
-                    >
-                      Scanner à nouveau
-                    </button>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center border border-gray-100 dark:border-gray-700">
+                    <div className="flex flex-col items-center max-w-md mx-auto">
+                      <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+                        <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Aucune transaction trouvée</h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-6">
+                        Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork.toUpperCase()}.
+                        <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
+                      </p>
+                      <div className="flex flex-wrap gap-3 justify-center">
+                        <button
+                          onClick={() => handleScanNetwork(activeNetwork)}
+                          className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          Scanner à nouveau
+                        </button>
+                        <button
+                          onClick={() => {
+                            const randomNetwork = ['polygon', 'arbitrum', 'optimism', 'base'][Math.floor(Math.random() * 4)] as NetworkType;
+                            handleScanNetwork(randomNetwork);
+                          }}
+                          className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-medium transition-colors duration-200 flex items-center"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                          </svg>
+                          Essayer un autre réseau
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )
               ) : (
-                <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                  <h3 className="text-xl font-medium text-bitax-gray-900 dark:text-white">Bienvenue sur Bitax</h3>
-                  <p className="mt-2 text-bitax-gray-600 dark:text-bitax-gray-400">
-                    Connectez votre wallet pour commencer à analyser vos transactions et générer votre rapport fiscal.
-                  </p>
-                  <div className="mt-6">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center border border-gray-100 dark:border-gray-700">
+                  <div className="flex flex-col items-center max-w-md mx-auto">
+                    <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-6">
+                      <svg className="w-12 h-12 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Bienvenue sur Bitax</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">
+                      Connectez votre wallet pour commencer à analyser vos transactions et générer votre rapport fiscal.
+                    </p>
                     <WalletConnectButton
                       onConnect={handleWalletConnect}
                       variant="primary"
                       size="lg"
                     />
+                    <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                      Nous ne stockons jamais vos clés privées. Vos données restent sécurisées.
+                    </p>
                   </div>
                 </div>
               )}
@@ -759,6 +585,13 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-    </div>
+    </>
+  );
+
+  // Utilisation du layout pour les sidebars et structure globale de la page
+  return (
+    <DashboardLayout>
+      {dashboardContent}
+    </DashboardLayout>
   );
 }
