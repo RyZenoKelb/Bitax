@@ -334,7 +334,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </nav>
           
           {/* User profile section */}
-          <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
+          <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 ${sidebarCollapsed ? 'flex justify-center' : 'flex justify-between'} items-center`}>
             <button 
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="relative group flex items-center focus:outline-none"
