@@ -251,6 +251,30 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
   const toggleSidebar = () => {
     setSidebarCollapsed(prev => {
       const newState = !prev;
+      localStorage.setItem('bitax-sidebar-collapsed', String(newState));
+      return newState;
+    });
+  };
+
+  // Fermer le menu mobile lors d'un changement de route
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [router.pathname]);
+
+  return (
+    <>
+      <Head>
+        <title>Bitax | Fiscalité crypto redéfinie</title>
+        <meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#0F172A" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Bitax | Fiscalité crypto redéfinie" />
+        <meta name="twitter:description" content="Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
+        <meta property="og:title" content="Bitax | Fiscalité crypto redéfinie" />
+        <meta property="og:description" content="Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
+        <meta property="og:type" content="website" />
         
         {/* Ajout des polices explicitement */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -590,30 +614,6 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
-              {isLoaded ? (
-                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
-                  <Component {...pageProps} />
-                </div>
-              ) : (
-                <div className="opacity-0 translate-y-10">
-                  <Component {...pageProps} />
-                </div>
-              )}
-            </div>
-          </main>
-          
-          {/* Footer compact modernisé */}
-          <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
-            <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
-              {/* Logo et copyright minimaliste */}
-              <div className="flex items-center flex-nowrap space-x-2 whitespace-nowrap">
-                <BitaxLogo collapsed={true} isFooter={true} />
-                <span className="text-xs text-indigo-300/70">
-                  &copy; {new Date().getFullYear()} Bitax
-                </span>
-              </div>
-              {/* Links minimalistes */}
-              <div className="flex items-center mt-4 md:mt-0">
                 <div className="flex space-x-4 mr-6">
                   {/* Social media icons avec effets hover */}
                   {[
