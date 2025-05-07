@@ -20,7 +20,7 @@ declare module 'react' {
 
 /**
  * BitaxLogo component
- * - In the sidebar: larger logo (h-12 or h-14)
+ * - In the sidebar: much larger logo (h-28 or h-32), centered vertically and horizontally
  * - In the footer: default size (h-8 or h-10)
  * 
  * Usage:
@@ -35,26 +35,42 @@ const BitaxLogo = ({
   collapsed?: boolean;
   sidebar?: boolean;
 }) => {
-  // Sidebar: bigger logo, Footer: default size
+  // Sidebar: much bigger logo, Footer: default size
   const imgClass = sidebar
-    ? collapsed
-      ? 'h-8'
-      : 'h-19'
+    ? 'h-28 md:h-32'
     : collapsed
       ? 'h-8'
       : 'h-10';
 
+  // Center logo in sidebar (vertical & horizontal)
+  if (sidebar) {
+    return (
+      <div className="w-full flex justify-center items-center py-2">
+        <Link href="/" className="flex items-center group cursor-pointer">
+          <div className="relative overflow-hidden">
+            {/* Logo image */}
+            <img
+              src="/bitaxlogo.png"
+              alt="Bitax Logo"
+              className={`${imgClass} transition-all duration-300`}
+            />
+            {/* Subtle shine effect on hover */}
+            <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
+          </div>
+        </Link>
+      </div>
+    );
+  }
+
+  // Footer or other usage (default size)
   return (
     <Link href="/" className="flex items-center group cursor-pointer">
       <div className="relative overflow-hidden">
-        {/* Logo image */}
         <img
           src="/bitaxlogo.png"
           alt="Bitax Logo"
           className={`${imgClass} transition-all duration-300`}
         />
-
-        {/* Subtle shine effect on hover */}
         <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
       </div>
     </Link>
