@@ -18,29 +18,17 @@ declare module 'react' {
   }
 }
 
-// Logo using the image from public/bitaxlogo.png with a subtle hover effect
+// Logo moderne avec Inter font et effet au survol
 const BitaxLogo = ({ collapsed = false }) => {
   return (
-    <Link href="/" className="flex items-center justify-center group cursor-pointer w-full">
-      <div className="relative overflow-hidden flex items-center justify-center">
-        {/* Logo image with conditional size based on location */}
-        <img 
-          src="/bitaxlogo.png" 
-          alt="Bitax Logo" 
-          className={`
-            ${collapsed && !window.location.pathname.includes('footer') ? 'h-20 w-auto' : 'h-12 w-auto'} 
-            ${!collapsed ? 'h-28 w-auto' : 'h-12 w-auto'}
-            transition-all duration-300
-          `}
-          style={{
-            maxHeight: window.location.pathname.includes('footer') ? '3rem' : (collapsed ? '5rem' : '7rem'),
-            marginTop: collapsed ? '0' : (!window.location.pathname.includes('footer') ? '-0.75rem' : '0'),
-            marginBottom: collapsed ? '0' : (!window.location.pathname.includes('footer') ? '-0.75rem' : '0')
-          }}
-        />
-        
-        {/* Subtle shine effect on hover */}
-        <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
+    <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
+      <div className="relative">
+        {/* Texte principal avec Inter font et dégradé bleu/violet */}
+        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-inter font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400 tracking-tight transition-all duration-300 group-hover:opacity-80`}>
+          BITAX
+          {/* Effet de brillance uniquement au survol */}
+          <div className="absolute -inset-1 w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-0 group-hover:opacity-30 group-hover:animate-shine" />
+        </span>
       </div>
     </Link>
   );
