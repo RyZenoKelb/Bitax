@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
-import { useSession } from 'next-auth/react';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -23,7 +22,7 @@ declare module 'react' {
 const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   // Improved sizing with different treatments for sidebar vs footer
   const sizeClass = isFooter
-    ? "h-8 w-auto" // Significantly smaller size for footer
+    ? "h-3 w-auto" // Significantly smaller size for footer
     : collapsed 
       ? "h-14 w-auto" // Larger size when sidebar is collapsed
       : "h-16 w-auto"; // Even larger when sidebar is expanded
@@ -43,11 +42,7 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   );
 };
 
-const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
-  // Obtenir les données de l'utilisateur depuis la session
-  const { data: session } = useSession();
-  const user = session?.user;
-  
+export default function App({ Component, pageProps }: AppProps) {
   // Utilisation de couleurs modernes (thème cyberpunk/crypto)
   const COLORS = {
     cyan: {
@@ -81,6 +76,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 
@@ -198,6 +194,10 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
     window.addEventListener('resize', handleResize);
     handleResize();
     
+    // Attendre un peu pour faire l'animation d'apparition
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
     
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -228,7 +228,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   }, [router.pathname]);
 
   return (
-    <>
+    <AuthProvider>
       <Head>
         <title>Bitax | Fiscalité crypto redéfinie</title>
         <meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
@@ -253,7 +253,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
-      <div className="min-h-screen flex opacity-100 transition-opacity duration-500">
+      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
@@ -355,14 +355,14 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
               
               {!sidebarCollapsed && (
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">{user?.name}</p>
-                  <p className="text-xs text-gray-400">{user?.email}</p>
+                  <p className="text-sm font-medium text-white">John Doe</p>
+                  <p className="text-xs text-gray-400">john@example.com</p>
                 </div>
               )}
               
               {sidebarCollapsed && (
                 <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                  {user?.name}<br/>{user?.email}
+                  John Doe<br/>john@example.com
                 </span>
               )}
             </button>
@@ -405,11 +405,11 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           >
             <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
               <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
-              <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
+              <p className="text-xs text-gray-400">john.doe@example.com</p>
             </div>
             <Link 
               href="/profile" 
-              className="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
+              className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -419,7 +419,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             </Link>
             <Link 
               href="/settings" 
-              className="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
+              className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -431,7 +431,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             <div className="border-t border-gray-700 dark:border-gray-700 light:border-gray-200 my-1"></div>
             <Link 
               href="/logout" 
-              className="px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 dark:text-red-400 dark:hover:bg-gray-700 dark:hover:text-red-300 light:text-red-600 light:hover:bg-gray-100 light:hover:text-red-700 flex items-center"
+              className="block px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 dark:text-red-400 dark:hover:bg-gray-700 dark:hover:text-red-300 light:text-red-600 light:hover:bg-gray-100 light:hover:text-red-700 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -527,8 +527,8 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">{user?.name || 'Utilisateur'}</p>
-                  <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
+                  <p className="text-sm font-medium text-white">John Doe</p>
+                  <p className="text-xs text-gray-400">john@example.com</p>
                 </div>
                 <button
                   onClick={toggleTheme}
@@ -557,6 +557,11 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-primary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             
+            {/* Grille stylisée */}
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-[0.02]"></div>
+            
+            {/* Particules/étoiles */}
+            <div className="stars-container absolute inset-0"></div>
             
             {/* Vagues subtiles animées en bas */}
             <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
@@ -577,7 +582,15 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
-            <Component {...pageProps} />
+              {isLoaded ? (
+                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                  <Component {...pageProps} />
+                </div>
+              ) : (
+                <div className="opacity-0 translate-y-10">
+                  <Component {...pageProps} />
+                </div>
+              )}
             </div>
           </main>
           
@@ -585,12 +598,13 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
             <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
               {/* Logo et copyright minimaliste */}
-              <div className="flex items-center flex-nowrap space-x-2 whitespace-nowrap">
-                <BitaxLogo collapsed={true} isFooter={true} />
-                <span className="text-xs text-indigo-300/70">
+              <div className="flex items-center space-x-3">
+                <BitaxLogo collapsed={true} />
+                <p className="text-xs text-indigo-300/70">
                   &copy; {new Date().getFullYear()} Bitax
-                </span>
+                </p>
               </div>
+              
               {/* Links minimalistes */}
               <div className="flex items-center mt-4 md:mt-0">
                 <div className="flex space-x-4 mr-6">
@@ -673,14 +687,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           </footer>
         </div>
       </div>
-    </>
-  );
-};
-
-export default function App({ Component, pageProps }: AppProps) {
-  return (
-    <AuthProvider>
-      <AppContent Component={Component} pageProps={pageProps} />
     </AuthProvider>
   );
 }
