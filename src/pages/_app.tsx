@@ -24,7 +24,7 @@ const BitaxLogo = ({ collapsed = false }) => {
     <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
       <div className="relative">
         {/* Texte principal animé */}
-        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight relative animate-pulse-slow`}>
+        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-bold font-inter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight relative animate-pulse-slow`}>
           Bitax
           {/* Effet de brillance qui se déplace */}
           <div className="absolute -inset-1 w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-30 group-hover:animate-shine" />
