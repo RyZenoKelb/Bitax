@@ -420,7 +420,7 @@ export default function App({ Component, pageProps }: AppProps) {
           >
             <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
               <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
-              <p className="text-xs text-gray-400">{ac</p>
+              <p className="text-xs text-gray-400">john.doe@example.com</p>
             </div>
             <Link 
               href="/profile" 
