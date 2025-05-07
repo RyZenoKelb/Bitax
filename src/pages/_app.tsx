@@ -349,10 +349,13 @@ export default function App({ Component, pageProps }: AppProps) {
               }
             });
             
-          animate();
+            requestAnimationFrame(animate);
+          }
+          
+          }
           animate();
         }
-      },
+      }
     }
   };
 
