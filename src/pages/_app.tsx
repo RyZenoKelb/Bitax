@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
-import { useSession } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -231,7 +231,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.pathname]);
 
   return (
-    
+  <SessionProvider>
     <AuthProvider>
       <Head>
         <title>Bitax | Fiscalité crypto redéfinie</title>
@@ -706,5 +706,6 @@ export default function App({ Component, pageProps }: AppProps) {
         </div>
       </div>
     </AuthProvider>
+    
   );
 }
