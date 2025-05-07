@@ -89,9 +89,6 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-  
-  // Add a new state for page transitions
-  const [isChangingRoute, setIsChangingRoute] = useState(false);
 
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
@@ -225,27 +222,6 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
-  
-  // Setup router event listeners to handle page transitions
-  useEffect(() => {
-    const handleRouteChangeStart = () => {
-      setIsChangingRoute(true);
-    };
-    
-    const handleRouteChangeComplete = () => {
-      setTimeout(() => {
-        setIsChangingRoute(false);
-      }, 100); // Small delay to ensure smooth transition
-    };
-
-    router.events.on('routeChangeStart', handleRouteChangeStart);
-    router.events.on('routeChangeComplete', handleRouteChangeComplete);
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-      router.events.off('routeChangeComplete', handleRouteChangeComplete);
-    };
-  }, [router]);
   
   // Fonction pour gérer le collapse de la sidebar
   const toggleSidebar = () => {
@@ -614,10 +590,15 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
-              {/* Replace the existing conditional rendering with Transition component */}
-              <div className={`transition-all duration-300 ease-out ${isChangingRoute ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'}`}>
-                <Component {...pageProps} />
-              </div>
+              {isLoaded ? (
+                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                  <Component {...pageProps} />
+                </div>
+              ) : (
+                <div className="opacity-0 translate-y-10">
+                  <Component {...pageProps} />
+                </div>
+              )}
             </div>
           </main>
           
