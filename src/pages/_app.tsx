@@ -39,6 +39,9 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
+  }
+  ];
+>>>>>>> b3267da2 (auto update)
 
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
@@ -73,9 +76,7 @@ export default function App({ Component, pageProps }: AppProps) {
       document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.add('light');
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
+      document.documentElement.classLi<<<<<<< HEAD
 
   // Fermer le menu mobile lors d'un changement de route
   useEffect(() => {
@@ -109,12 +110,22 @@ export default function App({ Component, pageProps }: AppProps) {
       </svg>
     )}
   ];
-
-  return (
-    <AuthProvider>
-      <Head>
-        <title>Bitax | Fiscalité crypto redéfinie</title>
-        <meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
+=======
+  
+  // Setup router event listeners to handle page transitions
+  useEffect(() => {
+    const handleRouteChangeStart = () => {
+      setIsChangingRoute(true);
+    };
+    
+    const handleRouteChangeComplete = () => {
+      setTimeout(() => {
+        setIsChangingRoute(false);
+  }, [router.pathname]);
+>>>>>>> b3267da2 (auto update)
+thname]);
+>>>>>>> b3267da2 (auto update)
+meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#0D0B22" />
