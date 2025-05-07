@@ -235,14 +235,14 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
     const handleRouteChangeComplete = () => {
       setTimeout(() => {
         setIsChangingRoute(false);
-  }, [router.pathname]);
+      }, 100); // Small delay to ensure smooth transition
+    };
 
-  return (
-    <>
-      <Head>
-        <title>Bitax | Fiscalité crypto redéfinie</title>
-        <meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#0F172A" />
         <meta name="twitter:card" content="summary_large_image" />
