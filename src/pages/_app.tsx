@@ -83,6 +83,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
+  const [hydrated, setHydrated] = useState(false);
 
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
