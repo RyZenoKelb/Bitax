@@ -30,7 +30,7 @@ declare module 'react' {
  */
 const BitaxLogo = ({
   collapsed = false,
-  sidebar = false,
+  sidebar = true,
 }: {
   collapsed?: boolean;
   sidebar?: boolean;
