@@ -21,13 +21,13 @@ declare module 'react' {
 // Logo using the image from public/bitaxlogo.png with a subtle hover effect
 const BitaxLogo = ({ collapsed = false }) => {
   return (
-    <Link href="/" className="flex items-center justify-center group cursor-pointer">
+    <Link href="/" className="flex items-center group cursor-pointer">
       <div className="relative overflow-hidden">
         {/* Logo image */}
         <img 
           src="/bitaxlogo.png" 
           alt="Bitax Logo" 
-          className={`${collapsed ? 'h-12' : 'h-16'} transition-all duration-300`}
+          className={`${collapsed ? 'h-8' : 'h-10'} transition-all duration-300`}
         />
         
         {/* Subtle shine effect on hover */}
