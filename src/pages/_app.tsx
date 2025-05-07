@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
-
+import { useSession } from 'next-auth/react';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -43,7 +43,11 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   );
 };
 
-export default function App({ Component, pageProps }: AppProps) {
+const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
+  // Obtenir les données de l'utilisateur depuis la session
+  const { data: session } = useSession();
+  const user = session?.user;
+  
   // Utilisation de couleurs modernes (thème cyberpunk/crypto)
   const COLORS = {
     cyan: {
@@ -77,7 +81,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 
@@ -195,10 +198,6 @@ export default function App({ Component, pageProps }: AppProps) {
     window.addEventListener('resize', handleResize);
     handleResize();
     
-    // Attendre un peu pour faire l'animation d'apparition
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
     
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -229,7 +228,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.pathname]);
 
   return (
-    <AuthProvider>
+    <>
       <Head>
         <title>Bitax | Fiscalité crypto redéfinie</title>
         <meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
@@ -254,7 +253,7 @@ export default function App({ Component, pageProps }: AppProps) {
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
-      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+      <div className="min-h-screen flex opacity-100 transition-opacity duration-500">
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
@@ -356,14 +355,14 @@ export default function App({ Component, pageProps }: AppProps) {
               
               {!sidebarCollapsed && (
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">John Doe</p>
-                  <p className="text-xs text-gray-400">john@example.com</p>
+                  <p className="text-sm font-medium text-white">{user?.name}</p>
+                  <p className="text-xs text-gray-400">{user?.email}</p>
                 </div>
               )}
               
               {sidebarCollapsed && (
                 <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                  John Doe<br/>john@example.com
+                  {user?.name}<br/>{user?.email}
                 </span>
               )}
             </button>
@@ -406,11 +405,11 @@ export default function App({ Component, pageProps }: AppProps) {
           >
             <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
               <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
-              <p className="text-xs text-gray-400">john.doe@example.com</p>
+              <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
             </div>
             <Link 
               href="/profile" 
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
+              className="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -420,7 +419,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </Link>
             <Link 
               href="/settings" 
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
+              className="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -432,7 +431,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className="border-t border-gray-700 dark:border-gray-700 light:border-gray-200 my-1"></div>
             <Link 
               href="/logout" 
-              className="block px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 dark:text-red-400 dark:hover:bg-gray-700 dark:hover:text-red-300 light:text-red-600 light:hover:bg-gray-100 light:hover:text-red-700 flex items-center"
+              className="px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 dark:text-red-400 dark:hover:bg-gray-700 dark:hover:text-red-300 light:text-red-600 light:hover:bg-gray-100 light:hover:text-red-700 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -528,8 +527,8 @@ export default function App({ Component, pageProps }: AppProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">John Doe</p>
-                  <p className="text-xs text-gray-400">john@example.com</p>
+                  <p className="text-sm font-medium text-white">{user?.name || 'Utilisateur'}</p>
+                  <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
                 </div>
                 <button
                   onClick={toggleTheme}
@@ -558,8 +557,6 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-primary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             
-            {/* Grille stylisée */}
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-[0.02]"></div>
             
             {/* Particules/étoiles */}
             <div className="stars-container absolute inset-0"></div>
@@ -583,15 +580,7 @@ export default function App({ Component, pageProps }: AppProps) {
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
-              {isLoaded ? (
-                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
-                  <Component {...pageProps} />
-                </div>
-              ) : (
-                <div className="opacity-0 translate-y-10">
-                  <Component {...pageProps} />
-                </div>
-              )}
+            <Component {...pageProps} />
             </div>
           </main>
           
@@ -687,6 +676,14 @@ export default function App({ Component, pageProps }: AppProps) {
           </footer>
         </div>
       </div>
+    </>
+  );
+};
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <AuthProvider>
+      <AppContent Component={Component} pageProps={pageProps} />
     </AuthProvider>
   );
 }
