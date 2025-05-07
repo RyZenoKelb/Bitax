@@ -1,16 +1,18 @@
 /* src/styles/app.css */
-/* Fichier de styles globaux supplémentaires pour Bitax */
+/* Fichier de styles globaux supplémentaires pour Bitax - VERSION CORRIGÉE */
 
 /* ========================= 
    BACKGROUND ÉTOILÉ ANIMÉ
    ========================= */
 
    .stars-container {
-  position: absolute;
+  position: fixed !important; /* Changé de absolute à fixed pour garantir la visibilité */
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  z-index: -1;
+  z-index: -10; /* S'assurer que c'est en arrière-plan */
+  pointer-events: none; /* Ne pas interférer avec les interactions */
 }
 
 .star {
@@ -51,7 +53,7 @@
 }
 
 .light .star {
-  background: rgba(123, 63, 228, 0.5); /* Utilise la couleur primaire pour les étoiles en mode clair */
+  background: rgba(123, 63, 228, 0.5); /* Couleur primaire pour étoiles en mode clair */
 }
 
 @keyframes star-animation {
@@ -69,6 +71,58 @@
     opacity: 0;
     transform: scale(1) translateY(var(--star-travel, -20px));
   }
+}
+
+/* Arrière-plan de base */
+.app-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -20;
+  background-color: var(--bg-main);
+  overflow: hidden;
+}
+
+/* Effet de grille */
+.app-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(123, 63, 228, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123, 63, 228, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+}
+
+/* Orbes de gradient */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.1;
+  animation: float 15s ease-in-out infinite alternate;
+}
+
+.orb-primary {
+  width: 40vw;
+  height: 40vw;
+  top: -10vw;
+  right: -10vw;
+  background: radial-gradient(circle, rgba(123, 63, 228, 0.3) 0%, rgba(94, 119, 255, 0.15) 50%, rgba(0, 0, 0, 0) 70%);
+}
+
+.orb-secondary {
+  width: 35vw;
+  height: 35vw;
+  bottom: -10vw;
+  left: 10vw;
+  background: radial-gradient(circle, rgba(14, 234, 255, 0.2) 0%, rgba(123, 63, 228, 0.1) 50%, rgba(0, 0, 0, 0) 70%);
 }
 
 /* Effet de brillance pour les éléments */
@@ -127,14 +181,36 @@
 
 .sidebar-toggle {
   transition: all 0.3s ease;
+  z-index: 100; /* S'assurer qu'il est au-dessus des autres éléments */
 }
 
-.sidebar-toggle:hover {
+/* Version déployée */
+.sidebar-expanded .sidebar-toggle {
   background: rgba(123, 63, 228, 0.1);
+  border-radius: 8px;
+  padding: 8px;
+  margin-right: -4px;
+}
+
+/* Version repliée - bouton plus visible */
+.sidebar-collapsed .sidebar-toggle {
+  background: rgba(123, 63, 228, 0.6);
+  border-radius: 8px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(123, 63, 228, 0.5);
+  position: absolute;
+  right: -12px;
+  top: 20px;
+  color: white;
 }
 
 .dark .sidebar-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.light .sidebar-toggle:hover {
+  background: rgba(123, 63, 228, 0.2);
 }
 
 /* Amélioration du hover des boutons de la sidebar */
@@ -167,14 +243,25 @@
   font-weight: bold;
 }
 
+/* Correction pour que le dégradé fonctionne en modes clair et sombre */
 .bitax-logo-text {
-  background: linear-gradient(90deg, #0EEAFF, #7B3FE4, #FF3D71);
+  background-image: linear-gradient(90deg, #0EEAFF, #7B3FE4, #FF3D71);
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
+  color: transparent !important; /* Important pour forcer la transparence */
   animation: logo-pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   position: relative;
   z-index: 1;
+  display: inline-block; /* Nécessaire pour le background-clip */
+}
+
+/* Style spécifique pour l'affichage du logo en mode replié */
+.sidebar-collapsed .bitax-logo-text {
+  font-size: 26px !important;
+  width: 30px; /* Limiter la largeur pour ne montrer que le premier caractère */
+  overflow: hidden;
+  text-align: center;
+  display: inline-block;
 }
 
 .bitax-logo-shine {
@@ -213,7 +300,7 @@
 
 /* Amélioration pour le mode light */
 .light {
-  --bg-color: #F8FAFC;
+  --bg-main: #F8FAFC;
   --panel-bg: #ffffff;
   --text-primary: #1A1742;
   --text-secondary: #5B598F;
@@ -221,7 +308,7 @@
 }
 
 .dark {
-  --bg-color: #0F172A;
+  --bg-main: #0F172A;
   --panel-bg: #1E293B;
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
