@@ -24,7 +24,7 @@ const BitaxLogo = ({ collapsed = false }) => {
     <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
       <div className="relative">
         {/* Texte principal animé */}
-        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-bold font-inter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight relative animate-pulse-slow`}>
+        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight relative animate-pulse-slow`}>
           Bitax
           {/* Effet de brillance qui se déplace */}
           <div className="absolute -inset-1 w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-30 group-hover:animate-shine" />
@@ -334,7 +334,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </nav>
           
           {/* User profile section */}
-          <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 ${sidebarCollapsed ? 'flex justify-center' : 'flex justify-between'} items-center`}>
+          <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
             <button 
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="relative group flex items-center focus:outline-none"
