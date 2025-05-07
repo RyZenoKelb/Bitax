@@ -696,7 +696,7 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
-      <AppContent Component={Component} pageProps={pageProps} />
+      <AppContent Component={Component} pageProps={pageProps} router={router} />
     </AuthProvider>
   );
 }
