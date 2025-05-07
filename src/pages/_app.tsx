@@ -305,7 +305,6 @@ export default function App({ Component, pageProps }: AppProps) {
               ctx.fillStyle = star.color;
               ctx.globalAlpha = star.brightness * (0.5 + Math.sin(Date.now() * 0.001) * 0.5);
               ctx.fill();
-            });
             
             // Occasionnellement ajouter une étoile filante
             if (Math.random() < 0.01 && shootingStars.length < 3) {
