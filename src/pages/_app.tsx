@@ -49,13 +49,17 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
 const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
 
   const [mounted, setMounted] = useState(false);
+  const { data: session } = useSession(); // TOUJOURS exécuté !
+  
   useEffect(() => {
     setMounted(true);
   }, []);
   
-  if (!mounted) return null;  
-  // Obtenir les données de l'utilisateur depuis la session
-  const { data: session } = useSession();
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-bg-dark" />
+    );
+  }  
   const user = session?.user;
   
   // Utilisation de couleurs modernes (thème cyberpunk/crypto)
