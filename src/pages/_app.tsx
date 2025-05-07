@@ -367,7 +367,7 @@ const AppContent = ({ Component, pageProps }) => {
               
               {sidebarCollapsed && (
                 <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                  {user?.name || 'Utilisateur'}<br/>{user?.email || 'email@exemple.com'}
+                  {user?.name}<br/>{user?.email}
                 </span>
               )}
             </button>
