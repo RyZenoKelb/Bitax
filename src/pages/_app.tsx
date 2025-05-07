@@ -18,28 +18,36 @@ declare module 'react' {
   }
 }
 
-// Logo SVG moderne et animé
+// Logo inspiré du Bitcoin mais adapté à Bitax
 const BitaxLogo = ({ collapsed = false }) => {
   return (
-    <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'}`}>
-      <div className="relative h-10 w-10 flex items-center justify-center group">
+    <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
+      <div className="relative h-10 w-10 flex items-center justify-center">
         {/* Cercles animés autour du logo */}
         <div className="absolute w-full h-full rounded-full border-2 border-cyan-500/70 animate-pulse-slow"></div>
         <div className="absolute w-[90%] h-[90%] rounded-full border border-indigo-500/70 animate-reverse-spin"></div>
         
-        {/* Hexagone du logo */}
-        <div className="relative w-8 h-8 bg-gradient-to-br from-indigo-600 to-cyan-400 logo-clip-path shadow-glow transition-transform duration-300 group-hover:scale-110">
-          {/* Éclat intérieur */}
-          <div className="absolute inset-0 bg-white/20 logo-clip-path-smaller"></div>
+        {/* Cercle principal du logo */}
+        <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-indigo-700 to-cyan-600 shadow-glow transition-transform duration-300 overflow-hidden group-hover:scale-110 flex items-center justify-center">
+          {/* B stylisé comme Bitcoin */}
+          <div className="relative w-5 h-5 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" className="w-full h-full fill-white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.06 11.57c.59-.69.94-1.58.94-2.57 0-1.86-1.27-3.43-3-3.87V3h-2v2h-2V3H9v2H6v2h2v10H6v2h3v2h2v-2h2v2h2v-2.13c1.73-.44 3-2.01 3-3.87 0-.6-.13-1.17-.36-1.69.23-.27.42-.55.42-.74zM12 19H9.08V5H12c1.38 0 2.5 1.12 2.5 2.5S13.38 10 12 10c.76 0 1.5.16 2.17.45.34.14.64.33.91.55.13.11.25.22.36.34 1.38.33 2.56 1.53 2.56 3.16 0 1.88-1.61 3.5-3.5 3.5H12zm1-5.5c0 .83-.67 1.5-1.5 1.5S10 14.33 10 13.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm0-4c0 .83-.67 1.5-1.5 1.5S10 10.33 10 9.5 10.67 8 11.5 8s1.5.67 1.5 1.5z" />
+            </svg>
+          </div>
+          
+          {/* Effet de brillance et animation */}
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/50 via-transparent to-transparent opacity-50"></div>
+          <div className="absolute -inset-full h-full w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine" />
         </div>
         
         {!collapsed && (
-          <div className="ml-3 relative">
+          <div className="ml-3">
             <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight">Bitax</span>
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -276,7 +284,8 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="relative flex items-center justify-between py-6 px-5">
             <BitaxLogo collapsed={sidebarCollapsed} />
             
-            {/* Bouton toggle sidebar amélioré */}
+          {/* Bouton toggle sidebar amélioré - TOUJOURS VISIBLE */}
+          <div className={`fixed ${sidebarCollapsed ? 'left-16' : 'left-64'} top-9 z-50 transition-all duration-300`}>
             <button 
               onClick={toggleSidebar}
               className={`toggle-sidebar-btn w-8 h-8 flex items-center justify-center ${sidebarCollapsed ? 'rotate-180' : ''} transition-all duration-500 rounded-full bg-gradient-to-r from-indigo-600/80 to-purple-600/80 text-white hover:shadow-[0_0_15px_rgba(122,122,255,0.5)] hover:scale-105`}
@@ -289,6 +298,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <path d="M15 6L9 12L15 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
+          </div>
           </div>
           
           {/* Navigation links modernisés et animés */}
