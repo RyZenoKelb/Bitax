@@ -18,37 +18,34 @@ declare module 'react' {
   }
 }
 
-// Logo moderne et animé - texte Bitax réinventé
+// Logo inspiré du Bitcoin mais adapté à Bitax
 const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
-      <div className="relative">
-        {/* Fond du logo */}
-        <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-900/30 to-purple-900/30 blur-sm"></div>
+      <div className="relative h-10 w-10 flex items-center justify-center">
+        {/* Cercles animés autour du logo */}
+        <div className="absolute w-full h-full rounded-full border-2 border-cyan-500/70 animate-pulse-slow"></div>
+        <div className="absolute w-[90%] h-[90%] rounded-full border border-indigo-500/70 animate-reverse-spin"></div>
         
-        {/* Logo principal modernisé */}
-        <div className="relative z-10">
-          {/* Le 'B' stylisé avec un élément hexagonal pour rappeler la blockchain */}
-          <div className="relative inline-flex">
-            <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight`}>
-              B
-            </span>
-            {/* Hexagone blockchain stylisé autour du B */}
-            <div className="absolute -inset-1 border border-indigo-500/50 rounded-lg rotate-45 animate-pulse-slow"></div>
+        {/* Cercle principal du logo */}
+        <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-indigo-700 to-cyan-600 shadow-glow transition-transform duration-300 overflow-hidden group-hover:scale-110 flex items-center justify-center">
+          {/* B stylisé comme Bitcoin */}
+          <div className="relative w-5 h-5 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" className="w-full h-full fill-white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.06 11.57c.59-.69.94-1.58.94-2.57 0-1.86-1.27-3.43-3-3.87V3h-2v2h-2V3H9v2H6v2h2v10H6v2h3v2h2v-2h2v2h2v-2.13c1.73-.44 3-2.01 3-3.87 0-.6-.13-1.17-.36-1.69.23-.27.42-.55.42-.74zM12 19H9.08V5H12c1.38 0 2.5 1.12 2.5 2.5S13.38 10 12 10c.76 0 1.5.16 2.17.45.34.14.64.33.91.55.13.11.25.22.36.34 1.38.33 2.56 1.53 2.56 3.16 0 1.88-1.61 3.5-3.5 3.5H12zm1-5.5c0 .83-.67 1.5-1.5 1.5S10 14.33 10 13.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm0-4c0 .83-.67 1.5-1.5 1.5S10 10.33 10 9.5 10.67 8 11.5 8s1.5.67 1.5 1.5z" />
+            </svg>
           </div>
           
-          {/* Le reste du texte avec une animation de couleur ondulante */}
-          <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 animate-gradient-x ml-0.5 tracking-tight`}>
-            itax
-          </span>
-          
-          {/* Points lumineux qui symbolisent la connexion blockchain */}
-          <div className="absolute -right-1 top-0 w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse-slow opacity-80"></div>
-          <div className="absolute -left-1 bottom-0 w-1 h-1 rounded-full bg-purple-500 animate-pulse-slow opacity-70 delay-300"></div>
-          
-          {/* Effet de brillance qui se déplace */}
-          <div className="absolute -inset-1 w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-30 group-hover:animate-shine"></div>
+          {/* Effet de brillance et animation */}
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/50 via-transparent to-transparent opacity-50"></div>
+          <div className="absolute -inset-full h-full w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine" />
         </div>
+        
+        {!collapsed && (
+          <div className="ml-3">
+            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight">Bitax</span>
+          </div>
+        )}
       </div>
     </Link>
   );
@@ -112,13 +109,9 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/transactions', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Icône plus représentative des transactions financières/crypto */}
-          <path d="M3 12h4l2-4 3 8 2-10 3 8 1-2h3" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M2 17h20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="4" cy="17" r="1" className="fill-current" />
-          <circle cx="9" cy="17" r="1" className="fill-current" />
-          <circle cx="15" cy="17" r="1" className="fill-current" />
-          <circle cx="20" cy="17" r="1" className="fill-current" />
+          <path d="M20 16L16 12L20 8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 8L8 12L4 16" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 4L12 20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.main}, ${COLORS.purple.light})`
@@ -164,10 +157,10 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/support', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Icône plus représentative du support client */}
-          <circle cx="12" cy="12" r="9" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M12 17h.01" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M9 10a3 3 0 015.12-2.12A3 3 0 0115 10c0 1.3-1 2-1.5 2.5-.5.5-.5 1-.5 1.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M18.364 5.63603L5.63599 18.364" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="9.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M7.5 4.20703C8.82378 3.43049 10.3607 3 12 3C16.9706 3 21 7.02944 21 12C21 13.6393 20.5695 15.1762 19.793 16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16.5 19.793C15.1762 20.5695 13.6393 21 12 21C7.02944 21 3 16.9706 3 12C3 10.3607 3.43049 8.82378 4.20703 7.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.dark}, ${COLORS.purple.main})`
@@ -215,149 +208,8 @@ export default function App({ Component, pageProps }: AppProps) {
       setIsLoaded(true);
     }, 100);
     
-    // Animation des étoiles en arrière-plan - initialisation
-    initStarryBackground();
-    
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  // Fonction pour initialiser le fond étoilé
-  const initStarryBackground = () => {
-    if (typeof window !== 'undefined') {
-      // Création d'un canvas pour les étoiles si nécessaire
-      const existingCanvas = document.getElementById('starry-background');
-      if (!existingCanvas) {
-        const canvas = document.createElement('canvas');
-        canvas.id = 'starry-background';
-        canvas.className = 'fixed inset-0 -z-10 pointer-events-none';
-        document.body.appendChild(canvas);
-        
-        // Initialisation de l'animation des étoiles
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          // Configuration et animation des étoiles ici
-            interface Star {
-            x: number;
-            y: number;
-            radius: number;
-            brightness: number;
-            color: string;
-            speed: number;
-            }
-
-            const stars: Star[] = [];
-            interface ShootingStar {
-            x: number;
-            y: number;
-            length: number;
-            speed: number;
-            angle: number;
-            life: number;
-            }
-
-            const shootingStars: ShootingStar[] = [];
-          let width = window.innerWidth;
-          let height = window.innerHeight;
-          
-          // Redimensionner le canvas quand la fenêtre change de taille
-          window.addEventListener('resize', () => {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-          });
-          
-          // Initialiser le canvas
-          canvas.width = width;
-          canvas.height = height;
-          
-          // Créer des étoiles initiales
-          for (let i = 0; i < 150; i++) {
-            stars.push({
-              x: Math.random() * width,
-              y: Math.random() * height,
-              radius: Math.random() * 1.5,
-              brightness: Math.random() * 0.5 + 0.5,
-              color: i % 20 === 0 ? 
-                `rgb(${Math.floor(Math.random()*100 + 155)}, ${Math.floor(Math.random()*100 + 155)}, ${Math.floor(Math.random()*255)})` :
-                'rgba(255, 255, 255, 0.8)',
-              speed: Math.random() * 0.05
-            });
-          }
-          
-          // Animation des étoiles
-          function animate() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, width, height);
-            
-            // Dessiner les étoiles
-            stars.forEach(star => {
-              star.y += star.speed;
-              if (star.y > height) {
-                star.y = 0;
-                star.x = Math.random() * width;
-              }
-              
-              ctx.beginPath();
-              if (!ctx) return;
-              ctx.beginPath();
-              ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2, false);
-              ctx.fillStyle = star.color;
-              ctx.globalAlpha = star.brightness * (0.5 + Math.sin(Date.now() * 0.001) * 0.5);
-              ctx.fill();
-            
-            // Occasionnellement ajouter une étoile filante
-            if (Math.random() < 0.01 && shootingStars.length < 3) {
-              shootingStars.push({
-                x: Math.random() * width,
-                y: Math.random() * height / 3,
-                length: Math.random() * 80 + 50,
-                speed: Math.random() * 10 + 10,
-                angle: Math.random() * Math.PI / 4 - Math.PI / 8,
-                life: 100
-              });
-            }
-            
-            // Dessiner les étoiles filantes
-            shootingStars.forEach((star, index) => {
-              if (!ctx) return;
-              ctx.beginPath();
-              ctx.moveTo(star.x, star.y);
-              
-              const endX = star.x + Math.cos(star.angle) * star.length;
-              const endY = star.y + Math.sin(star.angle) * star.length;
-              
-              ctx.lineTo(endX, endY);
-              
-              const gradient = ctx.createLinearGradient(star.x, star.y, endX, endY);
-              gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-              gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-              
-              ctx.strokeStyle = gradient;
-              ctx.lineWidth = 2;
-              ctx.globalAlpha = star.life / 100;
-              ctx.stroke();
-              
-              // Mettre à jour la position
-              star.x += Math.cos(star.angle) * star.speed;
-              star.y += Math.sin(star.angle) * star.speed;
-              star.life -= 1;
-              
-              // Supprimer si hors écran ou fin de vie
-              if (star.x > width || star.y > height || star.life <= 0) {
-                shootingStars.splice(index, 1);
-              }
-            });
-            
-            requestAnimationFrame(animate);
-          });
-
-          }
-          animate();
-        }
-      }
-    }
-  };
 
   // Appliquer le thème au document
   useEffect(() => {
@@ -432,23 +284,21 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="relative flex items-center justify-between py-6 px-5">
             <BitaxLogo collapsed={sidebarCollapsed} />
             
-            {/* Bouton toggle sidebar réactivé et stylisé */}
+          {/* Bouton toggle sidebar amélioré - TOUJOURS VISIBLE */}
+          <div className={`fixed ${sidebarCollapsed ? 'left-16' : 'left-64'} top-9 z-50 transition-all duration-300`}>
             <button 
               onClick={toggleSidebar}
-              className="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-900/30 text-indigo-300 hover:text-white hover:bg-indigo-800/50 transition-colors duration-300"
-              aria-label="Toggle Sidebar"
+              className={`toggle-sidebar-btn w-8 h-8 flex items-center justify-center ${sidebarCollapsed ? 'rotate-180' : ''} transition-all duration-500 rounded-full bg-gradient-to-r from-indigo-600/80 to-purple-600/80 text-white hover:shadow-[0_0_15px_rgba(122,122,255,0.5)] hover:scale-105`}
+              style={{
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 0 10px rgba(122, 122, 255, 0.3)',
+              }}
             >
-              <svg 
-                className="w-5 h-5 transition-transform duration-300" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-                style={{ transform: sidebarCollapsed ? 'rotate(180deg)' : 'rotate(0deg)' }}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={sidebarCollapsed ? "M13 5l7 7-7 7" : "M11 19l-7-7 7-7"} />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={sidebarCollapsed ? "M5 12h15" : "M13 12h8"} />
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 6L9 12L15 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
+          </div>
           </div>
           
           {/* Navigation links modernisés et animés */}
@@ -725,8 +575,8 @@ export default function App({ Component, pageProps }: AppProps) {
             {/* Grille stylisée */}
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-[0.02]"></div>
             
-            {/* Particules/étoiles - remplacé par le canvas JS */}
-            <div id="starry-background-container" className="absolute inset-0"></div>
+            {/* Particules/étoiles */}
+            <div className="stars-container absolute inset-0"></div>
             
             {/* Vagues subtiles animées en bas */}
             <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
