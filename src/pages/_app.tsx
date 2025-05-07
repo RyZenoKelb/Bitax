@@ -20,20 +20,20 @@ declare module 'react' {
 
 // Logo using the image from public/bitaxlogo.png with a subtle hover effect
 const BitaxLogo = ({ collapsed = false, variant = "default" }) => {
-  // Determine size and styles based on where the logo is being used
+  // Improved sizing based on the screenshot analysis
   const sizeClass = variant === "sidebar" 
-    ? collapsed ? "h-10" : "h-16" // Significantly larger for sidebar
-    : collapsed ? "h-8" : "h-16"; // Default/footer size
+    ? collapsed ? "h-10 w-auto" : "h-12 w-auto" // Better size for sidebar
+    : collapsed ? "h-8 w-auto" : "h-9 w-auto"; // Default/footer size
   
-  // For sidebar, we want to center it
-  const containerClass = variant === "sidebar" 
-    ? "flex justify-center w-full" 
-    : "flex items-center";
+  // Improved container class with better centering
+  const containerClass = collapsed
+    ? "flex justify-center items-center w-full py-2" 
+    : "flex items-center py-1";
   
   return (
     <Link href="/" className={`${containerClass} group cursor-pointer`}>
       <div className="relative overflow-hidden">
-        {/* Logo image */}
+        {/* Logo image with improved sizing */}
         <img 
           src="/bitaxlogo.png" 
           alt="Bitax Logo" 
@@ -43,6 +43,13 @@ const BitaxLogo = ({ collapsed = false, variant = "default" }) => {
         {/* Subtle shine effect on hover */}
         <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
       </div>
+      
+      {/* Display the text "BITAX" next to the logo when not collapsed */}
+      {!collapsed && (
+        <span className="ml-3 text-xl font-semibold text-white font-orbitron tracking-wider">
+          BITAX
+        </span>
+      )}
     </Link>
   );
 };
