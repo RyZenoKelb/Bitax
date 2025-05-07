@@ -351,6 +351,70 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
+      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 bg-bg-darker dark:bg-bg-darker light:bg-bg-light`}>
+        {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
+        <aside 
+          className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
+            ${sidebarCollapsed ? 'w-20' : 'w-72'} 
+            bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
+            overflow-hidden`}
+          style={{
+            boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
+          }}
+        >
+          {/* Effets lumineux interactifs */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
+            <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
+            <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
+          </div>
+          
+          {/* Logo et toggle sidebar avec animation */}
+          <div className="relative flex items-center justify-between py-6 px-5">
+            <BitaxLogo collapsed={sidebarCollapsed} />
+            
+          {/* Bouton toggle sidebar supprimé - mais gardons la fonction pour plus tard */}
+          <div className="fixed -left-99 opacity-0">
+            <button 
+              onClick={toggleSidebar}
+              className="hidden"
+            >
+              <span className="sr-only">Toggle Sidebar</span>
+            </button>
+          </div>
+          </div>
+          
+          {/* Navigation links modernisés et animés */}
+          <nav className="flex-1 py-8 overflow-y-auto scrollbar-none">
+            <div className={`px-3 space-y-2 ${sidebarCollapsed ? 'items-center' : ''}`}>
+              {navLinks.map((link, index) => {
+                const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
+                return (
+                  <Link 
+                    key={link.name} 
+                    href={link.href}
+                    className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-4'} py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
+                      ${isActive 
+                        ? 'text-white' 
+                        : 'text-indigo-100/70 hover:text-white'}`}
+                    style={{
+                      background: isActive ? link.gradient : 'rgba(13, 18, 36, 0.6)',
+                      boxShadow: isActive ? '0 0 15px rgba(46, 86, 255, 0.3)' : 'none',
+                    }}
+                  >
+                    {/* Effet de brillance animé sur hover */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
+                    
+                    {/* Icône avec animation */}
+                    <div className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
+                      {link.icon}
+                    </div>
+                    
+                    {/* Texte qui s'affiche/disparait selon l'état de la sidebar */}
+                    {!sidebarCollapsed && (
+                      <span className="ml-3 transition-all duration-500">{link.name}</span>
+                    )}
+                    
                     {/* Point lumineux indicateur si actif */}
                     {isActive && !sidebarCollapsed && (
                       <div className="absolute right-3 w-2 h-2 rounded-full bg-white animate-pulse"></div>
@@ -584,7 +648,7 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
         </Transition>
         
         {/* Main content */}
-        <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
+        <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out bg-bg-darker dark:bg-bg-darker light:bg-bg-light ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
           {/* Background effects améliorés */}
           <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
             {/* Gradient orbs animés */}
@@ -599,70 +663,6 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
             <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
                 <path 
-                  d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
-                  className="fill-primary-800/10 dark:fill-primary-400/5 light:fill-primary-900/5"
-                ></path>
-                <path 
-                  d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" 
-                  className="fill-secondary-800/10 dark:fill-secondary-400/5 light:fill-secondary-900/5" 
-                  style={{ animationDelay: '-2s' }}
-                ></path>
-              </svg>
-            </div>
-          </div>
-          
-          {/* Contenu principal avec animation d'entrée */}
-          <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
-            <div className="max-w-7xl mx-auto relative z-10">
-              {/* Replace the existing conditional rendering with Transition component */}
-              <div className={`transition-all duration-300 ease-out ${isChangingRoute ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'}`}>
-                <Component {...pageProps} />
-              </div>
-            </div>
-          </main>
-          
-          {/* Footer compact modernisé */}
-          <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
-            <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
-              {/* Logo et copyright minimaliste */}
-              <div className="flex items-center flex-nowrap space-x-2 whitespace-nowrap">
-                <BitaxLogo collapsed={true} isFooter={true} />
-                <span className="text-xs text-indigo-300/70">
-                  &copy; {new Date().getFullYear()} Bitax
-                </span>
-              </div>
-              {/* Links minimalistes */}
-              <div className="flex items-center mt-4 md:mt-0">
-                <div className="flex space-x-4 mr-6">
-                  {/* Social media icons avec effets hover */}
-                  {[
-                    { 
-                      name: 'Twitter', 
-                      icon: <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>,
-                      gradient: `linear-gradient(135deg, ${COLORS.cyan.main}, ${COLORS.indigo.main})`
-                    },
-                    { 
-                      name: 'Discord', 
-                      icon: <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" /></svg>,
-                      gradient: `linear-gradient(135deg, ${COLORS.indigo.main}, ${COLORS.purple.main})`
-                    },
-                  ].map((item, index) => (
-                    <a 
-                      key={index}
-                      href="#" 
-                      className="social-btn relative w-8 h-8 flex items-center justify-center rounded-full bg-indigo-950/30 text-indigo-300 hover:text-white transition-all duration-300 hover:scale-110 group"
-                      aria-label={item.name}
-                      style={{
-                        boxShadow: '0 0 10px rgba(116, 116, 255, 0.1)'
-                      }}
-                    >
-                      {/* Overlay de brillance en hover */}
-                      <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{ 
-                          background: item.gradient,
-                          boxShadow: '0 0 15px rgba(116, 116, 255, 0.4)'
-                        }}
-                      ></div>
                       <div className="relative z-10">{item.icon}</div>
                     </a>
                   ))}
