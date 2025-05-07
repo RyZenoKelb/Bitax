@@ -218,11 +218,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           change24h: data.solana.eur_24h_change,
           logo: cryptoLogos.solana
         },
-        MATIC: { 
-          price: data.polygon.eur, 
-          change24h: data.polygon.eur_24h_change,
-          logo: cryptoLogos.polygon
-        },
         ARB: { 
           price: data.arbitrum.eur, 
           change24h: data.arbitrum.eur_24h_change,
