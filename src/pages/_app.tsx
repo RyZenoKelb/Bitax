@@ -19,15 +19,25 @@ declare module 'react' {
 }
 
 // Logo using the image from public/bitaxlogo.png with a subtle hover effect
-const BitaxLogo = ({ collapsed = false }) => {
+const BitaxLogo = ({ collapsed = false, variant = "default" }) => {
+  // Determine size and styles based on where the logo is being used
+  const sizeClass = variant === "sidebar" 
+    ? collapsed ? "h-10" : "h-16" // Significantly larger for sidebar
+    : collapsed ? "h-8" : "h-10"; // Default/footer size
+  
+  // For sidebar, we want to center it
+  const containerClass = variant === "sidebar" 
+    ? "flex justify-center w-full" 
+    : "flex items-center";
+  
   return (
-    <Link href="/" className="flex items-center group cursor-pointer">
+    <Link href="/" className={`${containerClass} group cursor-pointer`}>
       <div className="relative overflow-hidden">
         {/* Logo image */}
         <img 
           src="/bitaxlogo.png" 
           alt="Bitax Logo" 
-          className={`${collapsed ? 'h-8' : 'h-10'} transition-all duration-300`}
+          className={`${sizeClass} transition-all duration-300`}
         />
         
         {/* Subtle shine effect on hover */}
