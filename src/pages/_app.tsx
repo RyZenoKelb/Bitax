@@ -19,37 +19,22 @@ declare module 'react' {
 }
 
 // Logo using the image from public/bitaxlogo.png with a subtle hover effect
-const BitaxLogo = ({ collapsed = false, variant = "default" }) => {
-  // Improved sizing based on the screenshot analysis
-  const sizeClass = variant === "sidebar" 
-    ? collapsed ? "h-10 w-auto" : "h-12 w-auto" // Better size for sidebar
-    : collapsed ? "h-8 w-auto" : "h-9 w-auto"; // Default/footer size
+const BitaxLogo = ({ collapsed = false }) => {
+  // Improved sizing for better visibility in the sidebar
+  const sizeClass = collapsed 
+    ? "h-12 w-auto" // Larger size when collapsed for better visibility
+    : "h-14 w-auto"; // Even larger when expanded
   
-  // Improved container class with better centering
-  const containerClass = collapsed
-    ? "flex justify-center items-center w-full py-2" 
-    : "flex items-center py-1";
+  // Better centering within the sidebar
+  const containerClass = "flex justify-center items-center w-full py-2";
   
   return (
-    <Link href="/" className={`${containerClass} group cursor-pointer`}>
-      <div className="relative overflow-hidden">
-        {/* Logo image with improved sizing */}
-        <img 
-          src="/bitaxlogo.png" 
-          alt="Bitax Logo" 
-          className={`${sizeClass} transition-all duration-300`}
-        />
-        
-        {/* Subtle shine effect on hover */}
-        <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
-      </div>
-      
-      {/* Display the text "BITAX" next to the logo when not collapsed */}
-      {!collapsed && (
-        <span className="ml-3 text-xl font-semibold text-white font-orbitron tracking-wider">
-          BITAX
-        </span>
-      )}
+    <Link href="/" className={containerClass}>
+      <img 
+        src="/bitaxlogo.png" 
+        alt="Bitax Logo" 
+        className={`${sizeClass} transition-all duration-300`}
+      />
     </Link>
   );
 };
