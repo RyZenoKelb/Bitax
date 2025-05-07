@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
-import { SessionProvider, useSession } from "next-auth/react";
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -81,8 +80,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 
-
-  const { data: session } = useSession();
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
     { 
@@ -231,7 +228,6 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.pathname]);
 
   return (
-  <SessionProvider>
     <AuthProvider>
       <Head>
         <title>Bitax | Fiscalité crypto redéfinie</title>
@@ -344,46 +340,33 @@ export default function App({ Component, pageProps }: AppProps) {
               })}
             </div>
           </nav>
-
+          
           {/* User profile section */}
           <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
-              <button 
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="relative group flex items-center focus:outline-none"
-              >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
-                  {session?.user?.image ? (
-                    <img 
-                      src={session.user.image} 
-                      alt="Profile" 
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  )}
+            <button 
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="relative group flex items-center focus:outline-none"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              
+              {!sidebarCollapsed && (
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-white">John Doe</p>
+                  <p className="text-xs text-gray-400">john@example.com</p>
                 </div>
-                
-                {!sidebarCollapsed && (
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">
-                      {session?.user?.name || "Utilisateur"}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {session?.user?.email || "Non connecté"}
-                    </p>
-                  </div>
-                )}
-                
-                {sidebarCollapsed && (
-                  <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                    {session?.user?.name || "Utilisateur"}<br/>
-                    {session?.user?.email || "Non connecté"}
-                  </span>
-                )}
-              </button>
-                        
+              )}
+              
+              {sidebarCollapsed && (
+                <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
+                  John Doe<br/>john@example.com
+                </span>
+              )}
+            </button>
+            
             {!sidebarCollapsed && (
               <button 
                 onClick={toggleTheme}
@@ -420,10 +403,10 @@ export default function App({ Component, pageProps }: AppProps) {
             dark:bg-gray-800 dark:border-gray-700
             light:bg-white light:border-gray-200`}
           >
-          <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
-            <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
-            <p className="text-xs text-gray-400">{session?.user?.email || "Non connecté"}</p>
-          </div>
+            <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
+              <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
+              <p className="text-xs text-gray-400">john.doe@example.com</p>
+            </div>
             <Link 
               href="/profile" 
               className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
@@ -539,17 +522,13 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className="absolute bottom-0 w-full border-t border-gray-800 p-4">
               <div className="flex items-center">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
-                  {session?.user?.image ? (
-                    <img src={session.user.image} alt="Profile" className="w-full h-full rounded-full object-cover" />
-                  ) : (
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  )}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">{session?.user?.name || "Utilisateur"}</p>
-                  <p className="text-xs text-gray-400">{session?.user?.email || "Non connecté"}</p>
+                  <p className="text-sm font-medium text-white">John Doe</p>
+                  <p className="text-xs text-gray-400">john@example.com</p>
                 </div>
                 <button
                   onClick={toggleTheme}
@@ -706,6 +685,5 @@ export default function App({ Component, pageProps }: AppProps) {
         </div>
       </div>
     </AuthProvider>
-  </SessionProvider>    
   );
 }
