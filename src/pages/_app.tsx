@@ -557,8 +557,6 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-primary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             
-            {/* Grille stylisée */}
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-[0.02]"></div>
             
             {/* Particules/étoiles */}
             <div className="stars-container absolute inset-0"></div>
