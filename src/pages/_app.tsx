@@ -31,7 +31,7 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   const containerClass = "flex justify-center items-center w-full py-2 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0";
   
   return (
-    <Link href="/" className="flex justify-center items-center w-full py-2 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0">
+    <Link href="/" className={containerClass}>
       <img 
         src="/bitaxlogo.png" 
         alt="Bitax Logo" 
