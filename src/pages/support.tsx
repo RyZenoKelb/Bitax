@@ -1,7 +1,7 @@
 // src/pages/support.tsx
 import React from 'react';
 import Link from 'next/link';
-import DashboardLayout from '@/components/DashboardLayout';
+
 
 export default function SupportPage() {
   return (
