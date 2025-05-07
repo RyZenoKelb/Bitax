@@ -697,7 +697,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   return (
     <AuthProvider>
-      <AppContent Component={Component} pageProps={pageProps} />
+      <AppContent Component={Component} pageProps={pageProps} router={router} />
     </AuthProvider>
   );
 }
