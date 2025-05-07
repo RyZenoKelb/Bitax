@@ -1,8 +1,9 @@
 // src/pages/_app.tsx
 import '@/styles/globals.css';
+import '@/styles/app.css'; // Importation du nouveau fichier de styles
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useRef } from 'react';
 import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,17 +19,20 @@ declare module 'react' {
   }
 }
 
-// Logo moderne et animé - texte Bitax uniquement
+// Logo moderne et animé - Bitax version améliorée
 const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
-      <div className="relative">
-        {/* Texte principal animé */}
-        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight relative animate-pulse-slow`}>
+      <div className="relative bitax-logo overflow-hidden">
+        {/* Texte principal animé avec gradient */}
+        <span className={`bitax-logo-text ${collapsed ? 'text-2xl' : 'text-3xl'} font-bold tracking-tight`}>
           Bitax
-          {/* Effet de brillance qui se déplace */}
-          <div className="absolute -inset-1 w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-30 group-hover:animate-shine" />
         </span>
+        {/* Effet de brillance qui se déplace */}
+        <div className="bitax-logo-shine"></div>
+        {/* Éléments graphiques supplémentaires */}
+        <div className="absolute top-0 right-0 -mt-1 mr-1 w-2 h-2 bg-cyan-400 rounded-full blur-[2px] opacity-70"></div>
+        <div className="absolute bottom-1 left-1 w-1.5 h-1.5 bg-purple-500 rounded-full blur-[1px] opacity-70"></div>
       </div>
     </Link>
   );
@@ -71,6 +75,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
+  const starsContainerRef = useRef<HTMLDivElement>(null);
 
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
@@ -92,9 +97,12 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/transactions', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 16L16 12L20 8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M4 8L8 12L4 16" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M16 4L12 20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 5C4 4.44772 4.44772 4 5 4H12C12.5523 4 13 4.44772 13 5V11C13 11.5523 12.5523 12 12 12H5C4.44772 12 4 11.5523 4 11V5Z" className="fill-current opacity-80" />
+          <path d="M15 5C15 4.44772 15.4477 4 16 4H19C19.5523 4 20 4.44772 20 5V19C20 19.5523 19.5523 20 19 20H16C15.4477 20 15 19.5523 15 19V5Z" className="fill-current opacity-85" />
+          <path d="M4 15C4 14.4477 4.44772 14 5 14H8C8.55228 14 9 14.4477 9 15V19C9 19.5523 8.55228 20 8 20H5C4.44772 20 4 19.5523 4 19V15Z" className="fill-current opacity-90" />
+          <circle cx="6.5" cy="8.5" r="1.5" className="fill-current opacity-60" />
+          <circle cx="17.5" cy="12.5" r="1.5" className="fill-current opacity-60" />
+          <circle cx="6.5" cy="17.5" r="1.5" className="fill-current opacity-60" />
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.main}, ${COLORS.purple.light})`
@@ -140,15 +148,66 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/support', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18.364 5.63603L5.63599 18.364" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="12" cy="12" r="9.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M7.5 4.20703C8.82378 3.43049 10.3607 3 12 3C16.9706 3 21 7.02944 21 12C21 13.6393 20.5695 15.1762 19.793 16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M16.5 19.793C15.1762 20.5695 13.6393 21 12 21C7.02944 21 3 16.9706 3 12C3 10.3607 3.43049 8.82378 4.20703 7.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" className="stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.dark}, ${COLORS.purple.main})`
     }
   ];
+
+  // Générer les étoiles pour l'animation de background
+  useEffect(() => {
+    const generateStars = () => {
+      if (starsContainerRef.current) {
+        // Vider le conteneur d'étoiles
+        starsContainerRef.current.innerHTML = '';
+        
+        // Paramètres des étoiles
+        const starCount = 150;
+        const container = starsContainerRef.current;
+        const containerWidth = container.offsetWidth;
+        const containerHeight = container.offsetHeight;
+        
+        // Créer les étoiles
+        for (let i = 0; i < starCount; i++) {
+          const star = document.createElement('div');
+          
+          // Déterminer la taille de l'étoile
+          const size = Math.random();
+          if (size < 0.5) {
+            star.classList.add('star', 'star--tiny');
+          } else if (size < 0.8) {
+            star.classList.add('star', 'star--small');
+          } else if (size < 0.95) {
+            star.classList.add('star', 'star--medium');
+          } else {
+            star.classList.add('star', 'star--large');
+          }
+          
+          // Positionner aléatoirement
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.top = `${Math.random() * 100}%`;
+          
+          // Paramètres d'animation
+          star.style.setProperty('--star-opacity', `${0.3 + Math.random() * 0.7}`);
+          star.style.setProperty('--star-travel', `${-10 - Math.random() * 40}px`);
+          star.style.animationDuration = `${3 + Math.random() * 7}s`;
+          star.style.animationDelay = `${Math.random() * 5}s`;
+          
+          // Ajouter au DOM
+          container.appendChild(star);
+        }
+      }
+    };
+    
+    // Générer les étoiles au chargement et au redimensionnement
+    generateStars();
+    window.addEventListener('resize', generateStars);
+    
+    return () => {
+      window.removeEventListener('resize', generateStars);
+    };
+  }, [isLoaded]);
 
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
@@ -267,15 +326,29 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="relative flex items-center justify-between py-6 px-5">
             <BitaxLogo collapsed={sidebarCollapsed} />
             
-          {/* Bouton toggle sidebar supprimé - mais gardons la fonction pour plus tard */}
-          <div className="fixed -left-99 opacity-0">
+            {/* Bouton toggle sidebar */}
             <button 
               onClick={toggleSidebar}
-              className="hidden"
+              className="sidebar-toggle p-1.5 rounded-lg text-indigo-300 hover:text-white focus:outline-none transition-all duration-300"
+              aria-label="Toggle Sidebar"
             >
-              <span className="sr-only">Toggle Sidebar</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={`w-5 h-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`}
+              >
+                {sidebarCollapsed ? (
+                  <path d="M13 17l5-5-5-5M6 17l5-5-5-5" />
+                ) : (
+                  <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5" />
+                )}
+              </svg>
             </button>
-          </div>
           </div>
           
           {/* Navigation links modernisés et animés */}
@@ -300,7 +373,7 @@ export default function App({ Component, pageProps }: AppProps) {
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
                     
                     {/* Icône avec animation */}
-                    <div className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
+                    <div className={`sidebar-icon flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300`}>
                       {link.icon}
                     </div>
                     
@@ -405,7 +478,7 @@ export default function App({ Component, pageProps }: AppProps) {
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 016 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Mon profil
             </Link>
@@ -552,8 +625,8 @@ export default function App({ Component, pageProps }: AppProps) {
             {/* Grille stylisée */}
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-[0.02]"></div>
             
-            {/* Particules/étoiles */}
-            <div className="stars-container absolute inset-0"></div>
+            {/* Conteneur des étoiles animées */}
+            <div ref={starsContainerRef} className="stars-container"></div>
             
             {/* Vagues subtiles animées en bas */}
             <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
