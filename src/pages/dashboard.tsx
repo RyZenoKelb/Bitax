@@ -1,5 +1,5 @@
 // src/pages/dashboard.tsx
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -9,12 +9,12 @@ import WalletConnectButton from '@/components/WalletConnectButton';
 import TransactionSummary from '@/components/TransactionSummary';
 import TransactionList from '@/components/TransactionList';
 import TaxDashboard from '@/components/TaxDashboard';
-// Removed unused import
+import PremiumUnlock from '@/components/PremiumUnlock';
 import OnboardingWizard from '@/components/OnboardingWizard';
 import DashboardHeader from '@/components/DashboardHeader';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
-// Removed unused import
+import DashboardLayout from '@/components/DashboardLayout';
 
 // Ignore le layout par défaut pour cette page
 Dashboard.getLayout = (page: any) => page;
@@ -23,10 +23,10 @@ export default function Dashboard() {
   const router = useRouter();
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string>('');
-  const [, setProvider] = useState<ethers.BrowserProvider | null>(null); // Removed unused variable
+  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [, setIsFirstVisit] = useState<boolean>(true); // Removed unused variable
+  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const [isPremiumUser, setIsPremiumUser] = useState<boolean>(false);
   const [activeNetwork, setActiveNetwork] = useState<NetworkType>('eth');
@@ -317,9 +317,7 @@ export default function Dashboard() {
             }}
           />
           <span className="relative z-10 text-white font-bold text-lg">B</span>
-            </div>
-          </div>
-        );
+        </div>
         <div className="flex flex-col">
           <motion.span 
             className={`${fontSize} font-extrabold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-400 tracking-tight`}
@@ -336,8 +334,7 @@ export default function Dashboard() {
             transition={{ duration: 0.4, delay: 0.2 }}
           >
             FISCALITÉ CRYPTO
-        </motion.div>
-      </motion.main>
+          </motion.span>
         </div>
       </motion.div>
     );
@@ -500,7 +497,7 @@ export default function Dashboard() {
             onClick={() => setSidebarOpen(false)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-        </motion.div>
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           />
         )}
@@ -533,7 +530,7 @@ export default function Dashboard() {
         </div>
         
         {/* Navigation links */}
-              <motion.div>
+        <div className="px-3 py-4 overflow-y-auto h-[calc(100vh-64px)] flex flex-col">
           <div className="space-y-1 mb-6">
             {sidebarLinks.map((link, index) => (
               <motion.div
@@ -1427,8 +1424,7 @@ export default function Dashboard() {
                     </>
                   )}
                 </div>
-          </motion.main>
-        </div>
+              </div>
             </motion.div>
           </div>
         </motion.main>
@@ -1441,14 +1437,14 @@ export default function Dashboard() {
                               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 opacity-50"></div>
                               <svg className="w-12 h-12 text-gray-500 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork?.toUpperCase()}.
+                              </svg>
                             </div>
                             <h3 className="text-xl font-bold text-white mb-2">Aucune transaction trouvée</h3>
                             <p className="text-gray-300 mb-6">
                               Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork.toUpperCase()}.
                               <br />Essayez de scanner un autre réseau ou utilisez le scan multi-chain.
                             </p>
-                                onClick={() => handleScanNetwork(activeNetwork || 'eth')}
+                            <div className="flex flex-wrap gap-3 justify-center">
                               <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
@@ -1461,7 +1457,7 @@ export default function Dashboard() {
                                 Scanner à nouveau
                               </motion.button>
                               <motion.button
-                                  setShowNetworkSelector?.(true);
+                                whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => {
                                   // Activer le panel multi-chain
