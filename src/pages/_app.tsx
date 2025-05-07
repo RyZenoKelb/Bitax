@@ -18,30 +18,70 @@ declare module 'react' {
   }
 }
 
-// Logo SVG moderne
+// Logo inspiré du Bitcoin mais adapté à Bitax
 const BitaxLogo = ({ collapsed = false }) => {
   return (
-    <div className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'}`}>
-      <div className="flex items-center">
-        <div className="relative h-8 w-8">
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary-600 to-secondary-500 rounded-lg transform rotate-3 opacity-70"></div>
-          <div className="absolute inset-0 bg-dark dark:bg-gray-900 rounded-lg flex items-center justify-center transform -rotate-3 border border-gray-700 dark:border-gray-800">
-            <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">B</span>
+    <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
+      <div className="relative h-10 w-10 flex items-center justify-center">
+        {/* Cercles animés autour du logo */}
+        <div className="absolute w-full h-full rounded-full border-2 border-cyan-500/70 animate-pulse-slow"></div>
+        <div className="absolute w-[90%] h-[90%] rounded-full border border-indigo-500/70 animate-reverse-spin"></div>
+        
+        {/* Cercle principal du logo */}
+        <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-indigo-700 to-cyan-600 shadow-glow transition-transform duration-300 overflow-hidden group-hover:scale-110 flex items-center justify-center">
+          {/* B stylisé comme Bitcoin */}
+          <div className="relative w-5 h-5 flex items-center justify-center">
+            <svg viewBox="0 0 24 24" className="w-full h-full fill-white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.06 11.57c.59-.69.94-1.58.94-2.57 0-1.86-1.27-3.43-3-3.87V3h-2v2h-2V3H9v2H6v2h2v10H6v2h3v2h2v-2h2v2h2v-2.13c1.73-.44 3-2.01 3-3.87 0-.6-.13-1.17-.36-1.69.23-.27.42-.55.42-.74zM12 19H9.08V5H12c1.38 0 2.5 1.12 2.5 2.5S13.38 10 12 10c.76 0 1.5.16 2.17.45.34.14.64.33.91.55.13.11.25.22.36.34 1.38.33 2.56 1.53 2.56 3.16 0 1.88-1.61 3.5-3.5 3.5H12zm1-5.5c0 .83-.67 1.5-1.5 1.5S10 14.33 10 13.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5zm0-4c0 .83-.67 1.5-1.5 1.5S10 10.33 10 9.5 10.67 8 11.5 8s1.5.67 1.5 1.5z" />
+            </svg>
           </div>
+          
+          {/* Effet de brillance et animation */}
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/50 via-transparent to-transparent opacity-50"></div>
+          <div className="absolute -inset-full h-full w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine" />
         </div>
         
         {!collapsed && (
           <div className="ml-3">
-            <span className="text-xl font-semibold font-display bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-secondary-400 to-primary-400">BITAX</span>
-            <span className="block text-xs text-gray-400 dark:text-gray-500 -mt-1 font-medium tracking-wide">FISCALITÉ CRYPTO</span>
+            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight">Bitax</span>
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
 export default function App({ Component, pageProps }: AppProps) {
+  // Utilisation de couleurs modernes (thème cyberpunk/crypto)
+  const COLORS = {
+    cyan: {
+      light: '#0FF4C6',
+      main: '#0CCEA3',
+      dark: '#0A9A7B'
+    },
+    purple: {
+      light: '#A47EF6',
+      main: '#8456F0',
+      dark: '#6039DD'
+    },
+    indigo: {
+      light: '#8EA2FF',
+      main: '#5E77FF',
+      dark: '#3A54F2'
+    },
+    accent: {
+      light: '#FF65B6',
+      main: '#FF3A9D',
+      dark: '#DB1E7C'
+    },
+    bg: {
+      dark: '#0F172A',
+      darker: '#091125', 
+      light: '#F8FAFC',
+      lighter: '#FFFFFF'
+    }
+  };
+
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -49,62 +89,81 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 
-  // Navigation links avec icônes modern
+  // Navigation links avec icônes modernisées et animation
   const navLinks = [
     { 
       name: 'Dashboard', 
       href: '/dashboard', 
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
+          <rect x="13" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
+          <rect x="3" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
+          <rect x="13" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
         </svg>
-      )
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.indigo.main}, ${COLORS.indigo.light})`
     },
     { 
       name: 'Transactions', 
       href: '/transactions', 
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 16L16 12L20 8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 8L8 12L4 16" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 4L12 20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      )
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.purple.main}, ${COLORS.purple.light})`
     },
     { 
       name: 'Rapports', 
       href: '/reports', 
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M14 2V8H20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 13H8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 17H8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M10 9H9H8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      )
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.cyan.main}, ${COLORS.cyan.light})`
     },
     { 
       name: 'Guide', 
       href: '/guide', 
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7V21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H2V3Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M22 3H16C14.9391 3 13.9217 3.42143 13.1716 4.17157C12.4214 4.92172 12 5.93913 12 7V21C12 20.2044 12.3161 19.4413 12.8787 18.8787C13.4413 18.3161 14.2044 18 15 18H22V3Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      )
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.indigo.dark}, ${COLORS.indigo.main})`
     },
     { 
       name: 'Tarifs', 
       href: '/pricing', 
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 1V23" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M17 5H9.5C8.57174 5 7.6815 5.36875 7.02513 6.02513C6.36875 6.6815 6 7.57174 6 8.5C6 9.42826 6.36875 10.3185 7.02513 10.9749C7.6815 11.6313 8.57174 12 9.5 12H14.5C15.4283 12 16.3185 12.3687 16.9749 13.0251C17.6313 13.6815 18 14.5717 18 15.5C18 16.4283 17.6313 17.3185 16.9749 17.9749C16.3185 18.6313 15.4283 19 14.5 19H6" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      )
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.accent.dark}, ${COLORS.accent.main})`
     },
     { 
       name: 'Support', 
       href: '/support', 
       icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.364 5.63603L5.63599 18.364" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="9.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M7.5 4.20703C8.82378 3.43049 10.3607 3 12 3C16.9706 3 21 7.02944 21 12C21 13.6393 20.5695 15.1762 19.793 16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16.5 19.793C15.1762 20.5695 13.6393 21 12 21C7.02944 21 3 16.9706 3 12C3 10.3607 3.43049 8.82378 4.20703 7.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      )
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.purple.dark}, ${COLORS.purple.main})`
     }
   ];
 
@@ -204,68 +263,96 @@ export default function App({ Component, pageProps }: AppProps) {
       <CustomStyles />
       
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-        {/* SIDEBAR - Nouvelle version moderne */}
+        {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
-          className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out
-            ${sidebarCollapsed ? 'w-16' : 'w-64'} 
-            bg-gray-900/95 backdrop-blur-xl border-r border-gray-800/30
-            dark:bg-gray-900/95 dark:border-gray-800/30
-            light:bg-white/95 light:border-gray-200/30`}
+          className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
+            ${sidebarCollapsed ? 'w-20' : 'w-72'} 
+            bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
+            overflow-hidden`}
+          style={{
+            boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
+          }}
         >
-          {/* Logo et toggle sidebar */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30">
-            <BitaxLogo collapsed={sidebarCollapsed} />
-            
-            {!sidebarCollapsed && (
-              <button 
-                onClick={toggleSidebar}
-                className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-gray-800"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                </svg>
-              </button>
-            )}
-            
-            {sidebarCollapsed && (
-              <button 
-                onClick={toggleSidebar}
-                className="absolute -right-3 top-9 bg-primary-600 text-white rounded-full p-1 shadow-lg border border-primary-700"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                </svg>
-              </button>
-            )}
+          {/* Effets lumineux interactifs */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
+            <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
+            <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
           </div>
           
-          {/* Navigation links */}
-          <nav className="flex-1 pt-5 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
-            <div className="px-2 space-y-1">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.href}
-                  className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-start'} px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 group
-                    ${router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/') 
-                      ? 'bg-primary-900/50 text-white border-l-2 border-primary-500' 
-                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'}`}
-                >
-                  <div className={`${router.pathname === link.href ? 'text-primary-400' : 'text-gray-400 group-hover:text-white'} transition-colors`}>
-                    {link.icon}
-                  </div>
-                  
-                  {!sidebarCollapsed && (
-                    <span className="ml-3 transition-opacity">{link.name}</span>
-                  )}
-                  
-                  {sidebarCollapsed && (
-                    <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap">
-                      {link.name}
-                    </span>
-                  )}
-                </Link>
-              ))}
+          {/* Logo et toggle sidebar avec animation */}
+          <div className="relative flex items-center justify-between py-6 px-5">
+            <BitaxLogo collapsed={sidebarCollapsed} />
+            
+          {/* Bouton toggle sidebar amélioré - TOUJOURS VISIBLE */}
+          <div className={`fixed ${sidebarCollapsed ? 'left-16' : 'left-64'} top-9 z-50 transition-all duration-300`}>
+            <button 
+              onClick={toggleSidebar}
+              className={`toggle-sidebar-btn w-8 h-8 flex items-center justify-center ${sidebarCollapsed ? 'rotate-180' : ''} transition-all duration-500 rounded-full bg-gradient-to-r from-indigo-600/80 to-purple-600/80 text-white hover:shadow-[0_0_15px_rgba(122,122,255,0.5)] hover:scale-105`}
+              style={{
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 0 10px rgba(122, 122, 255, 0.3)',
+              }}
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 6L9 12L15 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+          </div>
+          
+          {/* Navigation links modernisés et animés */}
+          <nav className="flex-1 py-8 overflow-y-auto scrollbar-none">
+            <div className={`px-3 space-y-2 ${sidebarCollapsed ? 'items-center' : ''}`}>
+              {navLinks.map((link, index) => {
+                const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
+                return (
+                  <Link 
+                    key={link.name} 
+                    href={link.href}
+                    className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-4'} py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
+                      ${isActive 
+                        ? 'text-white' 
+                        : 'text-indigo-100/70 hover:text-white'}`}
+                    style={{
+                      background: isActive ? link.gradient : 'rgba(13, 18, 36, 0.6)',
+                      boxShadow: isActive ? '0 0 15px rgba(46, 86, 255, 0.3)' : 'none',
+                    }}
+                  >
+                    {/* Effet de brillance animé sur hover */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
+                    
+                    {/* Icône avec animation */}
+                    <div className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
+                      {link.icon}
+                    </div>
+                    
+                    {/* Texte qui s'affiche/disparait selon l'état de la sidebar */}
+                    {!sidebarCollapsed && (
+                      <span className="ml-3 transition-all duration-500">{link.name}</span>
+                    )}
+                    
+                    {/* Point lumineux indicateur si actif */}
+                    {isActive && !sidebarCollapsed && (
+                      <div className="absolute right-3 w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                    )}
+                    
+                    {/* Tooltip au survol quand sidebar réduite */}
+                    {sidebarCollapsed && (
+                      <div className="sidebar-tooltip absolute left-full ml-4 px-3 py-2 min-w-max rounded-lg opacity-0 group-hover:opacity-100 -translate-x-3 group-hover:translate-x-0 pointer-events-none transition-all duration-300 text-white z-50"
+                        style={{
+                          background: link.gradient,
+                          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+                        }}
+                      >
+                        {link.name}
+                        {/* Flèche de tooltip */}
+                        <div className="absolute -left-1 top-1/2 -mt-1 w-2 h-2 rotate-45" style={{ background: isActive ? COLORS.indigo.main : COLORS.indigo.dark }}></div>
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
             </div>
           </nav>
           
@@ -333,7 +420,7 @@ export default function App({ Component, pageProps }: AppProps) {
           >
             <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
               <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
-              <p className="text-xs text-gray-400">john.doe@example.com</p>
+              <p className="text-xs text-gray-400">{john.doe@example.com}</p>
             </div>
             <Link 
               href="/profile" 
@@ -522,87 +609,93 @@ export default function App({ Component, pageProps }: AppProps) {
             </div>
           </main>
           
-          {/* Footer modernisé */}
-          <footer className="relative z-10 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 py-6 backdrop-blur-md bg-gray-900/40 dark:bg-gray-900/40 light:bg-white/40">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div className="md:col-span-2">
-                  <BitaxLogo collapsed={false} />
-                  <p className="mt-4 text-sm text-gray-400 dark:text-gray-400 light:text-gray-600 max-w-md">
-                    Simplifiez votre fiscalité crypto avec notre plateforme spécialisée. Calculs automatisés, conformité légale et rapports détaillés.
-                  </p>
-                  <div className="flex space-x-4 mt-6">
-                    {[
-                      { name: 'Twitter', icon: <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg> },
-                      { name: 'GitHub', icon: <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" /></svg> },
-                      { name: 'Discord', icon: <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" /></svg> },
-                    ].map((item, index) => (
-                      <a 
-                        key={index}
-                        href="#" 
-                        className="p-2 rounded-full text-gray-400 hover:text-primary-400 hover:bg-gray-800/40 transition-colors dark:text-gray-400 dark:hover:text-primary-400 dark:hover:bg-gray-800/40 light:text-gray-500 light:hover:text-primary-600 light:hover:bg-gray-200/50"
-                        aria-label={item.name}
-                      >
-                        {item.icon}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-semibold text-white dark:text-white light:text-gray-900 tracking-wider uppercase mb-4">Navigation</h3>
-                  <ul className="space-y-3">
-                    {navLinks.map((link) => (
-                      <li key={link.name}>
-                        <Link href={link.href} className="text-sm text-gray-400 hover:text-primary-400 transition-colors dark:text-gray-400 dark:hover:text-primary-400 light:text-gray-600 light:hover:text-primary-600">
-                          {link.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-semibold text-white dark:text-white light:text-gray-900 tracking-wider uppercase mb-4">Légal</h3>
-                  <ul className="space-y-3">
-                    {[
-                      { name: "Conditions d'utilisation", href: "#" },
-                      { name: "Politique de confidentialité", href: "#" },
-                      { name: "Mentions légales", href: "#" },
-                      { name: "Cookies", href: "#" }
-                    ].map((item, index) => (
-                      <li key={index}>
-                        <a href={item.href} className="text-sm text-gray-400 hover:text-primary-400 transition-colors dark:text-gray-400 dark:hover:text-primary-400 light:text-gray-600 light:hover:text-primary-600">
-                          {item.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+          {/* Footer compact modernisé */}
+          <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
+            <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
+              {/* Logo et copyright minimaliste */}
+              <div className="flex items-center space-x-3">
+                <BitaxLogo collapsed={true} />
+                <p className="text-xs text-indigo-300/70">
+                  &copy; {new Date().getFullYear()} Bitax
+                </p>
               </div>
               
-              <div className="mt-8 pt-6 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30">
-                <div className="flex flex-col md:flex-row justify-between items-center">
-                  <p className="text-sm text-gray-400 dark:text-gray-500 light:text-gray-600 mb-4 md:mb-0">
-                    &copy; {new Date().getFullYear()} Bitax. Tous droits réservés.
-                  </p>
-                  <div className="flex items-center">
-                    <button
-                      onClick={toggleTheme}
-                      className="ml-4 p-2 rounded-lg text-gray-400 hover:text-primary-400 hover:bg-gray-800/40 transition-colors dark:text-gray-400 dark:hover:text-primary-400 dark:hover:bg-gray-800/40 light:text-gray-500 light:hover:text-primary-600 light:hover:bg-gray-200/50"
-                      aria-label="Toggle theme"
+              {/* Links minimalistes */}
+              <div className="flex items-center mt-4 md:mt-0">
+                <div className="flex space-x-4 mr-6">
+                  {/* Social media icons avec effets hover */}
+                  {[
+                    { 
+                      name: 'Twitter', 
+                      icon: <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>,
+                      gradient: `linear-gradient(135deg, ${COLORS.cyan.main}, ${COLORS.indigo.main})`
+                    },
+                    { 
+                      name: 'Discord', 
+                      icon: <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" /></svg>,
+                      gradient: `linear-gradient(135deg, ${COLORS.indigo.main}, ${COLORS.purple.main})`
+                    },
+                  ].map((item, index) => (
+                    <a 
+                      key={index}
+                      href="#" 
+                      className="social-btn relative w-8 h-8 flex items-center justify-center rounded-full bg-indigo-950/30 text-indigo-300 hover:text-white transition-all duration-300 hover:scale-110 group"
+                      aria-label={item.name}
+                      style={{
+                        boxShadow: '0 0 10px rgba(116, 116, 255, 0.1)'
+                      }}
                     >
-                      {theme === 'dark' ? (
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                      ) : (
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
+                      {/* Overlay de brillance en hover */}
+                      <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        style={{ 
+                          background: item.gradient,
+                          boxShadow: '0 0 15px rgba(116, 116, 255, 0.4)'
+                        }}
+                      ></div>
+                      <div className="relative z-10">{item.icon}</div>
+                    </a>
+                  ))}
+                </div>
+                
+                {/* Lien légaux simples */}
+                <div className="flex space-x-4 text-xs">
+                  {[
+                    { name: "CGU", href: "#" },
+                    { name: "Confidentialité", href: "#" },
+                  ].map((item, index) => (
+                    <a 
+                      key={index} 
+                      href={item.href}
+                      className="text-indigo-300/70 hover:text-white transition-colors duration-300"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                  
+                  {/* Toggle thème compact */}
+                  <button
+                    onClick={toggleTheme}
+                    className="text-indigo-300/70 hover:text-white transition-colors duration-300 flex items-center"
+                    aria-label="Toggle theme"
+                  >
+                    {theme === 'dark' ? (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 2V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 20V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M4.93 4.93L6.34 6.34" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M17.66 17.66L19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M2 12H4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M20 12H22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M6.34 17.66L4.93 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M19.07 4.93L17.66 6.34" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
