@@ -233,6 +233,8 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
     setIsMobileMenuOpen(false);
   }, [router.pathname]);
 
+  if (!hydrated) return null;
+
   return (
     <>
       <Head>
