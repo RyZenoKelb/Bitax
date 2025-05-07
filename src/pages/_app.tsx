@@ -287,7 +287,9 @@ export default function App({ Component, pageProps }: AppProps) {
           
           // Animation des étoiles
           function animate() {
-            ctx.clearRect(0, 0, width, height);
+            if (ctx) {
+              ctx.clearRect(0, 0, width, height);
+            }
             
             // Dessiner les étoiles
             stars.forEach(star => {
