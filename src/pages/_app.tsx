@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
 import { useSession } from 'next-auth/react';
-import Stars from '@/components/Stars';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -574,7 +573,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             
             
             {/* Particules/étoiles */}
-            <Stars />
+            <div className="stars-container absolute inset-0"></div>
             
             {/* Vagues subtiles animées en bas */}
             <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
