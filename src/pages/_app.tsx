@@ -356,8 +356,22 @@ export default function App({ Component, pageProps }: AppProps) {
               
               {!sidebarCollapsed && (
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">John Doe</p>
-                  <p className="text-xs text-gray-400">john@example.com</p>
+                  {(() => {
+                    const { data: session } = useSession();
+                    const user = session?.user;
+
+                    return (
+                      <>
+                        <p className="text-sm font-medium text-white truncate max-w-[120px]">
+                          {user?.name || "Utilisateur"}
+                        </p>
+                        <p className="text-xs text-gray-400 truncate max-w-[120px]">
+                          {user?.email || "email inconnu"}
+                        </p>
+                      </>
+                    );
+                  })()}
+
                 </div>
               )}
               
