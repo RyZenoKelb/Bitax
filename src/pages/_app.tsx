@@ -686,12 +686,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
 };
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-
-  // N'affiche rien tant que le router n'est pas prêt
-  if (!router.isReady) return null;
-
-  if (!hydrated) return null;
 
   return (
     <AuthProvider>
