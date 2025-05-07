@@ -198,6 +198,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
     window.addEventListener('resize', handleResize);
     handleResize();
     
+    
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
