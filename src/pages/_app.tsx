@@ -22,13 +22,13 @@ declare module 'react' {
 const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className="flex items-center justify-center group cursor-pointer w-full">
-      <div className="relative overflow-hidden">
-        {/* Logo image */}
-        <img 
-          src="/bitaxlogo.png" 
-          alt="Bitax Logo" 
-          className={`${collapsed ? 'h-10' : 'h-14'} transition-all duration-300`}
-        />
+      <div className="relative overflow-hidden flex items-center justify-center">
+      {/* Logo image */}
+      <img 
+        src="/bitaxlogo.png" 
+        alt="Bitax Logo" 
+        className={`${collapsed ? 'h-14 w-auto' : 'h-20 w-auto'} transition-all duration-300`}
+      />
         
         {/* Subtle shine effect on hover */}
         <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
