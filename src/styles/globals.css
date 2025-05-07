@@ -2,7 +2,7 @@
 @import './buttons.css';
 
 /* Ensure the correct path to grid.svg */
-@import url('../pages/grid.svg'); /* Corrected relative path */
+/* Use the SVG file as a background image in CSS or include it directly in HTML */
 
 /* Amélioration du bouton "Suivant" en mode clair */
 .light button[class*="px-6 py-2"],
