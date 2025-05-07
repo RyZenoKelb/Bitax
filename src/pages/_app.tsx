@@ -47,7 +47,7 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
 };
 
 const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
-  
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -93,7 +93,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-  const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
