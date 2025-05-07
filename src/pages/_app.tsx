@@ -287,9 +287,8 @@ export default function App({ Component, pageProps }: AppProps) {
           
           // Animation des étoiles
           function animate() {
-            if (ctx) {
-              ctx.clearRect(0, 0, width, height);
-            }
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
             
             // Dessiner les étoiles
             stars.forEach(star => {
@@ -300,11 +299,12 @@ export default function App({ Component, pageProps }: AppProps) {
               }
               
               ctx.beginPath();
+              if (!ctx) return;
+              ctx.beginPath();
               ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2, false);
               ctx.fillStyle = star.color;
               ctx.globalAlpha = star.brightness * (0.5 + Math.sin(Date.now() * 0.001) * 0.5);
               ctx.fill();
-            });
             
             // Occasionnellement ajouter une étoile filante
             if (Math.random() < 0.01 && shootingStars.length < 3) {
@@ -320,6 +320,7 @@ export default function App({ Component, pageProps }: AppProps) {
             
             // Dessiner les étoiles filantes
             shootingStars.forEach((star, index) => {
+              if (!ctx) return;
               ctx.beginPath();
               ctx.moveTo(star.x, star.y);
               
