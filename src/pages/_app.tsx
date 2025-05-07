@@ -83,12 +83,11 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-  
   const [hydrated, setHydrated] = useState(false);
+
   useEffect(() => {
     setHydrated(true);
-  }, []);
-    
+  }, []);  
 
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
@@ -232,8 +231,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [router.pathname]);
-
-  if (!hydrated) return null;
 
   return (
     <>
@@ -689,6 +686,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
 };
 
 export default function App({ Component, pageProps }: AppProps) {
+
   return (
     <AuthProvider>
       <AppContent Component={Component} pageProps={pageProps} />
