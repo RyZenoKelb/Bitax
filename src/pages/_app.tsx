@@ -23,18 +23,19 @@ const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className="flex items-center justify-center group cursor-pointer w-full">
       <div className="relative overflow-hidden flex items-center justify-center">
-        {/* Logo image */}
+        {/* Logo image with conditional size based on location */}
         <img 
           src="/bitaxlogo.png" 
           alt="Bitax Logo" 
           className={`
-            ${collapsed ? 'h-20 w-auto' : 'h-28 w-auto'} 
+            ${collapsed && !window.location.pathname.includes('footer') ? 'h-20 w-auto' : 'h-12 w-auto'} 
+            ${!collapsed ? 'h-28 w-auto' : 'h-12 w-auto'}
             transition-all duration-300
           `}
           style={{
-            maxHeight: collapsed ? '5rem' : '7rem',
-            marginTop: collapsed ? '0' : '-0.75rem',
-            marginBottom: collapsed ? '0' : '-0.75rem'
+            maxHeight: window.location.pathname.includes('footer') ? '3rem' : (collapsed ? '5rem' : '7rem'),
+            marginTop: collapsed ? '0' : (!window.location.pathname.includes('footer') ? '-0.75rem' : '0'),
+            marginBottom: collapsed ? '0' : (!window.location.pathname.includes('footer') ? '-0.75rem' : '0')
           }}
         />
         
