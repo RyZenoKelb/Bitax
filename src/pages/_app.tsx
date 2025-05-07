@@ -266,6 +266,7 @@ export default function App({ Component, pageProps }: AppProps) {
           style={{
             boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
           }}
+        >
           {/* Effets lumineux interactifs */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
