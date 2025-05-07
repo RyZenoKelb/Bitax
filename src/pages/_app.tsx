@@ -20,7 +20,7 @@ declare module 'react' {
 }
 
 
-// Pourquoi a chaque fois que je reload ma landing page (http://localhost:3000/) j'ai cette page blanche qui apparait pendant une fraction de secondes ?
+
 
 // Logo using the image from public/bitaxlogo.png with a subtle hover effect
 const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
