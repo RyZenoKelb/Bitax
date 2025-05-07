@@ -43,7 +43,7 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   );
 };
 
-const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
+const AppContent = ({ Component, pageProps }) => {
   // Obtenir les données de l'utilisateur depuis la session
   const { data: session } = useSession();
   const user = session?.user;
@@ -360,14 +360,14 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
               
               {!sidebarCollapsed && (
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">{user?.name}</p>
-                  <p className="text-xs text-gray-400">{user?.email}</p>
+                  <p className="text-sm font-medium text-white">{user?.name || 'Utilisateur'}</p>
+                  <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
                 </div>
               )}
               
               {sidebarCollapsed && (
                 <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                  {user?.name}<br/>{user?.email}
+                  {user?.name || 'Utilisateur'}<br/>{user?.email || 'email@exemple.com'}
                 </span>
               )}
             </button>
