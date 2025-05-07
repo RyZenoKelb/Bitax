@@ -91,13 +91,13 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
   
   // Add a new state for page transitions
+  const [isChangingRoute, setIsChangingRoute] = useState(false);
+
+  // Navigation links avec icônes modernisées et animation
   const navLinks = [
     { 
       name: 'Dashboard', 
       href: '/dashboard', 
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
           <rect x="13" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
           <rect x="3" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
           <rect x="13" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
