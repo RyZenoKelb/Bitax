@@ -296,7 +296,7 @@ export default function App({ Component, pageProps }: AppProps) {
               if (star.y > height) {
                 star.y = 0;
                 star.x = Math.random() * width;
-              }
+              })
               
               ctx.beginPath();
               if (!ctx) return;
@@ -351,7 +351,7 @@ export default function App({ Component, pageProps }: AppProps) {
             
             requestAnimationFrame(animate);
           }
-          
+
           }
           animate();
         }
