@@ -15,7 +15,6 @@ declare module 'react' {
     '--tw-gradient-from'?: string;
     '--tw-gradient-to'?: string;
     '--tw-gradient-stops'?: string;
-  });
   }
 }
 
@@ -305,7 +304,7 @@ export default function App({ Component, pageProps }: AppProps) {
               ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2, false);
               ctx.fillStyle = star.color;
               ctx.globalAlpha = star.brightness * (0.5 + Math.sin(Date.now() * 0.001) * 0.5);
-              ctx.fill();
+              ctx.fill(),
             
             // Occasionnellement ajouter une étoile filante
             if (Math.random() < 0.01 && shootingStars.length < 3) {
