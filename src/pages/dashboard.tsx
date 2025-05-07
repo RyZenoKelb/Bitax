@@ -1403,21 +1403,7 @@ export default function Dashboard() {
                 </div>
               </div>
               
-              {/* Contenu principal - redesign complet mais en préservant les fonctionnalités */}
-              <div className="lg:col-span-3 space-y-6">
-                {/* Header du dashboard avec DashboardHeader */}
-                {isWalletConnected && (
-                  <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg overflow-hidden animate-rise">
-                    <div className="px-6 py-5 relative">
-                      {/* Effets décoratifs */}
-                      <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-10 rounded-full -translate-y-20 translate-x-20"></div>
-                      <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full translate-y-20 -translate-x-20"></div>
-                      
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-                        <div className="flex flex-col">
-                          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 flex items-center">
-                            <svg className="w-8 h-8 mr-3 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1
+            
               {/* Contenu principal - redesign complet mais en préservant les fonctionnalités */}
               <div className="lg:col-span-3 space-y-6">
                 {/* Header du dashboard avec DashboardHeader */}
