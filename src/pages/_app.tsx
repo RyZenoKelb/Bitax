@@ -81,6 +81,8 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 
+
+  const { data: session } = useSession();
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
     { 
