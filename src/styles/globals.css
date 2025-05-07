@@ -1158,3 +1158,7 @@ body, html, p, div, span, li, a, button, input, textarea, select, table, td, th,
   opacity: 1;
 }
 
+a:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
