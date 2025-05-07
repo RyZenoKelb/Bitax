@@ -18,17 +18,20 @@ declare module 'react' {
   }
 }
 
-// Logo moderne avec Inter font et effet au survol
+// Logo using the image from public/bitaxlogo.png with a subtle hover effect
 const BitaxLogo = ({ collapsed = false }) => {
   return (
-    <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
-      <div className="relative">
-        {/* Texte principal avec Inter font et dégradé bleu/violet */}
-        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-inter font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-violet-400 tracking-tight transition-all duration-300 group-hover:opacity-80`}>
-          BITAX
-          {/* Effet de brillance uniquement au survol */}
-          <div className="absolute -inset-1 w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-0 group-hover:opacity-30 group-hover:animate-shine" />
-        </span>
+    <Link href="/" className="flex items-center group cursor-pointer">
+      <div className="relative overflow-hidden">
+        {/* Logo image */}
+        <img 
+          src="/bitaxlogo.png" 
+          alt="Bitax Logo" 
+          className={`${collapsed ? 'h-8' : 'h-10'} transition-all duration-300`}
+        />
+        
+        {/* Subtle shine effect on hover */}
+        <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
       </div>
     </Link>
   );
