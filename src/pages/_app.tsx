@@ -19,18 +19,16 @@ declare module 'react' {
   }
 }
 
-// Logo moderne et animé - Bitax version améliorée et corrigée
+// Logo moderne avec police Orbitron - Version simplifiée sans animation
 const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
       <div className="relative bitax-logo overflow-hidden">
-        {/* Texte principal animé avec gradient */}
+        {/* Texte avec gradient fixe */}
         <span className={`bitax-logo-text ${collapsed ? 'text-2xl' : 'text-3xl'} font-bold tracking-tight`}>
           {collapsed ? 'B' : 'Bitax'}
         </span>
-        {/* Effet de brillance qui se déplace */}
-        <div className="bitax-logo-shine"></div>
-        {/* Éléments graphiques supplémentaires */}
+        {/* Petits éléments décoratifs */}
         <div className="absolute top-0 right-0 -mt-1 mr-1 w-2 h-2 bg-cyan-400 rounded-full blur-[2px] opacity-70"></div>
         <div className="absolute bottom-1 left-1 w-1.5 h-1.5 bg-purple-500 rounded-full blur-[1px] opacity-70"></div>
       </div>
@@ -42,8 +40,9 @@ const BitaxLogo = ({ collapsed = false }) => {
 const StarryBackground = () => {
   const starsContainerRef = useRef<HTMLDivElement>(null);
 
-  // Créer les étoiles au montage du composant
+  // Créer les étoiles au montage du composant - version fixée
   useEffect(() => {
+    // Fonction pour générer les étoiles
     const generateStars = () => {
       if (!starsContainerRef.current) return;
       
@@ -84,18 +83,24 @@ const StarryBackground = () => {
       }
     };
     
-    generateStars();
+    // Délai initial pour permettre au composant de se monter complètement
+    const initialStarsTimeout = setTimeout(() => {
+      generateStars();
+    }, 100);
     
+    // Gestionnaire de redimensionnement
     const handleResize = () => {
       generateStars();
     };
     
     window.addEventListener('resize', handleResize);
     
-    // Régénérer périodiquement pour maintenir l'effet
-    const interval = setInterval(generateStars, 20000);
+    // Régénérer périodiquement les étoiles pour maintenir l'effet
+    const interval = setInterval(generateStars, 30000);
     
+    // Nettoyage lors du démontage du composant
     return () => {
+      clearTimeout(initialStarsTimeout);
       window.removeEventListener('resize', handleResize);
       clearInterval(interval);
     };
@@ -346,10 +351,10 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="relative flex items-center justify-between py-6 px-5">
             <BitaxLogo collapsed={sidebarCollapsed} />
             
-            {/* Bouton toggle sidebar amélioré */}
+            {/* Bouton toggle sidebar simplifié */}
             <button 
               onClick={toggleSidebar}
-              className="sidebar-toggle p-1.5 rounded-lg text-indigo-300 hover:text-white focus:outline-none transition-all duration-300"
+              className="sidebar-toggle rounded-sm text-indigo-300 hover:text-white focus:outline-none transition-all duration-300"
               aria-label="Toggle Sidebar"
             >
               <svg 
@@ -360,12 +365,12 @@ export default function App({ Component, pageProps }: AppProps) {
                 strokeWidth="2" 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
-                className={`w-5 h-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`}
+                className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`}
               >
                 {sidebarCollapsed ? (
-                  <path d="M13 17l5-5-5-5M6 17l5-5-5-5" />
+                  <path d="M9 18l6-6-6-6" />
                 ) : (
-                  <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5" />
+                  <path d="M15 18l-6-6 6-6" />
                 )}
               </svg>
             </button>
