@@ -555,7 +555,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, onScanMulti
             >
               <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2 pl-1.5">Multi-Chain Scan</h3>
               <div className="space-y-2 mb-3">
-                {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network: NetworkType) => (
+                {/* Type explicite des réseaux pour éviter l'erreur TypeScript */}
+                {((['eth', 'polygon', 'arbitrum', 'optimism', 'base'] as NetworkType[]).map((network) => (
                   <div 
                     key={network}
                     className="flex items-center px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
@@ -579,7 +580,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, onScanMulti
                       <span className="text-sm text-white">{SUPPORTED_NETWORKS[network]?.name || network}</span>
                     </div>
                   </div>
-                ))}
+                )))}
               </div>
               <button
                 onClick={handleMultiChainScan}
