@@ -706,6 +706,6 @@ export default function App({ Component, pageProps }: AppProps) {
         </div>
       </div>
     </AuthProvider>
-    
+  </SessionProvider>    
   );
 }
