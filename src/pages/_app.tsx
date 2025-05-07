@@ -346,29 +346,42 @@ export default function App({ Component, pageProps }: AppProps) {
           
           {/* User profile section */}
           <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
-            <button 
-              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="relative group flex items-center focus:outline-none"
-            >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              
-              {!sidebarCollapsed && (
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-white">John Doe</p>
-                  <p className="text-xs text-gray-400">john@example.com</p>
-                </div>
-              )}
-              
-              {sidebarCollapsed && (
-                <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                  John Doe<br/>john@example.com
-                </span>
-              )}
-            </button>
+  <button 
+    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+    className="relative group flex items-center focus:outline-none"
+  >
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
+      {session?.user?.image ? (
+        <img 
+          src={session.user.image} 
+          alt="Profile" 
+          className="w-full h-full rounded-full object-cover"
+        />
+      ) : (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      )}
+    </div>
+    
+    {!sidebarCollapsed && (
+      <div className="ml-3">
+        <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">
+          {session?.user?.name || "Utilisateur"}
+        </p>
+        <p className="text-xs text-gray-400">
+          {session?.user?.email || "Non connecté"}
+        </p>
+      </div>
+    )}
+    
+    {sidebarCollapsed && (
+      <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
+        {session?.user?.name || "Utilisateur"}<br/>
+        {session?.user?.email || "Non connecté"}
+      </span>
+    )}
+  </button>
             
             {!sidebarCollapsed && (
               <button 
