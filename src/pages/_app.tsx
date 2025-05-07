@@ -245,7 +245,7 @@ export default function App({ Component, pageProps }: AppProps) {
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
-      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+      <div className={`min-h-screen block ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
