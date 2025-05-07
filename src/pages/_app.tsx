@@ -199,6 +199,9 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
     handleResize();
     
     // Attendre un peu pour faire l'animation d'apparition
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
     
     return () => window.removeEventListener('resize', handleResize);
   }, []);
