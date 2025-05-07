@@ -22,7 +22,7 @@ declare module 'react' {
 const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   // Improved sizing with different treatments for sidebar vs footer
   const sizeClass = isFooter
-    ? "h-6 w-auto" // Smaller size for footer (back to original)
+    ? "h-3 w-auto" // Significantly smaller size for footer
     : collapsed 
       ? "h-14 w-auto" // Larger size when sidebar is collapsed
       : "h-16 w-auto"; // Even larger when sidebar is expanded
