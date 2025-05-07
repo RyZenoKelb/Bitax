@@ -22,7 +22,7 @@ declare module 'react' {
 const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   // Improved sizing with different treatments for sidebar vs footer
   const sizeClass = isFooter
-    ? "h-3 w-auto" // Significantly smaller size for footer
+    ? "h-8 w-auto" // Significantly smaller size for footer
     : collapsed 
       ? "h-14 w-auto" // Larger size when sidebar is collapsed
       : "h-16 w-auto"; // Even larger when sidebar is expanded
@@ -599,7 +599,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
               {/* Logo et copyright minimaliste */}
               <div className="flex items-center space-x-3">
-                <BitaxLogo collapsed={true} />
+              <BitaxLogo collapsed={true} isFooter={true} />
                 <p className="text-xs text-indigo-300/70">
                   &copy; {new Date().getFullYear()} Bitax
                 </p>
