@@ -85,6 +85,10 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
   const [hydrated, setHydrated] = useState(false);
 
+  useEffect(() => {
+    setHydrated(true);
+  }, []);  
+
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
     { 
