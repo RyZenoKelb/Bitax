@@ -23,12 +23,20 @@ const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className="flex items-center justify-center group cursor-pointer w-full">
       <div className="relative overflow-hidden flex items-center justify-center">
-      {/* Logo image */}
-      <img 
-        src="/bitaxlogo.png" 
-        alt="Bitax Logo" 
-        className={`${collapsed ? 'h-14 w-auto' : 'h-20 w-auto'} transition-all duration-300`}
-      />
+        {/* Logo image */}
+        <img 
+          src="/bitaxlogo.png" 
+          alt="Bitax Logo" 
+          className={`
+            ${collapsed ? 'h-20 w-auto' : 'h-28 w-auto'} 
+            transition-all duration-300
+          `}
+          style={{
+            maxHeight: collapsed ? '5rem' : '7rem',
+            marginTop: collapsed ? '0' : '-0.75rem',
+            marginBottom: collapsed ? '0' : '-0.75rem'
+          }}
+        />
         
         {/* Subtle shine effect on hover */}
         <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
