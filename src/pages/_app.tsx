@@ -22,7 +22,7 @@ declare module 'react' {
 const BitaxLogo = ({ collapsed = false, variant = "default" }) => {
   // Determine size and styles based on where the logo is being used
   const sizeClass = variant === "sidebar" 
-    ? collapsed ? "h-15" : "h-20" // Significantly larger for sidebar
+    ? collapsed ? "h-10" : "h-16" // Significantly larger for sidebar
     : collapsed ? "h-8" : "h-10"; // Default/footer size
   
   // For sidebar, we want to center it
