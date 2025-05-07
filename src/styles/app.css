@@ -1,0 +1,249 @@
+/* src/styles/app.css */
+/* Fichier de styles globaux supplémentaires pour Bitax */
+
+/* ========================= 
+   BACKGROUND ÉTOILÉ ANIMÉ
+   ========================= */
+
+   .stars-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.star {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: 0;
+  animation-name: star-animation;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.star--tiny {
+  width: 1px;
+  height: 1px;
+}
+
+.star--small {
+  width: 2px;
+  height: 2px;
+}
+
+.star--medium {
+  width: 3px;
+  height: 3px;
+  filter: blur(1.5px);
+}
+
+.star--large {
+  width: 4px;
+  height: 4px;
+  filter: blur(2px);
+}
+
+.dark .star {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.light .star {
+  background: rgba(123, 63, 228, 0.5); /* Utilise la couleur primaire pour les étoiles en mode clair */
+}
+
+@keyframes star-animation {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(0);
+  }
+  10% {
+    opacity: var(--star-opacity, 0.6);
+  }
+  90% {
+    opacity: var(--star-opacity, 0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) translateY(var(--star-travel, -20px));
+  }
+}
+
+/* Effet de brillance pour les éléments */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite;
+}
+
+/* Animation pour les éléments flottants */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Animation de shine qui passe sur les éléments */
+@keyframes shine {
+  from {
+    left: -150px;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+/* ========================= 
+   SIDEBAR AMÉLIORÉE
+   ========================= */
+
+.sidebar-link:hover .sidebar-icon {
+  transform: translateY(-2px);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-link.active {
+  box-shadow: 0 0 20px rgba(123, 63, 228, 0.3);
+}
+
+.sidebar-toggle {
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(123, 63, 228, 0.1);
+}
+
+.dark .sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Amélioration du hover des boutons de la sidebar */
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(123, 63, 228, 0.2), rgba(14, 234, 255, 0.1));
+  transition: width 0.3s ease;
+  z-index: -1;
+  opacity: 0;
+  border-radius: inherit;
+}
+
+.sidebar-link:hover::before {
+  width: 100%;
+  opacity: 1;
+}
+
+/* ========================= 
+   LOGO BITAX AMÉLIORÉ
+   ========================= */
+
+.bitax-logo {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.bitax-logo-text {
+  background: linear-gradient(90deg, #0EEAFF, #7B3FE4, #FF3D71);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: logo-pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  position: relative;
+  z-index: 1;
+}
+
+.bitax-logo-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: logo-shine 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  transform: skew(-20deg);
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes logo-shine {
+  0% {
+    left: -100px;
+  }
+  20%, 100% {
+    left: 130%;
+  }
+}
+
+/* Amélioration pour le mode light */
+.light {
+  --bg-color: #F8FAFC;
+  --panel-bg: #ffffff;
+  --text-primary: #1A1742;
+  --text-secondary: #5B598F;
+  --border-color: rgba(123, 63, 228, 0.1);
+}
+
+.dark {
+  --bg-color: #0F172A;
+  --panel-bg: #1E293B;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --border-color: rgba(30, 41, 59, 0.7);
+}
+
+/* Correction pour le mode clair */
+.light .btn-outline {
+  border-color: rgba(123, 63, 228, 0.3);
+  color: #7B3FE4;
+}
+
+.light .sidebar-tooltip {
+  color: #fff;
+}
+
+/* Styles des scrollbars personnalisés */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
