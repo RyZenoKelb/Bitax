@@ -4,15 +4,16 @@ import { ethers } from 'ethers';
 import Link from 'next/link';
 import WalletConnectButton from '@/components/WalletConnectButton';
 import WalletConnectPanel from '@/components/WalletConnectPanel';
+import TransactionSummary from '@/components/TransactionSummary';
 import TaxDashboard from '@/components/TaxDashboard';
 import PremiumUnlock from '@/components/PremiumUnlock';
 import OnboardingWizard from '@/components/OnboardingWizard';
-import { getTransactions, NetworkType } from '@/utils/transactions';
+import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 
 export default function Dashboard() {
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
-  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [walletAddresses, setWalletAddresses] = useState<string[]>([]);
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -21,6 +22,8 @@ export default function Dashboard() {
   const [isPremiumUser, setIsPremiumUser] = useState<boolean>(false);
   const [activeNetwork, setActiveNetwork] = useState<NetworkType>('eth');
   const [error, setError] = useState<string | null>(null);
+  const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [scanProgress, setScanProgress] = useState<{[key: string]: 'pending' | 'scanning' | 'completed' | 'error'}>({});
 
   // Vérifier si c'est la première visite
   useEffect(() => {
@@ -37,26 +40,28 @@ export default function Dashboard() {
     const isPremium = localStorage.getItem('bitax-premium') === 'true';
     setIsPremiumUser(isPremium);
     
-    // Vérifier si un wallet est déjà connecté
-    const connectedWallet = localStorage.getItem('bitax-connected-wallet');
-    if (connectedWallet) {
-      setWalletAddress(connectedWallet);
+    // Vérifier si des wallets sont déjà connectés
+    const connectedWallets = JSON.parse(localStorage.getItem('bitax-connected-wallets') || '[]');
+    if (connectedWallets.length > 0) {
+      setWalletAddresses(connectedWallets);
       setIsWalletConnected(true);
       
       // Charger automatiquement les transactions après connexion
-      fetchTransactions(connectedWallet, activeNetwork);
+      fetchTransactions(connectedWallets[0], activeNetwork);
     }
   }, []);
 
   // Gérer la connexion du wallet
   const handleWalletConnect = async (address: string, walletProvider: ethers.BrowserProvider) => {
     try {
-      setWalletAddress(address);
+      // Ajouter le nouveau wallet à la liste des wallets connectés
+      const updatedWallets = [...walletAddresses, address];
+      setWalletAddresses(updatedWallets);
       setProvider(walletProvider);
       setIsWalletConnected(true);
       
-      // Sauvegarder l'adresse pour la persistance
-      localStorage.setItem('bitax-connected-wallet', address);
+      // Sauvegarder les wallets pour la persistance
+      localStorage.setItem('bitax-connected-wallets', JSON.stringify(updatedWallets));
       
       // Charger automatiquement les transactions après connexion
       await fetchTransactions(address, activeNetwork);
@@ -74,13 +79,18 @@ export default function Dashboard() {
     setError(null);
     
     try {
+      // Mettre à jour le statut de scan pour ce réseau
+      setScanProgress(prev => ({ ...prev, [network]: 'scanning' }));
+      
       const txs = await getTransactions(address, network);
       const filteredTxs = filterSpamTransactions(txs);
       
       setTransactions(filteredTxs);
+      setScanProgress(prev => ({ ...prev, [network]: 'completed' }));
     } catch (error) {
-      console.error('Erreur lors de la récupération des transactions:', error);
-      setError('Impossible de récupérer les transactions. Veuillez réessayer plus tard.');
+      console.error(`Erreur lors de la récupération des transactions sur ${network}:`, error);
+      setError(`Impossible de récupérer les transactions sur ${network}. Veuillez réessayer plus tard.`);
+      setScanProgress(prev => ({ ...prev, [network]: 'error' }));
     } finally {
       setIsLoading(false);
     }
@@ -89,8 +99,60 @@ export default function Dashboard() {
   // Scanner un réseau spécifique
   const handleScanNetwork = async (network: NetworkType) => {
     setActiveNetwork(network);
-    if (walletAddress) {
-      await fetchTransactions(walletAddress, network);
+    if (walletAddresses.length > 0) {
+      await fetchTransactions(walletAddresses[0], network);
+    }
+  };
+
+  // Scanner tous les réseaux en parallèle
+  const handleMultiScan = async () => {
+    if (walletAddresses.length === 0) return;
+    
+    setIsScanning(true);
+    
+    // Initialiser le statut de scan pour tous les réseaux
+    const initialScanProgress: {[key: string]: 'pending' | 'scanning' | 'completed' | 'error'} = {};
+    Object.keys(SUPPORTED_NETWORKS).forEach(network => {
+      initialScanProgress[network] = 'pending';
+    });
+    setScanProgress(initialScanProgress);
+    
+    // Scanner chaque réseau en parallèle
+    const networks: NetworkType[] = ['eth', 'polygon', 'arbitrum', 'optimism', 'base', 'solana', 'avalanche', 'bsc'];
+    
+    try {
+      const scanPromises = networks.map(async (network) => {
+        try {
+          setScanProgress(prev => ({ ...prev, [network]: 'scanning' }));
+          const txs = await getTransactions(walletAddresses[0], network);
+          const filteredTxs = filterSpamTransactions(txs);
+          setScanProgress(prev => ({ ...prev, [network]: 'completed' }));
+          return { network, transactions: filteredTxs };
+        } catch (error) {
+          console.error(`Erreur lors du scan de ${network}:`, error);
+          setScanProgress(prev => ({ ...prev, [network]: 'error' }));
+          return { network, transactions: [] };
+        }
+      });
+      
+      const results = await Promise.all(scanPromises);
+      
+      // Fusionner toutes les transactions
+      const allTransactions = results.flatMap(result => result.transactions);
+      
+      // Trier par date (du plus récent au plus ancien)
+      allTransactions.sort((a, b) => {
+        const dateA = new Date(a.block_timestamp || 0).getTime();
+        const dateB = new Date(b.block_timestamp || 0).getTime();
+        return dateB - dateA;
+      });
+      
+      setTransactions(allTransactions);
+    } catch (error) {
+      console.error('Erreur lors du multi-scan:', error);
+      setError('Une erreur est survenue lors du scan multi-blockchain.');
+    } finally {
+      setIsScanning(false);
     }
   };
 
@@ -560,12 +622,171 @@ export default function Dashboard() {
         />
       )}
       
+      {/* En-tête avec titre et sélection de réseau */}
+      <div className="relative mb-6 pb-6">
+        {/* Effet de fond animé */}
+        <div className="absolute top-0 right-0 -z-10 opacity-20 dark:opacity-10">
+          <div className="w-96 h-96 rounded-full bg-gradient-to-br from-primary-300 to-secondary-300 blur-3xl animate-pulse-slow"></div>
+        </div>
+        
+        {/* Titre et navigation */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              Tableau de bord fiscal
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl">
+              Visualisez et analysez vos données fiscales crypto sur différentes blockchains pour préparer votre déclaration.
+            </p>
+          </div>
+          
+          {/* Actions et vue du wallet */}
+          {isWalletConnected && (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <div className="px-4 py-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 flex items-center space-x-2">
+                <div className="flex flex-shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-primary-500 to-primary-600 text-white">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Wallets connectés</div>
+                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    {walletAddresses.length} {walletAddresses.length > 1 ? 'wallets' : 'wallet'}
+                  </div>
+                </div>
+              </div>
+              
+              <Link 
+                href="/transactions" 
+                className="px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800/40 transition-colors font-medium text-sm flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Voir les transactions
+              </Link>
+              
+              <Link 
+                href="/reports" 
+                className="px-4 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-800/40 transition-colors font-medium text-sm flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Mes rapports
+              </Link>
+            </div>
+          )}
+        </div>
+        
+        {/* Barre de réseau */}
+        {isWalletConnected && (
+          <div className="mt-6 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Réseau :</span>
+              
+              <div className="flex flex-wrap gap-2">
+                {(['eth', 'polygon', 'arbitrum', 'optimism', 'base'] as NetworkType[]).map((network) => (
+                  <button
+                    key={network}
+                    onClick={() => handleScanNetwork(network)}
+                    className={`relative px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      activeNetwork === network 
+                        ? 'text-white shadow-sm transform scale-105' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                    }`}
+                    style={{
+                      backgroundColor: activeNetwork === network 
+                        ? network === 'eth' ? '#3B82F6' 
+                        : network === 'polygon' ? '#8B5CF6' 
+                        : network === 'arbitrum' ? '#2563EB' 
+                        : network === 'optimism' ? '#EF4444' 
+                        : '#60A5FA' 
+                        : undefined
+                    }}
+                  >
+                    {scanProgress[network] === 'scanning' && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      </div>
+                    )}
+                    
+                    {network === 'eth' && 'Ethereum'}
+                    {network === 'polygon' && 'Polygon'}
+                    {network === 'arbitrum' && 'Arbitrum'}
+                    {network === 'optimism' && 'Optimism'}
+                    {network === 'base' && 'Base'}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="ml-auto flex items-center">
+                <button
+                  onClick={() => handleScanNetwork(activeNetwork)}
+                  disabled={isLoading || isScanning}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Chargement...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Rafraîchir
+                    </>
+                  )}
+                </button>
+                
+                <button
+                  onClick={handleMultiScan}
+                  disabled={isLoading || isScanning}
+                  className={`ml-2 px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm flex items-center gap-1.5 ${
+                    isScanning
+                      ? 'bg-indigo-700 text-white'
+                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                  }`}
+                  title="Scanner toutes les blockchains"
+                >
+                  {isScanning ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Multi-scan en cours...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      Multi-scan
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Colonne latérale */}
         <div className="lg:col-span-1 space-y-6">
           {/* Panneau de connexion wallet */}
           {!isWalletConnected ? (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Connectez votre wallet
@@ -582,97 +803,42 @@ export default function Dashboard() {
               </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Wallet connecté
+                  Vos wallets connectés
                 </h2>
-                <div className="flex items-center mb-4">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                  <p className="text-gray-600 dark:text-gray-300 font-medium">
-                    {walletAddress.substring(0, 8)}...{walletAddress.substring(walletAddress.length - 6)}
-                  </p>
+                <div className="space-y-2 mb-4">
+                  {walletAddresses.map((address, index) => (
+                    <div key={index} className="flex items-center">
+                      <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                      <p className="text-gray-600 dark:text-gray-300 font-medium">
+                        {address.substring(0, 8)}...{address.substring(address.length - 6)}
+                      </p>
+                    </div>
+                  ))}
                 </div>
                 
-                {/* Sélection du réseau */}
-                <div className="mt-6">
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Scanner un réseau
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {['eth', 'polygon', 'arbitrum', 'optimism', 'base'].map((network) => (
-                      <button
-                        key={network}
-                        onClick={() => handleScanNetwork(network as NetworkType)}
-                        className={`relative flex items-center justify-center px-3 py-2 text-xs font-medium rounded-lg ${
-                          activeNetwork === network 
-                            ? 'bg-bitax-primary-600 text-white shadow-sm' 
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-                        }`}
-                      >
-                        {activeNetwork === network && isLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-bitax-primary-600 bg-opacity-90 rounded-lg">
-                            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </div>
-                        )}
-                        {network.charAt(0).toUpperCase() + network.slice(1)}
-                      </button>
-                    ))}
-                  </div>
-                  
-                  <button
-                    onClick={() => handleScanNetwork(activeNetwork)}
-                    disabled={isLoading}
-                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
-                  >
-                    {isLoading ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Scan en cours...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Scanner {activeNetwork.toUpperCase()}
-                      </>
-                    )}
-                  </button>
-                  
-                  <button
-                    onClick={() => {
-                      // Fonction pour scanner toutes les blockchains en parallèle
-                      ['eth', 'polygon', 'arbitrum', 'optimism', 'base'].forEach(network => {
-                        handleScanNetwork(network as NetworkType);
-                      });
-                    }}
-                    disabled={isLoading}
-                    className="w-full mt-3 flex items-center justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
-                  >
-                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    Scan automatique multi-chain
-                  </button>
-                </div>
+                <button
+                  onClick={() => setShowOnboarding(true)}
+                  className="w-full mt-3 flex items-center justify-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Ajouter un wallet
+                </button>
               </div>
               
               {/* Statistiques */}
               {transactions.length > 0 && (
-                <div className="bg-gray-50 dark:bg-bitax-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500 dark:text-gray-400">Transactions trouvées</span>
                     <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">
-                    <div className="bg-bitax-primary-600 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
+                    <div className="bg-primary-600 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
                   </div>
                 </div>
               )}
@@ -723,10 +889,7 @@ export default function Dashboard() {
         
         {/* Contenu principal */}
         <div className="lg:col-span-2 space-y-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Tableau de bord fiscal
-          </h1>
-          
+          {/* Afficher les erreurs */}
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
               <div className="flex items-center">
@@ -738,124 +901,65 @@ export default function Dashboard() {
             </div>
           )}
           
-          {isLoading ? (
+          {isLoading || isScanning ? (
             <div className="flex justify-center items-center py-12">
-              <div className="w-12 h-12 border-4 border-bitax-primary-200 border-t-bitax-primary-600 rounded-full animate-spin"></div>
-              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des données...</p>
+              <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+              <p className="ml-4 text-gray-600 dark:text-gray-300">Chargement des données...</p>
             </div>
           ) : (
             <>
               {isWalletConnected ? (
                 transactions.length > 0 ? (
                   <>
-                    {/* Aperçu du tableau de bord */}
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Vue d'ensemble</h2>
-                          <p className="text-gray-600 dark:text-gray-300">Résumé de votre activité crypto</p>
-                        </div>
-                        
-                        <div className="flex space-x-3">
-                          <Link 
-                            href="/transactions" 
-                            className="inline-flex items-center px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800/40 transition-colors"
-                          >
-                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                            Voir les transactions
-                          </Link>
-                          
-                          <Link 
-                            href="/reports" 
-                            className="inline-flex items-center px-4 py-2 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          >
-                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            Rapports
-                          </Link>
-                        </div>
-                      </div>
-                      
-                      {/* Statistiques simples */}
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                          <div className="text-blue-500 dark:text-blue-400 mb-1 text-sm font-medium">Transactions</div>
-                          <div className="text-2xl font-bold text-gray-900 dark:text-white">{transactions.length}</div>
-                        </div>
-                        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-                          <div className="text-purple-500 dark:text-purple-400 mb-1 text-sm font-medium">Tokens Uniques</div>
-                          <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {new Set(transactions.filter(tx => tx.tokenSymbol).map(tx => tx.tokenSymbol)).size}
-                          </div>
-                        </div>
-                        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                          <div className="text-green-500 dark:text-green-400 mb-1 text-sm font-medium">Volume Total</div>
-                          <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {transactions.reduce((sum, tx) => {
-                              const value = tx.valueInETH || (tx.value ? Number(tx.value) / 1e18 : 0);
-                              return sum + value;
-                            }, 0).toFixed(2)} ETH
-                          </div>
-                        </div>
-                        <div className="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl">
-                          <div className="text-gray-500 dark:text-gray-400 mb-1 text-sm font-medium">Réseaux Scannés</div>
-                          <div className="text-2xl font-bold text-gray-900 dark:text-white">1</div>
-                        </div>
-                      </div>
-                    </div>
+                    {/* Résumé du portefeuille */}
+                    <TransactionSummary 
+                      transactions={transactions}
+                      isPremiumUser={isPremiumUser}
+                    />
                     
                     {/* Tableau de bord fiscal */}
                     <TaxDashboard 
                       transactions={transactions}
                       isPremiumUser={isPremiumUser}
-                      walletAddress={walletAddress}
+                      walletAddress={walletAddresses[0]}
                     />
-                    
-                    {/* Message pour rediriger vers la page Transactions */}
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div>
-                          <h3 className="text-xl font-bold mb-2">Voir l'historique complet des transactions</h3>
-                          <p className="text-blue-100 max-w-xl">
-                            Consultez l'analyse détaillée de vos transactions, filtrez par date, type ou montant, et exportez vos données.
-                          </p>
-                        </div>
-                        <div className="flex-shrink-0">
-                          <Link 
-                            href="/transactions" 
-                            className="inline-block px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-                          >
-                            Voir les transactions
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
                   </>
                 ) : (
-                  <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                    <svg className="w-16 h-16 mx-auto text-bitax-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+                    <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h3 className="mt-4 text-xl font-medium text-bitax-gray-900 dark:text-white">Aucune transaction trouvée</h3>
-                    <p className="mt-2 text-bitax-gray-500 dark:text-bitax-gray-400">
+                    <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">Aucune transaction trouvée</h3>
+                    <p className="mt-2 text-gray-500 dark:text-gray-400">
                       Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork}.
                       <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
                     </p>
-                    <button
-                      onClick={() => handleScanNetwork(activeNetwork)}
-                      className="mt-6 px-4 py-2 bg-bitax-primary-600 hover:bg-bitax-primary-700 text-white rounded-lg"
-                    >
-                      Scanner à nouveau
-                    </button>
+                    <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
+                      <button
+                        onClick={() => handleScanNetwork(activeNetwork)}
+                        className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg flex items-center justify-center space-x-2"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>Scanner à nouveau</span>
+                      </button>
+                      <button
+                        onClick={handleMultiScan}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg flex items-center justify-center space-x-2"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <span>Scanner toutes les blockchains</span>
+                      </button>
+                    </div>
                   </div>
                 )
               ) : (
-                <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                  <h3 className="text-xl font-medium text-bitax-gray-900 dark:text-white">Bienvenue sur Bitax</h3>
-                  <p className="mt-2 text-bitax-gray-600 dark:text-bitax-gray-400">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+                  <h3 className="text-xl font-medium text-gray-900 dark:text-white">Bienvenue sur Bitax</h3>
+                  <p className="mt-2 text-gray-600 dark:text-gray-400">
                     Connectez votre wallet pour commencer à analyser vos transactions et générer votre rapport fiscal.
                   </p>
                   <div className="mt-6">
