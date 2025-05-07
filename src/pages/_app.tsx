@@ -89,8 +89,8 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-
-  // Navigation links avec icônes modernisées et animation
+  
+  // Add a new state for page transitions
   const navLinks = [
     { 
       name: 'Dashboard', 
