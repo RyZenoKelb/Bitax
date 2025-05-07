@@ -243,14 +243,14 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChangeStart);
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#0F172A" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Bitax | Fiscalité crypto redéfinie" />
-        <meta name="twitter:description" content="Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
-        <meta property="og:title" content="Bitax | Fiscalité crypto redéfinie" />
-        <meta property="og:description" content="Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
-        <meta property="og:type" content="website" />
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    };
+  }, [router]);
+  
+  // Fonction pour gérer le collapse de la sidebar
+  const toggleSidebar = () => {
+    setSidebarCollapsed(prev => {
+      const newState = !prev;
         
         {/* Ajout des polices explicitement */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
