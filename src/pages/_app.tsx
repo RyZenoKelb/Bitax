@@ -19,9 +19,6 @@ declare module 'react' {
   }
 }
 
-
-
-
 // Logo using the image from public/bitaxlogo.png with a subtle hover effect
 const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   // Improved sizing with different treatments for sidebar vs footer
@@ -47,19 +44,8 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
 };
 
 const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
-
-  const [mounted, setMounted] = useState(false);
-  const { data: session } = useSession(); // TOUJOURS exécuté !
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-bg-dark" />
-    );
-  }  
+  // Obtenir les données de l'utilisateur depuis la session
+  const { data: session } = useSession();
   const user = session?.user;
   
   // Utilisation de couleurs modernes (thème cyberpunk/crypto)
@@ -95,9 +81,9 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-
 
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
@@ -213,6 +199,11 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
     window.addEventListener('resize', handleResize);
     handleResize();
     
+    // Attendre un peu pour faire l'animation d'apparition
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+    
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -267,7 +258,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
-      <div className="min-h-screen flex">
+      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
@@ -573,6 +564,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             
             
             {/* Particules/étoiles */}
+            <div className="stars-container absolute inset-0"></div>
             
             {/* Vagues subtiles animées en bas */}
             <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
@@ -593,7 +585,15 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
-            <Component {...pageProps} />
+              {isLoaded ? (
+                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                  <Component {...pageProps} />
+                </div>
+              ) : (
+                <div className="opacity-0 translate-y-10">
+                  <Component {...pageProps} />
+                </div>
+              )}
             </div>
           </main>
           
