@@ -1,6 +1,7 @@
 // src/pages/guide.tsx
 import React from 'react';
 import Link from 'next/link';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function GuidePage() {
   return (

@@ -13,6 +13,7 @@ import OnboardingWizard from '@/components/OnboardingWizard';
 import DashboardHeader from '@/components/DashboardHeader';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
+import DashboardLayout from '@/components/DashboardLayout';
 
 // Ignore le layout par défaut pour cette page
 Dashboard.getLayout = (page: any) => page;

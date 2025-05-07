@@ -1,5 +1,6 @@
 // src/pages/pricing.tsx - Page de tarifs
 import React from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
 
 export default function PricingPage() {
   return (
