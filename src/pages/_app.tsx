@@ -18,59 +18,19 @@ declare module 'react' {
   }
 }
 
-/**
- * BitaxLogo component
- * - In the sidebar: much larger logo (h-28 or h-32), centered vertically and horizontally
- * - In the footer: default size (h-8 or h-10)
- * 
- * Usage:
- *   <BitaxLogo collapsed={true} sidebar /> // sidebar, collapsed
- *   <BitaxLogo collapsed={false} sidebar /> // sidebar, expanded
- *   <BitaxLogo collapsed={true} /> // footer (default size)
- */
-const BitaxLogo = ({
-  collapsed = false,
-  sidebar = true,
-}: {
-  collapsed?: boolean;
-  sidebar?: boolean;
-}) => {
-  // Sidebar: much bigger logo, Footer: default size
-  const imgClass = sidebar
-    ? 'h-28 md:h-32'
-    : collapsed
-      ? 'h-8'
-      : 'h-10';
-
-  // Center logo in sidebar (vertical & horizontal)
-  if (sidebar) {
-    return (
-      <div className="w-full flex justify-center items-center py-2">
-        <Link href="/" className="flex items-center group cursor-pointer">
-          <div className="relative overflow-hidden">
-            {/* Logo image */}
-            <img
-              src="/bitaxlogo.png"
-              alt="Bitax Logo"
-              className={`${imgClass} transition-all duration-300`}
-            />
-            {/* Subtle shine effect on hover */}
-            <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
-          </div>
-        </Link>
-      </div>
-    );
-  }
-
-  // Footer or other usage (default size)
+// Logo using the image from public/bitaxlogo.png with a subtle hover effect
+const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className="flex items-center group cursor-pointer">
       <div className="relative overflow-hidden">
-        <img
-          src="/bitaxlogo.png"
-          alt="Bitax Logo"
-          className={`${imgClass} transition-all duration-300`}
+        {/* Logo image */}
+        <img 
+          src="/bitaxlogo.png" 
+          alt="Bitax Logo" 
+          className={`${collapsed ? 'h-8' : 'h-10'} transition-all duration-300`}
         />
+        
+        {/* Subtle shine effect on hover */}
         <div className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 -translate-x-full group-hover:animate-shine" />
       </div>
     </Link>
