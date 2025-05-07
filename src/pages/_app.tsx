@@ -581,8 +581,16 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
-            <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
-              <Component {...pageProps} />
+            <div className="max-w-7xl mx-auto relative z-10">
+              {isLoaded ? (
+                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                  <Component {...pageProps} />
+                </div>
+              ) : (
+                <div className="opacity-0 translate-y-10">
+                  <Component {...pageProps} />
+                </div>
+              )}
             </div>
           </main>
           
