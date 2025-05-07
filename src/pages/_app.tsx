@@ -93,58 +93,6 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
   // Add a new state for page transitions
   const [isChangingRoute, setIsChangingRoute] = useState(false);
 
-  // Get current and previous Component for smooth transitions
-  const [currentComponent, setCurrentComponent] = useState<React.ComponentType<any>>(Component);
-  const [currentProps, setCurrentProps] = useState(pageProps);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  
-  // Update when background color/theme changes to prevent white flash
-  useEffect(() => {
-    // Set background color on html and body to prevent white flash
-    document.documentElement.style.backgroundColor = theme === 'dark' ? COLORS.bg.darker : COLORS.bg.light;
-    document.body.style.backgroundColor = theme === 'dark' ? COLORS.bg.darker : COLORS.bg.light;
-    
-    return () => {
-      // Cleanup
-      document.documentElement.style.backgroundColor = '';
-      document.body.style.backgroundColor = '';
-    };
-  }, [theme]);
-
-  // Enhanced router event handling
-  useEffect(() => {
-    // Preload the Component on route change start
-    const handleRouteChangeStart = () => {
-      setIsTransitioning(true);
-    };
-    
-    // Update component only after transition has started
-    const handleRouteChangeComplete = () => {
-      // Short delay to ensure transition is visible
-      setTimeout(() => {
-        setCurrentComponent(() => Component);
-        setCurrentProps(pageProps);
-        
-        // Small additional delay before finishing transition
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 50);
-      }, 50);
-    };
-
-    // Set initial component
-    setCurrentComponent(() => Component);
-    setCurrentProps(pageProps);
-    
-    router.events.on('routeChangeStart', handleRouteChangeStart);
-    router.events.on('routeChangeComplete', handleRouteChangeComplete);
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-      router.events.off('routeChangeComplete', handleRouteChangeComplete);
-    };
-  }, [Component, pageProps, router]);
-
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
     { 
@@ -279,30 +227,6 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
   }, [theme]);
   
   // Setup router event listeners to handle page transitions
-  useEffect(() => {
-    const handleRouteChangeStart = () => {
-      setIsChangingRoute(true);
-    };
-    
-    const handleRouteChangeComplete = () => {
-      setTimeout(() => {
-        setIsChangingRoute(false);
-      }, 100); // Small delay to ensure smooth transition
-    };
-
-    router.events.on('routeChangeStart', handleRouteChangeStart);
-    router.events.on('routeChangeComplete', handleRouteChangeComplete);
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-      router.events.off('routeChangeComplete', handleRouteChangeComplete);
-    };
-  }, [router]);
-  
-  // Fonction pour gérer le collapse de la sidebar
-  const toggleSidebar = () => {
-    setSidebarCollapsed(prev => {
-      const newState = !prev;
       localStorage.setItem('bitax-sidebar-collapsed', String(newState));
       return newState;
     });
@@ -334,24 +258,12 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        {/* Add base background color to prevent flash */}
-        <style>{`
-          html, body {
-            background-color: ${theme === 'dark' ? COLORS.bg.darker : COLORS.bg.light};
-            height: 100%;
-            overflow-x: hidden;
-          }
-          #__next {
-            min-height: 100%;
-            background-color: ${theme === 'dark' ? COLORS.bg.darker : COLORS.bg.light};
-          }
-        `}</style>
       </Head>
       
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
-      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 bg-bg-darker dark:bg-bg-darker light:bg-bg-light`}>
+      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
@@ -648,7 +560,7 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
         </Transition>
         
         {/* Main content */}
-        <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out bg-bg-darker dark:bg-bg-darker light:bg-bg-light ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
+        <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
           {/* Background effects améliorés */}
           <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
             {/* Gradient orbs animés */}
@@ -675,16 +587,18 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
             </div>
           </div>
           
-          {/* Contenu principal avec animation d'entrée améliorée */}
-          <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative bg-bg-darker dark:bg-bg-darker light:bg-bg-light">
+          {/* Contenu principal avec animation d'entrée */}
+          <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
-              {/* Enhanced transition system with proper cross-fade */}
-              <div 
-                key={router.asPath}
-                className={`transition-all duration-300 ease-out absolute inset-0 w-full ${isTransitioning ? 'opacity-0 transform translate-y-4' : 'opacity-100 transform translate-y-0'}`}
-              >
-                {React.createElement(currentComponent, currentProps)}
-              </div>
+              {isLoaded ? (
+                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                  <Component {...pageProps} />
+                </div>
+              ) : (
+                <div className="opacity-0 translate-y-10">
+                  <Component {...pageProps} />
+                </div>
+              )}
             </div>
           </main>
           
