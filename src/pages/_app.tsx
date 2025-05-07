@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
-import { useSession } from 'next-auth/react';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
