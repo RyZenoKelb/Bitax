@@ -363,19 +363,7 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              
-              {!sidebarCollapsed && (
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-white">{user?.name || 'Utilisateur'}</p>
-                  <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
-                </div>
-              )}
-              
-              {sidebarCollapsed && (
-                <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                  {user?.name || 'Utilisateur'}<br/>{user?.email || 'email@exemple.com'}
-                </span>
-              )}
+          
             </button>
             
             {!sidebarCollapsed && (
