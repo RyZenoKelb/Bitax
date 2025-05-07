@@ -27,8 +27,8 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
       ? "h-14 w-auto" // Larger size when sidebar is collapsed
       : "h-16 w-auto"; // Even larger when sidebar is expanded
   
-  // Better centering within the container
-  const containerClass = "flex justify-center items-center w-full py-2 focus:outline-none";
+  // Better centering within the container with enhanced focus removal
+  const containerClass = "flex justify-center items-center w-full py-2 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0";
   
   return (
     <Link href="/" className={containerClass}>
@@ -36,6 +36,7 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
         src="/bitaxlogo.png" 
         alt="Bitax Logo" 
         className={`${sizeClass} transition-all duration-300`}
+        draggable="false"
       />
     </Link>
   );
