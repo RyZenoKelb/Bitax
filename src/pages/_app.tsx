@@ -360,8 +360,8 @@ const AppContent = ({ Component, pageProps }) => {
               
               {!sidebarCollapsed && (
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">{user?.name || 'Utilisateur'}</p>
-                  <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
+                  <p className="text-sm font-medium text-white">{user?.name}</p>
+                  <p className="text-xs text-gray-400">{user?.email}</p>
                 </div>
               )}
               
