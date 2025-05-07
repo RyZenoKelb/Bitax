@@ -231,6 +231,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.pathname]);
 
   return (
+    
     <AuthProvider>
       <Head>
         <title>Bitax | Fiscalité crypto redéfinie</title>
