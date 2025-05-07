@@ -1,3 +1,15 @@
+/* Add this at the top of your globals.css file */
+
+/* Prevent white flash during page transitions */
+html, body, #__next {
+  background-color: #091125; /* Use your dark theme background color */
+}
+
+/* For light theme */
+html.light, body.light, html.light #__next {
+  background-color: #F8FAFC; /* Use your light theme background color */
+}
+
 /* Importation des fichiers de style */
 @import 'buttons.css';
 
@@ -1145,20 +1157,4 @@ body, html, p, div, span, li, a, button, input, textarea, select, table, td, th,
 .hover-overlay::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.hover-overlay:hover::before {
-  opacity: 1;
-}
-
-a:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
+  
