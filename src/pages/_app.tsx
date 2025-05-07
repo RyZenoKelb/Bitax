@@ -246,7 +246,16 @@ export default function App({ Component, pageProps }: AppProps) {
             }
 
             const stars: Star[] = [];
-          const shootingStars = [];
+            interface ShootingStar {
+            x: number;
+            y: number;
+            length: number;
+            speed: number;
+            angle: number;
+            life: number;
+            }
+
+            const shootingStars: ShootingStar[] = [];
           let width = window.innerWidth;
           let height = window.innerHeight;
           
