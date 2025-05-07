@@ -7,8 +7,6 @@ export default function Document() {
         {/* Polices et méta-données sont déjà chargées dans _app.tsx */}
       </Head>
       <body className="antialiased">
-        {/* ⬇️ SCRIPT POUR FORCER LE THÈME AVANT LE PREMIER PAINT */}
-        
         <Main />
         <NextScript />
       </body>
