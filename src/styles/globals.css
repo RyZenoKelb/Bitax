@@ -288,15 +288,6 @@
   
 
   
-  @keyframes stars-animation {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(-1000px);
-    }
-  }
-  
   /* Cartes avec styles plus professionnels */
   .card {
     @apply rounded-xl shadow-lg overflow-hidden transition-all duration-300 border border-gray-800/40 relative;
