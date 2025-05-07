@@ -39,7 +39,7 @@ const BitaxLogo = ({
   const imgClass = sidebar
     ? collapsed
       ? 'h-8'
-      : 'h-20'
+      : 'h-19'
     : collapsed
       ? 'h-8'
       : 'h-10';
