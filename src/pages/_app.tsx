@@ -19,14 +19,14 @@ declare module 'react' {
   }
 }
 
-// Logo moderne et animé - Bitax version améliorée
+// Logo moderne et animé - Bitax version améliorée et corrigée
 const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
       <div className="relative bitax-logo overflow-hidden">
         {/* Texte principal animé avec gradient */}
         <span className={`bitax-logo-text ${collapsed ? 'text-2xl' : 'text-3xl'} font-bold tracking-tight`}>
-          Bitax
+          {collapsed ? 'B' : 'Bitax'}
         </span>
         {/* Effet de brillance qui se déplace */}
         <div className="bitax-logo-shine"></div>
@@ -35,6 +35,80 @@ const BitaxLogo = ({ collapsed = false }) => {
         <div className="absolute bottom-1 left-1 w-1.5 h-1.5 bg-purple-500 rounded-full blur-[1px] opacity-70"></div>
       </div>
     </Link>
+  );
+};
+
+// Composant pour le background étoilé - Implémentation directe pour résoudre le problème d'affichage
+const StarryBackground = () => {
+  const starsContainerRef = useRef<HTMLDivElement>(null);
+
+  // Créer les étoiles au montage du composant
+  useEffect(() => {
+    const generateStars = () => {
+      if (!starsContainerRef.current) return;
+      
+      const container = starsContainerRef.current;
+      container.innerHTML = '';
+      
+      const starCount = window.innerWidth < 768 ? 75 : 150;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        
+        // Base star class
+        star.classList.add('star');
+        
+        // Star size class
+        const size = Math.random();
+        if (size < 0.5) {
+          star.classList.add('star--tiny');
+        } else if (size < 0.8) {
+          star.classList.add('star--small');
+        } else if (size < 0.95) {
+          star.classList.add('star--medium');
+        } else {
+          star.classList.add('star--large');
+        }
+        
+        // Position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Animation
+        star.style.setProperty('--star-opacity', `${0.3 + Math.random() * 0.7}`);
+        star.style.setProperty('--star-travel', `${-10 - Math.random() * 40}px`);
+        star.style.animationDuration = `${3 + Math.random() * 7}s`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        
+        container.appendChild(star);
+      }
+    };
+    
+    generateStars();
+    
+    const handleResize = () => {
+      generateStars();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Régénérer périodiquement pour maintenir l'effet
+    const interval = setInterval(generateStars, 20000);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearInterval(interval);
+    };
+  }, []);
+  
+  return (
+    <>
+      <div className="app-background">
+        <div className="orb orb-primary"></div>
+        <div className="orb orb-secondary"></div>
+      </div>
+      <div ref={starsContainerRef} className="stars-container"></div>
+    </>
   );
 };
 
@@ -75,7 +149,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
-  const starsContainerRef = useRef<HTMLDivElement>(null);
 
   // Navigation links avec icônes modernisées et animation
   const navLinks = [
@@ -97,12 +170,8 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/transactions', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 5C4 4.44772 4.44772 4 5 4H12C12.5523 4 13 4.44772 13 5V11C13 11.5523 12.5523 12 12 12H5C4.44772 12 4 11.5523 4 11V5Z" className="fill-current opacity-80" />
-          <path d="M15 5C15 4.44772 15.4477 4 16 4H19C19.5523 4 20 4.44772 20 5V19C20 19.5523 19.5523 20 19 20H16C15.4477 20 15 19.5523 15 19V5Z" className="fill-current opacity-85" />
-          <path d="M4 15C4 14.4477 4.44772 14 5 14H8C8.55228 14 9 14.4477 9 15V19C9 19.5523 8.55228 20 8 20H5C4.44772 20 4 19.5523 4 19V15Z" className="fill-current opacity-90" />
-          <circle cx="6.5" cy="8.5" r="1.5" className="fill-current opacity-60" />
-          <circle cx="17.5" cy="12.5" r="1.5" className="fill-current opacity-60" />
-          <circle cx="6.5" cy="17.5" r="1.5" className="fill-current opacity-60" />
+          <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" className="fill-current" />
+          <path d="M5 11l5.59-5.59L9.17 4 2 11l7.17 7 1.41-1.41L5 11z" className="fill-current opacity-60" />
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.main}, ${COLORS.purple.light})`
@@ -148,66 +217,14 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/support', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" className="stroke-current" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.04346 16.4525C3.22094 16.8088 3.28001 17.2161 3.17712 17.6006L2.58151 19.8267C2.32295 20.793 3.20701 21.677 4.17335 21.4185L6.39939 20.8229C6.78393 20.72 7.19121 20.7791 7.54753 20.9565C8.88837 21.6244 10.4003 22 12 22Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 8V13" className="stroke-current" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M12 16V16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.dark}, ${COLORS.purple.main})`
     }
   ];
-
-  // Générer les étoiles pour l'animation de background
-  useEffect(() => {
-    const generateStars = () => {
-      if (starsContainerRef.current) {
-        // Vider le conteneur d'étoiles
-        starsContainerRef.current.innerHTML = '';
-        
-        // Paramètres des étoiles
-        const starCount = 150;
-        const container = starsContainerRef.current;
-        const containerWidth = container.offsetWidth;
-        const containerHeight = container.offsetHeight;
-        
-        // Créer les étoiles
-        for (let i = 0; i < starCount; i++) {
-          const star = document.createElement('div');
-          
-          // Déterminer la taille de l'étoile
-          const size = Math.random();
-          if (size < 0.5) {
-            star.classList.add('star', 'star--tiny');
-          } else if (size < 0.8) {
-            star.classList.add('star', 'star--small');
-          } else if (size < 0.95) {
-            star.classList.add('star', 'star--medium');
-          } else {
-            star.classList.add('star', 'star--large');
-          }
-          
-          // Positionner aléatoirement
-          star.style.left = `${Math.random() * 100}%`;
-          star.style.top = `${Math.random() * 100}%`;
-          
-          // Paramètres d'animation
-          star.style.setProperty('--star-opacity', `${0.3 + Math.random() * 0.7}`);
-          star.style.setProperty('--star-travel', `${-10 - Math.random() * 40}px`);
-          star.style.animationDuration = `${3 + Math.random() * 7}s`;
-          star.style.animationDelay = `${Math.random() * 5}s`;
-          
-          // Ajouter au DOM
-          container.appendChild(star);
-        }
-      }
-    };
-    
-    // Générer les étoiles au chargement et au redimensionnement
-    generateStars();
-    window.addEventListener('resize', generateStars);
-    
-    return () => {
-      window.removeEventListener('resize', generateStars);
-    };
-  }, [isLoaded]);
 
   // Toggle du thème (light/dark)
   const toggleTheme = () => {
@@ -293,7 +310,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property="og:description" content="Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
         <meta property="og:type" content="website" />
         
-        {/* Ajout des polices explicitement */}
+        {/* Polices */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -301,14 +318,17 @@ export default function App({ Component, pageProps }: AppProps) {
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
       
-      {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
+      {/* Inclusion du composant CustomStyles */}
       <CustomStyles />
+      
+      {/* Intégration directe du composant de fond étoilé */}
+      <StarryBackground />
       
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
-            ${sidebarCollapsed ? 'w-20' : 'w-72'} 
+            ${sidebarCollapsed ? 'w-20 sidebar-collapsed' : 'w-72 sidebar-expanded'} 
             bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
             overflow-hidden`}
           style={{
@@ -326,7 +346,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="relative flex items-center justify-between py-6 px-5">
             <BitaxLogo collapsed={sidebarCollapsed} />
             
-            {/* Bouton toggle sidebar */}
+            {/* Bouton toggle sidebar amélioré */}
             <button 
               onClick={toggleSidebar}
               className="sidebar-toggle p-1.5 rounded-lg text-indigo-300 hover:text-white focus:outline-none transition-all duration-300"
@@ -616,34 +636,6 @@ export default function App({ Component, pageProps }: AppProps) {
         
         {/* Main content */}
         <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
-          {/* Background effects améliorés */}
-          <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-            {/* Gradient orbs animés */}
-            <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-primary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
-            
-            {/* Grille stylisée */}
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-[0.02]"></div>
-            
-            {/* Conteneur des étoiles animées */}
-            <div ref={starsContainerRef} className="stars-container"></div>
-            
-            {/* Vagues subtiles animées en bas */}
-            <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
-              <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path 
-                  d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
-                  className="fill-primary-800/10 dark:fill-primary-400/5 light:fill-primary-900/5"
-                ></path>
-                <path 
-                  d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" 
-                  className="fill-secondary-800/10 dark:fill-secondary-400/5 light:fill-secondary-900/5" 
-                  style={{ animationDelay: '-2s' }}
-                ></path>
-              </svg>
-            </div>
-          </div>
-          
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
