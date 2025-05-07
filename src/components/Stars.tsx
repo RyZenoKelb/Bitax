@@ -1,14 +1,15 @@
-// src/components/Stars.tsx
 'use client';
+import React from 'react';
 import { useEffect, useState } from 'react';
 
 export default function Stars() {
-  const [stars, setStars] = useState<JSX.Element[]>([]);
+  const [stars, setStars] = useState<React.ReactElement[]>([]);
 
   useEffect(() => {
     const generateStars = () => {
-      const starArray = [];
-      const starCount = 80; // ajuste selon tes besoins
+      const starArray: React.ReactElement[] = [];
+      const starCount = 80;
+
       for (let i = 0; i < starCount; i++) {
         const size = ['tiny', 'small', 'medium', 'large'][Math.floor(Math.random() * 4)];
         const style = {
@@ -23,6 +24,7 @@ export default function Stars() {
           <div key={i} className={`star star--${size}`} style={style}></div>
         );
       }
+
       setStars(starArray);
     };
 
