@@ -1,6 +1,9 @@
 /* Importation des fichiers de style */
 @import './buttons.css';
 
+/* Ensure the correct path to grid.svg */
+@import url('/path/to/grid.svg'); /* Replace '/path/to/grid.svg' with the actual path */
+
 /* Amélioration du bouton "Suivant" en mode clair */
 .light button[class*="px-6 py-2"],
 .light a[class*="px-6 py-2"] {
