@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
+import { useSession } from 'next-auth/react';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {
@@ -42,7 +43,11 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   );
 };
 
-export default function App({ Component, pageProps }: AppProps) {
+const AppContent = ({ Component, pageProps }) => {
+  // Obtenir les données de l'utilisateur depuis la session
+  const { data: session } = useSession();
+  const user = session?.user;
+  
   // Utilisation de couleurs modernes (thème cyberpunk/crypto)
   const COLORS = {
     cyan: {
@@ -228,7 +233,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.pathname]);
 
   return (
-    <AuthProvider>
+    <>
       <Head>
         <title>Bitax | Fiscalité crypto redéfinie</title>
         <meta name="description" content="Bitax - Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
@@ -355,14 +360,14 @@ export default function App({ Component, pageProps }: AppProps) {
               
               {!sidebarCollapsed && (
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">John Doe</p>
-                  <p className="text-xs text-gray-400">john@example.com</p>
+                  <p className="text-sm font-medium text-white">{user?.name || 'Utilisateur'}</p>
+                  <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
                 </div>
               )}
               
               {sidebarCollapsed && (
                 <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                  John Doe<br/>john@example.com
+                  {user?.name || 'Utilisateur'}<br/>{user?.email || 'email@exemple.com'}
                 </span>
               )}
             </button>
@@ -405,11 +410,11 @@ export default function App({ Component, pageProps }: AppProps) {
           >
             <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
               <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
-              <p className="text-xs text-gray-400">john.doe@example.com</p>
+              <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
             </div>
             <Link 
               href="/profile" 
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
+              className="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -419,7 +424,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </Link>
             <Link 
               href="/settings" 
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
+              className="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -431,7 +436,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <div className="border-t border-gray-700 dark:border-gray-700 light:border-gray-200 my-1"></div>
             <Link 
               href="/logout" 
-              className="block px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 dark:text-red-400 dark:hover:bg-gray-700 dark:hover:text-red-300 light:text-red-600 light:hover:bg-gray-100 light:hover:text-red-700 flex items-center"
+              className="px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 dark:text-red-400 dark:hover:bg-gray-700 dark:hover:text-red-300 light:text-red-600 light:hover:bg-gray-100 light:hover:text-red-700 flex items-center"
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -527,8 +532,8 @@ export default function App({ Component, pageProps }: AppProps) {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-white">John Doe</p>
-                  <p className="text-xs text-gray-400">john@example.com</p>
+                  <p className="text-sm font-medium text-white">{user?.name || 'Utilisateur'}</p>
+                  <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
                 </div>
                 <button
                   onClick={toggleTheme}
@@ -684,6 +689,14 @@ export default function App({ Component, pageProps }: AppProps) {
           </footer>
         </div>
       </div>
+    </>
+  );
+};
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <AuthProvider>
+      <AppContent Component={Component} pageProps={pageProps} />
     </AuthProvider>
   );
 }
