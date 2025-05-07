@@ -43,7 +43,7 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   );
 };
 
-const AppContent = ({ Component, pageProps }) => {
+const AppContent = ({ Component, pageProps }: AppProps) => {
   // Obtenir les données de l'utilisateur depuis la session
   const { data: session } = useSession();
   const user = session?.user;
