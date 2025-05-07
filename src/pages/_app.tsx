@@ -558,9 +558,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             
             
-            {/* Particules/étoiles */}
-            <div className="stars-container absolute inset-0"></div>
-            
             {/* Vagues subtiles animées en bas */}
             <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
