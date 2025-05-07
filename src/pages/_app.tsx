@@ -38,8 +38,8 @@ const BitaxLogo = ({
   // Sidebar: bigger logo, Footer: default size
   const imgClass = sidebar
     ? collapsed
-      ? 'h-12'
-      : 'h-'
+      ? 'h-10'
+      : 'h-25'
     : collapsed
       ? 'h-8'
       : 'h-10';
