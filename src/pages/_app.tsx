@@ -419,10 +419,10 @@ export default function App({ Component, pageProps }: AppProps) {
             dark:bg-gray-800 dark:border-gray-700
             light:bg-white light:border-gray-200`}
           >
-<div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
-  <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
-  <p className="text-xs text-gray-400">{session?.user?.email || "Non connecté"}</p>
-</div>
+          <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
+            <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
+            <p className="text-xs text-gray-400">{session?.user?.email || "Non connecté"}</p>
+          </div>
             <Link 
               href="/profile" 
               className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white light:text-gray-700 light:hover:bg-gray-100 light:hover:text-gray-900 flex items-center"
