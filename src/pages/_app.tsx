@@ -236,7 +236,16 @@ export default function App({ Component, pageProps }: AppProps) {
         const ctx = canvas.getContext('2d');
         if (ctx) {
           // Configuration et animation des étoiles ici
-          const stars = [];
+            interface Star {
+            x: number;
+            y: number;
+            radius: number;
+            brightness: number;
+            color: string;
+            speed: number;
+            }
+
+            const stars: Star[] = [];
           const shootingStars = [];
           let width = window.innerWidth;
           let height = window.innerHeight;
