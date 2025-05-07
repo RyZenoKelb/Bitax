@@ -43,7 +43,7 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
   );
 };
 
-const AppContent = ({ Component, pageProps }: AppProps) => {
+const AppContent = ({ Component, pageProps }) => {
   // Obtenir les données de l'utilisateur depuis la session
   const { data: session } = useSession();
   const user = session?.user;
@@ -694,10 +694,9 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
 };
 
 export default function App({ Component, pageProps }: AppProps) {
-  const router = useRouter();
   return (
     <AuthProvider>
-      <AppContent Component={Component} pageProps={pageProps} router={router} />
+      <AppContent Component={Component} pageProps={pageProps} />
     </AuthProvider>
   );
 }
