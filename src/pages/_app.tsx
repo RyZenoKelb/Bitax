@@ -48,6 +48,11 @@ const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
 
 const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
   if (!mounted) return null;
+
+  const [mounted, setMounted] = useState(false);
+useEffect(() => {
+  setMounted(true);
+}, []);
   // Obtenir les données de l'utilisateur depuis la session
   const { data: session } = useSession();
   const user = session?.user;
