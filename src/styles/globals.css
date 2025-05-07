@@ -733,14 +733,13 @@
   }
   
   @keyframes float {
-    0% {
-      transform: translate(0, 0);
+    0%, 100% {
+      transform: translateY(0);
     }
-    100% {
-      transform: translate(30px, 30px);
+    50% {
+      transform: translateY(-10px);
     }
   }
-}
 
 /* Support de la classe dark pour la compatibilité avec Tailwind */
 .dark {
