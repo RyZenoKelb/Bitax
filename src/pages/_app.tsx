@@ -140,6 +140,58 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
     router.events.on('routeChangeComplete', handleRouteChangeComplete);
 
     return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    };
+  }, [Component, pageProps, router]);
+
+  // Navigation links avec icônes modernisées et animation
+  const navLinks = [
+    { 
+      name: 'Dashboard', 
+      href: '/dashboard', 
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
+          <rect x="13" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
+          <rect x="3" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
+          <rect x="13" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
+        </svg>
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.indigo.main}, ${COLORS.indigo.light})`
+    },
+    { 
+      name: 'Transactions', 
+      href: '/transactions', 
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 16L16 12L20 8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 8L8 12L4 16" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 4L12 20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.purple.main}, ${COLORS.purple.light})`
+    },
+    { 
+      name: 'Rapports', 
+      href: '/reports', 
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M14 2V8H20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 13H8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 17H8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M10 9H9H8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.cyan.main}, ${COLORS.cyan.light})`
+    },
+    { 
+      name: 'Guide', 
+      href: '/guide', 
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7V21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H2V3Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M22 3H16C14.9391 3 13.9217 3.42143 13.1716 4.17157C12.4214 4.92172 12 5.93913 12 7V21C12 20.2044 12.3161 19.4413 12.8787 18.8787C13.4413 18.3161 14.2044 18 15 18H22V3Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
@@ -163,58 +215,6 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M18.364 5.63603L5.63599 18.364" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           <circle cx="12" cy="12" r="9.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M7.5 4.20703C8.82378 3.43049 10.3607 3 12 3C16.9706 3 21 7.02944 21 12C21 13.6393 20.5695 15.1762 19.793 16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M16.5 19.793C15.1762 20.5695 13.6393 21 12 21C7.02944 21 3 16.9706 3 12C3 10.3607 3.43049 8.82378 4.20703 7.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ),
-      gradient: `linear-gradient(45deg, ${COLORS.purple.dark}, ${COLORS.purple.main})`
-    }
-  ];
-
-  // Toggle du thème (light/dark)
-  const toggleTheme = () => {
-    setTheme(current => {
-      const newTheme = current === 'light' ? 'dark' : 'light';
-      localStorage.setItem('bitax-theme', newTheme);
-      return newTheme;
-    });
-  };
-
-  // Vérifier si l'utilisateur a déjà une préférence de thème
-  useEffect(() => {
-    // Initialiser avec un délai pour éviter le flash lors du chargement
-    const savedTheme = localStorage.getItem('bitax-theme') as 'light' | 'dark' | null;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-    }
-    
-    // Vérifier si la sidebar était réduite précédemment
-    const collapsedState = localStorage.getItem('bitax-sidebar-collapsed');
-    if (collapsedState) {
-      setSidebarCollapsed(collapsedState === 'true');
-    }
-    
-    // Vérifier si on est sur mobile pour adapter l'interface
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setSidebarCollapsed(true);
-      }
-    };
-    
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    
-    // Attendre un peu pour faire l'animation d'apparition
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
-    
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Appliquer le thème au document
   useEffect(() => {
     if (theme === 'dark') {
