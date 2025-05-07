@@ -81,6 +81,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const router = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState<boolean>(false);
 
@@ -198,6 +199,10 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
     window.addEventListener('resize', handleResize);
     handleResize();
     
+    // Attendre un peu pour faire l'animation d'apparition
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
     
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -253,7 +258,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
-      <div className="min-h-screen flex opacity-100 transition-opacity duration-500">
+      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
@@ -580,7 +585,15 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
-            <Component {...pageProps} />
+              {isLoaded ? (
+                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+                  <Component {...pageProps} />
+                </div>
+              ) : (
+                <div className="opacity-0 translate-y-10">
+                  <Component {...pageProps} />
+                </div>
+              )}
             </div>
           </main>
           
