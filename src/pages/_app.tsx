@@ -98,6 +98,9 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
     { 
       name: 'Dashboard', 
       href: '/dashboard', 
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
           <rect x="13" y="3" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
           <rect x="3" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-90" />
           <rect x="13" y="13" width="8" height="8" rx="1.5" className="fill-current opacity-80" />
@@ -223,18 +226,15 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
     }
   }, [theme]);
   
-  // Fonction pour gérer le collapse de la sidebar
-  const toggleSidebar = () => {
-    setSidebarCollapsed(prev => {
-      const newState = !prev;
-      localStorage.setItem('bitax-sidebar-collapsed', String(newState));
-      return newState;
-    });
-  };
-
-  // Fermer le menu mobile lors d'un changement de route
+  // Setup router event listeners to handle page transitions
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    const handleRouteChangeStart = () => {
+      setIsChangingRoute(true);
+    };
+    
+    const handleRouteChangeComplete = () => {
+      setTimeout(() => {
+        setIsChangingRoute(false);
   }, [router.pathname]);
 
   return (
