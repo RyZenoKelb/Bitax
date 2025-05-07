@@ -598,11 +598,11 @@ export default function App({ Component, pageProps }: AppProps) {
           <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
             <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
               {/* Logo et copyright minimaliste */}
-              <div className="flex items-center space-x-3">
-              <BitaxLogo collapsed={true} isFooter={true} />
-                <p className="text-xs text-indigo-300/70">
+              <div className="flex items-center space-x-2">
+                <BitaxLogo collapsed={true} isFooter={true} />
+                <span className="text-xs text-indigo-300/70">
                   &copy; {new Date().getFullYear()} Bitax
-                </p>
+                </span>
               </div>
               
               {/* Links minimalistes */}
