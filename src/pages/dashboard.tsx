@@ -1,13 +1,9 @@
 // src/pages/dashboard.tsx
-// Contenu copié depuis index.tsx pour créer une route Dashboard
-
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import WalletConnectButton from '@/components/WalletConnectButton';
 import WalletConnectPanel from '@/components/WalletConnectPanel';
-import TransactionSummary from '@/components/TransactionSummary';
-import TransactionList from '@/components/TransactionList';
 import TaxDashboard from '@/components/TaxDashboard';
 import PremiumUnlock from '@/components/PremiumUnlock';
 import OnboardingWizard from '@/components/OnboardingWizard';
@@ -40,6 +36,16 @@ export default function Dashboard() {
     // Vérifier le statut premium (simulé ici)
     const isPremium = localStorage.getItem('bitax-premium') === 'true';
     setIsPremiumUser(isPremium);
+    
+    // Vérifier si un wallet est déjà connecté
+    const connectedWallet = localStorage.getItem('bitax-connected-wallet');
+    if (connectedWallet) {
+      setWalletAddress(connectedWallet);
+      setIsWalletConnected(true);
+      
+      // Charger automatiquement les transactions après connexion
+      fetchTransactions(connectedWallet, activeNetwork);
+    }
   }, []);
 
   // Gérer la connexion du wallet
@@ -48,6 +54,9 @@ export default function Dashboard() {
       setWalletAddress(address);
       setProvider(walletProvider);
       setIsWalletConnected(true);
+      
+      // Sauvegarder l'adresse pour la persistance
+      localStorage.setItem('bitax-connected-wallet', address);
       
       // Charger automatiquement les transactions après connexion
       await fetchTransactions(address, activeNetwork);
@@ -554,7 +563,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Colonne latérale */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Panneau de connexion wallet - ceci ne sera pas affiché car isWalletConnected est déjà true */}
+          {/* Panneau de connexion wallet */}
           {!isWalletConnected ? (
             <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg overflow-hidden">
               <div className="p-6">
@@ -674,6 +683,42 @@ export default function Dashboard() {
           {!isPremiumUser && (
             <PremiumUnlock onUnlock={handleUnlockPremium} />
           )}
+          
+          {/* Liens rapides */}
+          {isWalletConnected && (
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Accès rapide</h3>
+              <div className="space-y-3">
+                <Link 
+                  href="/transactions" 
+                  className="flex items-center p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800/40 transition-colors"
+                >
+                  <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <span className="font-medium">Analyser mes transactions</span>
+                </Link>
+                <Link 
+                  href="/reports" 
+                  className="flex items-center p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-800/40 transition-colors"
+                >
+                  <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span className="font-medium">Générer des rapports</span>
+                </Link>
+                <Link 
+                  href="/guide" 
+                  className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="font-medium">Guide d'utilisation</span>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
         
         {/* Contenu principal */}
@@ -696,18 +741,71 @@ export default function Dashboard() {
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
               <div className="w-12 h-12 border-4 border-bitax-primary-200 border-t-bitax-primary-600 rounded-full animate-spin"></div>
-              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des transactions...</p>
+              <p className="ml-4 text-bitax-gray-600 dark:text-bitax-gray-300">Chargement des données...</p>
             </div>
           ) : (
             <>
               {isWalletConnected ? (
                 transactions.length > 0 ? (
                   <>
-                    {/* Résumé des transactions */}
-                    <TransactionSummary 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
+                    {/* Aperçu du tableau de bord */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                        <div>
+                          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Vue d'ensemble</h2>
+                          <p className="text-gray-600 dark:text-gray-300">Résumé de votre activité crypto</p>
+                        </div>
+                        
+                        <div className="flex space-x-3">
+                          <Link 
+                            href="/transactions" 
+                            className="inline-flex items-center px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800/40 transition-colors"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Voir les transactions
+                          </Link>
+                          
+                          <Link 
+                            href="/reports" 
+                            className="inline-flex items-center px-4 py-2 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Rapports
+                          </Link>
+                        </div>
+                      </div>
+                      
+                      {/* Statistiques simples */}
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                          <div className="text-blue-500 dark:text-blue-400 mb-1 text-sm font-medium">Transactions</div>
+                          <div className="text-2xl font-bold text-gray-900 dark:text-white">{transactions.length}</div>
+                        </div>
+                        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                          <div className="text-purple-500 dark:text-purple-400 mb-1 text-sm font-medium">Tokens Uniques</div>
+                          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                            {new Set(transactions.filter(tx => tx.tokenSymbol).map(tx => tx.tokenSymbol)).size}
+                          </div>
+                        </div>
+                        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                          <div className="text-green-500 dark:text-green-400 mb-1 text-sm font-medium">Volume Total</div>
+                          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                            {transactions.reduce((sum, tx) => {
+                              const value = tx.valueInETH || (tx.value ? Number(tx.value) / 1e18 : 0);
+                              return sum + value;
+                            }, 0).toFixed(2)} ETH
+                          </div>
+                        </div>
+                        <div className="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl">
+                          <div className="text-gray-500 dark:text-gray-400 mb-1 text-sm font-medium">Réseaux Scannés</div>
+                          <div className="text-2xl font-bold text-gray-900 dark:text-white">1</div>
+                        </div>
+                      </div>
+                    </div>
                     
                     {/* Tableau de bord fiscal */}
                     <TaxDashboard 
@@ -716,11 +814,25 @@ export default function Dashboard() {
                       walletAddress={walletAddress}
                     />
                     
-                    {/* Liste des transactions */}
-                    <TransactionList 
-                      transactions={transactions}
-                      isPremiumUser={isPremiumUser}
-                    />
+                    {/* Message pour rediriger vers la page Transactions */}
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                          <h3 className="text-xl font-bold mb-2">Voir l'historique complet des transactions</h3>
+                          <p className="text-blue-100 max-w-xl">
+                            Consultez l'analyse détaillée de vos transactions, filtrez par date, type ou montant, et exportez vos données.
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <Link 
+                            href="/transactions" 
+                            className="inline-block px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                          >
+                            Voir les transactions
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
                   </>
                 ) : (
                   <div className="bg-white dark:bg-bitax-gray-800 rounded-2xl shadow-lg p-8 text-center">
