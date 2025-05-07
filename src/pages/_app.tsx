@@ -1,9 +1,8 @@
 // src/pages/_app.tsx
 import '@/styles/globals.css';
-import '@/styles/app.css'; // Importation du nouveau fichier de styles
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useState, useEffect, Fragment, useRef } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -19,101 +18,19 @@ declare module 'react' {
   }
 }
 
-// Logo moderne avec police Orbitron - Version simplifiée sans animation
+// Logo moderne et animé - texte Bitax uniquement
 const BitaxLogo = ({ collapsed = false }) => {
   return (
     <Link href="/" className={`flex items-center ${collapsed ? 'justify-center' : 'justify-start'} group cursor-pointer`}>
-      <div className="relative bitax-logo overflow-hidden">
-        {/* Texte avec gradient fixe */}
-        <span className={`bitax-logo-text ${collapsed ? 'text-2xl' : 'text-3xl'} font-bold tracking-tight`}>
-          {collapsed ? 'B' : 'Bitax'}
+      <div className="relative">
+        {/* Texte principal animé */}
+        <span className={`${collapsed ? 'text-xl' : 'text-2xl'} font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 tracking-tight relative animate-pulse-slow`}>
+          Bitax
+          {/* Effet de brillance qui se déplace */}
+          <div className="absolute -inset-1 w-1/4 z-10 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-30 group-hover:animate-shine" />
         </span>
-        {/* Petits éléments décoratifs */}
-        <div className="absolute top-0 right-0 -mt-1 mr-1 w-2 h-2 bg-cyan-400 rounded-full blur-[2px] opacity-70"></div>
-        <div className="absolute bottom-1 left-1 w-1.5 h-1.5 bg-purple-500 rounded-full blur-[1px] opacity-70"></div>
       </div>
     </Link>
-  );
-};
-
-// Composant pour le background étoilé - Implémentation directe pour résoudre le problème d'affichage
-const StarryBackground = () => {
-  const starsContainerRef = useRef<HTMLDivElement>(null);
-
-  // Créer les étoiles au montage du composant - version fixée
-  useEffect(() => {
-    // Fonction pour générer les étoiles
-    const generateStars = () => {
-      if (!starsContainerRef.current) return;
-      
-      const container = starsContainerRef.current;
-      container.innerHTML = '';
-      
-      const starCount = window.innerWidth < 768 ? 75 : 150;
-      
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        
-        // Base star class
-        star.classList.add('star');
-        
-        // Star size class
-        const size = Math.random();
-        if (size < 0.5) {
-          star.classList.add('star--tiny');
-        } else if (size < 0.8) {
-          star.classList.add('star--small');
-        } else if (size < 0.95) {
-          star.classList.add('star--medium');
-        } else {
-          star.classList.add('star--large');
-        }
-        
-        // Position
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        
-        // Animation
-        star.style.setProperty('--star-opacity', `${0.3 + Math.random() * 0.7}`);
-        star.style.setProperty('--star-travel', `${-10 - Math.random() * 40}px`);
-        star.style.animationDuration = `${3 + Math.random() * 7}s`;
-        star.style.animationDelay = `${Math.random() * 5}s`;
-        
-        container.appendChild(star);
-      }
-    };
-    
-    // Délai initial pour permettre au composant de se monter complètement
-    const initialStarsTimeout = setTimeout(() => {
-      generateStars();
-    }, 100);
-    
-    // Gestionnaire de redimensionnement
-    const handleResize = () => {
-      generateStars();
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    // Régénérer périodiquement les étoiles pour maintenir l'effet
-    const interval = setInterval(generateStars, 30000);
-    
-    // Nettoyage lors du démontage du composant
-    return () => {
-      clearTimeout(initialStarsTimeout);
-      window.removeEventListener('resize', handleResize);
-      clearInterval(interval);
-    };
-  }, []);
-  
-  return (
-    <>
-      <div className="app-background">
-        <div className="orb orb-primary"></div>
-        <div className="orb orb-secondary"></div>
-      </div>
-      <div ref={starsContainerRef} className="stars-container"></div>
-    </>
   );
 };
 
@@ -175,8 +92,9 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/transactions', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z" className="fill-current" />
-          <path d="M5 11l5.59-5.59L9.17 4 2 11l7.17 7 1.41-1.41L5 11z" className="fill-current opacity-60" />
+          <path d="M20 16L16 12L20 8" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M4 8L8 12L4 16" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 4L12 20" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.main}, ${COLORS.purple.light})`
@@ -222,9 +140,10 @@ export default function App({ Component, pageProps }: AppProps) {
       href: '/support', 
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.04346 16.4525C3.22094 16.8088 3.28001 17.2161 3.17712 17.6006L2.58151 19.8267C2.32295 20.793 3.20701 21.677 4.17335 21.4185L6.39939 20.8229C6.78393 20.72 7.19121 20.7791 7.54753 20.9565C8.88837 21.6244 10.4003 22 12 22Z" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M12 8V13" className="stroke-current" strokeWidth="2" strokeLinecap="round"/>
-          <path d="M12 16V16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M18.364 5.63603L5.63599 18.364" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="9.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M7.5 4.20703C8.82378 3.43049 10.3607 3 12 3C16.9706 3 21 7.02944 21 12C21 13.6393 20.5695 15.1762 19.793 16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16.5 19.793C15.1762 20.5695 13.6393 21 12 21C7.02944 21 3 16.9706 3 12C3 10.3607 3.43049 8.82378 4.20703 7.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       gradient: `linear-gradient(45deg, ${COLORS.purple.dark}, ${COLORS.purple.main})`
@@ -315,7 +234,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property="og:description" content="Révolutionnez votre fiscalité crypto avec notre plateforme IA de pointe. Analyses en temps réel, rapports automatisés." />
         <meta property="og:type" content="website" />
         
-        {/* Polices */}
+        {/* Ajout des polices explicitement */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -323,17 +242,14 @@ export default function App({ Component, pageProps }: AppProps) {
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
       
-      {/* Inclusion du composant CustomStyles */}
+      {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
-      
-      {/* Intégration directe du composant de fond étoilé */}
-      <StarryBackground />
       
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
         <aside 
           className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
-            ${sidebarCollapsed ? 'w-20 sidebar-collapsed' : 'w-72 sidebar-expanded'} 
+            ${sidebarCollapsed ? 'w-20' : 'w-72'} 
             bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
             overflow-hidden`}
           style={{
@@ -351,29 +267,15 @@ export default function App({ Component, pageProps }: AppProps) {
           <div className="relative flex items-center justify-between py-6 px-5">
             <BitaxLogo collapsed={sidebarCollapsed} />
             
-            {/* Bouton toggle sidebar simplifié */}
+          {/* Bouton toggle sidebar supprimé - mais gardons la fonction pour plus tard */}
+          <div className="fixed -left-99 opacity-0">
             <button 
               onClick={toggleSidebar}
-              className="sidebar-toggle rounded-sm text-indigo-300 hover:text-white focus:outline-none transition-all duration-300"
-              aria-label="Toggle Sidebar"
+              className="hidden"
             >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`}
-              >
-                {sidebarCollapsed ? (
-                  <path d="M9 18l6-6-6-6" />
-                ) : (
-                  <path d="M15 18l-6-6 6-6" />
-                )}
-              </svg>
+              <span className="sr-only">Toggle Sidebar</span>
             </button>
+          </div>
           </div>
           
           {/* Navigation links modernisés et animés */}
@@ -398,7 +300,7 @@ export default function App({ Component, pageProps }: AppProps) {
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
                     
                     {/* Icône avec animation */}
-                    <div className={`sidebar-icon flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300`}>
+                    <div className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
                       {link.icon}
                     </div>
                     
@@ -503,7 +405,7 @@ export default function App({ Component, pageProps }: AppProps) {
               onClick={() => setIsUserMenuOpen(false)}
             >
               <svg className="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 016 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Mon profil
             </Link>
@@ -641,6 +543,34 @@ export default function App({ Component, pageProps }: AppProps) {
         
         {/* Main content */}
         <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
+          {/* Background effects améliorés */}
+          <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+            {/* Gradient orbs animés */}
+            <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-primary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
+            
+            {/* Grille stylisée */}
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-[0.02]"></div>
+            
+            {/* Particules/étoiles */}
+            <div className="stars-container absolute inset-0"></div>
+            
+            {/* Vagues subtiles animées en bas */}
+            <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
+              <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path 
+                  d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
+                  className="fill-primary-800/10 dark:fill-primary-400/5 light:fill-primary-900/5"
+                ></path>
+                <path 
+                  d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" 
+                  className="fill-secondary-800/10 dark:fill-secondary-400/5 light:fill-secondary-900/5" 
+                  style={{ animationDelay: '-2s' }}
+                ></path>
+              </svg>
+            </div>
+          </div>
+          
           {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
