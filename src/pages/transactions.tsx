@@ -1,49 +1,54 @@
 // src/pages/transactions.tsx
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import Link from 'next/link';
 import WalletConnectButton from '@/components/WalletConnectButton';
 import TransactionSummary from '@/components/TransactionSummary';
 import TransactionList from '@/components/TransactionList';
-import { getTransactions, NetworkType } from '@/utils/transactions';
+import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 
 export default function Transactions() {
   // États
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
-  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [walletAddresses, setWalletAddresses] = useState<string[]>([]);
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPremiumUser, setIsPremiumUser] = useState<boolean>(false);
   const [activeNetwork, setActiveNetwork] = useState<NetworkType>('eth');
   const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'summary' | 'list'>('summary');
+  const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [scanProgress, setScanProgress] = useState<{[key: string]: 'pending' | 'scanning' | 'completed' | 'error'}>({});
+  const [viewMode, setViewMode] = useState<'summary' | 'list'>('list');
 
   // Vérifier le statut premium
   useEffect(() => {
     const isPremium = localStorage.getItem('bitax-premium') === 'true';
     setIsPremiumUser(isPremium);
     
-    // Vérifier si un wallet est déjà connecté (persister l'état entre les pages)
-    const connectedWallet = localStorage.getItem('bitax-connected-wallet');
-    if (connectedWallet) {
-      setWalletAddress(connectedWallet);
+    // Vérifier si des wallets sont déjà connectés
+    const connectedWallets = JSON.parse(localStorage.getItem('bitax-connected-wallets') || '[]');
+    if (connectedWallets.length > 0) {
+      setWalletAddresses(connectedWallets);
       setIsWalletConnected(true);
       
       // Charger automatiquement les transactions
-      fetchTransactions(connectedWallet, activeNetwork);
+      fetchTransactions(connectedWallets[0], activeNetwork);
     }
   }, []);
 
   // Gérer la connexion du wallet
   const handleWalletConnect = async (address: string, walletProvider: ethers.BrowserProvider) => {
     try {
-      setWalletAddress(address);
+      // Ajouter le nouveau wallet à la liste des wallets connectés
+      const updatedWallets = [...walletAddresses, address];
+      setWalletAddresses(updatedWallets);
       setProvider(walletProvider);
       setIsWalletConnected(true);
       
-      // Sauvegarder l'adresse pour la persistance
-      localStorage.setItem('bitax-connected-wallet', address);
+      // Sauvegarder les wallets pour la persistance
+      localStorage.setItem('bitax-connected-wallets', JSON.stringify(updatedWallets));
       
       // Charger automatiquement les transactions après connexion
       await fetchTransactions(address, activeNetwork);
@@ -61,13 +66,18 @@ export default function Transactions() {
     setError(null);
     
     try {
+      // Mettre à jour le statut de scan pour ce réseau
+      setScanProgress(prev => ({ ...prev, [network]: 'scanning' }));
+      
       const txs = await getTransactions(address, network);
       const filteredTxs = filterSpamTransactions(txs);
       
       setTransactions(filteredTxs);
+      setScanProgress(prev => ({ ...prev, [network]: 'completed' }));
     } catch (error) {
-      console.error('Erreur lors de la récupération des transactions:', error);
-      setError('Impossible de récupérer les transactions. Veuillez réessayer plus tard.');
+      console.error(`Erreur lors de la récupération des transactions sur ${network}:`, error);
+      setError(`Impossible de récupérer les transactions sur ${network}. Veuillez réessayer plus tard.`);
+      setScanProgress(prev => ({ ...prev, [network]: 'error' }));
     } finally {
       setIsLoading(false);
     }
@@ -76,8 +86,60 @@ export default function Transactions() {
   // Scanner un réseau spécifique
   const handleScanNetwork = async (network: NetworkType) => {
     setActiveNetwork(network);
-    if (walletAddress) {
-      await fetchTransactions(walletAddress, network);
+    if (walletAddresses.length > 0) {
+      await fetchTransactions(walletAddresses[0], network);
+    }
+  };
+  
+  // Scanner tous les réseaux en parallèle
+  const handleMultiScan = async () => {
+    if (walletAddresses.length === 0) return;
+    
+    setIsScanning(true);
+    
+    // Initialiser le statut de scan pour tous les réseaux
+    const initialScanProgress: {[key: string]: 'pending' | 'scanning' | 'completed' | 'error'} = {};
+    Object.keys(SUPPORTED_NETWORKS).forEach(network => {
+      initialScanProgress[network] = 'pending';
+    });
+    setScanProgress(initialScanProgress);
+    
+    // Scanner chaque réseau en parallèle
+    const networks: NetworkType[] = ['eth', 'polygon', 'arbitrum', 'optimism', 'base', 'solana', 'avalanche', 'bsc'];
+    
+    try {
+      const scanPromises = networks.map(async (network) => {
+        try {
+          setScanProgress(prev => ({ ...prev, [network]: 'scanning' }));
+          const txs = await getTransactions(walletAddresses[0], network);
+          const filteredTxs = filterSpamTransactions(txs);
+          setScanProgress(prev => ({ ...prev, [network]: 'completed' }));
+          return { network, transactions: filteredTxs };
+        } catch (error) {
+          console.error(`Erreur lors du scan de ${network}:`, error);
+          setScanProgress(prev => ({ ...prev, [network]: 'error' }));
+          return { network, transactions: [] };
+        }
+      });
+      
+      const results = await Promise.all(scanPromises);
+      
+      // Fusionner toutes les transactions
+      const allTransactions = results.flatMap(result => result.transactions);
+      
+      // Trier par date (du plus récent au plus ancien)
+      allTransactions.sort((a, b) => {
+        const dateA = new Date(a.block_timestamp || 0).getTime();
+        const dateB = new Date(b.block_timestamp || 0).getTime();
+        return dateB - dateA;
+      });
+      
+      setTransactions(allTransactions);
+    } catch (error) {
+      console.error('Erreur lors du multi-scan:', error);
+      setError('Une erreur est survenue lors du scan multi-blockchain.');
+    } finally {
+      setIsScanning(false);
     }
   };
   
@@ -92,7 +154,8 @@ export default function Transactions() {
       'Token',
       'Montant',
       'De',
-      'À'
+      'À',
+      'Réseau'
     ].join(',');
     
     const rows = transactions.map(tx => [
@@ -102,7 +165,8 @@ export default function Transactions() {
       tx.tokenSymbol || 'ETH',
       tx.valueInETH || (tx.value ? Number(tx.value) / 1e18 : 0),
       tx.from_address || '',
-      tx.to_address || ''
+      tx.to_address || '',
+      tx.network || 'eth'
     ].join(','));
     
     const csvContent = `data:text/csv;charset=utf-8,${headers}\n${rows.join('\n')}`;
@@ -133,7 +197,7 @@ export default function Transactions() {
               Transactions
             </h1>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl">
-              Visualisez, analysez et exportez l'historique complet de vos transactions crypto sur différentes blockchains.
+              Visualisez et exportez l'historique complet de vos transactions crypto sur différentes blockchains.
             </p>
           </div>
           
@@ -147,9 +211,9 @@ export default function Transactions() {
                   </svg>
                 </div>
                 <div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Wallet connecté</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Wallets connectés</div>
                   <div className="text-sm font-medium text-gray-900 dark:text-white">
-                    {walletAddress.substring(0, 6)}...{walletAddress.substring(walletAddress.length - 4)}
+                    {walletAddresses.length} {walletAddresses.length > 1 ? 'wallets' : 'wallet'}
                   </div>
                 </div>
               </div>
@@ -229,7 +293,7 @@ export default function Transactions() {
                         : undefined
                     }}
                   >
-                    {activeNetwork === network && isLoading && (
+                    {scanProgress[network] === 'scanning' && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
                         <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -250,7 +314,7 @@ export default function Transactions() {
               <div className="ml-auto flex items-center">
                 <button
                   onClick={() => handleScanNetwork(activeNetwork)}
-                  disabled={isLoading}
+                  disabled={isLoading || isScanning}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200"
                 >
                   {isLoading ? (
@@ -272,19 +336,31 @@ export default function Transactions() {
                 </button>
                 
                 <button
-                  onClick={() => {
-                    // Fonction pour scanner toutes les blockchains en parallèle
-                    ['eth', 'polygon', 'arbitrum', 'optimism', 'base'].forEach(network => {
-                      handleScanNetwork(network as NetworkType);
-                    });
-                  }}
-                  disabled={isLoading}
-                  className="ml-2 p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  onClick={handleMultiScan}
+                  disabled={isLoading || isScanning}
+                  className={`ml-2 px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm flex items-center gap-1.5 ${
+                    isScanning
+                      ? 'bg-indigo-700 text-white'
+                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                  }`}
                   title="Scanner toutes les blockchains"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
+                  {isScanning ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Multi-scan en cours...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      Multi-scan
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -357,7 +433,7 @@ export default function Transactions() {
       ) : transactions.length > 0 ? (
         <div className="space-y-6">
           {/* Statistiques rapides */}
-          {transactions.length > 0 && (
+          {transactions.length > 0 && viewMode === 'list' && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 {
@@ -391,25 +467,11 @@ export default function Transactions() {
                   )
                 },
                 {
-                  title: "Période",
-                  value: (() => {
-                    let oldestDate = new Date();
-                    let newestDate = new Date(0);
-                    
-                    transactions.forEach(tx => {
-                      if (tx.block_timestamp) {
-                        const date = new Date(tx.block_timestamp);
-                        if (date < oldestDate) oldestDate = date;
-                        if (date > newestDate) newestDate = date;
-                      }
-                    });
-                    
-                    const days = Math.ceil((newestDate.getTime() - oldestDate.getTime()) / (1000 * 60 * 60 * 24));
-                    return `${days} jours`;
-                  })(),
+                  title: "Réseaux",
+                  value: new Set(transactions.map(tx => tx.network)).size,
                   icon: (
                     <svg className="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   )
                 }
@@ -429,7 +491,7 @@ export default function Transactions() {
             </div>
           )}
           
-          {/* Vue d'ensemble des transactions */}
+          {/* Vue d'ensemble des transactions (Aperçu) */}
           {viewMode === 'summary' && (
             <TransactionSummary 
               transactions={transactions}
@@ -471,12 +533,7 @@ export default function Transactions() {
               <span>Scanner à nouveau</span>
             </button>
             <button
-              onClick={() => {
-                // Fonction pour scanner toutes les blockchains en parallèle
-                ['eth', 'polygon', 'arbitrum', 'optimism', 'base'].forEach(network => {
-                  handleScanNetwork(network as NetworkType);
-                });
-              }}
+              onClick={handleMultiScan}
               className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg flex items-center justify-center space-x-2"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -499,12 +556,12 @@ export default function Transactions() {
               </p>
             </div>
             <div className="flex-shrink-0">
-              <a 
+              <Link 
                 href="/pricing" 
                 className="inline-block px-6 py-3 bg-white text-blue-600 hover:bg-blue-50 font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
               >
                 Découvrir Premium
-              </a>
+              </Link>
             </div>
           </div>
         </div>
