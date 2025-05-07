@@ -215,6 +215,58 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M18.364 5.63603L5.63599 18.364" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           <circle cx="12" cy="12" r="9.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M7.5 4.20703C8.82378 3.43049 10.3607 3 12 3C16.9706 3 21 7.02944 21 12C21 13.6393 20.5695 15.1762 19.793 16.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16.5 19.793C15.1762 20.5695 13.6393 21 12 21C7.02944 21 3 16.9706 3 12C3 10.3607 3.43049 8.82378 4.20703 7.5" className="stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.purple.dark}, ${COLORS.purple.main})`
+    }
+  ];
+
+  // Toggle du thème (light/dark)
+  const toggleTheme = () => {
+    setTheme(current => {
+      const newTheme = current === 'light' ? 'dark' : 'light';
+      localStorage.setItem('bitax-theme', newTheme);
+      return newTheme;
+    });
+  };
+
+  // Vérifier si l'utilisateur a déjà une préférence de thème
+  useEffect(() => {
+    // Initialiser avec un délai pour éviter le flash lors du chargement
+    const savedTheme = localStorage.getItem('bitax-theme') as 'light' | 'dark' | null;
+    
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+    }
+    
+    // Vérifier si la sidebar était réduite précédemment
+    const collapsedState = localStorage.getItem('bitax-sidebar-collapsed');
+    if (collapsedState) {
+      setSidebarCollapsed(collapsedState === 'true');
+    }
+    
+    // Vérifier si on est sur mobile pour adapter l'interface
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSidebarCollapsed(true);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    
+    // Attendre un peu pour faire l'animation d'apparition
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Appliquer le thème au document
   useEffect(() => {
     if (theme === 'dark') {
@@ -282,75 +334,23 @@ const AppContent = ({ Component, pageProps }: AppContentProps) => {
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        {/* Add base background color to prevent flash */}
+        <style>{`
+          html, body {
+            background-color: ${theme === 'dark' ? COLORS.bg.darker : COLORS.bg.light};
+            height: 100%;
+            overflow-x: hidden;
+          }
+          #__next {
+            min-height: 100%;
+            background-color: ${theme === 'dark' ? COLORS.bg.darker : COLORS.bg.light};
+          }
+        `}</style>
       </Head>
       
       {/* Inclusion du composant CustomStyles qui injectera nos styles prioritaires */}
       <CustomStyles />
       
-      <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-        {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
-        <aside 
-          className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
-            ${sidebarCollapsed ? 'w-20' : 'w-72'} 
-            bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
-            overflow-hidden`}
-          style={{
-            boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
-          }}
-        >
-          {/* Effets lumineux interactifs */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
-            <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
-            <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
-          </div>
-          
-          {/* Logo et toggle sidebar avec animation */}
-          <div className="relative flex items-center justify-between py-6 px-5">
-            <BitaxLogo collapsed={sidebarCollapsed} />
-            
-          {/* Bouton toggle sidebar supprimé - mais gardons la fonction pour plus tard */}
-          <div className="fixed -left-99 opacity-0">
-            <button 
-              onClick={toggleSidebar}
-              className="hidden"
-            >
-              <span className="sr-only">Toggle Sidebar</span>
-            </button>
-          </div>
-          </div>
-          
-          {/* Navigation links modernisés et animés */}
-          <nav className="flex-1 py-8 overflow-y-auto scrollbar-none">
-            <div className={`px-3 space-y-2 ${sidebarCollapsed ? 'items-center' : ''}`}>
-              {navLinks.map((link, index) => {
-                const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
-                return (
-                  <Link 
-                    key={link.name} 
-                    href={link.href}
-                    className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-4'} py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
-                      ${isActive 
-                        ? 'text-white' 
-                        : 'text-indigo-100/70 hover:text-white'}`}
-                    style={{
-                      background: isActive ? link.gradient : 'rgba(13, 18, 36, 0.6)',
-                      boxShadow: isActive ? '0 0 15px rgba(46, 86, 255, 0.3)' : 'none',
-                    }}
-                  >
-                    {/* Effet de brillance animé sur hover */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
-                    
-                    {/* Icône avec animation */}
-                    <div className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
-                      {link.icon}
-                    </div>
-                    
-                    {/* Texte qui s'affiche/disparait selon l'état de la sidebar */}
-                    {!sidebarCollapsed && (
-                      <span className="ml-3 transition-all duration-500">{link.name}</span>
-                    )}
-                    
                     {/* Point lumineux indicateur si actif */}
                     {isActive && !sidebarCollapsed && (
                       <div className="absolute right-3 w-2 h-2 rounded-full bg-white animate-pulse"></div>
