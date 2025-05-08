@@ -1,5 +1,3 @@
-'use client';
-
 import { ReactNode, useState, useEffect, Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import Link from 'next/link';
