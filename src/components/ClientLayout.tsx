@@ -5,7 +5,6 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { DevModeProvider } from '@/context/DevModeContext';
 import DevModeIndicator from '@/components/DevModeIndicator';
 import CustomStyles from '@/components/CustomStyles';
 
@@ -234,7 +233,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   return (
-    <DevModeProvider>
+    <>
       <CustomStyles />
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
         {/* SIDEBAR - Version ultra moderne avec effets néon et glassmorphism */}
@@ -667,6 +666,6 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
       <DevModeIndicator />
-    </DevModeProvider>
+    </>
   );
 }
