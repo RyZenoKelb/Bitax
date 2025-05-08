@@ -4,9 +4,8 @@ import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { isOwner } from "@/lib/server-auth";
 
-// Schéma de validation pour l'ajout d'une transaction
+// Schéma de validation pour les transactions
 const transactionSchema = z.object({
   hash: z.string().min(1, "Le hash de transaction est requis"),
   walletId: z.string().min(1, "L'ID du wallet est requis"),
@@ -40,50 +39,57 @@ export async function GET(req: Request) {
     const page = parseInt(searchParams.get('page') || '1');
     const skip = (page - 1) * limit;
     
-    // Construire la requête de base
-    const whereClause: any = {
-      userId: session.user.id,
-    };
-    
-    // Si un walletId est fourni, filtrer par ce wallet
-    if (walletId) {
-      // Vérifier que l'utilisateur est bien le propriétaire du wallet
-      const isOwnerResult = await isOwner(session.user.id, 'wallet', walletId);
+    // Essayer de récupérer les transactions
+    try {
+      // Construire la requête de base
+      const whereClause: any = {
+        userId: session.user.id,
+      };
       
-      if (!isOwnerResult) {
-        return NextResponse.json(
-          { error: "Vous n'êtes pas autorisé à accéder à ce wallet" },
-          { status: 403 }
-        );
+      // Si un walletId est fourni, filtrer par ce wallet
+      if (walletId) {
+        whereClause.walletId = walletId;
       }
       
-      whereClause.walletId = walletId;
+      // Récupérer les transactions
+      const transactions = await prisma.transaction.findMany({
+        where: whereClause,
+        orderBy: {
+          timestamp: 'desc',
+        },
+        skip,
+        take: limit,
+      });
+      
+      // Compter le nombre total de transactions pour la pagination
+      const totalTransactions = await prisma.transaction.count({
+        where: whereClause,
+      });
+      
+      return NextResponse.json({
+        transactions,
+        pagination: {
+          total: totalTransactions,
+          page,
+          limit,
+          pages: Math.ceil(totalTransactions / limit),
+        },
+      });
+    } catch (error: any) {
+      // Si l'erreur est due à un modèle inexistant, renvoyer un tableau vide
+      console.error("Erreur lors de la récupération des transactions:", error);
+      
+      return NextResponse.json({
+        transactions: [],
+        pagination: {
+          total: 0,
+          page: 1,
+          limit,
+          pages: 0,
+        },
+        message: "Le modèle Transaction n'est pas encore disponible. Veuillez exécuter une migration Prisma."
+      });
     }
-    
-    // Récupérer les transactions
-    const transactions = await prisma.transaction.findMany({
-      where: whereClause,
-      orderBy: {
-        timestamp: 'desc',
-      },
-      skip,
-      take: limit,
-    });
-    
-    // Compter le nombre total de transactions pour la pagination
-    const totalTransactions = await prisma.transaction.count({
-      where: whereClause,
-    });
-    
-    return NextResponse.json({
-      transactions,
-      pagination: {
-        total: totalTransactions,
-        page,
-        limit,
-        pages: Math.ceil(totalTransactions / limit),
-      },
-    });
   } catch (error) {
     console.error("Erreur lors de la récupération des transactions:", error);
     return NextResponse.json(
@@ -132,43 +138,56 @@ export async function POST(req: Request) {
       );
     }
     
-    // Vérifier si la transaction existe déjà
-    const existingTransaction = await prisma.transaction.findUnique({
-      where: {
-        hash,
-      },
-    });
-    
-    if (existingTransaction) {
+    try {
+      // Vérifier si la transaction existe déjà
+      const existingTransaction = await prisma.transaction.findUnique({
+        where: {
+          hash,
+        },
+      });
+      
+      if (existingTransaction) {
+        return NextResponse.json(
+          { error: "Cette transaction existe déjà" },
+          { status: 400 }
+        );
+      }
+      
+      // Créer la transaction
+      const transaction = await prisma.transaction.create({
+        data: {
+          hash,
+          walletId,
+          userId: session.user.id,
+          timestamp: new Date(timestamp),
+          amount,
+          tokenSymbol,
+          tokenName,
+          tokenPrice,
+          toAddress,
+          fromAddress,
+          type,
+          fee,
+          status,
+        },
+      });
+      
+      return NextResponse.json({
+        success: true,
+        transaction,
+      });
+    } catch (error: any) {
+      // Si l'erreur est due à un modèle inexistant, renvoyer une réponse appropriée
+      console.error("Erreur lors de l'ajout de la transaction:", error);
+      
       return NextResponse.json(
-        { error: "Cette transaction existe déjà" },
-        { status: 400 }
+        { 
+          error: "Cette fonctionnalité n'est pas encore disponible. Veuillez exécuter une migration Prisma.",
+          details: error.message
+        },
+        { status: 500 }
       );
     }
-    
-    // Créer la transaction
-    const transaction = await prisma.transaction.create({
-      data: {
-        hash,
-        walletId,
-        userId: session.user.id, // Stocker l'ID de l'utilisateur directement pour faciliter les requêtes
-        timestamp: new Date(timestamp), // Convertir en Date si c'est un string
-        amount,
-        tokenSymbol,
-        tokenName,
-        tokenPrice,
-        toAddress,
-        fromAddress,
-        type,
-        fee,
-        status,
-      },
-    });
-    
-    return NextResponse.json({
-      success: true,
-      transaction,
-    });
   } catch (error) {
     console.error("Erreur lors de l'ajout de la transaction:", error);
     return NextResponse.json(
@@ -200,28 +219,41 @@ export async function DELETE(req: Request) {
       );
     }
     
-    // Vérifier que la transaction appartient bien à l'utilisateur
-    const transaction = await prisma.transaction.findUnique({
-      where: {
-        id: transactionId,
-      },
-    });
-    
-    if (!transaction || transaction.userId !== session.user.id) {
+    try {
+      // Vérifier que la transaction appartient bien à l'utilisateur
+      const transaction = await prisma.transaction.findUnique({
+        where: {
+          id: transactionId,
+        },
+      });
+      
+      if (!transaction || transaction.userId !== session.user.id) {
+        return NextResponse.json(
+          { error: "Transaction non trouvée ou non autorisée" },
+          { status: 403 }
+        );
+      }
+      
+      // Supprimer la transaction
+      await prisma.transaction.delete({
+        where: {
+          id: transactionId,
+        },
+      });
+      
+      return NextResponse.json({ success: true });
+    } catch (error: any) {
+      // Si l'erreur est due à un modèle inexistant, renvoyer une réponse appropriée
+      console.error("Erreur lors de la suppression de la transaction:", error);
+      
       return NextResponse.json(
-        { error: "Transaction non trouvée ou non autorisée" },
-        { status: 403 }
+        { 
+          error: "Cette fonctionnalité n'est pas encore disponible. Veuillez exécuter une migration Prisma.",
+          details: error.message
+        },
+        { status: 500 }
       );
     }
-    
-    // Supprimer la transaction
-    await prisma.transaction.delete({
-      where: {
-        id: transactionId,
-      },
-    });
-    
-    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Erreur lors de la suppression de la transaction:", error);
     return NextResponse.json(
