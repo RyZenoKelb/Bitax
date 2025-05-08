@@ -1,4 +1,5 @@
-// src/pages/dashboard.tsx
+'use client';
+
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
@@ -452,7 +453,7 @@ export default function Dashboard() {
                     <span className="text-gray-600 dark:text-gray-300">Rapport fiscal basique</span>
                   </li>
                 </ul>
-                <Link href="/pricing" className="w-full btn-outline justify-center">
+                <Link href="/register" className="block text-center w-full py-3 px-4 border border-indigo-500/50 hover:border-indigo-500 rounded-lg font-medium transition-all hover:bg-indigo-500/10 hover:shadow-lg">
                   Commencer gratuitement
                 </Link>
               </div>
@@ -488,7 +489,7 @@ export default function Dashboard() {
                     <span className="text-gray-600 dark:text-gray-300">Toutes les méthodes de calcul</span>
                   </li>
                 </ul>
-                <Link href="/pricing" className="w-full btn-primary justify-center">
+                <Link href="/register" className="block text-center w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all hover:shadow-lg">
                   S'abonner à Premium
                 </Link>
               </div>
@@ -506,7 +507,7 @@ export default function Dashboard() {
                     <svg className="h-5 w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                     </svg>
-                    <span className="text-gray-600 dark:text-gray-300">Tout le contenu Premium</span>
+                    <span className="text-gray-600 dark:text-gray-300">Tout le plan Premium</span>
                   </li>
                   <li className="flex items-start">
                     <svg className="h-5 w-5 text-green-500 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -521,16 +522,10 @@ export default function Dashboard() {
                     <span className="text-gray-600 dark:text-gray-300">Support dédié</span>
                   </li>
                 </ul>
-                <Link href="/pricing" className="w-full btn-outline justify-center">
+                <Link href="/register" className="block text-center w-full py-3 px-4 border border-gray-500/50 hover:border-gray-400 rounded-lg font-medium transition-all hover:bg-gray-700/50 hover:shadow-lg">
                   Contacter les ventes
                 </Link>
               </div>
-            </div>
-            
-            <div className="text-center mt-8">
-              <Link href="/pricing" className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-                Voir tous les détails des plans &rarr;
-              </Link>
             </div>
           </div>
         </section>
@@ -731,7 +726,7 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {/* Ajoutez le DevModeToggle ici */}
+              {/* DevModeToggle */}
               <DevModeToggle className="ml-auto mr-4" />
                 <div className="flex items-center">
                   <button
