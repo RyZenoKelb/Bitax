@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { filterSpamTransactions } from './SpamFilter';
+import { isDevModeEnabled, generateMockTransactions, simulateDelay } from './mockTransactions';
 
 // ⚠️ Pour la production, ces clés devraient être stockées dans les variables d'environnement
 const MORALIS_API_KEY = process.env.NEXT_PUBLIC_MORALIS_API_KEY || 'votre_clé_api';
@@ -138,6 +139,14 @@ export interface TransactionResult {
  * @returns Liste des transactions formatées
  */
 export async function getNativeTransactions(account: string, chain: NetworkType): Promise<TransactionResult[]> {
+  // Si le mode développeur est activé, retourner des données simulées
+  if (isDevModeEnabled()) {
+    console.log(`[DEV MODE] Simulation des transactions natives pour ${account} sur ${chain}`);
+    await simulateDelay();
+    return generateMockTransactions(chain, 25, account)
+      .filter(tx => tx.type === 'Native Transfer');
+  }
+
   try {
     if (!account || !chain) {
       console.error('Paramètres invalides pour getNativeTransactions', { account, chain });
@@ -204,6 +213,14 @@ export async function getNativeTransactions(account: string, chain: NetworkType)
  * @returns Liste des transactions formatées
  */
 export async function getERC20Transactions(account: string, chain: NetworkType): Promise<TransactionResult[]> {
+  // Si le mode développeur est activé, retourner des données simulées
+  if (isDevModeEnabled()) {
+    console.log(`[DEV MODE] Simulation des transactions ERC20 pour ${account} sur ${chain}`);
+    await simulateDelay();
+    return generateMockTransactions(chain, 35, account)
+      .filter(tx => tx.type === 'Token Transfer');
+  }
+
   try {
     if (!account || !chain) {
       console.error('Paramètres invalides pour getERC20Transactions', { account, chain });
@@ -273,6 +290,14 @@ export async function getERC20Transactions(account: string, chain: NetworkType):
  * @returns Liste des transactions NFT formatées
  */
 export async function getNFTTransactions(account: string, chain: NetworkType): Promise<TransactionResult[]> {
+  // Si le mode développeur est activé, retourner des données simulées
+  if (isDevModeEnabled()) {
+    console.log(`[DEV MODE] Simulation des transactions NFT pour ${account} sur ${chain}`);
+    await simulateDelay();
+    return generateMockTransactions(chain, 10, account)
+      .filter(tx => tx.isNFT || tx.type === 'NFT Transfer');
+  }
+
   try {
     if (!account || !chain || chain === 'solana') {
       // Pour Solana, les NFTs sont déjà inclus dans les transactions SPL
@@ -324,6 +349,14 @@ export async function getNFTTransactions(account: string, chain: NetworkType): P
  * @returns Liste des transactions formatées
  */
 export async function getSolanaTransactions(account: string): Promise<TransactionResult[]> {
+  // Si le mode développeur est activé, retourner des données simulées
+  if (isDevModeEnabled()) {
+    console.log(`[DEV MODE] Simulation des transactions Solana pour ${account}`);
+    await simulateDelay();
+    return generateMockTransactions('solana', 20, account)
+      .filter(tx => tx.tokenSymbol === 'SOL');
+  }
+
   try {
     if (!account) {
       console.error('Adresse invalide pour getSolanaTransactions', { account });
@@ -423,6 +456,14 @@ export async function getSolanaTransactions(account: string): Promise<Transactio
  * @returns Liste des transactions de tokens SPL formatées
  */
 export async function getSolanaSPLTransactions(account: string): Promise<TransactionResult[]> {
+  // Si le mode développeur est activé, retourner des données simulées
+  if (isDevModeEnabled()) {
+    console.log(`[DEV MODE] Simulation des transactions SPL pour ${account}`);
+    await simulateDelay();
+    return generateMockTransactions('solana', 15, account)
+      .filter(tx => tx.tokenSymbol !== 'SOL');
+  }
+
   try {
     if (!account) {
       console.error('Adresse invalide pour getSolanaSPLTransactions', { account });
@@ -523,6 +564,16 @@ export async function getSolanaSPLTransactions(account: string): Promise<Transac
  */
 export async function getTransactions(account: string, chain: NetworkType): Promise<TransactionResult[]> {
   try {
+    // Vérifier si le mode dev est activé
+    if (isDevModeEnabled()) {
+      console.log(`[DEV MODE] Génération de transactions aléatoires pour ${account} sur ${chain}`);
+      await simulateDelay(800, 2500); // Simuler un délai réaliste
+      
+      // Générer entre 30 et 70 transactions aléatoires
+      const count = Math.floor(Math.random() * 40) + 30;
+      return generateMockTransactions(chain, count, account);
+    }
+    
     // Normaliser l'adresse du compte
     const normalizedAccount = normalizeAddress(account, chain);
     
@@ -672,4 +723,5 @@ export function getNetworkConfig(network: NetworkType): NetworkConfig {
  */
 export function getExplorerLink(hash: string, network: NetworkType): string {
   const config = SUPPORTED_NETWORKS[network];
-  return `${config.explorerUrl}${hash}`;}
+  return `${config.explorerUrl}${hash}`;
+}
