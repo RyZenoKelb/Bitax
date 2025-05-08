@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import AuthProvider from '@/components/AuthProvider';
-import ClientLayout from '@/components/ClientLayout';
 import '../styles/globals.css';
 
 // Métadonnées définies côté serveur
@@ -12,7 +11,7 @@ export const metadata = {
   },
 };
 
-// Layout racine (composant serveur)
+// Layout racine minimal (sans sidebar)
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
@@ -34,8 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="antialiased">
         <AuthProvider>
-          {/* Utilisation d'un composant client pour la partie interactive de l'interface */}
-          <ClientLayout>{children}</ClientLayout>
+          {children}
         </AuthProvider>
       </body>
     </html>
