@@ -23,7 +23,6 @@ interface FiscalReport {
 
 // Pour le moment, données fictives pour démonstration
 const sampleReports: FiscalReport[] = [
-  
   {
     id: '1',
     title: 'Rapport fiscal annuel 2024',
