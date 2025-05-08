@@ -1,4 +1,5 @@
-// src/pages/pricing.tsx - Page de tarifs
+'use client';
+
 import React from 'react';
 
 
