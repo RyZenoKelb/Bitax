@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [scanProgress, setScanProgress] = useState<{[key: string]: 'pending' | 'scanning' | 'completed' | 'error'}>({});
+  const [isDevMode, setIsDevMode] = useState<boolean>(false);
 
   // Vérifier si c'est la première visite
   useEffect(() => {
