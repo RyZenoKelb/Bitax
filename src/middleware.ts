@@ -1,7 +1,8 @@
+// src/middleware.ts
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Configuration des routes publiques qui ne nécessitent pas d'authentification
+// Configuration des routes publiques
 const publicRoutes = [
   "/", 
   "/login", 
@@ -12,39 +13,43 @@ const publicRoutes = [
   "/tarifs", 
   "/fonctionnalites", 
   "/support",
-  "/register-alt"
+  "/register-alt",
+  "/api-test",
+  "/register-debug"
 ];
 
-// Routes d'authentification (login/register) - redirection vers dashboard si déjà connecté
-const authRoutes = ["/login", "/register", "/register-alt"];
+const authRoutes = ["/login", "/register"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Ne jamais intercepter les routes statiques, images ou API
+  // MODIFICATION CRUCIALE: Ne jamais intercepter les routes API (commençant par /api)
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.startsWith("/images") ||
     pathname.startsWith("/fonts") ||
-    pathname.startsWith("/api/")
+    pathname.startsWith("/api/") ||  // Ajouter cette ligne pour exclure toutes les API
+    pathname.includes("api-test")
   ) {
     return NextResponse.next();
   }
   
-  // Récupérer le token d'authentification
+  // Get the token
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
   
-  // Vérifier si l'utilisateur est authentifié
+  // Check if the user is authenticated
   const isAuthenticated = !!token;
   
-  // SUPPRESSION DE LA REDIRECTION AUTOMATIQUE VERS LE DASHBOARD
-  // Maintenant la page d'accueil reste accessible même si l'utilisateur est connecté
+  // Nouvelle redirection: Si l'utilisateur est connecté et accède à la racine, le rediriger vers le dashboard
+  if (isAuthenticated && pathname === "/") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
   
-  // Vérifier si la route nécessite une authentification
+  // Check if the route needs authentication
   const isPublicRoute = publicRoutes.some(route => 
     pathname === route || pathname.startsWith(`${route}/`)
   );
@@ -53,16 +58,16 @@ export async function middleware(request: NextRequest) {
     pathname === route || pathname.startsWith(`${route}/`)
   );
   
-  // Logique de redirection
+  // Redirect logic
   if (isAuthenticated) {
-    // Si l'utilisateur est connecté et tente d'accéder aux pages de login/register,
-    // le rediriger vers le dashboard
+    // If user is logged in and trying to access login/register page,
+    // redirect to dashboard
     if (isAuthRoute) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   } else {
-    // Si l'utilisateur n'est pas connecté et tente d'accéder à une route protégée,
-    // le rediriger vers la page de login
+    // If user is not logged in and trying to access a protected route,
+    // redirect to login page
     if (!isPublicRoute) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
@@ -71,16 +76,9 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Configuration du matcher pour les routes à traiter
 export const config = {
   matcher: [
-    /*
-     * Match toutes les routes sauf:
-     * 1. /api (routes API)
-     * 2. /_next (routes Next.js)
-     * 3. /_vercel (routes système Vercel)
-     * 4. /favicon.ico, /robots.txt, etc.
-     */
-    '/((?!api|_next|_vercel|favicon.ico|robots.txt).*)',
+    // Exclut toutes les routes commençant par /api/
+    "/((?!api/).*)(.+)",
   ],
 };
