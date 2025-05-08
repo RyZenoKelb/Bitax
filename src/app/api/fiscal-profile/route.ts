@@ -7,7 +7,7 @@ import { z } from "zod";
 
 // Schéma de validation pour le profil fiscal
 const fiscalProfileSchema = z.object({
-  calculationMethod: z.string().default("FIFO"), // FIFO, LIFO, etc.
+  calculationMethod: z.string().default("FIFO"),
   taxCountry: z.string().default("France"),
   taxIdentifier: z.string().optional(),
   lastDeclarationYear: z.number().optional(),
@@ -25,22 +25,39 @@ export async function GET(req: Request) {
       );
     }
     
-    // Récupérer le profil fiscal
-    const fiscalProfile = await prisma.fiscalProfile.findUnique({
-      where: {
-        userId: session.user.id,
-      },
-    });
-    
-    if (!fiscalProfile) {
+    // Vérifier si le modèle FiscalProfile existe déjà dans le schéma
+    // Si ce n'est pas le cas, renvoyer un profil par défaut
+    let fiscalProfile;
+    try {
+      fiscalProfile = await prisma.fiscalProfile.findUnique({
+        where: {
+          userId: session.user.id,
+        },
+      });
+    } catch (error: any) {
+      // Si l'erreur est due à un modèle inexistant, renvoyer un profil par défaut
+      console.error("Erreur lors de la récupération du profil fiscal:", error);
+      
       return NextResponse.json({
         fiscalProfile: {
-          calculationMethod: "FIFO", // Valeurs par défaut
+          calculationMethod: "FIFO",
           taxCountry: "France",
           taxIdentifier: null,
           lastDeclarationYear: null,
         },
-        isDefault: true, // Indique que c'est un profil par défaut
+        isDefault: true,
+      });
+    }
+    
+    if (!fiscalProfile) {
+      return NextResponse.json({
+        fiscalProfile: {
+          calculationMethod: "FIFO",
+          taxCountry: "France",
+          taxIdentifier: null,
+          lastDeclarationYear: null,
+        },
+        isDefault: true,
       });
     }
     
@@ -54,7 +71,7 @@ export async function GET(req: Request) {
   }
 }
 
-// POST/PUT - Créer ou mettre à jour le profil fiscal
+// POST - Créer ou mettre à jour le profil fiscal
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -79,45 +96,57 @@ export async function POST(req: Request) {
     
     const { calculationMethod, taxCountry, taxIdentifier, lastDeclarationYear } = body;
     
-    // Vérifier si le profil fiscal existe déjà
-    const existingProfile = await prisma.fiscalProfile.findUnique({
-      where: {
-        userId: session.user.id,
-      },
-    });
-    
-    let fiscalProfile;
-    
-    if (existingProfile) {
-      // Mettre à jour le profil existant
-      fiscalProfile = await prisma.fiscalProfile.update({
+    try {
+      // Vérifier si le profil fiscal existe déjà
+      let fiscalProfile;
+      const existingProfile = await prisma.fiscalProfile.findUnique({
         where: {
           userId: session.user.id,
         },
-        data: {
-          calculationMethod,
-          taxCountry,
-          taxIdentifier,
-          lastDeclarationYear,
-        },
       });
-    } else {
-      // Créer un nouveau profil
-      fiscalProfile = await prisma.fiscalProfile.create({
-        data: {
-          userId: session.user.id,
-          calculationMethod,
-          taxCountry,
-          taxIdentifier,
-          lastDeclarationYear,
-        },
+      
+      if (existingProfile) {
+        // Mettre à jour le profil existant
+        fiscalProfile = await prisma.fiscalProfile.update({
+          where: {
+            userId: session.user.id,
+          },
+          data: {
+            calculationMethod,
+            taxCountry,
+            taxIdentifier,
+            lastDeclarationYear,
+          },
+        });
+      } else {
+        // Créer un nouveau profil
+        fiscalProfile = await prisma.fiscalProfile.create({
+          data: {
+            userId: session.user.id,
+            calculationMethod,
+            taxCountry,
+            taxIdentifier,
+            lastDeclarationYear,
+          },
+        });
+      }
+      
+      return NextResponse.json({
+        success: true,
+        fiscalProfile,
       });
+    } catch (error: any) {
+      // Si l'erreur est due à un modèle inexistant, renvoyer une réponse appropriée
+      console.error("Erreur lors de la mise à jour du profil fiscal:", error);
+      
+      return NextResponse.json(
+        { 
+          error: "Cette fonctionnalité n'est pas encore disponible. Veuillez exécuter une migration Prisma.",
+          details: error.message
+        },
+        { status: 500 }
+      );
     }
-    
-    return NextResponse.json({
-      success: true,
-      fiscalProfile,
-    });
   } catch (error) {
     console.error("Erreur lors de la mise à jour du profil fiscal:", error);
     return NextResponse.json(
