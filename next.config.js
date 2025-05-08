@@ -28,9 +28,13 @@ const nextConfig = {
       ]
     },
     
-    // Activation du RSC pour les pages utilisant 'use client'
+    // Configuration expérimentale pour les fonctionnalités avancées de Next.js
     experimental: {
-      serverActions: true,
+      // Configuration moderne pour Server Actions (Next.js 14+)
+      serverComponentsExternalPackages: [],
+      serverActions: {
+        bodySizeLimit: '2mb'
+      },
     },
   }
   
