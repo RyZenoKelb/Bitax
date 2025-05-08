@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import AuthProvider from '@/components/AuthProvider';
-import { DevModeProvider } from '@/context/DevModeContext';
 import ClientLayout from '@/components/ClientLayout';
 import '../styles/globals.css';
 
@@ -35,10 +34,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="antialiased">
         <AuthProvider>
-          <DevModeProvider>
-            {/* Utilisation d'un composant client pour la partie interactive de l'interface */}
-            <ClientLayout>{children}</ClientLayout>
-          </DevModeProvider>
+          {/* Utilisation d'un composant client pour la partie interactive de l'interface */}
+          <ClientLayout>{children}</ClientLayout>
         </AuthProvider>
       </body>
     </html>
