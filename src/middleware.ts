@@ -41,10 +41,8 @@ export async function middleware(request: NextRequest) {
   // Vérifier si l'utilisateur est authentifié
   const isAuthenticated = !!token;
   
-  // Si l'utilisateur est connecté et accède à la racine, le rediriger vers le dashboard
-  if (isAuthenticated && pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+  // SUPPRESSION DE LA REDIRECTION AUTOMATIQUE VERS LE DASHBOARD
+  // Maintenant la page d'accueil reste accessible même si l'utilisateur est connecté
   
   // Vérifier si la route nécessite une authentification
   const isPublicRoute = publicRoutes.some(route => 
