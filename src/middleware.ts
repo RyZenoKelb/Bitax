@@ -2,7 +2,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Configuration des routes publiques
+// Configuration des routes
 const publicRoutes = [
   "/", 
   "/login", 
@@ -13,72 +13,112 @@ const publicRoutes = [
   "/tarifs", 
   "/fonctionnalites", 
   "/support",
-  "/register-alt",
-  "/api-test",
-  "/register-debug"
+  "/contact",
+  "/faq",
+  "/cgu",
+  "/mentions-legales",
+  "/politique-confidentialite"
 ];
 
 const authRoutes = ["/login", "/register"];
 
+// Routes qui nécessitent un abonnement premium
+const premiumRoutes = [
+  "/dashboard/premium",
+  "/dashboard/rapports/avance",
+  "/dashboard/export",
+  "/api/premium",
+];
+
+// Routes d'API publiques (en plus de /api/auth qui est déjà dans publicRoutes)
+const publicApiRoutes = [
+  "/api/register"
+];
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // MODIFICATION CRUCIALE: Ne jamais intercepter les routes API (commençant par /api)
+  // Ignorer les fichiers statiques et certaines routes API
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
     pathname.startsWith("/images") ||
     pathname.startsWith("/fonts") ||
-    pathname.startsWith("/api/") ||  // Ajouter cette ligne pour exclure toutes les API
-    pathname.includes("api-test")
+    pathname.includes(".") ||
+    publicApiRoutes.some(route => pathname.startsWith(route))
   ) {
     return NextResponse.next();
   }
   
-  // Get the token
+  // Ignorer toutes les routes API sauf celles qui nécessitent une authentification
+  if (pathname.startsWith("/api/") && 
+      !pathname.startsWith("/api/user") && 
+      !pathname.startsWith("/api/wallet") && 
+      !pathname.startsWith("/api/transaction") && 
+      !pathname.startsWith("/api/report") && 
+      !pathname.startsWith("/api/premium")) {
+    return NextResponse.next();
+  }
+  
+  // Récupérer le token
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
   
-  // Check if the user is authenticated
+  // Vérifier si l'utilisateur est authentifié
   const isAuthenticated = !!token;
   
-  // Nouvelle redirection: Si l'utilisateur est connecté et accède à la racine, le rediriger vers le dashboard
+  // Vérifier si l'utilisateur a un abonnement premium
+  const isPremium = token?.isPremium === true;
+  
+  // Redirection pour les utilisateurs authentifiés accédant à la racine
   if (isAuthenticated && pathname === "/") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
   
-  // Check if the route needs authentication
+  // Vérifier si la route est publique
   const isPublicRoute = publicRoutes.some(route => 
     pathname === route || pathname.startsWith(`${route}/`)
   );
   
+  // Vérifier si la route est une route d'authentification
   const isAuthRoute = authRoutes.some(route => 
     pathname === route || pathname.startsWith(`${route}/`)
   );
   
-  // Redirect logic
+  // Vérifier si la route nécessite un abonnement premium
+  const isPremiumRoute = premiumRoutes.some(route =>
+    pathname === route || pathname.startsWith(`${route}/`)
+  );
+  
+  // Logique de redirection
   if (isAuthenticated) {
-    // If user is logged in and trying to access login/register page,
-    // redirect to dashboard
+    // Si l'utilisateur est connecté et essaie d'accéder à une page login/register
     if (isAuthRoute) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
+    
+    // Si l'utilisateur essaie d'accéder à une fonctionnalité premium sans abonnement
+    if (isPremiumRoute && !isPremium) {
+      return NextResponse.redirect(new URL("/pricing", request.url));
+    }
   } else {
-    // If user is not logged in and trying to access a protected route,
-    // redirect to login page
+    // Si l'utilisateur n'est pas connecté et essaie d'accéder à une route protégée
     if (!isPublicRoute) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Sauvegarder l'URL de destination pour rediriger après la connexion
+      const callbackUrl = encodeURIComponent(request.nextUrl.pathname);
+      return NextResponse.redirect(new URL(`/login?callbackUrl=${callbackUrl}`, request.url));
     }
   }
   
   return NextResponse.next();
 }
 
+// Configuration du matcher pour le middleware
 export const config = {
   matcher: [
-    // Exclut toutes les routes commençant par /api/
-    "/((?!api/).*)(.+)",
+    // Inclure toutes les routes sauf certaines exceptions
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.ico$|.*\\.svg$|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$).*)',
   ],
 };
