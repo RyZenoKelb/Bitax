@@ -700,6 +700,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <AuthProvider>
       <DevModeProvider>
         <AppContent Component={Component} pageProps={pageProps} />
+        <DevModeIndicator />
       </DevModeProvider>
     </AuthProvider>
   );
