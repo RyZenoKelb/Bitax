@@ -697,7 +697,9 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
-      <AppContent Component={Component} pageProps={pageProps} />
+      <DevModeProvider>
+        <AppContent Component={Component} pageProps={pageProps} />
+      </DevModeProvider>
     </AuthProvider>
   );
 }
