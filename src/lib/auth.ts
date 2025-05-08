@@ -81,7 +81,6 @@ export const authOptions: NextAuthOptions = {
           if (address.toLowerCase() !== credentials.address.toLowerCase()) {
             return null;
           }
-
           // Trouver le wallet et l'utilisateur associé
           const wallet = await prisma.wallet.findFirst({
             where: {
