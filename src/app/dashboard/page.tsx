@@ -13,6 +13,7 @@ import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transa
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 import DevModeToggle from '@/components/DevModeToggle';
 import { isDevModeEnabled } from '@/utils/mockTransactions';
+import { DevModeProvider } from '@/context/DevModeContext';
 
 export default function Dashboard() {
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
