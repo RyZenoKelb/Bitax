@@ -4,8 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
-// Import ethers correctement - ajustez selon votre version d'ethers
-import { ethers } from "ethers";
+// Import directement verifyMessage depuis ethers
+import { verifyMessage } from "ethers";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
