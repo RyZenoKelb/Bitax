@@ -53,7 +53,6 @@ const sampleReports: FiscalReport[] = [
     taxMethod: 'FIFO',
     format: 'PDF'
   }
-  */
 ];
 
 export default function Reports() {
