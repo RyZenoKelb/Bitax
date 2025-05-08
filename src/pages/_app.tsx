@@ -539,7 +539,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
                 </div>
                 <button
                   onClick={toggleTheme}
-                  className="ml-auto p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-colors focus:outline-none focus:ring-0 focus-visible:ring-0"
+                  className="ml-auto p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-colors"
                 >
                   {theme === 'dark' ? (
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
