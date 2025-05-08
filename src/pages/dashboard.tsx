@@ -28,6 +28,10 @@ export default function Dashboard() {
   const [scanProgress, setScanProgress] = useState<{[key: string]: 'pending' | 'scanning' | 'completed' | 'error'}>({});
   const [isDevMode, setIsDevMode] = useState<boolean>(false);
 
+  useEffect(() => {
+    setIsDevMode(isDevModeEnabled());
+  }, []);
+
   // Vérifier si c'est la première visite
   useEffect(() => {
     const hasVisited = localStorage.getItem('bitax-visited');
