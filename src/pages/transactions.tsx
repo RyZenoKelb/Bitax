@@ -7,6 +7,8 @@ import TransactionSummary from '@/components/TransactionSummary';
 import TransactionList from '@/components/TransactionList';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
+import DevModeToggle from '@/components/DevModeToggle';
+import { isDevModeEnabled } from '@/utils/mockTransactions';
 
 export default function Transactions() {
   // États
@@ -21,6 +23,12 @@ export default function Transactions() {
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [scanProgress, setScanProgress] = useState<{[key: string]: 'pending' | 'scanning' | 'completed' | 'error'}>({});
   const [viewMode, setViewMode] = useState<'summary' | 'list'>('list');
+  const [isDevMode, setIsDevMode] = useState<boolean>(false);
+
+  // Ajoutez cet effet pour charger l'état du mode développeur
+  useEffect(() => {
+    setIsDevMode(isDevModeEnabled());
+  }, []);
 
   // Vérifier le statut premium
   useEffect(() => {
