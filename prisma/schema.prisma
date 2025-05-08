@@ -38,19 +38,22 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  wallets       Wallet[]
-  reports       Report[]
-  isPremium     Boolean   @default(false)
+  id             String         @id @default(cuid())
+  name           String?
+  email          String?        @unique
+  emailVerified  DateTime?
+  password       String?
+  image          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  accounts       Account[]
+  sessions       Session[]
+  wallets        Wallet[]
+  reports        Report[]
+  isPremium      Boolean        @default(false)
+  transactions   Transaction[]   // Relation ajoutée pour les transactions
+  fiscalProfile  FiscalProfile? // Relation avec le profil fiscal
+  subscription   Subscription?  // Relation avec l'abonnement
 }
 
 model VerificationToken {
@@ -63,15 +66,16 @@ model VerificationToken {
 
 // Bitax specific models
 model Wallet {
-  id        String   @id @default(cuid())
-  address   String
-  network   String   @default("eth")
-  name      String?
-  isPrimary Boolean  @default(false)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String        @id @default(cuid())
+  address      String
+  network      String        @default("eth")
+  name         String?
+  isPrimary    Boolean       @default(false)
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[] // Relation ajoutée pour les transactions
 
   @@unique([address, userId])
 }
@@ -86,4 +90,57 @@ model Report {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Nouveaux modèles
+
+model Transaction {
+  id          String   @id @default(cuid())
+  hash        String   @unique // Identifiant unique de la transaction blockchain
+  walletId    String   // Relation avec le wallet
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  userId      String   // Relation directe avec l'utilisateur pour faciliter les requêtes
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timestamp   DateTime // Date de la transaction
+  amount      Float    // Montant de la transaction
+  tokenSymbol String   // Symbole du token (ETH, BTC, etc.)
+  tokenName   String?  // Nom complet du token
+  tokenPrice  Float?   // Prix du token au moment de la transaction
+  toAddress   String?  // Adresse de destination
+  fromAddress String?  // Adresse d'origine
+  type        String   // Type: "buy", "sell", "transfer", "swap", etc.
+  fee         Float?   // Frais de transaction
+  status      String   @default("confirmed") // État de la transaction
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([walletId])
+  @@index([userId])
+  @@index([timestamp])
+}
+
+model FiscalProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique // Un seul profil fiscal par utilisateur
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  calculationMethod  String   @default("FIFO") // Méthode de calcul: FIFO, LIFO, etc.
+  taxCountry         String   @default("France") // Pays de fiscalité
+  taxIdentifier      String?  // Numéro fiscal
+  lastDeclarationYear Int?    // Dernière année déclarée
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Subscription {
+  id            String    @id @default(cuid())
+  userId        String    @unique // Un seul abonnement par utilisateur
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan          String    @default("free") // Plan: "free", "premium"
+  startDate     DateTime  @default(now())
+  endDate       DateTime?
+  paymentMethod String?   // Méthode de paiement
+  paymentId     String?   // Identifiant de paiement externe
+  autoRenew     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
