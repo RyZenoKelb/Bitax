@@ -1,3 +1,5 @@
+'use client';
+
 // src/pages/guide.tsx
 import React from 'react';
 import Link from 'next/link';
