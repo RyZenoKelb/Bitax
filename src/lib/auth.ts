@@ -4,7 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
-import { verifyMessage } from "ethers/lib/utils";
+// Import ethers correctement - ajustez selon votre version d'ethers
+import { ethers } from "ethers";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -74,7 +75,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Vérifier la signature avec ethers.js
-          const address = verifyMessage(credentials.message, credentials.signature);
+          const address = ethers.utils.verifyMessage(credentials.message, credentials.signature);
           
           // Vérifier que l'adresse vérifiée correspond à l'adresse fournie
           if (address.toLowerCase() !== credentials.address.toLowerCase()) {
