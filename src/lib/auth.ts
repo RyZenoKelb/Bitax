@@ -75,7 +75,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Vérifier la signature avec ethers.js
-          const address = ethers.utils.verifyMessage(credentials.message, credentials.signature);
+          const address = verifyMessage(credentials.message, credentials.signature);
           
           // Vérifier que l'adresse vérifiée correspond à l'adresse fournie
           if (address.toLowerCase() !== credentials.address.toLowerCase()) {
