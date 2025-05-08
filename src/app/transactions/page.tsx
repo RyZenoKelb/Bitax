@@ -320,7 +320,7 @@ export default function Transactions() {
                 ))}
               </div>
 
-              {/* Ajoutez le DevModeToggle ici */}
+              {/* DevModeToggle */}
               <DevModeToggle className="ml-auto mr-4" />
                 <div className="flex items-center">
                   <button
