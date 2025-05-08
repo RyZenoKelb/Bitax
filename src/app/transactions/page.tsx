@@ -1,4 +1,5 @@
-// src/pages/transactions.tsx
+'use client';
+
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
