@@ -333,8 +333,8 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
                   strokeLinecap="round" 
                   strokeLinejoin="round" 
                   strokeWidth={1.5} 
-                  d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
-                />
+                  d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M13 5l7 7-7 7M5 5l7 7-7 7"} 
+                /> M11 19l-7-7 7-7M19 19l-7-7 7-7
               </svg>
               
               {/* Petit effet lumineux sur hover */}
