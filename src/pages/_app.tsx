@@ -314,32 +314,34 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           </div>
         </nav>
         
-        {/* Toggle button avec flèche dans le bon sens */}
-        <button 
-          onClick={toggleSidebar}
-          className="p-2 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 
-            transition-all duration-300 focus:outline-none group"
-          aria-label="Toggle Sidebar"
-        >
-          <div className="relative w-5 h-5 flex items-center justify-center">
-            <svg 
-              className="w-5 h-5 transition-transform duration-300" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={1.5} 
-                d={sidebarCollapsed ? "M8 5l7 7-7 7" : "M16 5l-7 7 7 7"} 
-              />
-            </svg>
-            
-            {/* Petit effet lumineux sur hover */}
-            <div className="absolute inset-0 rounded-full bg-indigo-400/0 group-hover:bg-indigo-400/10 transition-colors"></div>
-          </div>
-        </button>
+        {/* Toggle button placé entre la navigation et le profil utilisateur */}
+        <div className={`px-4 py-3 border-t border-b border-gray-800/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-end'}`}>
+          <button 
+            onClick={toggleSidebar}
+            className="p-2 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 
+              transition-all duration-300 focus:outline-none group"
+            aria-label="Toggle Sidebar"
+          >
+            <div className="relative w-5 h-5 flex items-center justify-center">
+              <svg 
+                className={`w-5 h-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={1.5} 
+                  d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
+                />
+              </svg>
+              
+              {/* Petit effet lumineux sur hover */}
+              <div className="absolute inset-0 rounded-full bg-indigo-400/0 group-hover:bg-indigo-400/10 transition-colors"></div>
+            </div>
+          </button>
+        </div>
         
         {/* User profile section */}
         <div className={`p-4 border-b border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
