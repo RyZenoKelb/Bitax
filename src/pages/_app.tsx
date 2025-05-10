@@ -11,7 +11,6 @@ import AuthProvider from '@/components/AuthProvider';
 import { useSession } from 'next-auth/react';
 import { DevModeProvider } from '@/context/DevModeContext';
 import DevModeIndicator from '@/components/DevModeIndicator';
-// Ajoutez cette ligne aux imports en haut du fichier
 import BitaxLogoSVG from '@/components/BitaxLogoSVG';
 
 // Type pour les éléments d'enfants React
