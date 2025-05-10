@@ -22,6 +22,29 @@ declare module 'react' {
   }
 }
 
+// Logo using the image from public/bitaxlogo.png with a subtle hover effect
+const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
+  // Improved sizing with different treatments for sidebar vs footer
+  const sizeClass = isFooter
+    ? "h-8 w-auto" // Significantly smaller size for footer
+    : collapsed 
+      ? "h-14 w-auto" // Larger size when sidebar is collapsed
+      : "h-16 w-auto"; // Even larger when sidebar is expanded
+  
+  // Better centering within the container with enhanced focus removal
+  const containerClass = "flex justify-center items-center w-full py-2 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0";
+  
+  return (
+    <Link href="/" className={containerClass}>
+      <img 
+        src="/bitaxlogo.png" 
+        alt="Bitax Logo" 
+        className={`${sizeClass} transition-all duration-300`}
+        draggable="false"
+      />
+    </Link>
+  );
+};
 
 const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
   // Obtenir les données de l'utilisateur depuis la session
@@ -254,6 +277,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           
           {/* Logo et toggle sidebar avec animation */}
           <div className="relative flex items-center justify-between py-6 px-5">
+            <BitaxLogo collapsed={sidebarCollapsed} />
             
               {/* Bouton toggle sidebar */}
               <button 
@@ -477,6 +501,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
         >
           <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 overflow-hidden md:hidden">
             <div className="flex items-center justify-between p-4 border-b border-gray-800">
+              <BitaxLogo collapsed={false} />
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-gray-800"
@@ -585,6 +610,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
               {/* Logo et copyright minimaliste */}
               <div className="flex items-center flex-nowrap space-x-2 whitespace-nowrap">
+                <BitaxLogo collapsed={true} isFooter={true} />
                 <span className="text-xs text-indigo-300/70">
                   &copy; {new Date().getFullYear()} Bitax
                 </span>
