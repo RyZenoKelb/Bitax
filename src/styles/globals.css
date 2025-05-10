@@ -1142,3 +1142,74 @@ body, html, p, div, span, li, a, button, input, textarea, select, table, td, th,
   box-shadow: none !important;
 }
 
+/* Ajoutez ces animations à votre fichier globals.css si elles n'y sont pas déjà */
+
+/* Animation pour les éléments qui pulsent lentement */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Animation pour les points lumineux */
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.animate-ping-slow {
+  animation: ping-slow 5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Assurez-vous que le body et html n'ont pas de background qui masque notre fond */
+html, body {
+  background-color: transparent !important;
+}
+
+/* Assurez-vous que -z-50 fonctionne correctement */
+.z-negative-50 {
+  z-index: -50 !important;
+}
+
+/* Style pour s'assurer que le background fonctionne en mode clair */
+:root.light .absolute.inset-0.bg-gradient-to-br.from-bg-darker.via-gray-900.to-bg-darker {
+  opacity: 0.95;
+  background: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #f8fafc) !important;
+}
+
+:root.light .absolute.inset-0.opacity-\[0\.07\] .absolute.inset-0 {
+  background-image: linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px), 
+                   linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px) !important;
+}
+
+:root.light .bg-indigo-600\/10 {
+  background-color: rgba(99, 102, 241, 0.05) !important;
+}
+
+:root.light .bg-cyan-600\/10 {
+  background-color: rgba(14, 165, 233, 0.05) !important;
+}
+
+:root.light .bg-white.opacity-30 {
+  background-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+:root.light path[fill="rgba(99, 102, 241, 0.5)"] {
+  fill: rgba(99, 102, 241, 0.2) !important;
+}
