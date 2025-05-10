@@ -551,52 +551,87 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           </aside>
         </Transition>
         
-        {/* Main content */}
-        <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
-          {/* Background effects améliorés */}
-          <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-            {/* Gradient orbs animés */}
-            <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-primary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
-            
-            
-            {/* Particules/étoiles */}
-            <div className="stars-container absolute inset-0"></div>
-            
-            {/* Vagues subtiles animées en bas */}
-            <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-20 pointer-events-none">
-              <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path 
-                  d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
-                  className="fill-primary-800/10 dark:fill-primary-400/5 light:fill-primary-900/5"
-                ></path>
-                <path 
-                  d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" 
-                  className="fill-secondary-800/10 dark:fill-secondary-400/5 light:fill-secondary-900/5" 
-                  style={{ animationDelay: '-2s' }}
-                ></path>
-              </svg>
-            </div>
-          </div>
-          
-          {/* Contenu principal avec animation d'entrée */}
-          <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
-            <div className="max-w-7xl mx-auto relative z-10">
-              {isLoaded ? (
-                <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
-                  <Component {...pageProps} />
-                </div>
-              ) : (
-                <div className="opacity-0 translate-y-10">
-                  <Component {...pageProps} />
-                </div>
-              )}
-            </div>
-          </main>
-          
-          {/* Footer compact modernisé */}
-          <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
-            <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
+{/* Ajout d'un arrière-plan élégant pour le contenu principal */}
+<div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
+  {/* Background effects améliorés */}
+  <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+    {/* Gradient principal en arrière-plan */}
+    <div className="absolute inset-0 bg-gradient-to-br from-bg-darker via-gray-900 to-bg-darker opacity-90"></div>
+    
+    {/* Lignes de grille élégantes */}
+    <div className="absolute inset-0 opacity-[0.07]">
+      <div className="absolute inset-0" 
+        style={{
+          backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+          backgroundPosition: 'center center'
+        }}>
+      </div>
+    </div>
+    
+    {/* Cercles lumineux avec effet de flou */}
+    <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/10 rounded-full filter blur-3xl"></div>
+    <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-cyan-600/10 rounded-full filter blur-3xl"></div>
+    
+    {/* Formes géométriques avec lueur */}
+    <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 opacity-20">
+      <svg width="400" height="400" viewBox="0 0 100 100" fill="none">
+        <polygon points="50,0 100,50 50,100 0,50" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="0.5" fill="none" className="animate-pulse-slow"></polygon>
+      </svg>
+    </div>
+    <div className="absolute bottom-1/4 right-1/4 transform translate-x-1/2 translate-y-1/2 opacity-20">
+      <svg width="300" height="300" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="40" stroke="rgba(14, 165, 233, 0.3)" strokeWidth="0.5" fill="none" className="animate-pulse-slow"></circle>
+      </svg>
+    </div>
+    
+    {/* Points lumineux aléatoires */}
+    <div className="absolute inset-0 overflow-hidden">
+      {[...Array(20)].map((_, i) => (
+        <div 
+          key={i}
+          className="absolute w-1 h-1 rounded-full bg-white opacity-30 animate-ping-slow"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 5}s`,
+            animationDuration: `${3 + Math.random() * 7}s`
+          }}
+        ></div>
+      ))}
+    </div>
+    
+    {/* Effet de vagues en bas de page */}
+    <div className="absolute bottom-0 left-0 right-0 h-24 opacity-10">
+      <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path 
+          d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
+          fill="rgba(99, 102, 241, 0.5)"
+        ></path>
+      </svg>
+    </div>
+  </div>
+  
+  {/* Contenu principal avec animation d'entrée */}
+  <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative backdrop-blur-[1px]">
+    <div className="max-w-7xl mx-auto relative z-10">
+      {isLoaded ? (
+        <div className="transition-all duration-700 ease-out transform translate-y-0 opacity-100">
+          <Component {...pageProps} />
+        </div>
+      ) : (
+        <div className="opacity-0 translate-y-10">
+          <Component {...pageProps} />
+        </div>
+      )}
+    </div>
+  </main>
+  
+  {/* Footer compact modernisé */}
+  <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
+    {/* Contenu du footer reste inchangé */}
+  </footer>
+</div>
               {/* Logo et copyright minimaliste */}
               <div className="flex items-center flex-nowrap space-x-2 whitespace-nowrap">
                 <BitaxLogoSVG collapsed={true} isFooter={true} />
