@@ -690,10 +690,71 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   );
 };
 
+// Dans _app.tsx, ajoutez ce code juste après la balise <body> et avant le wrapper principal de l'application
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
       <DevModeProvider>
+        {/* Background global fixé au niveau racine */}
+        <div className="fixed inset-0 w-full h-full -z-50 pointer-events-none overflow-hidden">
+          {/* Gradient principal en arrière-plan */}
+          <div className="absolute inset-0 bg-gradient-to-br from-bg-darker via-gray-900 to-bg-darker opacity-90"></div>
+          
+          {/* Lignes de grille élégantes */}
+          <div className="absolute inset-0 opacity-[0.07]">
+            <div className="absolute inset-0" 
+              style={{
+                backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px)',
+                backgroundSize: '60px 60px',
+                backgroundPosition: 'center center'
+              }}>
+            </div>
+          </div>
+          
+          {/* Cercles lumineux avec effet de flou */}
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/10 rounded-full filter blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-cyan-600/10 rounded-full filter blur-3xl"></div>
+          
+          {/* Formes géométriques avec lueur */}
+          <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 opacity-20">
+            <svg width="400" height="400" viewBox="0 0 100 100" fill="none">
+              <polygon points="50,0 100,50 50,100 0,50" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="0.5" fill="none" className="animate-pulse-slow"></polygon>
+            </svg>
+          </div>
+          <div className="absolute bottom-1/4 right-1/4 transform translate-x-1/2 translate-y-1/2 opacity-20">
+            <svg width="300" height="300" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="40" stroke="rgba(14, 165, 233, 0.3)" strokeWidth="0.5" fill="none" className="animate-pulse-slow"></circle>
+            </svg>
+          </div>
+          
+          {/* Points lumineux aléatoires */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(20)].map((_, i) => (
+              <div 
+                key={i}
+                className="absolute w-1 h-1 rounded-full bg-white opacity-30 animate-ping-slow"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${3 + Math.random() * 7}s`
+                }}
+              ></div>
+            ))}
+          </div>
+          
+          {/* Effet de vagues en bas de page */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 opacity-10">
+            <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
+              <path 
+                d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
+                fill="rgba(99, 102, 241, 0.5)"
+              ></path>
+            </svg>
+          </div>
+        </div>
+
         <AppContent Component={Component} pageProps={pageProps} />
         <DevModeIndicator />
       </DevModeProvider>
