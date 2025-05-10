@@ -236,6 +236,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       <CustomStyles />
       
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+        
           {/* SIDEBAR - Version améliorée avec meilleur centrage du logo */}
           <aside 
             className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
