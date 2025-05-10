@@ -237,110 +237,113 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
 
-        {/* SIDEBAR - Version améliorée avec positionnement optimisé */}
-        <aside 
-          className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
-            ${sidebarCollapsed ? 'w-20' : 'w-72'} 
-            bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
-            overflow-hidden`}
-          style={{
-            boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
-          }}
-        >
-          {/* Effets lumineux interactifs */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
-            <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
-            <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
-          </div>
-          
-          {/* Section logo et toggle avec meilleur espacement */}
-          <div className={`relative pt-6 pb-2 px-4 flex flex-col items-center ${sidebarCollapsed ? 'h-28' : 'h-20'}`}>
-            {/* Logo toujours centré */}
-            <BitaxLogoSVG collapsed={sidebarCollapsed} />
-            
-            {/* Bouton toggle en position fixe en bas du logo quand collapsed */}
-            <button 
-              onClick={toggleSidebar}
-              className={`p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 
-                transition-all duration-300 focus:outline-none
-                ${sidebarCollapsed ? 'mt-1' : 'absolute right-4 top-6'}`}
-              aria-label="Toggle Sidebar"
-            >
-              <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
-                <svg 
-                  className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={1.5} 
-                    d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
-                  />
-                </svg>
-              </div>
-            </button>
-          </div>
-          
-          {/* Navigation links avec hauteur fixe */}
-          <nav className="flex-1 py-3 overflow-y-auto scrollbar-none">
-            <div className={`px-3 space-y-2 ${sidebarCollapsed ? 'flex flex-col items-center' : ''}`}>
-              {navLinks.map((link, index) => {
-                const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
-                return (
-                  <Link 
-                    key={link.name} 
-                    href={link.href}
-                    className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center w-14 h-14' : 'px-4 h-12'} py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
-                      ${isActive 
-                        ? 'text-white' 
-                        : 'text-indigo-100/70 hover:text-white'}`}
-                    style={{
-                      background: isActive ? link.gradient : 'rgba(13, 18, 36, 0.6)',
-                      boxShadow: isActive ? '0 0 15px rgba(46, 86, 255, 0.3)' : 'none',
-                    }}
-                  >
-                    {/* Effet de brillance animé sur hover */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
-                    
-                    {/* Icône avec animation - toujours centrée */}
-                    <div className={`flex-shrink-0 ${sidebarCollapsed ? 'scale-125' : ''} ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
-                      {link.icon}
-                    </div>
-                    
-                    {/* Texte qui s'affiche/disparait selon l'état de la sidebar */}
-                    {!sidebarCollapsed && (
-                      <span className="ml-3 transition-all duration-500">{link.name}</span>
-                    )}
-                    
-                    {/* Point lumineux indicateur si actif */}
-                    {isActive && !sidebarCollapsed && (
-                      <div className="absolute right-3 w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                    )}
-                    
-                    {/* Tooltip au survol quand sidebar réduite */}
-                    {sidebarCollapsed && (
-                      <div className="sidebar-tooltip absolute left-full ml-4 px-3 py-2 min-w-max rounded-lg opacity-0 group-hover:opacity-100 -translate-x-3 group-hover:translate-x-0 pointer-events-none transition-all duration-300 text-white z-50"
-                        style={{
-                          background: link.gradient,
-                          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
-                        }}
-                      >
-                        {link.name}
-                        {/* Flèche de tooltip */}
-                        <div className="absolute -left-1 top-1/2 -mt-1 w-2 h-2 rotate-45" style={{ background: isActive ? COLORS.indigo.main : COLORS.indigo.dark }}></div>
-                      </div>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
+{/* SIDEBAR - Version corrigée avec liens qui restent en place */}
+<aside 
+  className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
+    ${sidebarCollapsed ? 'w-20' : 'w-72'} 
+    bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
+    overflow-hidden`}
+  style={{
+    boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
+  }}
+>
+  {/* Effets lumineux interactifs */}
+  <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
+    <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
+    <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
+  </div>
   
-  {/* Le reste du code de la sidebar... */}
+  {/* Header de la sidebar avec hauteur fixe */}
+  <div className="flex flex-col h-28 px-4 pt-5 pb-3">
+    {/* Logo centré */}
+    <div className="flex justify-center mb-2">
+      <BitaxLogoSVG collapsed={sidebarCollapsed} />
+    </div>
+    
+    {/* Bouton toggle bien positionné */}
+    <div className="flex justify-center">
+      <button 
+        onClick={toggleSidebar}
+        className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 
+          transition-all duration-300 focus:outline-none mt-1"
+        aria-label="Toggle Sidebar"
+      >
+        <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
+          <svg 
+            className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={1.5} 
+              d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
+            />
+          </svg>
+        </div>
+      </button>
+    </div>
+  </div>
+  
+  {/* Navigation links avec positionnement fixe */}
+  <nav className="flex-1 overflow-y-auto scrollbar-none">
+    <div className={`px-3 space-y-2.5 ${sidebarCollapsed ? 'items-center' : ''}`}>
+      {navLinks.map((link, index) => {
+        const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
+        return (
+          <Link 
+            key={link.name} 
+            href={link.href}
+            className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center w-14 h-10' : 'px-4 h-10'} rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
+              ${isActive 
+                ? 'text-white' 
+                : 'text-indigo-100/70 hover:text-white'}`}
+            style={{
+              background: isActive ? link.gradient : 'rgba(13, 18, 36, 0.6)',
+              boxShadow: isActive ? '0 0 15px rgba(46, 86, 255, 0.3)' : 'none',
+            }}
+          >
+            {/* Effet de brillance animé sur hover */}
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
+            
+            {/* Icône avec animation - légèrement plus grande en mode collapsed */}
+            <div className={`flex-shrink-0 ${sidebarCollapsed ? 'scale-110' : ''} ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
+              {link.icon}
+            </div>
+            
+            {/* Texte qui s'affiche/disparait selon l'état de la sidebar */}
+            {!sidebarCollapsed && (
+              <span className="ml-3 transition-all duration-500">{link.name}</span>
+            )}
+            
+            {/* Point lumineux indicateur si actif */}
+            {isActive && !sidebarCollapsed && (
+              <div className="absolute right-3 w-2 h-2 rounded-full bg-white animate-pulse"></div>
+            )}
+            
+            {/* Tooltip au survol quand sidebar réduite */}
+            {sidebarCollapsed && (
+              <div className="sidebar-tooltip absolute left-full ml-4 px-3 py-2 min-w-max rounded-lg opacity-0 group-hover:opacity-100 -translate-x-3 group-hover:translate-x-0 pointer-events-none transition-all duration-300 text-white z-50"
+                style={{
+                  background: link.gradient,
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+                }}
+              >
+                {link.name}
+                {/* Flèche de tooltip */}
+                <div className="absolute -left-1 top-1/2 -mt-1 w-2 h-2 rotate-45" style={{ background: isActive ? COLORS.indigo.main : COLORS.indigo.dark }}></div>
+              </div>
+            )}
+          </Link>
+        );
+      })}
+    </div>
+  </nav>
+  
+  {/* Le reste de votre sidebar (user profile section, etc.) reste inchangé */}
           
           {/* User profile section */}
           <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
