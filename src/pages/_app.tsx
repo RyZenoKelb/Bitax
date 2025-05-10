@@ -254,7 +254,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           
           {/* Logo et toggle sidebar avec animation */}
           <div className="relative flex items-center justify-between py-6 px-5">
-            <BitaxLogo collapsed={sidebarCollapsed} />
             
               {/* Bouton toggle sidebar */}
               <button 
