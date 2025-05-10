@@ -253,14 +253,14 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
           </div>
           
-          {/* Logo et toggle sidebar avec animation */}
-          <div className="relative flex items-center justify-between py-6 px-5">
-            <BitaxLogoSVG collapsed={sidebarCollapsed} />
-            
-              {/* Bouton toggle sidebar */}
+            {/* Logo et toggle sidebar avec animation */}
+            <div className="relative flex items-center justify-between py-6 px-5">
+              <BitaxLogoSVG collapsed={sidebarCollapsed} />
+              
+              {/* Bouton toggle sidebar amélioré - sans le point bleu */}
               <button 
                 onClick={toggleSidebar}
-                className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/30 transition-all duration-300 focus:outline-none group"
+                className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 transition-all duration-300 focus:outline-none"
                 aria-label="Toggle Sidebar"
               >
                 <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
@@ -270,10 +270,14 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
                     viewBox="0 0 24 24" 
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} />
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={1.5} 
+                      d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
+                    />
                   </svg>
                 </div>
-                <span className="absolute top-0 right-0 -mr-1 -mt-1 h-2 w-2 rounded-full bg-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></span>
               </button>
             </div>
           
