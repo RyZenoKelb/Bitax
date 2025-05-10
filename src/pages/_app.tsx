@@ -411,7 +411,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             light:bg-white light:border-gray-200`}
           >
             <div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200 pb-2 pt-2 px-4 mb-1">
-              <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">Mon compte Bitax</p>
+              <p className="text-sm font-medium text-white dark:text-white light:text-gray-900">{user?.name || 'Utilisateur'}</p>
               <p className="text-xs text-gray-400">{user?.email || 'email@exemple.com'}</p>
             </div>
             <Link 
