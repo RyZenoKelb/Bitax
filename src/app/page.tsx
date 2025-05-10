@@ -726,7 +726,6 @@ export default function Home() {
               {[
                 { name: 'Fonctionnalités', href: '/fonctionnalites' },
                 { name: 'Tarifs', href: '/tarifs' },
-                { name: 'Guide', href: '/guide' }
               ].map((item) => (
                 <Link 
                   key={item.name} 
