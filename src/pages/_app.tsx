@@ -477,7 +477,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
         >
           <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 overflow-hidden md:hidden">
             <div className="flex items-center justify-between p-4 border-b border-gray-800">
-              <BitaxLogo collapsed={false} />
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-gray-800"
@@ -586,7 +585,6 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
               {/* Logo et copyright minimaliste */}
               <div className="flex items-center flex-nowrap space-x-2 whitespace-nowrap">
-                <BitaxLogo collapsed={true} isFooter={true} />
                 <span className="text-xs text-indigo-300/70">
                   &copy; {new Date().getFullYear()} Bitax
                 </span>
