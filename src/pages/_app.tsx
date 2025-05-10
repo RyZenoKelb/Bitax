@@ -236,64 +236,65 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       <CustomStyles />
       
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
-        
-          {/* SIDEBAR - Version améliorée avec meilleur centrage du logo */}
-          <aside 
-            className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
-              ${sidebarCollapsed ? 'w-20' : 'w-72'} 
-              bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
-              overflow-hidden`}
-            style={{
-              boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
-            }}
-          >
-            {/* Effets lumineux interactifs */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
-              <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
-              <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
-            </div>
+
+        {/* SIDEBAR - Version améliorée avec positionnement optimisé */}
+        <aside 
+          className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
+            ${sidebarCollapsed ? 'w-20' : 'w-72'} 
+            bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
+            overflow-hidden`}
+          style={{
+            boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
+          }}
+        >
+          {/* Effets lumineux interactifs */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
+            <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
+            <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
+          </div>
+          
+          {/* Section logo et toggle avec meilleur espacement */}
+          <div className={`relative pt-6 pb-2 px-4 flex flex-col items-center ${sidebarCollapsed ? 'h-28' : 'h-20'}`}>
+            {/* Logo toujours centré */}
+            <BitaxLogoSVG collapsed={sidebarCollapsed} />
             
-            {/* Logo et toggle sidebar avec centrage amélioré */}
-            <div className="relative flex items-center justify-between py-6 px-4">
-              <div className={`flex-1 flex justify-center ${sidebarCollapsed ? 'mr-7' : ''}`}>
-                <BitaxLogoSVG collapsed={sidebarCollapsed} />
+            {/* Bouton toggle en position fixe en bas du logo quand collapsed */}
+            <button 
+              onClick={toggleSidebar}
+              className={`p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 
+                transition-all duration-300 focus:outline-none
+                ${sidebarCollapsed ? 'mt-1' : 'absolute right-4 top-6'}`}
+              aria-label="Toggle Sidebar"
+            >
+              <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={1.5} 
+                    d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
+                  />
+                </svg>
               </div>
-              
-              {/* Bouton toggle sidebar amélioré - sans le point bleu */}
-              <button 
-                onClick={toggleSidebar}
-                className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 transition-all duration-300 focus:outline-none absolute right-4"
-                aria-label="Toggle Sidebar"
-              >
-                <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
-                  <svg 
-                    className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={1.5} 
-                      d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
-                    />
-                  </svg>
-                </div>
-              </button>
-            </div>
-                    
-          {/* Navigation links modernisés et animés */}
-          <nav className="flex-1 py-8 overflow-y-auto scrollbar-none">
-            <div className={`px-3 space-y-2 ${sidebarCollapsed ? 'items-center' : ''}`}>
+            </button>
+          </div>
+          
+          {/* Navigation links avec hauteur fixe */}
+          <nav className="flex-1 py-3 overflow-y-auto scrollbar-none">
+            <div className={`px-3 space-y-2 ${sidebarCollapsed ? 'flex flex-col items-center' : ''}`}>
               {navLinks.map((link, index) => {
                 const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
                 return (
                   <Link 
                     key={link.name} 
                     href={link.href}
-                    className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-4'} py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
+                    className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center w-14 h-14' : 'px-4 h-12'} py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
                       ${isActive 
                         ? 'text-white' 
                         : 'text-indigo-100/70 hover:text-white'}`}
@@ -305,8 +306,8 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
                     {/* Effet de brillance animé sur hover */}
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
                     
-                    {/* Icône avec animation */}
-                    <div className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
+                    {/* Icône avec animation - toujours centrée */}
+                    <div className={`flex-shrink-0 ${sidebarCollapsed ? 'scale-125' : ''} ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
                       {link.icon}
                     </div>
                     
@@ -338,6 +339,8 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
               })}
             </div>
           </nav>
+  
+  {/* Le reste du code de la sidebar... */}
           
           {/* User profile section */}
           <div className={`p-4 border-t border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
