@@ -246,52 +246,40 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
           }}
         >
-              {/* SIDEBAR - Version améliorée avec meilleur centrage du logo */}
-              <aside 
-                className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
-                  ${sidebarCollapsed ? 'w-20' : 'w-72'} 
-                  bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
-                  overflow-hidden`}
-                style={{
-                  boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
-                }}
+          {/* Effets lumineux interactifs */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
+            <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
+            <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
+          </div>
+          
+            {/* Logo et toggle sidebar avec animation */}
+            <div className="relative flex items-center justify-between py-6 px-5">
+              <BitaxLogoSVG collapsed={sidebarCollapsed} />
+              
+              {/* Bouton toggle sidebar amélioré - sans le point bleu */}
+              <button 
+                onClick={toggleSidebar}
+                className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 transition-all duration-300 focus:outline-none"
+                aria-label="Toggle Sidebar"
               >
-                {/* Effets lumineux interactifs */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
-                  <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
-                  <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
-                </div>
-                
-                {/* Logo et toggle sidebar avec centrage amélioré */}
-                <div className="relative flex items-center justify-between py-6 px-4">
-                  <div className={`flex-1 flex justify-center ${sidebarCollapsed ? 'mr-7' : ''}`}>
-                    <BitaxLogoSVG collapsed={sidebarCollapsed} />
-                  </div>
-                  
-                  {/* Bouton toggle sidebar amélioré - sans le point bleu */}
-                  <button 
-                    onClick={toggleSidebar}
-                    className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 transition-all duration-300 focus:outline-none absolute right-4"
-                    aria-label="Toggle Sidebar"
+                <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
+                  <svg 
+                    className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
                   >
-                    <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
-                      <svg 
-                        className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={1.5} 
-                          d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
-                        />
-                      </svg>
-                    </div>
-                  </button>
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={1.5} 
+                      d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
+                    />
+                  </svg>
                 </div>
+              </button>
+            </div>
           
           {/* Navigation links modernisés et animés */}
           <nav className="flex-1 py-8 overflow-y-auto scrollbar-none">
