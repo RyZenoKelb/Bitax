@@ -278,25 +278,25 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           <div className="relative flex items-center justify-between py-6 px-5">
             <BitaxLogo collapsed={sidebarCollapsed} />
             
-            {/* Bouton toggle sidebar */}
-            <button 
-              onClick={toggleSidebar}
-              className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/30 transition-all duration-300 focus:outline-none group"
-              aria-label="Toggle Sidebar"
-            >
-              <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
-                <svg 
-                  className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} />
-                </svg>
-              </div>
-              <span className="absolute top-0 right-0 -mr-1 -mt-1 h-2 w-2 rounded-full bg-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></span>
-            </button>
-          </div>
+              {/* Bouton toggle sidebar */}
+              <button 
+                onClick={toggleSidebar}
+                className="p-1.5 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/30 transition-all duration-300 focus:outline-none group"
+                aria-label="Toggle Sidebar"
+              >
+                <div className="w-5 h-5 flex items-center justify-center overflow-hidden">
+                  <svg 
+                    className={`w-4 h-4 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} />
+                  </svg>
+                </div>
+                <span className="absolute top-0 right-0 -mr-1 -mt-1 h-2 w-2 rounded-full bg-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></span>
+              </button>
+            </div>
           
           {/* Navigation links modernisés et animés */}
           <nav className="flex-1 py-8 overflow-y-auto scrollbar-none">
