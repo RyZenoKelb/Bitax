@@ -237,156 +237,156 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       
       <div className={`min-h-screen flex ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
 
-      {/* SIDEBAR - Structure améliorée avec toggle en bas des liens */}
-      <aside 
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
-          ${sidebarCollapsed ? 'w-20' : 'w-72'} 
-          bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
-          overflow-hidden`}
-        style={{
-          boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
-        }}
-      >
-        {/* Effets lumineux interactifs */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
-          <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
-          <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
-        </div>
-        
-        {/* Header de la sidebar avec logo uniquement */}
-        <div className="flex justify-center py-6">
-          <BitaxLogoSVG collapsed={sidebarCollapsed} />
-        </div>
-        
-        {/* Navigation links */}
-        <nav className="flex-1 overflow-y-auto scrollbar-none pb-4">
-          <div className={`px-3 space-y-2.5 ${sidebarCollapsed ? 'items-center' : ''}`}>
-            {navLinks.map((link, index) => {
-              const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
-              return (
-                <Link 
-                  key={link.name} 
-                  href={link.href}
-                  className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center w-14 h-10' : 'px-4 h-10'} rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
-                    ${isActive 
-                      ? 'text-white' 
-                      : 'text-indigo-100/70 hover:text-white'}`}
-                  style={{
-                    background: isActive ? link.gradient : 'rgba(13, 18, 36, 0.6)',
-                    boxShadow: isActive ? '0 0 15px rgba(46, 86, 255, 0.3)' : 'none',
-                  }}
-                >
-                  {/* Effet de brillance animé sur hover */}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
-                  
-                  {/* Icône avec animation */}
-                  <div className={`flex-shrink-0 ${sidebarCollapsed ? 'scale-110' : ''} ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
-                    {link.icon}
-                  </div>
-                  
-                  {/* Texte qui s'affiche/disparait selon l'état de la sidebar */}
-                  {!sidebarCollapsed && (
-                    <span className="ml-3 transition-all duration-500">{link.name}</span>
-                  )}
-                  
-                  {/* Point lumineux indicateur si actif */}
-                  {isActive && !sidebarCollapsed && (
-                    <div className="absolute right-3 w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                  )}
-                  
-                  {/* Tooltip au survol quand sidebar réduite */}
-                  {sidebarCollapsed && (
-                    <div className="sidebar-tooltip absolute left-full ml-4 px-3 py-2 min-w-max rounded-lg opacity-0 group-hover:opacity-100 -translate-x-3 group-hover:translate-x-0 pointer-events-none transition-all duration-300 text-white z-50"
-                      style={{
-                        background: link.gradient,
-                        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
-                      }}
-                    >
-                      {link.name}
-                      {/* Flèche de tooltip */}
-                      <div className="absolute -left-1 top-1/2 -mt-1 w-2 h-2 rotate-45" style={{ background: isActive ? COLORS.indigo.main : COLORS.indigo.dark }}></div>
-                    </div>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
-        
-        {/* Toggle button placé entre la navigation et le profil utilisateur */}
-        <div className={`px-4 py-3 border-t border-b border-gray-800/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-end'}`}>
-          <button 
-            onClick={toggleSidebar}
-            className="p-2 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 
-              transition-all duration-300 focus:outline-none group"
-            aria-label="Toggle Sidebar"
-          >
-            <div className="relative w-5 h-5 flex items-center justify-center">
-              <svg 
-                className={`w-5 h-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
+    {/* SIDEBAR - Structure améliorée avec toggle en bas des liens */}
+    <aside 
+      className={`fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 ease-in-out backdrop-blur-xl
+        ${sidebarCollapsed ? 'w-20' : 'w-72'} 
+        bg-gradient-to-b from-bg-darker via-bg-dark to-bg-darker border-r border-indigo-900/40
+        overflow-hidden`}
+      style={{
+        boxShadow: '0 0 20px rgba(46, 86, 255, 0.2)',
+      }}
+    >
+      {/* Effets lumineux interactifs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
+        <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-indigo-500/0 via-indigo-500/30 to-indigo-500/0"></div>
+        <div className="absolute -bottom-5 -left-5 w-40 h-40 rounded-full bg-purple-600/20 blur-3xl"></div>
+      </div>
+      
+      {/* Header de la sidebar avec logo uniquement */}
+      <div className="flex justify-center py-6">
+        <BitaxLogoSVG collapsed={sidebarCollapsed} />
+      </div>
+      
+      {/* Navigation links */}
+      <nav className="flex-1 overflow-y-auto scrollbar-none pb-4">
+        <div className={`px-3 space-y-2.5 ${sidebarCollapsed ? 'items-center' : ''}`}>
+          {navLinks.map((link, index) => {
+            const isActive = router.pathname === link.href || (link.href === '/dashboard' && router.pathname === '/');
+            return (
+              <Link 
+                key={link.name} 
+                href={link.href}
+                className={`sidebar-link group relative flex items-center ${sidebarCollapsed ? 'justify-center w-14 h-10' : 'px-4 h-10'} rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02]
+                  ${isActive 
+                    ? 'text-white' 
+                    : 'text-indigo-100/70 hover:text-white'}`}
+                style={{
+                  background: isActive ? link.gradient : 'rgba(13, 18, 36, 0.6)',
+                  boxShadow: isActive ? '0 0 15px rgba(46, 86, 255, 0.3)' : 'none',
+                }}
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={1.5} 
-                  d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
-                /> 
-              </svg>
-              
-              {/* Petit effet lumineux sur hover */}
-              <div className="absolute inset-0 rounded-full bg-indigo-400/0 group-hover:bg-indigo-400/10 transition-colors"></div>
-            </div>
-          </button>
+                {/* Effet de brillance animé sur hover */}
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer pointer-events-none"></div>
+                
+                {/* Icône avec animation */}
+                <div className={`flex-shrink-0 ${sidebarCollapsed ? 'scale-110' : ''} ${isActive ? 'text-white' : 'text-indigo-300 group-hover:text-white'} transition-all duration-300 hover:animate-pulse`}>
+                  {link.icon}
+                </div>
+                
+                {/* Texte qui s'affiche/disparait selon l'état de la sidebar */}
+                {!sidebarCollapsed && (
+                  <span className="ml-3 transition-all duration-500">{link.name}</span>
+                )}
+                
+                {/* Point lumineux indicateur si actif */}
+                {isActive && !sidebarCollapsed && (
+                  <div className="absolute right-3 w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                )}
+                
+                {/* Tooltip au survol quand sidebar réduite */}
+                {sidebarCollapsed && (
+                  <div className="sidebar-tooltip absolute left-full ml-4 px-3 py-2 min-w-max rounded-lg opacity-0 group-hover:opacity-100 -translate-x-3 group-hover:translate-x-0 pointer-events-none transition-all duration-300 text-white z-50"
+                    style={{
+                      background: link.gradient,
+                      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+                    }}
+                  >
+                    {link.name}
+                    {/* Flèche de tooltip */}
+                    <div className="absolute -left-1 top-1/2 -mt-1 w-2 h-2 rotate-45" style={{ background: isActive ? COLORS.indigo.main : COLORS.indigo.dark }}></div>
+                  </div>
+                )}
+              </Link>
+            );
+          })}
         </div>
-        
-        {/* User profile section */}
-        <div className={`p-4 border-b border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
-          <button 
-            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="relative group flex items-center focus:outline-none"
-          >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
+      </nav>
+      
+      {/* Toggle button placé entre la navigation et le profil utilisateur */}
+      <div className={`px-4 py-3 border-t border-b border-gray-800/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-end'}`}>
+        <button 
+          onClick={toggleSidebar}
+          className="p-2 rounded-lg text-indigo-300/80 hover:text-white hover:bg-indigo-900/40 
+            transition-all duration-300 focus:outline-none group"
+          aria-label="Toggle Sidebar"
+        >
+          <div className="relative w-5 h-5 flex items-center justify-center">
+            <svg 
+              className={`w-5 h-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : 'rotate-0'}`} 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={1.5} 
+                d={sidebarCollapsed ? "M13 5l7 7-7 7M5 5l7 7-7 7" : "M11 19l-7-7 7-7M19 19l-7-7 7-7"} 
+              />
+            </svg>
             
-            {!sidebarCollapsed && (
-              <div className="ml-3">
-                <p className="text-sm font-medium text-white">{user?.name}</p>
-                <p className="text-xs text-gray-400">{user?.email}</p>
-              </div>
-            )}
-            
-            {sidebarCollapsed && (
-              <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
-                {user?.name}<br/>{user?.email}
-              </span>
-            )}
-          </button>
+            {/* Petit effet lumineux sur hover */}
+            <div className="absolute inset-0 rounded-full bg-indigo-400/0 group-hover:bg-indigo-400/10 transition-colors"></div>
+          </div>
+        </button>
+      </div>
+      
+      {/* User profile section */}
+      <div className={`p-4 border-b border-gray-800/30 dark:border-gray-800/30 light:border-gray-200/30 flex ${sidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}>
+        <button 
+          onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+          className="relative group flex items-center focus:outline-none"
+        >
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 flex items-center justify-center text-white shadow-md">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
           
           {!sidebarCollapsed && (
-            <button 
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
-            </button>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-white">{user?.name}</p>
+              <p className="text-xs text-gray-400">{user?.email}</p>
+            </div>
           )}
-        </div>
+          
+          {sidebarCollapsed && (
+            <span className="absolute left-full ml-6 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50 whitespace-nowrap min:w-max">
+              {user?.name}<br/>{user?.email}
+            </span>
+          )}
+        </button>
+        
+        {!sidebarCollapsed && (
+          <button 
+            onClick={toggleTheme}
+            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            )}
+          </button>
+        )}
+      </div>
         </aside>
         
         {/* Menu user dropdown */}
@@ -553,12 +553,12 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
         
         {/* Main content */}
         <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
-          {/* SUPPRIMER TOUT CE BLOC DEPUIS ICI... */}
           {/* Background effects améliorés */}
           <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
             {/* Gradient orbs animés */}
             <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-b from-primary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-2/3 h-2/3 bg-gradient-to-t from-secondary-900/10 via-transparent to-transparent animate-float opacity-20 blur-3xl"></div>
+            
             
             {/* Particules/étoiles */}
             <div className="stars-container absolute inset-0"></div>
@@ -578,9 +578,8 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
               </svg>
             </div>
           </div>
-          {/* ...JUSQU'ICI! SUPPRIMER TOUT CE QUI PRÉCÈDE */}
           
-          {/* Contenu principal avec animation d'entrée - GARDER CETTE PARTIE */}
+          {/* Contenu principal avec animation d'entrée */}
           <main className="flex-grow py-6 px-4 sm:px-6 md:px-8 transition-all duration-300 relative">
             <div className="max-w-7xl mx-auto relative z-10">
               {isLoaded ? (
@@ -595,7 +594,7 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
             </div>
           </main>
           
-          {/* Footer compact modernisé - GARDER CETTE PARTIE */}
+          {/* Footer compact modernisé */}
           <footer className="relative z-10 backdrop-blur-xl bg-bg-darker/60 border-t border-indigo-900/20">
             <div className="max-w-7xl mx-auto py-4 px-6 flex flex-wrap justify-between items-center">
               {/* Logo et copyright minimaliste */}
@@ -691,71 +690,10 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
   );
 };
 
-// Dans _app.tsx, ajoutez ce code juste après la balise <body> et avant le wrapper principal de l'application
-
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
       <DevModeProvider>
-        {/* Background global fixé au niveau racine */}
-        <div className="fixed inset-0 w-full h-full -z-50 pointer-events-none overflow-hidden">
-          {/* Gradient principal en arrière-plan */}
-          <div className="absolute inset-0 bg-gradient-to-br from-bg-darker via-gray-900 to-bg-darker opacity-90"></div>
-          
-          {/* Lignes de grille élégantes */}
-          <div className="absolute inset-0 opacity-[0.07]">
-            <div className="absolute inset-0" 
-              style={{
-                backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px)',
-                backgroundSize: '60px 60px',
-                backgroundPosition: 'center center'
-              }}>
-            </div>
-          </div>
-          
-          {/* Cercles lumineux avec effet de flou */}
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/10 rounded-full filter blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-cyan-600/10 rounded-full filter blur-3xl"></div>
-          
-          {/* Formes géométriques avec lueur */}
-          <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 opacity-20">
-            <svg width="400" height="400" viewBox="0 0 100 100" fill="none">
-              <polygon points="50,0 100,50 50,100 0,50" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="0.5" fill="none" className="animate-pulse-slow"></polygon>
-            </svg>
-          </div>
-          <div className="absolute bottom-1/4 right-1/4 transform translate-x-1/2 translate-y-1/2 opacity-20">
-            <svg width="300" height="300" viewBox="0 0 100 100" fill="none">
-              <circle cx="50" cy="50" r="40" stroke="rgba(14, 165, 233, 0.3)" strokeWidth="0.5" fill="none" className="animate-pulse-slow"></circle>
-            </svg>
-          </div>
-          
-          {/* Points lumineux aléatoires */}
-          <div className="absolute inset-0 overflow-hidden">
-            {[...Array(20)].map((_, i) => (
-              <div 
-                key={i}
-                className="absolute w-1 h-1 rounded-full bg-white opacity-30 animate-ping-slow"
-                style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${3 + Math.random() * 7}s`
-                }}
-              ></div>
-            ))}
-          </div>
-          
-          {/* Effet de vagues en bas de page */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 opacity-10">
-            <svg className="w-full h-full" viewBox="0 0 1200 120" preserveAspectRatio="none">
-              <path 
-                d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" 
-                fill="rgba(99, 102, 241, 0.5)"
-              ></path>
-            </svg>
-          </div>
-        </div>
-
         <AppContent Component={Component} pageProps={pageProps} />
         <DevModeIndicator />
       </DevModeProvider>
