@@ -22,29 +22,6 @@ declare module 'react' {
   }
 }
 
-// Logo using the image from public/bitaxlogo.png with a subtle hover effect
-const BitaxLogo = ({ collapsed = false, isFooter = false }) => {
-  // Improved sizing with different treatments for sidebar vs footer
-  const sizeClass = isFooter
-    ? "h-8 w-auto" // Significantly smaller size for footer
-    : collapsed 
-      ? "h-14 w-auto" // Larger size when sidebar is collapsed
-      : "h-16 w-auto"; // Even larger when sidebar is expanded
-  
-  // Better centering within the container with enhanced focus removal
-  const containerClass = "flex justify-center items-center w-full py-2 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0";
-  
-  return (
-    <Link href="/" className={containerClass}>
-      <img 
-        src="/bitaxlogo.png" 
-        alt="Bitax Logo" 
-        className={`${sizeClass} transition-all duration-300`}
-        draggable="false"
-      />
-    </Link>
-  );
-};
 
 const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']; pageProps: AppProps['pageProps'] }) => {
   // Obtenir les données de l'utilisateur depuis la session
