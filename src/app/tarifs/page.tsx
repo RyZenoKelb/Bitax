@@ -327,20 +327,19 @@ export default function PricingPage() {
         </div>
       </motion.section>
       
-      {/* Section Plans de tarification - affichage immédiat */}
+      {/* Section Plans de tarification - affichage immédiat avec animation subtile */}
       <motion.section 
         className="py-8 pb-24 relative mt-16"
         style={{ y: y2 }}
-        initial={{ opacity: 1 }}
-        animate={{ opacity: 1 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Forfait gratuit */}
             <motion.div 
               className="relative bg-white/5 backdrop-blur-md rounded-xl overflow-hidden border border-white/10 shadow-xl p-6 flex flex-col h-full"
-              initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
               whileHover={{ y: -10 }}
             >
               <h3 className="text-xl font-bold mb-2 text-white">Gratuit</h3>
@@ -389,8 +388,9 @@ export default function PricingPage() {
             {/* Forfait Premium */}
             <motion.div 
               className="relative bg-gradient-to-b from-indigo-900/40 to-purple-900/40 backdrop-blur-md rounded-xl overflow-hidden border border-indigo-500/30 shadow-2xl p-6 flex flex-col h-full transform md:-translate-y-4 z-10"
-              initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               whileHover={{ y: -14 }}
             >
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
@@ -451,8 +451,9 @@ export default function PricingPage() {
             {/* Forfait Entreprise */}
             <motion.div 
               className="relative bg-white/5 backdrop-blur-md rounded-xl overflow-hidden border border-white/10 shadow-xl p-6 flex flex-col h-full"
-              initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               whileHover={{ y: -10 }}
             >
               <h3 className="text-xl font-bold mb-2 text-white">Entreprise</h3>
