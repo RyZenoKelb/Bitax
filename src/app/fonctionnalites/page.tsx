@@ -317,10 +317,12 @@ export default function FeaturesPage() {
         </div>
       </motion.section>
       
-      {/* Section fonctionnalités principales avec motion */}
+      {/* Section fonctionnalités principales avec motion - ajusté pour affichage immédiat */}
       <motion.section 
-        className="py-16 relative"
+        className="py-16 relative mt-16"
         style={{ y: y2 }}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -356,10 +358,8 @@ export default function FeaturesPage() {
               <motion.div 
                 key={index} 
                 className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10 shadow-xl hover:shadow-indigo-500/10 transform transition-all hover:-translate-y-2 duration-300"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 * index, duration: 0.5 }}
+                initial={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
               >
                 <div className="w-16 h-16 rounded-xl bg-indigo-900/50 flex items-center justify-center mb-6">
                   {feature.icon}
