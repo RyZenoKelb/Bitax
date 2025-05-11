@@ -10,7 +10,6 @@ const publicRoutes = [
   "/invite",  // Pour permettre l'accès aux liens d'invitation
   "/api/auth", 
   "/guide", 
-  "/pricing", 
   "/tarifs", 
   "/fonctionnalites", 
   "/support",
