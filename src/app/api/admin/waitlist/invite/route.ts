@@ -2,20 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { isAdmin } from "@/lib/admin-auth";
 import { randomBytes } from "crypto";
-
-// Middleware pour vérifier si l'utilisateur est un administrateur
-async function isAdmin() {
-  const session = await getServerSession(authOptions);
-  
-  // Vérifier l'authentification
-  if (!session?.user) {
-    return false;
-  }
-  
-  // Vérifier si l'utilisateur est administrateur (à adapter selon votre système)
-  return session.user.email === "admin@example.com";
-}
 
 // POST - Envoyer une invitation à un utilisateur en waiting list
 export async function POST(req: Request) {
@@ -80,6 +68,7 @@ export async function POST(req: Request) {
       success: true,
       message: "Invitation envoyée avec succès",
       entry: updatedEntry,
+      inviteUrl: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/invite/${inviteCode}`
     }, { status: 200 });
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'invitation:", error);
