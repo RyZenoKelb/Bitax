@@ -12,9 +12,6 @@ const publicRoutes = [
   "/tarifs", 
   "/fonctionnalites", 
   "/support",
-  "/register-alt",
-  "/api-test",
-  "/register-debug"
 ];
 
 const authRoutes = ["/login"];
