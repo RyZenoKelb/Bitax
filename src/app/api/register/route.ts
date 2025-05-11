@@ -79,7 +79,7 @@ export async function POST(req: Request) {
       }
       
       // Vérifier si le code d'invitation est valide
-      const invitation = await prisma.WaitingList.findFirst({
+      const invitation = await prisma.waitingList.findFirst({
         where: {
           inviteCode,
           invited: true,
