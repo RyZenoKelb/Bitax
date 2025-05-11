@@ -79,11 +79,11 @@ export async function POST(req: Request) {
       }
       
       // Vérifier si le code d'invitation est valide
-      const invitation = await prisma.waitingList.findFirst({
+      const invitation = await (prisma as any).waitingList.findFirst({
         where: {
           inviteCode,
           invited: true,
-          email: email // L'email doit correspondre à celui de l'invitation
+          email: email
         }
       });
       
