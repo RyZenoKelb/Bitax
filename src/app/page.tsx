@@ -159,7 +159,7 @@ export default function Home() {
       for (let i = 0; i < hexCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const size = Math.random() * 10 + 20; // Hexagones plus grands
+        const size = Math.random() * 25 + 20; // Hexagones plus grands
         const opacity = Math.random() * 0.3 + 0.15;
         const speedX = (Math.random() - 0.5) * 0.4;
         const speedY = (Math.random() - 0.5) * 0.4;
