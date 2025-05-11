@@ -3,12 +3,11 @@ import { NextResponse } from "next/server";
 import { hash } from "bcryptjs"; // Changé de bcrypt à bcryptjs
 import { z } from "zod";
 
-// Validation schema - avec le champ inviteCode optionnel pour la beta
+// Validation schema
 const UserSchema = z.object({
   name: z.string().min(2, "Le nom doit comporter au moins 2 caractères"),
   email: z.string().email("Email invalide"),
   password: z.string().min(8, "Le mot de passe doit comporter au moins 8 caractères"),
-  inviteCode: z.string().optional(), // Code d'invitation pour la beta
 });
 
 // Fonction helper pour le logging
@@ -59,44 +58,8 @@ export async function POST(req: Request) {
       );
     }
     
-    const { name, email, password, inviteCode } = body;
+    const { name, email, password } = body;
     logDebug(`Tentative d'inscription pour: ${email}`);
-    
-    // En phase beta: vérifier si un code d'invitation valide est fourni
-    // sauf si l'invitation n'est pas requise (pour les administrateurs)
-    const betaPhase = true; // Définir sur true pour activer la phase beta
-    
-    if (betaPhase) {
-      logDebug('Phase beta active - vérification du code d\'invitation');
-      
-      // Si aucun code d'invitation n'est fourni
-      if (!inviteCode) {
-        logDebug('Pas de code d\'invitation fourni');
-        return NextResponse.json(
-          { error: "Un code d'invitation est requis pour créer un compte pendant la beta" },
-          { status: 403 }
-        );
-      }
-      
-      // Vérifier si le code d'invitation est valide
-      const invitation = await (prisma as any).waitingList.findFirst({
-        where: {
-          inviteCode,
-          invited: true,
-          email: email
-        }
-      });
-      
-      if (!invitation) {
-        logDebug('Code d\'invitation invalide ou ne correspondant pas à l\'email');
-        return NextResponse.json(
-          { error: "Code d'invitation invalide ou expiré" },
-          { status: 400 }
-        );
-      }
-      
-      logDebug('Code d\'invitation valide pour l\'email:', email);
-    }
     
     // Vérifier si l'utilisateur existe déjà
     const existingUser = await prisma.user.findUnique({
@@ -129,15 +92,6 @@ export async function POST(req: Request) {
     
     logDebug('Utilisateur créé avec succès');
     
-    // Si l'utilisateur s'est inscrit avec un code d'invitation, mettre à jour l'entrée de la waiting list
-    if (inviteCode) {
-      logDebug('Mise à jour de l\'entrée de waiting list avec l\'ID utilisateur');
-      await (prisma as any).waitingList.update({
-        where: { inviteCode },
-        data: { userId: user.id }
-      });
-    }
-
     // Retourner une réponse avec les informations non sensibles
     return NextResponse.json(
       { 
