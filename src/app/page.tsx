@@ -743,7 +743,7 @@ export default function Home() {
                 </Link>
               ))}
               
-              {/* Boutons Connexion/S'inscrire en français - Design plus pro */}
+              {/* Boutons Connexion/S'inscrire en français - nouveau design */}
               <div className="flex items-center space-x-3 ml-6">
                 <Link 
                   href="/login" 
@@ -754,9 +754,10 @@ export default function Home() {
                 
                 <Link 
                   href="/register" 
-                  className="px-6 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/40"
+                  className="px-6 py-2 rounded-lg relative overflow-hidden group"
                 >
-                  S'inscrire
+                  <span className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 transition-all duration-300 group-hover:from-violet-500 group-hover:to-indigo-500"></span>
+                  <span className="relative text-white font-medium">S'inscrire</span>
                 </Link>
               </div>
             </nav>
