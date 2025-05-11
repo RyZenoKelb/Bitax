@@ -628,126 +628,126 @@ export default function Home() {
   
   // Données pour les fonctionnalités
   // Données pour les fonctionnalités
-const features: Feature[] = [
-  {
-    id: 1,
-    title: "Connectez vos wallets",
-    description: "Intégration sécurisée avec Metamask, Coinbase Wallet et autres portefeuilles populaires.",
-    icon: (
-      <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-      </svg>
-    )
-  },
-  {
-    id: 2,
-    title: "Scannez vos transactions",
-    description: "Analyse automatique de vos transactions sur Ethereum, Polygon, Arbitrum, Optimism et Base.",
-    icon: (
-      <svg className="w-10 h-10 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-      </svg>
-    )
-  },
-  {
-    id: 3,
-    title: "Visualisez vos données",
-    description: "Graphiques interactifs et tableaux de bord pour suivre l'évolution de votre portefeuille.",
-    icon: (
-      <svg className="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-      </svg>
-    )
-  },
-  {
-    id: 4,
-    title: "Générez vos rapports fiscaux",
-    description: "Création automatique de rapports conformes à la législation fiscale française.",
-    icon: (
-      <svg className="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    )
-  }
-];
+        const features: Feature[] = [
+          {
+            id: 1,
+            title: "Connectez vos wallets",
+            description: "Intégration sécurisée avec Metamask, Coinbase Wallet et autres portefeuilles populaires.",
+            icon: (
+              <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+            )
+          },
+          {
+            id: 2,
+            title: "Scannez vos transactions",
+            description: "Analyse automatique de vos transactions sur Ethereum, Polygon, Arbitrum, Optimism et Base.",
+            icon: (
+              <svg className="w-10 h-10 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+            )
+          },
+          {
+            id: 3,
+            title: "Visualisez vos données",
+            description: "Graphiques interactifs et tableaux de bord pour suivre l'évolution de votre portefeuille.",
+            icon: (
+              <svg className="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+              </svg>
+            )
+          },
+          {
+            id: 4,
+            title: "Générez vos rapports fiscaux",
+            description: "Création automatique de rapports conformes à la législation fiscale française.",
+            icon: (
+              <svg className="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            )
+          }
+        ];
 
-// Données pour les étapes du processus (section "Comment ça marche")
-const howItWorksSteps = [
-  {
-    step: 1,
-    title: "Connectez votre wallet",
-    description: "Liez en toute sécurité votre wallet crypto via Web3 sans partager vos clés privées.",
-    icon: (
-      <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-      </svg>
-    )
-  },
-  {
-    step: 2,
-    title: "Scannez vos transactions",
-    description: "Bitax récupère automatiquement l'historique de vos transactions sur plusieurs blockchains.",
-    icon: (
-      <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      </svg>
-    )
-  },
-  {
-    step: 3,
-    title: "Analysez vos données",
-    description: "Visualisez vos transactions et laissez notre algorithme calculer vos plus-values.",
-    icon: (
-      <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    )
-  },
-  {
-    step: 4,
-    title: "Générez votre rapport",
-    description: "Obtenez un rapport fiscal complet prêt à être utilisé pour votre déclaration d'impôts.",
-    icon: (
-      <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    )
-  }
-];
+        // Données pour les étapes du processus (section "Comment ça marche")
+        const howItWorksSteps = [
+          {
+            step: 1,
+            title: "Connectez votre wallet",
+            description: "Liez en toute sécurité votre wallet crypto via Web3 sans partager vos clés privées.",
+            icon: (
+              <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            )
+          },
+          {
+            step: 2,
+            title: "Scannez vos transactions",
+            description: "Bitax récupère automatiquement l'historique de vos transactions sur plusieurs blockchains.",
+            icon: (
+              <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            )
+          },
+          {
+            step: 3,
+            title: "Analysez vos données",
+            description: "Visualisez vos transactions et laissez notre algorithme calculer vos plus-values.",
+            icon: (
+              <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            )
+          },
+          {
+            step: 4,
+            title: "Générez votre rapport",
+            description: "Obtenez un rapport fiscal complet prêt à être utilisé pour votre déclaration d'impôts.",
+            icon: (
+              <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            )
+          }
+        ];
 
-// Dans la section Comment ça marche, utilisez howItWorksSteps au lieu de combiner avec features
-/* ... */
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-    {howItWorksSteps.map((item, index) => (
-      <motion.div 
-        key={index}
-        className="flex flex-col items-center text-center relative"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.2 * index, duration: 0.5 }}
-      >
-        <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
-          <div className="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center">
-            <div className="text-white text-2xl font-bold">{item.step}</div>
-          </div>
-        </div>
-        
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 h-full">
-          <div className="mb-4">
-            {item.icon}
-          </div>
-          <h3 className="text-xl font-bold text-white mb-2">
-            {item.title}
-          </h3>
-          <p className="text-blue-100/70">
-            {item.description}
-          </p>
-        </div>
-      </motion.div>
-    ))}
-  </div>
+        // Dans la section Comment ça marche, utilisez howItWorksSteps au lieu de combiner avec features
+        /* ... */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+            {howItWorksSteps.map((item, index) => (
+              <motion.div 
+                key={index}
+                className="flex flex-col items-center text-center relative"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 * index, duration: 0.5 }}
+              >
+                <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
+                  <div className="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center">
+                    <div className="text-white text-2xl font-bold">{item.step}</div>
+                  </div>
+                </div>
+                
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 h-full">
+                  <div className="mb-4">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-blue-100/70">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+            </div>
           </div>
         </div>
       </motion.section>
