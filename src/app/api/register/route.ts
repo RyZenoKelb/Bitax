@@ -136,7 +136,8 @@ export async function POST(req: Request) {
         where: { inviteCode },
         data: { userId: user.id }
       });
-    
+    }
+
     // Retourner une réponse avec les informations non sensibles
     return NextResponse.json(
       { 
