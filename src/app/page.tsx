@@ -810,11 +810,11 @@ export default function Home() {
                   </Link>
                   
                   <Link 
-                    href="/register" 
+                    href="/waitlist" 
                     className="block py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-lg"
                     onClick={() => setMenuOpen(false)}
                   >
-                    S'inscrire
+                    Rejoindre la beta
                   </Link>
                 </div>
               </div>
