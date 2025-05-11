@@ -743,14 +743,15 @@ export default function Home() {
                   </h3>
                   <p className="text-blue-100/70">
                     {item.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
       </motion.section>
+    </div>
       
       {/* Section Avantages avec effet parallaxe */}
       <motion.section 
