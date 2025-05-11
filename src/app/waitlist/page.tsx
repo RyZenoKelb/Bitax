@@ -573,7 +573,7 @@ export default function WaitingListPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="bg-indigo-900/20 px-6 py-4 border-b border-white/10">
-              <h3 className="text-lg font-medium text-white">Questions fréquentes sur la beta</h3>
+              <h3 className="text-lg font-medium text-white">FAQ sur la beta</h3>
             </div>
             <div className="bg-gray-800/20 divide-y divide-white/5">
               <div className="px-6 py-4">
