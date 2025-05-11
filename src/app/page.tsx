@@ -2085,4 +2085,60 @@ export default function Home() {
                   description: "Bitax récupère automatiquement l'historique de vos transactions sur plusieurs blockchains.",
                   icon: (
                     <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="roun
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )
+                },
+                {
+                  step: 3,
+                  title: "Analysez vos données",
+                  description: "Visualisez vos transactions et laissez notre algorithme calculer vos plus-values.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  )
+                },
+                {
+                  step: 4,
+                  title: "Générez votre rapport",
+                  description: "Obtenez un rapport fiscal complet prêt à être utilisé pour votre déclaration d'impôts.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  )
+                }
+              ].map((item, index) => (
+                <motion.div 
+                  key={index}
+                  className="flex flex-col items-center text-center relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 * index, duration: 0.5 }}
+                >
+                  <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
+                    <div className="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center">
+                      <div className="text-white text-2xl font-bold">{item.step}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 h-full">
+                    <div className="mb-4">
+                      {item.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-blue-100/70">
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.section>
