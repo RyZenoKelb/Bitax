@@ -881,7 +881,7 @@ export default function Home() {
             >
               {/* Bouton principal avec design moderne */}
               <Link 
-                href="/register" 
+                href="/waitlist" 
                 className="relative px-8 py-3.5 rounded-lg overflow-hidden group"
               >
                 <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600"></span>
