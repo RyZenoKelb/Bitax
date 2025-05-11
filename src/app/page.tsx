@@ -878,12 +878,19 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              {/* Bouton principal avec animation améliorée */}
+              {/* Bouton principal avec design moderne */}
               <Link 
                 href="/register" 
-                className="px-8 py-3.5 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+                className="relative px-8 py-3.5 rounded-lg overflow-hidden group"
               >
-                Commencer gratuitement
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600"></span>
+                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative flex items-center justify-center text-white font-semibold">
+                  <span>Participer à la beta</span>
+                  <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
               </Link>
               
               {/* Bouton secondaire glassmorphism */}
