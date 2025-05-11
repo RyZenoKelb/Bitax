@@ -36,16 +36,6 @@ const ProgressStep = ({ number, title, isActive, isCompleted }: {
   );
 };
 
-// Composant de badge qui montre le nombre de personnes dans la waiting list
-const WaitingCountBadge = ({ count }: { count: number }) => {
-  return (
-    <div className="absolute -top-3 -right-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full px-3 py-1 text-sm font-medium text-white shadow-lg flex items-center">
-      <span>{count}+</span>
-      <span className="ml-1 text-xs opacity-80">personnes en attente</span>
-    </div>
-  );
-};
-
 // Les étapes du formulaire
 enum WaitingListStep {
   INFORMATION,
@@ -65,7 +55,7 @@ export default function WaitingListPage() {
   const [errors, setErrors] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [waitingCount, setWaitingCount] = useState(234); // Nombre simulé de personnes en attente
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
 
   // Options de compétences
   const skillOptions = [
@@ -165,6 +155,25 @@ export default function WaitingListPage() {
     setCurrentStep((prev) => prev - 1);
   };
 
+  // Récupérer le nombre d'inscrits à la waiting list (optionnel)
+  useEffect(() => {
+    const fetchWaitlistCount = async () => {
+      try {
+        const response = await fetch("/api/waitlist/count");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.count) {
+            setWaitlistCount(data.count);
+          }
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération du nombre d'inscrits:", error);
+      }
+    };
+    
+    fetchWaitlistCount();
+  }, []);
+
   // Soumission du formulaire
   const submitForm = async () => {
     if (validateStep()) {
@@ -184,7 +193,11 @@ export default function WaitingListPage() {
         }
 
         setSubmitSuccess(true);
-        setWaitingCount(prev => prev + 1); // Incrémente le compteur
+        
+        // Incrémente le compteur si on en a un
+        if (waitlistCount !== null) {
+          setWaitlistCount(waitlistCount + 1);
+        }
       } catch (error) {
         console.error("Erreur:", error);
         setErrors({ submit: "Une erreur est survenue. Veuillez réessayer." });
@@ -193,21 +206,6 @@ export default function WaitingListPage() {
       }
     }
   };
-
-  // Effet pour l'animation du compteur
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setWaitingCount(c => {
-        // 0.1% de chance d'ajouter une personne toutes les 10 secondes
-        if (Math.random() < 0.001) {
-          return c + 1;
-        }
-        return c;
-      });
-    }, 10000);
-    
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900">
@@ -269,26 +267,31 @@ export default function WaitingListPage() {
               number={2} 
               title="Motivation" 
               isActive={currentStep === WaitingListStep.MOTIVATION} 
-              isCompleted={currentStep > WaitingListStep.MOTIVATION}
+              isCompleted={currentStep > WaitlingListStep.MOTIVATION}
             />
             <div className="border-t-2 border-dashed border-gray-700 flex-grow mt-5 mx-4"></div>
             <ProgressStep 
               number={3} 
               title="Confirmation" 
-              isActive={currentStep === WaitingListStep.CONFIRMATION} 
+              isActive={currentStep === WaitlingListStep.CONFIRMATION} 
               isCompleted={submitSuccess}
             />
           </motion.div>
 
           {/* Formulaire */}
           <div className="relative bg-gray-800/30 backdrop-blur-sm border border-white/10 rounded-2xl shadow-2xl overflow-hidden mb-12">
-            {/* Badge avec le nombre de personnes en waiting list */}
-            <WaitingCountBadge count={waitingCount} />
+            {/* Badge avec le nombre de personnes en waiting list (si disponible) */}
+            {waitlistCount && waitlistCount > 0 && (
+              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full px-3 py-1 text-sm font-medium text-white shadow-lg flex items-center">
+                <span>{waitlistCount}+</span>
+                <span className="ml-1 text-xs opacity-80">personnes en attente</span>
+              </div>
+            )}
             
             {/* Contenu du formulaire */}
             <div className="p-6 sm:p-8">
               {/* Étape 1: Informations */}
-              {currentStep === WaitingListStep.INFORMATION && (
+              {currentStep === WaitlingListStep.INFORMATION && (
                 <motion.div
                   variants={container}
                   initial="hidden"
@@ -308,7 +311,7 @@ export default function WaitingListPage() {
                       className={`w-full px-4 py-3 bg-gray-900/50 border ${
                         errors.name ? "border-red-500" : "border-gray-700"
                       } rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white`}
-                      placeholder="John Doe"
+                      placeholder="Satoshi Nakamoto"
                     />
                     {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
                   </motion.div>
@@ -326,7 +329,7 @@ export default function WaitingListPage() {
                       className={`w-full px-4 py-3 bg-gray-900/50 border ${
                         errors.email ? "border-red-500" : "border-gray-700"
                       } rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white`}
-                      placeholder="john.doe@example.com"
+                      placeholder="satoshi@crypto.com"
                     />
                     {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
                   </motion.div>
@@ -368,7 +371,7 @@ export default function WaitingListPage() {
               )}
 
               {/* Étape 2: Motivation */}
-              {currentStep === WaitingListStep.MOTIVATION && (
+              {currentStep === WaitlingListStep.MOTIVATION && (
                 <motion.div
                   variants={container}
                   initial="hidden"
@@ -411,7 +414,7 @@ export default function WaitingListPage() {
               )}
 
               {/* Étape 3: Récapitulatif et Confirmation */}
-              {currentStep === WaitingListStep.CONFIRMATION && !submitSuccess && (
+              {currentStep === WaitlingListStep.CONFIRMATION && !submitSuccess && (
                 <motion.div
                   variants={container}
                   initial="hidden"
@@ -575,7 +578,7 @@ export default function WaitingListPage() {
             <div className="bg-gray-800/20 divide-y divide-white/5">
               <div className="px-6 py-4">
                 <h4 className="text-white font-medium mb-2">Quand serai-je accepté dans la beta ?</h4>
-                <p className="text-gray-400 text-sm">Les invitations sont envoyées par vagues, généralement dans les 1 à 2 jours suivant votre inscription. Nous privilégions les profils variés et complémentaires.</p>
+                <p className="text-gray-400 text-sm">Les invitations sont envoyées par vagues, généralement dans les 2 semaines suivant votre inscription. Nous privilégions les profils variés et complémentaires.</p>
               </div>
               <div className="px-6 py-4">
                 <h4 className="text-white font-medium mb-2">Combien de temps durera la phase beta ?</h4>
