@@ -1566,4 +1566,4 @@ export default function Home() {
         className="py-20 relative"
         style={{ y: y3 }}
       >
-        <div className="absolute top-0
+        
