@@ -147,7 +147,7 @@ model Subscription {
 }
 
 // Modèle pour gérer la liste d'attente (waiting list)
-model waitingList {
+model WaitingList {
   id          String    @id @default(cuid())
   email       String    @unique
   name        String
