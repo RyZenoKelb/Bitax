@@ -174,7 +174,7 @@ export default function Home() {
           x, y, size, baseSize, opacity, speedX, speedY, 
           pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
           rotation, rotationSpeed, 
-          isActive: Math.random() > 0.7 // Certains hexagones sont "actifs"
+          isActive: Math.random() > 0.1 // Certains hexagones sont "actifs"
         });
       }
     };
