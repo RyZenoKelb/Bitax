@@ -183,7 +183,7 @@ export default function Home() {
     const createConnections = () => {
       for (let i = 0; i < hexagons.length; i++) {
         for (let j = i + 1; j < hexagons.length; j++) {
-          if (Math.random() > 0.5) {
+          if (Math.random() > 0.1) {
             connections.push({
               from: i,
               to: j,
