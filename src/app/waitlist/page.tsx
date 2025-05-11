@@ -282,11 +282,11 @@ export default function WaitingListPage() {
           <div className="relative bg-gray-800/30 backdrop-blur-sm border border-white/10 rounded-2xl shadow-2xl overflow-hidden mb-12">
             {/* Badge avec le nombre de personnes en waiting list (si disponible) */}
             {waitlistCount && waitlistCount > 0 && (
-              <div className="absolute -top-3 -right-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full px-3 py-1 text-sm font-medium text-white shadow-lg flex items-center">
-                <span>{waitlistCount}+</span>
-                <span className="ml-1 text-xs opacity-80">personnes en attente</span>
-              </div>
-            )}
+                <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full px-3 py-1 text-sm font-medium text-white shadow-lg flex items-center">
+                    <span>{waitlistCount}+</span>
+                    <span className="ml-1 text-xs opacity-80">personnes en attente</span>
+                </div>
+                )}
             
             {/* Contenu du formulaire */}
             <div className="p-6 sm:p-8">
