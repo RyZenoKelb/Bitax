@@ -1461,40 +1461,47 @@ export default function Home() {
         style={{ y: y1 }}
       >
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 px-4 sm:px-6 lg:px-8 items-center">
-          {/* Texte CTA */}
-          <div>
-            <motion.h2 
-              className="text-3xl sm:text-4xl font-bold mb-4 text-white bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              Simplifiez votre fiscalité crypto dès aujourd'hui
-            </motion.h2>
-            <motion.p 
-              className="text-xl text-blue-100/80 mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              Rejoignez les milliers d'utilisateurs qui font confiance à Bitax pour gérer automatiquement leur déclaration fiscale en quelques clics.
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-            >
-              <Link 
-                href="/register" 
-                className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
-              >
-                Créer un compte gratuitement
-              </Link>
-            </motion.div>
-          </div>
+{/* Texte CTA pour Waiting List */}
+<div>
+  <motion.h2 
+    className="text-3xl sm:text-4xl font-bold mb-4 text-white bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5 }}
+  >
+    Accédez à Bitax avant tout le monde
+  </motion.h2>
+  <motion.p 
+    className="text-xl text-blue-100/80 mb-6"
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: 0.2, duration: 0.5 }}
+  >
+    Rejoignez notre liste d'attente pour tester Bitax en avant-première et contribuez à façonner l'avenir de la fiscalité crypto en France.
+  </motion.p>
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: 0.4, duration: 0.5 }}
+    className="flex flex-col sm:flex-row gap-4"
+  >
+    <Link 
+      href="/waitlist" 
+      className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+    >
+      Rejoindre la liste d'attente
+    </Link>
+    <span className="inline-flex items-center text-blue-300/70 text-sm">
+      <svg className="w-5 h-5 mr-2 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+      Places limitées pour la phase beta
+    </span>
+  </motion.div>
+</div>
           
           {/* Illustration ou statistiques */}
           <motion.div 
