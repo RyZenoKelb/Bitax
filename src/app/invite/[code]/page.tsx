@@ -76,10 +76,10 @@ export default function InvitePage({ params }: { params: { code: string } }) {
     
     // Effacer l'erreur lorsque l'utilisateur tape
     if (formErrors[name]) {
-      setFormErrors(prev => ({
-        ...prev,
-        [name]: null,
-      }));
+    setFormErrors((prev: Record<string, string | null>) => ({
+      ...prev,
+      [name]: null,
+    }));
     }
   };
   
