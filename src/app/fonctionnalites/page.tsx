@@ -481,7 +481,7 @@ export default function FeaturesPage() {
 
       {/* Section fonctionnalités détaillées */}
       <motion.section 
-        className="py-12 relative" 
+        className="py-5 relative" 
         style={{ y: y1 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
