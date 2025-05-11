@@ -30,7 +30,7 @@
 /* Variables */
 :root {
   /* Police principale pour les titres */
-  --font-heading: 'Inter', sans-serif;
+--font-heading: 'Inter', sans-serif;
 
   /* Palette principale - Style Professionnel Blockchain */
   --color-primary-50: #eef2ff;
