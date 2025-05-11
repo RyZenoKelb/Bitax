@@ -575,7 +575,7 @@ export default function WaitingListPage() {
             <div className="bg-gray-800/20 divide-y divide-white/5">
               <div className="px-6 py-4">
                 <h4 className="text-white font-medium mb-2">Quand serai-je accepté dans la beta ?</h4>
-                <p className="text-gray-400 text-sm">Les invitations sont envoyées par vagues, généralement dans les 2 semaines suivant votre inscription. Nous privilégions les profils variés et complémentaires.</p>
+                <p className="text-gray-400 text-sm">Les invitations sont envoyées par vagues, généralement dans les 2 jours suivant votre inscription. Nous privilégions les profils variés et complémentaires.</p>
               </div>
               <div className="px-6 py-4">
                 <h4 className="text-white font-medium mb-2">Combien de temps durera la phase beta ?</h4>
