@@ -371,9 +371,9 @@ export default function FeaturesPage() {
         </div>
       </motion.section>
 
-      {/* Section blockchain supportées avec animation */}
+      {/* Section blockchain supportées avec animation - espacement ajusté */}
       <motion.section 
-        className="py-16 relative"
+        className="py-20 relative mt-16"
         style={{ y: y3 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
@@ -408,15 +408,14 @@ export default function FeaturesPage() {
         </div>
       </motion.section>
 
-      {/* Section avantages avec comparaison */}
-      <motion.section className="py-16 relative">
+      {/* Section comparaison avantages - espacement ajusté */}
+      <motion.section className="py-20 relative mt-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
           <motion.h2 
             className="text-3xl font-bold text-center mb-12 text-white"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
           >
             Pourquoi choisir Bitax?
           </motion.h2>
@@ -475,102 +474,6 @@ export default function FeaturesPage() {
               </motion.div>
             ))}
           </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Section fonctionnalités détaillées */}
-      <motion.section 
-        className="py-16 relative" 
-        style={{ y: y1 }}
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <motion.h2 
-            className="text-3xl font-bold text-center mb-16 text-white"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            Fonctionnalités Détaillées
-          </motion.h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {[
-              {
-                title: "Analyse Multi-Blockchains",
-                description: "Bitax prend en charge plusieurs blockchains populaires, permettant d'analyser automatiquement vos transactions sur Ethereum, Polygon, Arbitrum, Optimism, Base et Solana en un seul endroit.",
-                icon: (
-                  <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                  </svg>
-                )
-              },
-              {
-                title: "Calcul des Plus-Values",
-                description: "Notre algorithme calcule automatiquement vos plus-values et moins-values selon différentes méthodes (FIFO, LIFO, etc.) conformément à la réglementation fiscale française.",
-                icon: (
-                  <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                )
-              },
-              {
-                title: "Suivi des Performances",
-                description: "Visualisez l'évolution de votre portefeuille grâce à des graphiques interactifs et des tableaux de bord personnalisables montrant la performance de vos investissements.",
-                icon: (
-                  <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                  </svg>
-                )
-              },
-              {
-                title: "Rapports Fiscaux Complets",
-                description: "Générez des rapports fiscaux détaillés prêts à être utilisés pour votre déclaration d'impôts, conformes au formulaire 2086 et à la législation fiscale française.",
-                icon: (
-                  <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                )
-              },
-              {
-                title: "Exportation Multiple",
-                description: "Exportez vos données et rapports en plusieurs formats (PDF, CSV, Excel) pour une utilisation facile et un partage avec votre comptable ou conseiller fiscal.",
-                icon: (
-                  <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                )
-              },
-              {
-                title: "Interface Intuitive",
-                description: "Profitez d'une interface utilisateur moderne et intuitive conçue pour simplifier la navigation et l'accès aux informations importantes de votre portefeuille.",
-                icon: (
-                  <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                  </svg>
-                )
-              }
-            ].map((feature, index) => (
-              <motion.div 
-                key={index} 
-                className="flex gap-5"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 * index, duration: 0.5 }}
-              >
-                <div className="mt-1 shrink-0">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-900/30 border border-indigo-800/30 flex items-center justify-center">
-                    {feature.icon}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2 text-white">{feature.title}</h3>
-                  <p className="text-gray-300">{feature.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </motion.section>
 
