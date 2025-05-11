@@ -267,13 +267,13 @@ export default function WaitingListPage() {
               number={2} 
               title="Motivation" 
               isActive={currentStep === WaitingListStep.MOTIVATION} 
-              isCompleted={currentStep > WaitlingListStep.MOTIVATION}
+              isCompleted={currentStep > WaitingListStep.MOTIVATION}
             />
             <div className="border-t-2 border-dashed border-gray-700 flex-grow mt-5 mx-4"></div>
             <ProgressStep 
               number={3} 
               title="Confirmation" 
-              isActive={currentStep === WaitlingListStep.CONFIRMATION} 
+              isActive={currentStep === WaitingListStep.CONFIRMATION} 
               isCompleted={submitSuccess}
             />
           </motion.div>
@@ -291,7 +291,7 @@ export default function WaitingListPage() {
             {/* Contenu du formulaire */}
             <div className="p-6 sm:p-8">
               {/* Étape 1: Informations */}
-              {currentStep === WaitlingListStep.INFORMATION && (
+              {currentStep === WaitingListStep.INFORMATION && (
                 <motion.div
                   variants={container}
                   initial="hidden"
