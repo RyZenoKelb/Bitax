@@ -48,57 +48,48 @@ interface FaqItem {
   answer: string;
 }
 
-// Interface pour les hexagones
-interface Hexagon {
+// Interface pour les blocs blockchain
+interface Block {
+  id: number;
   x: number;
   y: number;
   size: number;
-  baseSize: number;
   opacity: number;
   speedX: number;
   speedY: number;
-  pulseSpeed: number;
-  pulseAmount: number;
-  pulsePhase: number;
   rotation: number;
   rotationSpeed: number;
+  color: string;
   isActive: boolean;
+  hash: string;
+  data: string;
+  timestamp: number;
 }
 
-// Interface pour les connexions entre hexagones
-interface Connection {
+// Interface pour les transactions
+interface Transaction {
   from: number;
   to: number;
-  opacity: number;
-  active: boolean;
-  lastPacketTime: number;
-  packetInterval: number;
-}
-
-// Interface pour les particules
-interface Particle {
-  x: number;
-  y: number;
-  size: number;
-  speedX: number;
-  speedY: number;
-  color: string;
-}
-
-// Interface pour les paquets de données
-interface DataPacket {
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
-  x: number;
-  y: number;
   progress: number;
   speed: number;
+  pathPoints: {x: number, y: number}[];
+  currentPoint: number;
+  color: string;
+  timestamp: number;
+  size: number;
+}
+
+// Interface pour les noeuds (miners/users)
+interface Node {
+  id: number;
+  x: number;
+  y: number;
   size: number;
   color: string;
-  from: number;
-  to: number;
+  pulseSpeed: number;
+  connections: number[];
+  type: 'miner' | 'user';
+  isActive: boolean;
 }
 
 export default function Home() {
@@ -118,6 +109,12 @@ export default function Home() {
   // État pour le menu mobile
   const [menuOpen, setMenuOpen] = useState(false);
   
+  // État pour le formulaire d'Early Access
+  const [email, setEmail] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   // Hook de scroll pour les effets parallaxe
   const { scrollY } = useScroll();
   
@@ -129,7 +126,7 @@ export default function Home() {
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   
-  // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
+  // Effet pour l'animation blockchain
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -146,198 +143,285 @@ export default function Home() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Configuration des éléments visuels améliorés
-    const hexagons: Hexagon[] = [];
-    const connections: Connection[] = [];
-    const particles: Particle[] = [];
-    const dataPackets: DataPacket[] = [];
+    // Couleurs blockchain
+    const blockchainColors = {
+      mainBlock: 'rgba(79, 70, 229, 0.8)', // Indigo/violet
+      altBlock: 'rgba(99, 102, 241, 0.7)', // Indigo plus clair
+      lineColor: 'rgba(129, 140, 248, 0.3)', // Indigo pâle
+      activeNode: 'rgba(139, 92, 246, 0.9)', // Violet
+      inactiveNode: 'rgba(79, 70, 229, 0.5)', // Indigo tamisé
+      transaction: {
+        normal: 'rgba(139, 92, 246, 0.7)', // Violet
+        success: 'rgba(52, 211, 153, 0.9)', // Vert
+        pending: 'rgba(251, 191, 36, 0.8)' // Jaune
+      },
+      text: 'rgba(255, 255, 255, 0.7)'
+    };
+
+    // Configuration des éléments visuels blockchain
+    const blocks: Block[] = [];
+    const transactions: Transaction[] = [];
+    const nodes: Node[] = [];
+    
+    // Créer des blocs (représentation visuelle de blocs blockchain)
+    const createBlocks = () => {
+      const blockCount = Math.floor(Math.min(Math.floor((window.innerWidth * window.innerHeight) / 200000), 12));
       
-    // Créer des hexagones (symboles de blockchain)
-    const createHexagons = () => {
-      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
-      
-      for (let i = 0; i < hexCount; i++) {
+      for (let i = 0; i < blockCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const size = Math.random() * 25 + 20; // Hexagones plus grands
-        const opacity = Math.random() * 0.3 + 0.15;
-        const speedX = (Math.random() - 0.5) * 0.4;
-        const speedY = (Math.random() - 0.5) * 0.4;
-        // Réduire la vitesse de pulsation
-        const pulseSpeed = Math.random() * 0.002 + 0.001;
-        const pulseAmount = Math.random() * 0.15 + 0.05;
-        const baseSize = size;
-        const rotationSpeed = (Math.random() - 0.5) * 0.005;
+        const size = Math.random() * 20 + 35; // Taille plus uniforme
+        const opacity = Math.random() * 0.3 + 0.3;
+        const speedX = (Math.random() - 0.5) * 0.3;
+        const speedY = (Math.random() - 0.5) * 0.3;
+        const rotationSpeed = (Math.random() - 0.5) * 0.002;
         const rotation = Math.random() * Math.PI * 2;
         
-        hexagons.push({ 
-          x, y, size, baseSize, opacity, speedX, speedY, 
-          pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
-          rotation, rotationSpeed, 
-          isActive: Math.random() > 0.7 // Certains hexagones sont "actifs"
+        // Générer un hash aléatoire pour le bloc
+        const hash = [...Array(8)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+        
+        blocks.push({
+          id: i,
+          x, 
+          y, 
+          size, 
+          opacity, 
+          speedX, 
+          speedY,
+          rotation, 
+          rotationSpeed,
+          color: Math.random() > 0.5 ? blockchainColors.mainBlock : blockchainColors.altBlock,
+          isActive: Math.random() > 0.7,
+          hash: '0x' + hash + '...',
+          data: 'Tx: ' + Math.floor(Math.random() * 10 + 1),
+          timestamp: Date.now()
         });
       }
     };
     
-    // Créer des connexions entre hexagones (simuler une blockchain)
-    const createConnections = () => {
-      for (let i = 0; i < hexagons.length; i++) {
-        for (let j = i + 1; j < hexagons.length; j++) {
-          if (Math.random() > 0.5) {
-            connections.push({
-              from: i,
-              to: j,
-              opacity: Math.random() * 0.2 + 0.05,
-              active: false,
-              lastPacketTime: 0,
-              packetInterval: Math.random() * 8000 + 2000, // Intervalle entre les paquets
-            });
-          }
-        }
-      }
-    };
-    
-    // Créer particules normales (effet visuel)
-    const createParticles = () => {
-      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 60);
+    // Créer des nœuds (représentant des utilisateurs/miners)
+    const createNodes = () => {
+      const nodeCount = Math.floor(Math.min(Math.floor((window.innerWidth * window.innerHeight) / 250000), 10));
       
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 2 + 0.5;
+      for (let i = 0; i < nodeCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const speedX = (Math.random() - 0.5) * 0.6;
-        const speedY = (Math.random() - 0.5) * 0.6;
-        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
-
-        particles.push({
+        const size = Math.random() * 5 + 8;
+        const isMiner = Math.random() > 0.6;
+        
+        nodes.push({
+          id: i,
           x,
           y,
           size,
-          speedX,
-          speedY,
-          color
+          color: isMiner ? blockchainColors.activeNode : blockchainColors.inactiveNode,
+          pulseSpeed: Math.random() * 0.003 + 0.001,
+          connections: [],
+          type: isMiner ? 'miner' : 'user',
+          isActive: Math.random() > 0.5
         });
       }
-    };
-
-    // Fonction pour créer un "paquet de données" transitant entre deux hexagones
-    const createDataPacket = (from: number, to: number) => {
-      const fromHex = hexagons[from];
-      const toHex = hexagons[to];
       
-      dataPackets.push({
-        fromX: fromHex.x,
-        fromY: fromHex.y,
-        toX: toHex.x,
-        toY: toHex.y,
-        x: fromHex.x,
-        y: fromHex.y,
-        progress: 0,
-        speed: Math.random() * 0.01 + 0.005,
-        size: Math.random() * 4 + 2,
-        color: Math.random() > 0.5 ? 
-          'rgba(147, 51, 234, 0.8)' : // Violet
-          'rgba(99, 102, 241, 0.8)', // Indigo
-        from,
-        to
-      });
-    };
-
-    createHexagons();
-    createConnections();
-    createParticles();
-
-    // Dessiner un hexagone avec rotation
-    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
-      const sides = 6;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-      
-      // Hexagone principal
-      ctx.beginPath();
-      for (let i = 0; i <= sides; i++) {
-        const angle = i * 2 * Math.PI / sides;
-        const pointX = size * Math.cos(angle);
-        const pointY = size * Math.sin(angle);
+      // Créer des connexions entre les nœuds
+      for (let i = 0; i < nodes.length; i++) {
+        const connectionCount = Math.floor(Math.random() * 3) + 1;
         
-        if (i === 0) {
-          ctx.moveTo(pointX, pointY);
-        } else {
-          ctx.lineTo(pointX, pointY);
-        }
-      }
-      
-      // Style pour hexagone actif/inactif
-      if (isActive) {
-        // Hexagone actif - double style
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 0.15})`;
-      } else {
-        // Hexagone inactif
-        ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
-        ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
-      }
-      
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.fill();
-      
-      // Détail intérieur pour les hexagones actifs
-      if (isActive) {
-        ctx.beginPath();
-        for (let i = 0; i <= sides; i++) {
-          const angle = i * 2 * Math.PI / sides;
-          const pointX = size * 0.7 * Math.cos(angle);
-          const pointY = size * 0.7 * Math.sin(angle);
+        for (let j = 0; j < connectionCount; j++) {
+          const targetIndex = Math.floor(Math.random() * nodes.length);
           
-          if (i === 0) {
-            ctx.moveTo(pointX, pointY);
-          } else {
-            ctx.lineTo(pointX, pointY);
+          if (targetIndex !== i && !nodes[i].connections.includes(targetIndex)) {
+            nodes[i].connections.push(targetIndex);
           }
         }
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 0.8})`;
-        ctx.stroke();
+      }
+    };
+    
+    // Générer une transaction entre deux nœuds
+    const createTransaction = (fromNodeIndex: number, toNodeIndex: number) => {
+      const fromNode = nodes[fromNodeIndex];
+      const toNode = nodes[toNodeIndex];
+      
+      // Créer des points intermédiaires pour une courbe de Bézier
+      const midX = (fromNode.x + toNode.x) / 2;
+      const midY = (fromNode.y + toNode.y) / 2;
+      
+      // Décalage aléatoire pour courber le chemin
+      const offset = Math.min(100, Math.sqrt(
+        Math.pow(fromNode.x - toNode.x, 2) + 
+        Math.pow(fromNode.y - toNode.y, 2)
+      ) * 0.3);
+      
+      const controlX = midX + (Math.random() - 0.5) * offset;
+      const controlY = midY + (Math.random() - 0.5) * offset;
+      
+      // Générer plusieurs points le long de la courbe de Bézier
+      const pathPoints = [];
+      const steps = 20;
+      
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
         
-        // Point central pulsant
+        // Equation de courbe de Bézier quadratique
+        const x = Math.pow(1-t, 2) * fromNode.x + 
+                 2 * (1-t) * t * controlX + 
+                 Math.pow(t, 2) * toNode.x;
+                 
+        const y = Math.pow(1-t, 2) * fromNode.y + 
+                 2 * (1-t) * t * controlY + 
+                 Math.pow(t, 2) * toNode.y;
+                 
+        pathPoints.push({x, y});
+      }
+      
+      transactions.push({
+        from: fromNodeIndex,
+        to: toNodeIndex,
+        progress: 0,
+        speed: Math.random() * 0.005 + 0.003,
+        pathPoints,
+        currentPoint: 0,
+        color: Math.random() > 0.8 
+          ? blockchainColors.transaction.success 
+          : (Math.random() > 0.7 
+            ? blockchainColors.transaction.pending 
+            : blockchainColors.transaction.normal),
+        timestamp: Date.now(),
+        size: Math.random() * 2 + 3
+      });
+    };
+    
+    // Dessiner un bloc avec données
+    const drawBlock = (block: Block) => {
+      ctx.save();
+      ctx.translate(block.x, block.y);
+      ctx.rotate(block.rotation);
+      
+      // Bloc principal
+      ctx.fillStyle = block.color;
+      ctx.globalAlpha = block.opacity;
+      
+      // Dessiner un bloc stylisé (rectangulaire avec coins arrondis)
+      roundedRect(ctx, -block.size/2, -block.size/2, block.size, block.size, 8);
+      ctx.fill();
+      
+      // Effet de contour
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
+      // Dessiner des détails du bloc pour simuler des données
+      ctx.fillStyle = blockchainColors.text;
+      ctx.font = `${Math.max(block.size/10, 8)}px monospace`;
+      ctx.textAlign = 'center';
+      
+      // Hash raccourci
+      ctx.fillText(block.hash, 0, -block.size/4);
+      
+      // Séparateur
+      ctx.fillRect(-block.size/3, -block.size/10, block.size*2/3, 1);
+      
+      // Données
+      ctx.fillText(block.data, 0, block.size/6);
+      
+      // Symbole blockchain en bas
+      ctx.fillText("₿", 0, block.size/3);
+      
+      ctx.restore();
+    };
+    
+    // Dessiner un nœud
+    const drawNode = (node: Node, timestamp: number) => {
+      ctx.save();
+      
+      // Pulsation basée sur l'activité
+      const pulseAmount = node.isActive ? Math.sin(timestamp * node.pulseSpeed) * 0.2 + 1 : 1;
+      const displaySize = node.size * pulseAmount;
+      
+      // Nœud principal
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, displaySize, 0, Math.PI * 2);
+      ctx.fillStyle = node.color;
+      ctx.fill();
+      
+      // Aura pour les mineurs
+      if (node.type === 'miner') {
         ctx.beginPath();
-        ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 2})`;
+        ctx.arc(node.x, node.y, displaySize * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(139, 92, 246, 0.15)';
         ctx.fill();
+      }
+      
+      // Icône différente selon le type
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.font = `${displaySize}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Symbole selon le type
+      const symbol = node.type === 'miner' ? "⛏" : "👤";
+      // Ne pas dessiner les symboles s'ils sont trop petits
+      if (displaySize > 10) {
+        ctx.fillText(symbol, node.x, node.y);
       }
       
       ctx.restore();
     };
-
-    // Dessiner un paquet de données
-    const drawDataPacket = (packet: DataPacket) => {
+    
+    // Dessiner une transaction
+    const drawTransaction = (tx: Transaction) => {
+      if (tx.currentPoint >= tx.pathPoints.length - 1) return;
+      
+      const point = tx.pathPoints[tx.currentPoint];
+      
       ctx.beginPath();
-      ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
-      ctx.fillStyle = packet.color;
+      ctx.arc(point.x, point.y, tx.size, 0, Math.PI * 2);
+      ctx.fillStyle = tx.color;
       ctx.fill();
       
-      // Effet de traînée
-      ctx.beginPath();
-      const trailLength = 15;
-      ctx.moveTo(packet.x, packet.y);
-      
-      // Calculer point arrière basé sur la direction du mouvement
-      const dx = packet.toX - packet.fromX;
-      const dy = packet.toY - packet.fromY;
-      const angle = Math.atan2(dy, dx);
-      
-      const trailX = packet.x - Math.cos(angle) * trailLength;
-      const trailY = packet.y - Math.sin(angle) * trailLength;
-      
-      ctx.lineTo(trailX, trailY);
-      ctx.strokeStyle = packet.color.replace('0.8', '0.3');
-      ctx.lineWidth = packet.size * 0.7;
-      ctx.stroke();
+      // Traînée
+      if (tx.currentPoint > 0) {
+        const tailLength = Math.min(5, tx.currentPoint);
+        
+        for (let i = 1; i <= tailLength; i++) {
+          const tailPoint = tx.pathPoints[tx.currentPoint - i];
+          const alpha = (tailLength - i) / tailLength * 0.5;
+          
+          ctx.beginPath();
+          ctx.arc(
+            tailPoint.x, 
+            tailPoint.y, 
+            tx.size * (1 - i / (tailLength + 1)), 
+            0, 
+            Math.PI * 2
+          );
+          ctx.fillStyle = tx.color.replace(')', `, ${alpha})`).replace('rgba', 'rgba');
+          ctx.fill();
+        }
+      }
     };
-
+    
+    // Fonction pour dessiner un rectangle avec coins arrondis
+    function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+    
+    // Initialiser le canvas
+    createBlocks();
+    createNodes();
+    
     // Animation timestamp pour gestion du temps
     let lastTime = 0;
+    let lastTxTime = 0;
     
     // Animer tous les éléments avec timestamp
     const animate = (timestamp: number) => {
@@ -346,133 +430,162 @@ export default function Home() {
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Mettre à jour et dessiner les connexions
-      connections.forEach((conn, index) => {
-        const fromHex = hexagons[conn.from];
-        const toHex = hexagons[conn.to];
-        
-        // Calculer la distance
-        const distance = Math.sqrt(
-          Math.pow(fromHex.x - toHex.x, 2) + 
-          Math.pow(fromHex.y - toHex.y, 2)
-        );
-        
-        // Ne dessiner la connexion que si les hexagones sont assez proches
-        if (distance < 350) {
-          ctx.beginPath();
-          ctx.moveTo(fromHex.x, fromHex.y);
-          ctx.lineTo(toHex.x, toHex.y);
+      // Dessiner les connexions entre les nœuds
+      nodes.forEach((node, nodeIndex) => {
+        node.connections.forEach(targetIndex => {
+          const targetNode = nodes[targetIndex];
           
-          // Style de ligne basé sur l'activité
-          if (conn.active) {
-            ctx.strokeStyle = `rgba(147, 51, 234, ${conn.opacity * 2})`;
-            ctx.lineWidth = 1.5;
+          // Calculer la distance
+          const distance = Math.sqrt(
+            Math.pow(node.x - targetNode.x, 2) + 
+            Math.pow(node.y - targetNode.y, 2)
+          );
+          
+          // Ne dessiner que si les nœuds sont assez proches
+          if (distance < 300) {
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(targetNode.x, targetNode.y);
             
-            // Désactive la connexion après un certain temps
-            if (timestamp - conn.lastPacketTime > 1500) {
-              conn.active = false;
-            }
-          } else {
-            ctx.strokeStyle = `rgba(99, 102, 241, ${conn.opacity})`;
-            ctx.lineWidth = 0.8;
+            // Style de ligne
+            ctx.strokeStyle = blockchainColors.lineColor;
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+        });
+      });
+      
+      // Mettre à jour et dessiner les transactions
+      for (let i = transactions.length - 1; i >= 0; i--) {
+        const tx = transactions[i];
+        
+        // Mettre à jour la position actuelle
+        tx.currentPoint += Math.ceil(tx.speed * 50);
+        
+        // Si la transaction est terminée
+        if (tx.currentPoint >= tx.pathPoints.length - 1) {
+          // Activer brièvement le nœud de destination
+          nodes[tx.to].isActive = true;
+          
+          // Après un court moment, revenir à l'état normal
+          setTimeout(() => {
+            if (nodes[tx.to]) nodes[tx.to].isActive = Math.random() > 0.5;
+          }, 300);
+          
+          // Supprimer la transaction
+          transactions.splice(i, 1);
+          
+          // 30% de chance de créer un nouveau bloc
+          if (Math.random() > 0.7 && blocks.length < 15) {
+            const nodePos = nodes[tx.to];
+            const newBlockX = nodePos.x + (Math.random() - 0.5) * 100;
+            const newBlockY = nodePos.y + (Math.random() - 0.5) * 100;
             
-            // Créer un nouveau paquet à intervalle régulier
-            if (timestamp - conn.lastPacketTime > conn.packetInterval) {
-              conn.active = true;
-              conn.lastPacketTime = timestamp;
-              createDataPacket(conn.from, conn.to);
-              
-              // Augmente les chances d'activation connectée
-              connections.forEach(otherConn => {
-                // Si cette connexion partage un node avec la connexion active
-                if (otherConn !== conn && 
-                    (otherConn.from === conn.from || otherConn.from === conn.to ||
-                     otherConn.to === conn.from || otherConn.to === conn.to)) {
-                  if (Math.random() > 0.7) {
-                    otherConn.active = true;
-                    otherConn.lastPacketTime = timestamp;
-                    createDataPacket(otherConn.from, otherConn.to);
-                  }
-                }
-              });
-            }
+            // Ajouter un nouveau bloc près du nœud
+            const size = Math.random() * 20 + 35;
+            const hash = [...Array(8)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+            
+            blocks.push({
+              id: blocks.length,
+              x: newBlockX,
+              y: newBlockY,
+              size: size,
+              opacity: 0.7,
+              speedX: (Math.random() - 0.5) * 0.3,
+              speedY: (Math.random() - 0.5) * 0.3,
+              rotation: Math.random() * Math.PI * 2,
+              rotationSpeed: (Math.random() - 0.5) * 0.002,
+              color: blockchainColors.mainBlock, // Bloc "nouveau" toujours vif
+              isActive: true,
+              hash: '0x' + hash + '...',
+              data: 'Tx: ' + Math.floor(Math.random() * 5 + 1),
+              timestamp: Date.now()
+            });
+            
+            // Animation de création de bloc: activation brève de tous les nœuds connectés
+            nodes.forEach(node => {
+              if (node.connections.includes(tx.to)) {
+                node.isActive = true;
+                setTimeout(() => {
+                  node.isActive = Math.random() > 0.5;
+                }, 500);
+              }
+            });
           }
           
-          ctx.stroke();
+          continue;
         }
+        
+        drawTransaction(tx);
+      }
+      
+      // Mettre à jour et dessiner les blocs
+      blocks.forEach(block => {
+        block.x += block.speedX;
+        block.y += block.speedY;
+        block.rotation += block.rotationSpeed;
+        
+        // Rebond sur les bords
+        if (block.x < 0 || block.x > canvas.width) block.speedX *= -1;
+        if (block.y < 0 || block.y > canvas.height) block.speedY *= -1;
+        
+        drawBlock(block);
       });
       
-      // Mettre à jour et dessiner les paquets de données
-      for (let i = dataPackets.length - 1; i >= 0; i--) {
-        const packet = dataPackets[i];
-        packet.progress += packet.speed;
+      // Mettre à jour et dessiner les nœuds
+      nodes.forEach(node => {
+        drawNode(node, timestamp);
+      });
+      
+      // Créer périodiquement de nouvelles transactions
+      if (timestamp - lastTxTime > 2000) { // Toutes les 2 secondes
+        lastTxTime = timestamp;
         
-        // Mouvement le long de la ligne
-        packet.x = packet.fromX + (packet.toX - packet.fromX) * packet.progress;
-        packet.y = packet.fromY + (packet.toY - packet.fromY) * packet.progress;
-        
-        drawDataPacket(packet);
-        
-        // Supprimer le paquet s'il a atteint sa destination
-        if (packet.progress >= 1) {
-          // Activer brièvement l'hexagone de destination
-          hexagons[packet.to].isActive = true;
-          setTimeout(() => {
-            if (hexagons[packet.to]) hexagons[packet.to].isActive = Math.random() > 0.7;
-          }, 800);
+        // Sélectionner des nœuds aléatoires pour la transaction
+        if (nodes.length > 1) {
+          const fromIndex = Math.floor(Math.random() * nodes.length);
+          let toIndex;
           
-          dataPackets.splice(i, 1);
+          // S'assurer que la destination est différente de l'origine
+          do {
+            toIndex = Math.floor(Math.random() * nodes.length);
+          } while (toIndex === fromIndex);
+          
+          // Créer la transaction
+          createTransaction(fromIndex, toIndex);
+          
+          // Activer brièvement le nœud émetteur
+          nodes[fromIndex].isActive = true;
+          setTimeout(() => {
+            if (nodes[fromIndex]) nodes[fromIndex].isActive = Math.random() > 0.5;
+          }, 300);
         }
       }
       
-      // Mettre à jour et dessiner les hexagones
-      hexagons.forEach(hex => {
-        hex.x += hex.speedX;
-        hex.y += hex.speedY;
-        hex.rotation += hex.rotationSpeed;
-        
-        // Effet de pulsation
-        hex.size = hex.baseSize + Math.sin(timestamp * hex.pulseSpeed + hex.pulsePhase) * hex.baseSize * hex.pulseAmount;
-        
-        // Rebond sur les bords
-        if (hex.x < 0 || hex.x > canvas.width) hex.speedX *= -1;
-        if (hex.y < 0 || hex.y > canvas.height) hex.speedY *= -1;
-        
-        drawHexagon(hex.x, hex.y, hex.size, hex.rotation, hex.opacity, hex.isActive);
-      });
-      
-      // Mettre à jour et dessiner les particules
-      particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-
-        // Rebond sur les bords
-        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-
-        // Dessiner particule
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
       requestAnimationFrame(animate);
     };
-
-    // Démarrer l'animation initiale
+    
+    // Démarrer l'animation
     requestAnimationFrame(animate);
     
-    // Générer quelques connexions actives initialement
+    // Générer quelques transactions initiales
     setTimeout(() => {
-      for (let i = 0; i < 3; i++) {
-        const connIndex = Math.floor(Math.random() * connections.length);
-        connections[connIndex].active = true;
-        connections[connIndex].lastPacketTime = performance.now();
-        createDataPacket(connections[connIndex].from, connections[connIndex].to);
+      if (nodes.length > 1) {
+        for (let i = 0; i < Math.min(3, Math.floor(nodes.length / 2)); i++) {
+          const fromIndex = Math.floor(Math.random() * nodes.length);
+          let toIndex;
+          
+          do {
+            toIndex = Math.floor(Math.random() * nodes.length);
+          } while (toIndex === fromIndex);
+          
+          createTransaction(fromIndex, toIndex);
+        }
       }
     }, 500);
-
+    
     return () => {
       window.removeEventListener('resize', resizeCanvas);
     };
@@ -494,6 +607,25 @@ export default function Home() {
     };
   }, []);
   
+  // Fonction de gestion du formulaire Early Access
+  const handleEarlyAccessSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simuler l'envoi du formulaire avec un délai
+    setTimeout(() => {
+      if (email && email.includes('@')) {
+        setSubmitSuccess(true);
+        setSubmitError("");
+        setEmail("");
+      } else {
+        setSubmitError("Veuillez entrer une adresse email valide");
+        setSubmitSuccess(false);
+      }
+      setIsSubmitting(false);
+    }, 800);
+  };
+  
   // Données pour les fonctionnalités
   const features: Feature[] = [
     {
@@ -502,7 +634,542 @@ export default function Home() {
       description: "Intégration sécurisée avec Metamask, Coinbase Wallet et autres portefeuilles populaires.",
       icon: (
         <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )
+                },
+                {
+                  step: 3,
+                  title: "Analysez vos données",
+                  description: "Visualisez vos transactions et laissez notre algorithme calculer vos plus-values.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  )
+                },
+                {
+                  step: 4,
+                  title: "Générez votre rapport",
+                  description: "Obtenez un rapport fiscal complet prêt à être utilisé pour votre déclaration d'impôts.",
+                  icon: (
+                    <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  )
+                }
+              ].map((item, index) => (
+                <motion.div 
+                  key={index}
+                  className="flex flex-col items-center text-center relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 * index, duration: 0.5 }}
+                >
+                  <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
+                    <div className="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center">
+                      <div className="text-white text-2xl font-bold">{item.step}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 h-full">
+                    <div className="mb-4">
+                      {item.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-blue-100/70">
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* Section Avantages avec effet parallaxe */}
+      <motion.section 
+        className="py-20 relative"
+        style={{ y: y2 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Pourquoi choisir Bitax
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Optimisez votre gestion fiscale et gagnez du temps grâce à nos solutions spécialisées.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+            {benefits.map((benefit) => (
+              <motion.div 
+                key={benefit.id}
+                className="flex gap-6"
+                initial={{ opacity: 0, x: benefit.id % 2 === 0 ? 20 : -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * benefit.id, duration: 0.5 }}
+              >
+                <div className="shrink-0">
+                  <div className="bg-gradient-to-r from-indigo-900/20 to-purple-900/20 border border-white/5 rounded-lg p-3 w-16 h-16 flex items-center justify-center">
+                    {benefit.icon}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-blue-100/70">
+                    {benefit.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
+      <motion.section 
+        className="py-20 -mt-16 relative"
+        style={{ y: y3 }}
+      >
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+          <div className="absolute -bottom-[10%] -right-[5%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Ce que disent nos beta-testeurs
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Découvrez les retours de nos premiers utilisateurs du programme Early Access.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((id) => (
+              <motion.div 
+                key={id}
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * id, duration: 0.5 }}
+                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg">
+                    {id}
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-bold text-white">
+                      Futur témoignage
+                    </h3>
+                    <p className="text-sm text-blue-100/70">
+                      Beta-testeur Bitax
+                    </p>
+                  </div>
+                </div>
+                <p className="text-blue-100/80 italic">
+                  "Cette section sera bientôt remplie avec de vrais témoignages des participants au programme Early Access qui testent actuellement notre service."
+                </p>
+                <div className="mt-4 flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg key={star} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* Section FAQ avec effet accordéon */}
+      <motion.section 
+        className="py-20 mt-16 relative"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
+              Questions fréquentes
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Tout ce que vous devez savoir sur Bitax et la fiscalité crypto.
+            </p>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
+            {faqItems.map((item) => (
+              <motion.div 
+                key={item.id}
+                className="mb-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * item.id, duration: 0.5 }}
+              >
+                <button 
+                  className="w-full text-left py-4 px-6 flex justify-between items-center text-white font-medium"
+                  onClick={() => toggleFaq(item.id)}
+                >
+                  <span>{item.question}</span>
+                  <svg 
+                    className={`w-5 h-5 transition-transform duration-300 ${expandedFaq === item.id ? 'transform rotate-180' : ''}`} 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ${
+                    expandedFaq === item.id ? 'max-h-72' : 'max-h-0'
+                  }`}
+                >
+                  <div className="py-4 px-6 text-blue-100/80 border-t border-white/5">
+                    {item.answer}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* CTA Early Access */}
+      <motion.section 
+        className="py-16 mb-16 relative"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 px-4 sm:px-6 lg:px-8 items-center">
+          {/* Texte CTA */}
+          <div>
+            <motion.h2 
+              className="text-3xl sm:text-4xl font-bold mb-4 text-white bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              Rejoignez notre beta privée dès maintenant
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-blue-100/80 mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              Les places sont limitées pour notre programme Early Access. Soyez parmi les premiers à tester Bitax et influencez directement le développement de notre produit.
+            </motion.p>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <Link 
+                href="/register" 
+                className="inline-block relative overflow-hidden px-8 py-3.5 rounded-lg group"
+              >
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600"></span>
+                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative flex items-center justify-center text-white font-semibold">
+                  <span>Participer à la beta</span>
+                  <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+              </Link>
+            </motion.div>
+          </div>
+          
+          {/* Beta Counter */}
+          <motion.div 
+            className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 border border-white/10 rounded-2xl p-6 backdrop-blur-lg"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-violet-500/20 text-violet-300 border border-violet-500/20">
+                PLACES LIMITÉES
+              </div>
+              <h3 className="text-2xl font-bold text-white mt-2">Programme Early Access</h3>
+              <p className="text-blue-100/70 mt-1">Rejoignez les pionniers de Bitax</p>
+            </div>
+            
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">24</div>
+                <div className="text-sm text-white/70">Places restantes</div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">16</div>
+                <div className="text-sm text-white/70">Beta-testeurs</div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">50%</div>
+                <div className="text-sm text-white/70">Réduction à vie</div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">07</div>
+                <div className="text-sm text-white/70">Jours restants</div>
+              </div>
+            </div>
+            
+            <div className="flex justify-center">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center w-full">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-white/70">Progression</span>
+                  <span className="text-sm font-medium text-white">40%</span>
+                </div>
+                <div className="w-full bg-slate-700/50 rounded-full h-2.5">
+                  <div className="bg-gradient-to-r from-violet-600 to-indigo-600 h-2.5 rounded-full" style={{ width: '40%' }}></div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
+      
+      {/* Footer avec effet parallaxe */}
+      <motion.footer 
+        className="py-12 border-t border-white/10 relative"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <Link href="/" className="group inline-block mb-6">
+                <div className="relative">
+                  <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 tracking-tight">BITAX</span>
+                  <div className="h-px w-0 group-hover:w-full transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500"></div>
+                </div>
+              </Link>
+              <p className="text-blue-100/70 mb-6 max-w-md">
+                Simplifiez votre fiscalité crypto avec notre plateforme intuitive. Connectez vos wallets, analysez vos transactions et générez des rapports fiscaux en quelques clics.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.44 3.06H5.56C4.15 3.06 3 4.21 3 5.62v12.88c0 1.41 1.15 2.56 2.56 2.56h12.88c1.41 0 2.56-1.15 2.56-2.56V5.62c0-1.41-1.15-2.56-2.56-2.56zm0 2.56v3.81h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v3.82h-2.73c-.25 0-.46.21-.46.46v1.33c0 .25.21.46.46.46h2.73v.99H5.56V5.62h12.88z" />
+                  </svg>
+                </a>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.77 5.03l1.4 1.4L8.43 19.17l-5.6-5.6 1.4-1.4 4.2 4.2L19.77 5.03m0-2.83L8.43 13.54l-4.2-4.2L0 13.57 8.43 22 24 6.43 19.77 2.2z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Navigation</h3>
+              <ul className="space-y-3">
+                {[
+                  { name: 'Accueil', href: '/' },
+                  { name: 'Fonctionnalités', href: '/fonctionnalites' },
+                  { name: 'Tarifs', href: '/tarifs' },
+                  { name: 'Guide', href: '/guide' },
+                  { name: 'Support', href: '/support' }
+                ].map((item, index) => (
+                  <li key={index}>
+                    <Link 
+                      href={item.href}
+                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Légal</h3>
+              <ul className="space-y-3">
+                {[
+                  { name: 'Conditions d\'utilisation', href: '/terms' },
+                  { name: 'Politique de confidentialité', href: '/privacy' },
+                  { name: 'Mentions légales', href: '/legal' },
+                  { name: 'Cookies', href: '/cookies' }
+                ].map((item, index) => (
+                  <li key={index}>
+                    <Link 
+                      href={item.href}
+                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Early Access</h3>
+              <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    Lancement beta : 15 Mai 2025
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    Contact : <a href="#" className="text-indigo-400 hover:text-indigo-300">beta@bitax.fr</a>
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    <a href="#" className="text-indigo-400 hover:text-indigo-300">FAQ du programme beta</a>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-blue-100/50 text-sm mb-4 md:mb-0">
+              &copy; {new Date().getFullYear()} Bitax. Tous droits réservés.
+            </p>
+            <div className="flex space-x-6">
+              <Link href="/legal" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
+                Mentions légales
+              </Link>
+              <Link href="/privacy" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
+                Politique de confidentialité
+              </Link>
+              <Link href="/contact" className="text-blue-100/50 text-sm hover:text-white transition-colors duration-300">
+                Contact
+              </Link>
+            </div>
+          </div>
+        </div>
+      </motion.footer>
+      
+      {/* Ajoutez des styles CSS globaux pour les classes personnalisées */}
+      <style jsx global>{`
+        /* Police Inter pour tout le site */
+        body, html {
+          font-family: 'Inter', sans-serif !important;
+        }
+
+        /* Styles pour les badges de crypto simplifiés */
+        .crypto-icon-badge {
+          @apply flex items-center justify-center transition-all duration-300;
+          filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        }
+        
+        .crypto-icon-badge svg {
+          opacity: 0.9;
+          transition: all 0.3s ease;
+        }
+        
+        .crypto-icon-badge:hover svg {
+          opacity: 1;
+          filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+        }
+        
+        /* Animation pour le pulse lent */
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 0.5;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Effet néomorphique pour les éléments du dashboard */
+        .dashboard-item-glow {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .dashboard-item-glow::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 60%);
+          opacity: 0;
+          transition: opacity 0.3s ease-in-out;
+        }
+        
+        .dashboard-item-glow:hover::before {
+          opacity: 1;
+        }
+        
+        /* Effet d'ombre interne pour les éléments du dashboard */
+        .shadow-inner-white {
+          box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Transformation 3D */
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+        
+        .rotate-y-10 {
+          transform: rotateY(10deg);
+        }
+        
+        .rotate-y-0 {
+          transform: rotateY(0deg);
+        }
+        
+        /* Shadow glow */
+        .shadow-glow-sm {
+          box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
+        }
+        
+        .shadow-glow-xl {
+          box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+        }
+      `}</style>
+    </div>
+  );
+}d" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
         </svg>
       )
     },
@@ -628,6 +1295,11 @@ export default function Home() {
       id: 4,
       question: "Puis-je utiliser Bitax gratuitement?",
       answer: "Bitax propose une version gratuite avec des fonctionnalités de base et une limite de transactions. Pour un usage professionnel ou un volume important de transactions, nous proposons des forfaits premium avec des fonctionnalités avancées."
+    },
+    {
+      id: 5,
+      question: "Comment fonctionne le programme Early Access?",
+      answer: "Notre programme Early Access vous donne un accès privilégié à Bitax avant son lancement officiel. En tant que testeur précoce, vous bénéficiez d'un accès gratuit à toutes les fonctionnalités premium, d'un support prioritaire et de la possibilité d'influencer directement le développement du produit."
     }
   ];
   
@@ -650,8 +1322,8 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      {/* Background moderne avec animation blockchain au lieu d'étoiles */}
-      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
+      {/* Background moderne avec animation blockchain */}
+      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 overflow-hidden">
         {/* Gradient d'ambiance */}
         <motion.div className="absolute top-0 left-0 w-full h-full">
           <motion.div 
@@ -694,7 +1366,7 @@ export default function Home() {
           ></motion.div>
         </motion.div>
         
-        {/* Canvas pour les animations blockchain et particules */}
+        {/* Canvas pour les animations blockchain */}
         <canvas 
           ref={canvasRef} 
           className="fixed inset-0 w-full h-full -z-10"
@@ -702,7 +1374,7 @@ export default function Home() {
         ></canvas>
       </div>
 
-      {/* Header premium avec glassmorphism et effet de scroll - Design plus pro */}
+      {/* Header premium avec glassmorphism et effet de scroll */}
       <motion.header 
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           scrolled 
@@ -719,9 +1391,16 @@ export default function Home() {
                   <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
                 </div>
               </Link>
+              
+              {/* Badge Early Access */}
+              <div className="ml-3 hidden sm:block">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+                  Early Access
+                </span>
+              </div>
             </div>
 
-            {/* Navbar ultra moderne avec boutons en français - Design plus pro */}
+            {/* Navbar avec boutons en français */}
             <nav className="hidden md:flex items-center space-x-1">
               {[
                 { name: 'Fonctionnalités', href: '/fonctionnalites' },
@@ -736,7 +1415,7 @@ export default function Home() {
                 </Link>
               ))}
               
-              {/* Boutons Connexion/S'inscrire en français - Design plus pro */}
+              {/* Boutons Connexion/S'inscrire en français - nouveau design */}
               <div className="flex items-center space-x-3 ml-6">
                 <Link 
                   href="/login" 
@@ -747,9 +1426,10 @@ export default function Home() {
                 
                 <Link 
                   href="/register" 
-                  className="px-6 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg shadow-indigo-500/25 transition-all duration-300 hover:from-indigo-500 hover:to-blue-500 hover:shadow-indigo-500/40"
+                  className="px-6 py-2 rounded-lg relative overflow-hidden group"
                 >
-                  S'inscrire
+                  <span className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 transition-all duration-300 group-hover:from-violet-500 group-hover:to-indigo-500"></span>
+                  <span className="relative text-white font-medium">S'inscrire</span>
                 </Link>
               </div>
             </nav>
@@ -792,6 +1472,13 @@ export default function Home() {
                   </Link>
                 ))}
                 
+                {/* Badge Early Access dans le menu mobile */}
+                <div className="py-2">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+                    Early Access
+                  </span>
+                </div>
+                
                 <div className="pt-2 space-y-2">
                   <Link 
                     href="/login" 
@@ -803,10 +1490,11 @@ export default function Home() {
                   
                   <Link 
                     href="/register" 
-                    className="block py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-lg"
+                    className="block py-2.5 text-center text-white relative overflow-hidden"
                     onClick={() => setMenuOpen(false)}
                   >
-                    S'inscrire
+                    <span className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-lg"></span>
+                    <span className="relative">S'inscrire</span>
                   </Link>
                 </div>
               </div>
@@ -828,6 +1516,19 @@ export default function Home() {
             className="text-center lg:text-left pt-8 lg:pt-0"
             style={{ y: y1 }}
           >
+            {/* Badge Early Access */}
+            <motion.div 
+              className="mb-6 inline-flex"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.6 }}
+            >
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 border border-white/10 shadow-lg shadow-indigo-500/20">
+                <span className="px-1.5 py-0.5 bg-white/20 rounded-full text-xs font-bold text-white mr-2">BETA</span>
+                <span className="text-sm text-white font-medium">Early Access Program</span>
+              </div>
+            </motion.div>
+            
             <motion.h2 
               className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight tracking-tight"
               initial={{ opacity: 0, y: 20 }}
@@ -871,22 +1572,33 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              {/* Bouton principal avec animation améliorée */}
+              {/* Bouton principal avec design moderne */}
               <Link 
                 href="/register" 
-                className="px-8 py-3.5 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+                className="relative px-8 py-3.5 rounded-lg overflow-hidden group"
               >
-                Commencer gratuitement
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600"></span>
+                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative flex items-center justify-center text-white font-semibold">
+                  <span>Participer à la beta</span>
+                  <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
               </Link>
               
               {/* Bouton secondaire glassmorphism */}
-              <Link href="/guide" className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105">
-                <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <Link 
+                href="/guide" 
+                className="relative px-8 py-3.5 rounded-lg overflow-hidden group"
+              >
+                <span className="absolute inset-0 w-full h-full border border-white/20 bg-white/5 backdrop-blur-sm group-hover:bg-white/10 group-hover:border-white/30 transition-all duration-300"></span>
+                <span className="relative flex items-center justify-center text-white">
+                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span>Comment ça marche</span>
-                </div>
+                </span>
               </Link>
             </motion.div>
             
@@ -1013,6 +1725,13 @@ export default function Home() {
                 {/* Effet de reflet */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
                 
+                {/* Badge Beta */}
+                <div className="absolute top-3 right-3 z-10">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+                    Beta
+                  </span>
+                </div>
+                
                 {/* Barre de titre avec glassmorphism */}
                 <div className="py-4 px-5 border-b border-white/10 bg-[rgba(8,8,19,0.7)] backdrop-blur-xl flex items-center justify-between">
                   {/* Boutons du navigateur */}
@@ -1025,7 +1744,7 @@ export default function Home() {
                   {/* Titre avec badge pro */}
                   <div className="flex items-center">
                     <span className="text-sm text-white/80 font-medium">Tableau de bord</span>
-                    <span className="ml-2 px-2 py-0.5 text-[10px] font-medium bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-white">PRO</span>
+                    <span className="ml-2 px-2 py-0.5 text-[10px] font-medium bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full text-white">PRO</span>
                   </div>
                   
                   {/* Menu de navigation */}
@@ -1119,13 +1838,13 @@ export default function Home() {
                               key={i} 
                               className={`w-full rounded-t-sm transition-all duration-300 hover:opacity-100 group relative ${
                                 isHighlighted 
-                                  ? 'bg-indigo-500' 
+                                  ? 'bg-violet-500' 
                                   : 'bg-indigo-500/30 hover:bg-indigo-500/50'
                               }`}
                               style={{ height: `${height}%` }}
                             >
                               {isHighlighted && (
-                                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-indigo-500 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-violet-500 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                                   +2,345€
                                 </div>
                               )}
@@ -1139,6 +1858,147 @@ export default function Home() {
               </motion.div>
             </div>
           </motion.div>
+        </div>
+      </motion.section>
+
+      {/* Section Early Access */}
+      <motion.section 
+        className="py-16 relative"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="p-1 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 shadow-lg shadow-indigo-500/20">
+            <div className="bg-slate-900 rounded-xl overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+                {/* Contenu Early Access */}
+                <div className="p-8 md:p-10">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-violet-500/20 text-violet-300 border border-violet-500/20 mb-6">
+                    PROGRAMME EXCLUSIF
+                  </div>
+                  
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+                    Rejoignez notre programme Early Access
+                  </h2>
+                  
+                  <p className="text-blue-100/80 mb-6">
+                    Soyez parmi les premiers à tester Bitax et bénéficiez d'avantages exclusifs :
+                  </p>
+                  
+                  <ul className="space-y-3 mb-8">
+                    {[
+                      "Accès gratuit à toutes les fonctionnalités premium",
+                      "Support prioritaire et personnalisé",
+                      "Influence sur le développement du produit",
+                      "50% de réduction à vie sur l'abonnement"
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start">
+                        <svg className="w-5 h-5 text-green-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-blue-100/90">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  {/* Formulaire d'Early Access */}
+                  <form onSubmit={handleEarlyAccessSubmit} className="space-y-4">
+                    <div>
+                      <label htmlFor="email" className="sr-only">Email</label>
+                      <div className="mt-1 relative">
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Votre adresse email"
+                          className="block w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 placeholder-slate-400 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                      </div>
+                    </div>
+                    
+                    {submitError && (
+                      <p className="text-red-400 text-sm">{submitError}</p>
+                    )}
+                    
+                    {submitSuccess ? (
+                      <div className="bg-green-900/30 border border-green-700/30 text-green-400 px-4 py-3 rounded-lg">
+                        <div className="flex">
+                          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <p>Merci ! Votre demande a été envoyée avec succès.</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full relative overflow-hidden px-4 py-3 rounded-lg group"
+                      >
+                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-violet-600 to-indigo-600 group-hover:from-violet-500 group-hover:to-indigo-500 transition-all duration-300"></span>
+                        <span className="relative flex items-center justify-center text-white font-medium">
+                          {isSubmitting ? (
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          ) : null}
+                          Participer à la beta
+                        </span>
+                      </button>
+                    )}
+                    
+                    <p className="text-xs text-blue-100/50 text-center">
+                      Nombre de places limité. Premier arrivé, premier servi.
+                    </p>
+                  </form>
+                </div>
+                
+                {/* Image Early Access */}
+                <div className="bg-gradient-to-br from-indigo-900/50 to-violet-900/50 p-8 md:p-10 flex items-center justify-center relative overflow-hidden">
+                  {/* Effets lumineux */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/30 rounded-full filter blur-3xl"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full filter blur-3xl"></div>
+                  
+                  {/* Contenu */}
+                  <div className="relative text-center z-10 max-w-xs">
+                    <div className="inline-block mb-6 p-3 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
+                      <svg className="w-12 h-12 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-white mb-4">
+                      Influencez le futur de Bitax
+                    </h3>
+                    
+                    <p className="text-blue-100/80 mb-6">
+                      En tant que bêta-testeur, vos retours nous aideront à créer le meilleur outil de fiscalité crypto en France.
+                    </p>
+                    
+                    <div className="inline-flex items-center space-x-1">
+                      <div className="w-8 h-8 rounded-full bg-indigo-500 border-2 border-slate-900 overflow-hidden">
+                        <div className="w-full h-full bg-gradient-to-br from-indigo-400 to-violet-500"></div>
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-purple-500 -ml-2 border-2 border-slate-900 overflow-hidden">
+                        <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-500"></div>
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-blue-500 -ml-2 border-2 border-slate-900 overflow-hidden">
+                        <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500"></div>
+                      </div>
+                      <span className="text-white/70 text-sm ml-2">+24 places restantes</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.section>
       
@@ -1225,7 +2085,7 @@ export default function Home() {
                   description: "Bitax récupère automatiquement l'historique de vos transactions sur plusieurs blockchains.",
                   icon: (
                     <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                   )
@@ -1259,7 +2119,7 @@ export default function Home() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 * index, duration: 0.5 }}
                 >
-                  <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
+                  <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full p-0.5 mb-6 shadow-lg shadow-indigo-500/20">
                     <div className="bg-gray-900 rounded-full w-16 h-16 flex items-center justify-center">
                       <div className="text-white text-2xl font-bold">{item.step}</div>
                     </div>
@@ -1282,9 +2142,9 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-      
-      {/* Section Avantages avec effet parallaxe */}
-      <motion.section 
+
+            {/* Section Avantages avec effet parallaxe */}
+            <motion.section 
         className="py-20 relative"
         style={{ y: y2 }}
       >
@@ -1327,7 +2187,7 @@ export default function Home() {
         </div>
       </motion.section>
       
-      {/* Section Témoignages avec effet parallaxe - Placeholders à la place des témoignages réels */}
+      {/* Section Témoignages avec effet parallaxe */}
       <motion.section 
         className="py-20 -mt-16 relative"
         style={{ y: y3 }}
@@ -1339,10 +2199,10 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
-              Ce que disent nos utilisateurs
+              Ce que disent nos beta-testeurs
             </h2>
             <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
-              Nos premiers utilisateurs auront bientôt la parole ici.
+              Découvrez les retours de nos premiers utilisateurs du programme Early Access.
             </p>
           </div>
           
@@ -1358,7 +2218,7 @@ export default function Home() {
                 whileHover={{ y: -5, transition: { duration: 0.3 } }}
               >
                 <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg">
                     {id}
                   </div>
                   <div className="ml-4">
@@ -1366,12 +2226,12 @@ export default function Home() {
                       Futur témoignage
                     </h3>
                     <p className="text-sm text-blue-100/70">
-                      Utilisateur Bitax
+                      Beta-testeur Bitax
                     </p>
                   </div>
                 </div>
                 <p className="text-blue-100/80 italic">
-                  "Cette section sera bientôt remplie avec de vrais témoignages d'utilisateurs satisfaits de notre service de gestion fiscale crypto."
+                  "Cette section sera bientôt remplie avec de vrais témoignages des participants au programme Early Access qui testent actuellement notre service."
                 </p>
                 <div className="mt-4 flex">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -1440,7 +2300,7 @@ export default function Home() {
         </div>
       </motion.section>
       
-      {/* Intégration CTA dans le flux principal du site plutôt qu'une section séparée en bas */}
+      {/* CTA Early Access */}
       <motion.section 
         className="py-16 mb-16 relative"
         style={{ y: y1 }}
@@ -1455,7 +2315,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              Simplifiez votre fiscalité crypto dès aujourd'hui
+              Rejoignez notre beta privée dès maintenant
             </motion.h2>
             <motion.p 
               className="text-xl text-blue-100/80 mb-6"
@@ -1464,7 +2324,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              Rejoignez les milliers d'utilisateurs qui font confiance à Bitax pour gérer automatiquement leur déclaration fiscale en quelques clics.
+              Les places sont limitées pour notre programme Early Access. Soyez parmi les premiers à tester Bitax et influencez directement le développement de notre produit.
             </motion.p>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -1474,14 +2334,21 @@ export default function Home() {
             >
               <Link 
                 href="/register" 
-                className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105"
+                className="inline-block relative overflow-hidden px-8 py-3.5 rounded-lg group"
               >
-                Créer un compte gratuitement
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600"></span>
+                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative flex items-center justify-center text-white font-semibold">
+                  <span>Participer à la beta</span>
+                  <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
               </Link>
             </motion.div>
           </div>
           
-          {/* Illustration ou statistiques */}
+          {/* Beta Counter */}
           <motion.div 
             className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 border border-white/10 rounded-2xl p-6 backdrop-blur-lg"
             initial={{ opacity: 0, y: 20 }}
@@ -1489,22 +2356,42 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            <div className="grid grid-cols-2 gap-5">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-                <h4 className="text-2xl font-bold text-indigo-400 mb-2">98%</h4>
-                <p className="text-sm text-white/70">de précision dans les calculs fiscaux</p>
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-violet-500/20 text-violet-300 border border-violet-500/20">
+                PLACES LIMITÉES
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-                <h4 className="text-2xl font-bold text-purple-400 mb-2">30min</h4>
-                <p className="text-sm text-white/70">de temps gagné par déclaration</p>
+              <h3 className="text-2xl font-bold text-white mt-2">Programme Early Access</h3>
+              <p className="text-blue-100/70 mt-1">Rejoignez les pionniers de Bitax</p>
+            </div>
+            
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">24</div>
+                <div className="text-sm text-white/70">Places restantes</div>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-                <h4 className="text-2xl font-bold text-blue-400 mb-2">5+</h4>
-                <p className="text-sm text-white/70">blockchains prises en charge</p>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">16</div>
+                <div className="text-sm text-white/70">Beta-testeurs</div>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
-                <h4 className="text-2xl font-bold text-emerald-400 mb-2">24/7</h4>
-                <p className="text-sm text-white/70">de disponibilité de la plateforme</p>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">50%</div>
+                <div className="text-sm text-white/70">Réduction à vie</div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <div className="text-3xl font-bold text-white">07</div>
+                <div className="text-sm text-white/70">Jours restants</div>
+              </div>
+            </div>
+            
+            <div className="flex justify-center">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center w-full">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-white/70">Progression</span>
+                  <span className="text-sm font-medium text-white">40%</span>
+                </div>
+                <div className="w-full bg-slate-700/50 rounded-full h-2.5">
+                  <div className="bg-gradient-to-r from-violet-600 to-indigo-600 h-2.5 rounded-full" style={{ width: '40%' }}></div>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -1596,31 +2483,30 @@ export default function Home() {
             </div>
             
             <div>
-              <h3 className="text-white font-semibold mb-4">Contact</h3>
+              <h3 className="text-white font-semibold mb-4">Early Access</h3>
               <ul className="space-y-3">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-blue-100/70">
+                    Lancement beta : 15 Mai 2025
+                  </span>
+                </li>
                 <li className="flex items-start">
                   <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   <span className="text-blue-100/70">
-                    Contact à venir
+                    Contact : <a href="#" className="text-indigo-400 hover:text-indigo-300">beta@bitax.fr</a>
                   </span>
                 </li>
                 <li className="flex items-start">
                   <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span className="text-blue-100/70">
-                    En cours de mise en place
-                  </span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span className="text-blue-100/70">
-                    Adresse à venir
+                    <a href="#" className="text-indigo-400 hover:text-indigo-300">FAQ du programme beta</a>
                   </span>
                 </li>
               </ul>
@@ -1725,11 +2611,11 @@ export default function Home() {
         
         /* Shadow glow */
         .shadow-glow-sm {
-          box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+          box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
         }
         
         .shadow-glow-xl {
-          box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+          box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
         }
       `}</style>
     </div>
