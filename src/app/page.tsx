@@ -117,12 +117,6 @@ export default function Home() {
   // État pour le menu mobile
   const [menuOpen, setMenuOpen] = useState(false);
   
-  // État pour le formulaire d'Early Access
-  const [email, setEmail] = useState("");
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
   // Hook de scroll pour les effets parallaxe
   const { scrollY } = useScroll();
   
@@ -133,6 +127,34 @@ export default function Home() {
   const opacity1 = useTransform(scrollY, [0, 100, 200], [1, 0.5, 0]);
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
+  
+  // Effet pour générer des étoiles aléatoires
+  useEffect(() => {
+    const generateStars = () => {
+      const newStars: Star[] = [];
+      const count = Math.floor((window.innerWidth * window.innerHeight) / 4000);
+      
+      for (let i = 0; i < count; i++) {
+        newStars.push({
+          id: i,
+          x: Math.random() * 100, // position en pourcentage
+          y: Math.random() * 100,
+          size: Math.random() * 2 + 0.1,
+          opacity: Math.random() * 0.5 + 0.3,
+          animationDelay: `${Math.random() * 5}s`,
+        });
+      }
+      
+      setStars(newStars);
+    };
+    
+    generateStars();
+    
+    window.addEventListener('resize', generateStars);
+    return () => {
+      window.removeEventListener('resize', generateStars);
+    };
+  }, []);
   
   // Effet pour l'animation blockchain
   useEffect(() => {
@@ -615,25 +637,6 @@ export default function Home() {
     };
   }, []);
   
-  // Fonction de gestion du formulaire Early Access
-  const handleEarlyAccessSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simuler l'envoi du formulaire avec un délai
-    setTimeout(() => {
-      if (email && email.includes('@')) {
-        setSubmitSuccess(true);
-        setSubmitError("");
-        setEmail("");
-      } else {
-        setSubmitError("Veuillez entrer une adresse email valide");
-        setSubmitSuccess(false);
-      }
-      setIsSubmitting(false);
-    }, 800);
-  };
-  
   // Données pour les fonctionnalités
   const features: Feature[] = [
     {
@@ -813,11 +816,6 @@ export default function Home() {
       id: 4,
       question: "Puis-je utiliser Bitax gratuitement?",
       answer: "Bitax propose une version gratuite avec des fonctionnalités de base et une limite de transactions. Pour un usage professionnel ou un volume important de transactions, nous proposons des forfaits premium avec des fonctionnalités avancées."
-    },
-    {
-      id: 5,
-      question: "Comment fonctionne le programme Early Access?",
-      answer: "Notre programme Early Access vous donne un accès privilégié à Bitax avant son lancement officiel. En tant que testeur précoce, vous bénéficiez d'un accès gratuit à toutes les fonctionnalités premium, d'un support prioritaire et de la possibilité d'influencer directement le développement du produit."
     }
   ];
   
@@ -840,8 +838,26 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
-      {/* Background moderne avec animation blockchain */}
+      {/* Background moderne avec animation blockchain et étoiles */}
       <div className="fixed inset-0 -z-20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 overflow-hidden">
+        {/* Étoiles */}
+        <div className="fixed inset-0 -z-10 opacity-60">
+          {stars.map((star) => (
+            <div 
+              key={star.id}
+              className="absolute rounded-full bg-white animate-pulse-slow"
+              style={{
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                left: `${star.x}%`,
+                top: `${star.y}%`,
+                opacity: star.opacity,
+                animationDelay: star.animationDelay,
+              }}
+            ></div>
+          ))}
+        </div>
+        
         {/* Gradient d'ambiance */}
         <motion.div className="absolute top-0 left-0 w-full h-full">
           <motion.div 
@@ -909,13 +925,6 @@ export default function Home() {
                   <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
                 </div>
               </Link>
-              
-              {/* Badge Early Access */}
-              <div className="ml-3 hidden sm:block">
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-                  Early Access
-                </span>
-              </div>
             </div>
 
             {/* Navbar avec boutons en français */}
@@ -990,13 +999,6 @@ export default function Home() {
                   </Link>
                 ))}
                 
-                {/* Badge Early Access dans le menu mobile */}
-                <div className="py-2">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-                    Early Access
-                  </span>
-                </div>
-                
                 <div className="pt-2 space-y-2">
                   <Link 
                     href="/login" 
@@ -1034,19 +1036,6 @@ export default function Home() {
             className="text-center lg:text-left pt-8 lg:pt-0"
             style={{ y: y1 }}
           >
-            {/* Badge Early Access */}
-            <motion.div 
-              className="mb-6 inline-flex"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.6 }}
-            >
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 border border-white/10 shadow-lg shadow-indigo-500/20">
-                <span className="px-1.5 py-0.5 bg-white/20 rounded-full text-xs font-bold text-white mr-2">BETA</span>
-                <span className="text-sm text-white font-medium">Early Access Program</span>
-              </div>
-            </motion.div>
-            
             <motion.h2 
               className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight tracking-tight"
               initial={{ opacity: 0, y: 20 }}
@@ -1092,31 +1081,27 @@ export default function Home() {
             >
               {/* Bouton principal avec design moderne */}
               <Link 
-                href="/register" 
+                href="/waitlist" 
                 className="relative px-8 py-3.5 rounded-lg overflow-hidden group"
               >
                 <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600"></span>
                 <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="relative flex items-center justify-center text-white font-semibold">
-                  <span>Participer à la beta</span>
-                  <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <span>Commencer gratuitement</span>
                 </span>
               </Link>
               
-              {/* Bouton secondaire glassmorphism */}
+              {/* Bouton secondaire glassmorphism - contours corrigés */}
               <Link 
                 href="/guide" 
-                className="relative px-8 py-3.5 rounded-lg overflow-hidden group"
+                className="px-8 py-3.5 rounded-lg border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300"
               >
-                <span className="absolute inset-0 w-full h-full border border-white/20 bg-white/5 backdrop-blur-sm group-hover:bg-white/10 group-hover:border-white/30 transition-all duration-300"></span>
-                <span className="relative flex items-center justify-center text-white">
-                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex items-center justify-center space-x-2 text-white">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span>Comment ça marche</span>
-                </span>
+                </div>
               </Link>
             </motion.div>
             
@@ -1242,13 +1227,6 @@ export default function Home() {
               >
                 {/* Effet de reflet */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
-                
-                {/* Badge Beta */}
-                <div className="absolute top-3 right-3 z-10">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-                    Beta
-                  </span>
-                </div>
                 
                 {/* Barre de titre avec glassmorphism */}
                 <div className="py-4 px-5 border-b border-white/10 bg-[rgba(8,8,19,0.7)] backdrop-blur-xl flex items-center justify-between">
@@ -1376,147 +1354,6 @@ export default function Home() {
               </motion.div>
             </div>
           </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Section Early Access */}
-      <motion.section 
-        className="py-16 relative"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-1 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 shadow-lg shadow-indigo-500/20">
-            <div className="bg-slate-900 rounded-xl overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-                {/* Contenu Early Access */}
-                <div className="p-8 md:p-10">
-                  <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-violet-500/20 text-violet-300 border border-violet-500/20 mb-6">
-                    PROGRAMME EXCLUSIF
-                  </div>
-                  
-                  <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-                    Rejoignez notre programme Early Access
-                  </h2>
-                  
-                  <p className="text-blue-100/80 mb-6">
-                    Soyez parmi les premiers à tester Bitax et bénéficiez d'avantages exclusifs :
-                  </p>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {[
-                      "Accès gratuit à toutes les fonctionnalités premium",
-                      "Support prioritaire et personnalisé",
-                      "Influence sur le développement du produit",
-                      "50% de réduction à vie sur l'abonnement"
-                    ].map((item, index) => (
-                      <li key={index} className="flex items-start">
-                        <svg className="w-5 h-5 text-green-400 mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-blue-100/90">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  {/* Formulaire d'Early Access */}
-                  <form onSubmit={handleEarlyAccessSubmit} className="space-y-4">
-                    <div>
-                      <label htmlFor="email" className="sr-only">Email</label>
-                      <div className="mt-1 relative">
-                        <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          autoComplete="email"
-                          required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Votre adresse email"
-                          className="block w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 placeholder-slate-400 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                      </div>
-                    </div>
-                    
-                    {submitError && (
-                      <p className="text-red-400 text-sm">{submitError}</p>
-                    )}
-                    
-                    {submitSuccess ? (
-                      <div className="bg-green-900/30 border border-green-700/30 text-green-400 px-4 py-3 rounded-lg">
-                        <div className="flex">
-                          <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <p>Merci ! Votre demande a été envoyée avec succès.</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full relative overflow-hidden px-4 py-3 rounded-lg group"
-                      >
-                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-violet-600 to-indigo-600 group-hover:from-violet-500 group-hover:to-indigo-500 transition-all duration-300"></span>
-                        <span className="relative flex items-center justify-center text-white font-medium">
-                          {isSubmitting ? (
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          ) : null}
-                          Participer à la beta
-                        </span>
-                      </button>
-                    )}
-                    
-                    <p className="text-xs text-blue-100/50 text-center">
-                      Nombre de places limité. Premier arrivé, premier servi.
-                    </p>
-                  </form>
-                </div>
-                
-                {/* Image Early Access */}
-                <div className="bg-gradient-to-br from-indigo-900/50 to-violet-900/50 p-8 md:p-10 flex items-center justify-center relative overflow-hidden">
-                  {/* Effets lumineux */}
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/30 rounded-full filter blur-3xl"></div>
-                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full filter blur-3xl"></div>
-                  
-                  {/* Contenu */}
-                  <div className="relative text-center z-10 max-w-xs">
-                    <div className="inline-block mb-6 p-3 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
-                      <svg className="w-12 h-12 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                      </svg>
-                    </div>
-                    
-                    <h3 className="text-xl font-bold text-white mb-4">
-                      Influencez le futur de Bitax
-                    </h3>
-                    
-                    <p className="text-blue-100/80 mb-6">
-                      En tant que bêta-testeur, vos retours nous aideront à créer le meilleur outil de fiscalité crypto en France.
-                    </p>
-                    
-                    <div className="inline-flex items-center space-x-1">
-                      <div className="w-8 h-8 rounded-full bg-indigo-500 border-2 border-slate-900 overflow-hidden">
-                        <div className="w-full h-full bg-gradient-to-br from-indigo-400 to-violet-500"></div>
-                      </div>
-                      <div className="w-8 h-8 rounded-full bg-purple-500 -ml-2 border-2 border-slate-900 overflow-hidden">
-                        <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-500"></div>
-                      </div>
-                      <div className="w-8 h-8 rounded-full bg-blue-500 -ml-2 border-2 border-slate-900 overflow-hidden">
-                        <div className="w-full h-full bg-gradient-to-br from-blue-400 to-cyan-500"></div>
-                      </div>
-                      <span className="text-white/70 text-sm ml-2">+24 places restantes</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </motion.section>
       
@@ -1675,39 +1512,39 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">
-              Ce que disent nos beta-testeurs
+              Ce que disent nos utilisateurs
             </h2>
             <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
-              Découvrez les retours de nos premiers utilisateurs du programme Early Access.
+              Découvrez les retours de nos premiers utilisateurs.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((id) => (
+            {testimonials.map((testimonial) => (
               <motion.div 
-                key={id}
+                key={testimonial.id}
                 className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.1 * id, duration: 0.5 }}
+                transition={{ delay: 0.1 * testimonial.id, duration: 0.5 }}
                 whileHover={{ y: -5, transition: { duration: 0.3 } }}
               >
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg">
-                    {id}
+                    {testimonial.id}
                   </div>
                   <div className="ml-4">
                     <h3 className="text-lg font-bold text-white">
-                      Futur témoignage
+                      {testimonial.name}
                     </h3>
                     <p className="text-sm text-blue-100/70">
-                      Beta-testeur Bitax
+                      {testimonial.role}
                     </p>
                   </div>
                 </div>
                 <p className="text-blue-100/80 italic">
-                  "Cette section sera bientôt remplie avec de vrais témoignages des participants au programme Early Access qui testent actuellement notre service."
+                  "{testimonial.content}"
                 </p>
                 <div className="mt-4 flex">
                   {[1, 2, 3, 4, 5].map((star) => (
