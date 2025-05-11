@@ -6,7 +6,8 @@ import { NextRequest, NextResponse } from "next/server";
 const publicRoutes = [
   "/", 
   "/login", 
-  "/register", 
+  "/waitlist",
+  "/invite",  // Pour permettre l'accès aux liens d'invitation
   "/api/auth", 
   "/guide", 
   "/pricing", 
@@ -18,7 +19,7 @@ const publicRoutes = [
   "/register-debug"
 ];
 
-const authRoutes = ["/login", "/register"];
+const authRoutes = ["/login"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
