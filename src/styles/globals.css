@@ -156,6 +156,12 @@
     color: var(--color-gray-200);
     font-family: 'Inter', sans-serif !important;
   }
+
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
   
   /* Ajout - Forçage de la police Inter pour tous les éléments */
   body, p, div, span, li, a, button, input, textarea, select {
