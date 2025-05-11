@@ -2,21 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-
-// Middleware pour vérifier si l'utilisateur est un administrateur
-async function isAdmin() {
-  const session = await getServerSession(authOptions);
-  
-  // Vérifier l'authentification
-  if (!session?.user) {
-    return false;
-  }
-  
-  // Note: Dans un système réel, vous pourriez avoir une table de rôles
-  // Pour cet exemple, on utilise une adresse email spécifique
-  // À remplacer par votre propre logique d'autorisation
-  return session.user.email === "admin@example.com";
-}
+import { isAdmin } from "@/lib/admin-auth";
 
 // GET - Récupérer la liste des inscriptions (filtrée par status)
 export async function GET(req: Request) {
