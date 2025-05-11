@@ -743,7 +743,7 @@ export default function Home() {
                 </Link>
               ))}
               
-              {/* Boutons Connexion/S'inscrire en français - nouveau design */}
+              {/* Boutons Connexion/Rejoindre la Beta en français - nouveau design */}
               <div className="flex items-center space-x-3 ml-6">
                 <Link 
                   href="/login" 
@@ -753,11 +753,11 @@ export default function Home() {
                 </Link>
                 
                 <Link 
-                  href="/register" 
+                  href="/waitlist" 
                   className="px-6 py-2 rounded-lg relative overflow-hidden group"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 transition-all duration-300 group-hover:from-violet-500 group-hover:to-indigo-500"></span>
-                  <span className="relative text-white font-medium">S'inscrire</span>
+                  <span className="relative text-white font-medium">Rejoindre la beta</span>
                 </Link>
               </div>
             </nav>
