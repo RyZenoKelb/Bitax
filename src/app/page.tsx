@@ -751,7 +751,6 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
-    </div>
       
       {/* Section Avantages avec effet parallaxe */}
       <motion.section 
