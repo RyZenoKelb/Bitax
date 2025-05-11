@@ -371,7 +371,7 @@ export default function WaitingListPage() {
               )}
 
               {/* Étape 2: Motivation */}
-              {currentStep === WaitlingListStep.MOTIVATION && (
+              {currentStep === WaitingListStep.MOTIVATION && (
                 <motion.div
                   variants={container}
                   initial="hidden"
@@ -414,7 +414,7 @@ export default function WaitingListPage() {
               )}
 
               {/* Étape 3: Récapitulatif et Confirmation */}
-              {currentStep === WaitlingListStep.CONFIRMATION && !submitSuccess && (
+              {currentStep === WaitingListStep.CONFIRMATION && !submitSuccess && (
                 <motion.div
                   variants={container}
                   initial="hidden"
