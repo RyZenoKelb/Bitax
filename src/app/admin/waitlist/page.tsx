@@ -29,6 +29,7 @@ export default function WaitlistAdminPage() {
   const [sendingInvite, setSendingInvite] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [inviteLink, setInviteLink] = useState<string | null>(null);
 
   // Vérifier l'authentification et les droits d'administration
   useEffect(() => {
@@ -40,8 +41,7 @@ export default function WaitlistAdminPage() {
     }
     
     // Vérifier si l'utilisateur est administrateur
-    // Note: À adapter selon votre système de rôles
-    if (session?.user?.email !== "admin@example.com") {
+    if (session?.user?.email !== "ryzenoking@gmail.com") {
       router.push("/dashboard");
       return;
     }
@@ -74,6 +74,8 @@ export default function WaitlistAdminPage() {
   // Fonction pour envoyer une invitation
   const sendInvite = async (id: string) => {
     setSendingInvite(id);
+    setInviteLink(null);
+    
     try {
       const response = await fetch(`/api/admin/waitlist/invite`, {
         method: "POST",
@@ -87,14 +89,21 @@ export default function WaitlistAdminPage() {
         throw new Error("Erreur lors de l'envoi de l'invitation");
       }
       
+      const data = await response.json();
+      
+      // Stocker le lien d'invitation pour l'afficher
+      if (data.inviteUrl) {
+        setInviteLink(data.inviteUrl);
+      }
+      
       // Mettre à jour la liste
       await fetchWaitingList();
       setSuccessMessage("Invitation envoyée avec succès !");
       
-      // Effacer le message après 3 secondes
+      // Effacer le message après 5 secondes
       setTimeout(() => {
         setSuccessMessage(null);
-      }, 3000);
+      }, 5000);
     } catch (err) {
       setError("Impossible d'envoyer l'invitation. Veuillez réessayer.");
       console.error(err);
@@ -153,6 +162,29 @@ export default function WaitlistAdminPage() {
       {successMessage && (
         <div className="mb-4 p-4 bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-300">
           {successMessage}
+        </div>
+      )}
+      
+      {inviteLink && (
+        <div className="mb-4 p-4 bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p className="text-blue-800 dark:text-blue-300 mb-2">Lien d'invitation généré :</p>
+          <div className="flex items-center gap-2">
+            <input 
+              type="text" 
+              value={inviteLink} 
+              readOnly 
+              className="w-full p-2 border border-blue-300 dark:border-blue-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            />
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(inviteLink);
+                setSuccessMessage("Lien copié dans le presse-papier!");
+              }}
+              className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            >
+              Copier
+            </button>
+          </div>
         </div>
       )}
       
@@ -292,7 +324,7 @@ export default function WaitlistAdminPage() {
                       <div className="flex justify-end space-x-2">
                         <button
                           onClick={() => {
-                            // Afficher les détails (motivation) dans une modal
+                            // Afficher les détails (motivation) dans une alerte
                             alert(`Motivation de ${entry.name}:\n\n${entry.motivation || "Aucune motivation fournie."}`);
                           }}
                           className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300"
@@ -310,10 +342,18 @@ export default function WaitlistAdminPage() {
                           </button>
                         )}
                         
-                        {entry.invited && (
-                          <span className="text-gray-400 dark:text-gray-500">
-                            Invité le {new Date(entry.invitedAt!).toLocaleDateString('fr-FR')}
-                          </span>
+                        {entry.invited && entry.inviteCode && (
+                          <button
+                            onClick={() => {
+                              const url = `${window.location.origin}/invite/${entry.inviteCode}`;
+                              navigator.clipboard.writeText(url);
+                              setSuccessMessage("Lien d'invitation copié!");
+                              setInviteLink(url);
+                            }}
+                            className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                          >
+                            Copier lien
+                          </button>
                         )}
                       </div>
                     </td>
