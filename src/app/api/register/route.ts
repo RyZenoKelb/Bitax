@@ -132,7 +132,7 @@ export async function POST(req: Request) {
     // Si l'utilisateur s'est inscrit avec un code d'invitation, mettre à jour l'entrée de la waiting list
     if (inviteCode) {
       logDebug('Mise à jour de l\'entrée de waiting list avec l\'ID utilisateur');
-      await prisma.WaitingList.update({
+      await prisma.waitingList.update({
         where: { inviteCode },
         data: { userId: user.id }
       });
