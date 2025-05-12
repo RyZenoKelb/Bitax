@@ -178,18 +178,18 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
     if (tx.block_timestamp) {
       const date = new Date(tx.block_timestamp);
       const dateString = date.toISOString().split('T')[0]; // Format YYYY-MM-DD
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                  <span className="text-sm font-medium text-gray-500">Période d'activité</span>
-                  <div className="mt-1 text-2xl font-semibold text-gray-900">{activityPeriod} <span className="text-lg">jours</span></div>
-                  <div className="mt-1 text-sm text-gray-500">
-                    {oldestDate.toLocaleDateString()} - {newestDate.toLocaleDateString()}
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                  <span className="text-sm font-medium text-gray-500">Tokens uniques</span>
-                  <div className="mt-1 text-2xl font-semibold text-gray-900">{uniqueTokens.size}</div>
+      const value = tx.valueInETH || (tx.value ? Number(tx.value) / 1e18 : 0);
+      dailyValueData[dateString] = (dailyValueData[dateString] || 0) + value;
+    }
+  });
+
+  // Convertir en tableau pour le graphique
+  const valueChartData = Object.entries(dailyValueData)
+    .map(([date, value]) => ({ date, value }))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  // Générer des couleurs pour les tokens
+  const tokenColors = [
                   <div className="mt-1 text-sm text-gray-500">
                     {uniqueTokens.size > 0 
                       ? `Dont ${Array.from(uniqueTokens).slice(0, 2).join(', ')}...` 
