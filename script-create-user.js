@@ -6,14 +6,14 @@ const prisma = new PrismaClient();
 
 async function createUser() {
   try {
-    const hashedPassword = await hash('250802', 10);
+    const hashedPassword = await hash('250802LGgn', 10);
     
     const user = await prisma.user.create({
       data: {
         name: 'RyZeno',
         email: 'ryzenoking@gmail.com',
         password: hashedPassword,
-        isPremium: false
+        isPremium: true
       }
     });
     
