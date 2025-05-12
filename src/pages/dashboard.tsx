@@ -830,13 +830,13 @@ export default function Dashboard() {
                 
                 <Link
                   href="/wallets"
-                  variant="primary"
-                  fullWidth
-                  size="lg"
-                />
-              </div>
-            </div>
-          ) : (
+                  className="w-full mt-3 flex items-center justify-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Ajouter un wallet
+                </Link>
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
                 <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">

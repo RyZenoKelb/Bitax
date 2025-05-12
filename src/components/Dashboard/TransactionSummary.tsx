@@ -612,3 +612,19 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                   <h4 className="font-medium text-gray-900 dark:text-white">Analyse avancée du volume</h4>
                 </div>
                 <div className="p-5">
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={activityData}
+                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                      ></BarChart>
+                        <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} vertical={false} />
+                        <XAxis 
+                          dataKey="month" 
+                          tick={{ fill: chartTextColor }}
+                          axisLine={{ stroke: chartGridColor }}
+                          tickLine={{ stroke: chartGridColor }}
+                          tickFormatter={formatMonthYear}
+                        />
+                        <YAxis 
+                          tick={{ fill: chartTextColor }}
