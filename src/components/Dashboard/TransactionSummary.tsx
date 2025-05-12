@@ -10,6 +10,7 @@ interface Transaction {
   type?: string;
   block_timestamp?: string;
   tokenSymbol?: string;
+  valueInETH?: number;
 }
 
 interface TransactionSummaryProps {
@@ -23,30 +24,29 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'tokens'>('overview');
   const [timeRange, setTimeRange] = useState<'all' | '30d' | '90d' | '1y'>('all');
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light');
+  
+  // Détection du thème
+  useEffect(() => {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    setCurrentTheme(isDarkMode ? 'dark' : 'light');
+    
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const isDarkMode = document.documentElement.classList.contains('dark');
+          setCurrentTheme(isDarkMode ? 'dark' : 'light');
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
   
   if (transactions.length === 0) {
     return null;
   }
-
-  // Calculer les valeurs totales
-  const totalValue = transactions.reduce((sum, tx) => {
-    const ethValue = tx.valueInETH || (tx.value ? Number(tx.value) / 1e18 : 0);
-    return sum + ethValue;
-  }, 0);
-
-  const averageValue = totalValue / transactions.length;
-
-  // Compter les types de transactions
-  const typeCounts: Record<string, number> = {};
-  transactions.forEach(tx => {
-    const type = tx.type || 'Inconnu';
-    typeCounts[type] = (typeCounts[type] || 0) + 1;
-  });
-
-  // Calculer les pourcentages par type
-  const typePercentages = Object.entries(typeCounts).map(([type, count]) => ({
-    type,
-    count,
     percentage: (count / transactions.length) * 100
   }));
 
