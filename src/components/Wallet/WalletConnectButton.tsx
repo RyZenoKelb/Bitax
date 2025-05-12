@@ -15,6 +15,9 @@ interface WalletConnectButtonProps {
   variant?: 'default' | 'primary' | 'outline' | 'premium';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
+  showIcon?: boolean;
+  showAddress?: boolean;
+  isLoading?: boolean;
   buttonText?: string;
 }
 
@@ -24,10 +27,14 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
   variant = 'primary',
   size = 'md',
   fullWidth = false,
+  showIcon = true,
+  showAddress = false,
+  isLoading: externalIsLoading = false,
   buttonText = 'Connecter un wallet'
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
 
   // Gérer la connexion d'un wallet
   const handleWalletConnect = async (address: string, walletType: WalletType, name?: string) => {
@@ -48,6 +55,8 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
         });
       }
 
+      setConnectedAddress(address);
+
       // Afficher un toast de succès
       toast.success(`Wallet ${walletType} ajouté avec succès !`);
       
@@ -57,6 +66,12 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Formater une adresse ethereum pour l'affichage
+  const formatAddress = (addr: string) => {
+    if (!addr) return '';
+    return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
   };
 
   // Classes CSS basées sur les props
@@ -97,7 +112,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
     }
     
     // États
-    if (isLoading) {
+    if (isLoading || externalIsLoading) {
       classes += 'opacity-70 cursor-not-allowed ';
     }
     
@@ -108,20 +123,30 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        disabled={isLoading}
+        disabled={isLoading || externalIsLoading}
         className={getButtonClasses()}
       >
-        {isLoading ? (
+        {isLoading || externalIsLoading ? (
           <>
             <div className="animate-spin w-5 h-5 mr-3 bg-transparent border-2 border-transparent border-t-white rounded-full"></div>
             <span>Connexion en cours...</span>
           </>
         ) : (
           <>
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M13 10V3L4 14H7V21L16 10H13Z" fill="currentColor" />
-            </svg>
-            {buttonText}
+            {showIcon && (
+              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 10V3L4 14H7V21L16 10H13Z" fill="currentColor" />
+              </svg>
+            )}
+            
+            {connectedAddress && showAddress ? (
+              <div className="flex items-center">
+                <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                {formatAddress(connectedAddress)}
+              </div>
+            ) : (
+              <span>{buttonText}</span>
+            )}
           </>
         )}
       </button>
