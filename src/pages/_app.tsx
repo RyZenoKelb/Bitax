@@ -399,6 +399,12 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
+            {/* Ajouter ce div pour capturer les clics en dehors du menu */}
+        <>
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setIsUserMenuOpen(false)}
+          />
           <div className={`fixed bottom-4 ${sidebarCollapsed ? 'left-16' : 'left-64'} z-50 mt-2 w-56 rounded-xl overflow-hidden shadow-lg py-1
             bg-gray-800 border border-gray-700
             dark:bg-gray-800 dark:border-gray-700
