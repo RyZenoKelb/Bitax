@@ -471,7 +471,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                 const walletId = wallet.id as string;
                 const walletName = wallet.name as string || '';
                 const walletAddress = wallet.address as string;
-                const isCurrentWallet = currentWallet && currentWallet.id === walletId;
+                const isCurrentWallet = currentWallet && currentWallet === walletId;
                 
                 return (
                   <button
