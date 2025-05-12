@@ -2,15 +2,15 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { generatePDF } from '@/utils/pdf';
-import TransactionList from './TransactionList';
-import TransactionSummary from './TransactionSummary';
-import PremiumUnlock from './PremiumUnlock';
-import TaxDashboard from './TaxDashboard';
+import TransactionList from '../Infos/TransactionList';
+import TransactionSummary from '../Dashboard/TransactionSummary';
+import PremiumUnlock from '../Dashboard/PremiumUnlock';
+import TaxDashboard from '../Dashboard/TaxDashboard';
 import WalletConnectPanel from './WalletConnectPanel';
 import { Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
-import NetworkIcon from '@/components/NetworkIcon';
+import NetworkIcon from '@/components/Visual/NetworkIcon';
 
 declare global {
   interface Window {
