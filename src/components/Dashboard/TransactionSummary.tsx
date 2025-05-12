@@ -798,3 +798,9 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
               <div className="flex items-center">
                 <div className="flex-shrink-0 p-1 bg-blue-100 dark:bg-blue-900/50 rounded-md">
                   <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">Débloquez toutes les analyses</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Passez à Bitax Premium pour accéder à toutes les fonctionnalités</p>
