@@ -837,16 +837,16 @@ export default function Dashboard() {
                   </svg>
                   Ajouter un wallet
                 </Link>
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-                <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Vos wallets connectés
-                </h2>
-                <div className="space-y-2 mb-4">
-                  {walletAddresses.map((address, index) => (
-                  <div key={index} className="flex items-center">
-                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                    <p className="text-gray-600 dark:text-gray-300 font-medium">
+                </div>
+              
+              {/* Statistiques */}
+              {transactions.length > 0 && (
+                <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Transactions trouvées</span>
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">
                     {address.substring(0, 8)}...{address.substring(address.length - 6)}
                     </p>
                   </div>

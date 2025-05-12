@@ -628,3 +628,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                         />
                         <YAxis 
                           tick={{ fill: chartTextColor }}
+                          axisLine={{ stroke: chartGridColor }}
+                          tickLine={{ stroke: chartGridColor }}
+                        />
+                        <Tooltip
+                          formatter={(value: number) => [`${value}`, 'Transactions']}
+                          labelFormatter={(label) => `Période: ${formatMonthYear(label)}`}
+                          contentStyle={{ 
+                            backgroundColor: currentTheme === 'dark' ? '#1f2937' : '#ffffff',
+                            borderColor: currentTheme === 'dark' ? '#374151' : '#e5e7eb'
+                          }}
+                          labelStyle={{ color: currentTheme === 'dark' ? '#f9fafb' : '#111827' }}
+                        />
+                        <Bar 
+                          dataKey="count" 
