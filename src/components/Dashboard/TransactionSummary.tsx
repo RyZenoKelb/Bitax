@@ -422,41 +422,41 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                     >
-              )}
-            </div>
-            
-            {/* Légende du graphique */}
-            {activeTab === 'overview' && (
-              <div className="mt-auto pt-4 border-t border-gray-200">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {Object.entries(typeCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 6)
-                    .map(([type, _]) => (
-                      <div key={type} className="flex items-center text-xs">
-                        <span 
-                          className="inline-block w-3 h-3 rounded-full mr-2"
-                          style={{ backgroundColor: getTypeColor(type) }}
-                        ></span>
-                        <span className="truncate">{type}</span>
-                      </div>
+                      {range === 'all' ? 'Tout' : range.replace('d', 'j')}
+                    </button>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-        </div>
-        
-        {!isPremiumUser && (
-          <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <span className="font-medium">🔒 Premium:</span> Débloquez toutes les visualisations et analyses avancées avec Bitax Premium.
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+              <div className="p-5">
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                      data={activityData}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient id="colorActivity" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid 
+                        strokeDasharray="3 3" 
+                        stroke={chartGridColor}
+                        vertical={false}
+                      />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: chartTextColor }} 
+                        tickFormatter={formatMonthYear}
+                        axisLine={{ stroke: chartGridColor }}
+                        tickLine={{ stroke: chartGridColor }}
+                      />
+                      <YAxis 
+                        tick={{ fill: chartTextColor }}
+                        axisLine={{ stroke: chartGridColor }}
+                        tickLine={{ stroke: chartGridColor }}
+                      />
+                      <Tooltip
 
 export default TransactionSummary;
