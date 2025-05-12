@@ -213,12 +213,12 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   
   const chartBackground = currentTheme === 'dark' ? '#111827' : '#ffffff';
   const chartTextColor = currentTheme === 'dark' ? '#d1d5db' : '#4b5563';
-              </div>
-            </div>
-            
-            {mostActiveMonth && (
-              <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                <span className="text-sm font-medium text-gray-500">Mois le plus actif</span>
+  const chartGridColor = currentTheme === 'dark' ? '#374151' : '#e5e7eb';
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden transition-all duration-300 border border-gray-100 dark:border-gray-700">
+      <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex flex-wrap items-center justify-between">
+        <div>
                 <div className="mt-1 text-2xl font-semibold text-gray-900">{mostActiveMonth}</div>
                 <div className="mt-1 text-sm text-gray-500">{maxActivity} transactions</div>
               </div>
