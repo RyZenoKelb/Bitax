@@ -774,3 +774,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                   </div>
                   
                   <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4"></div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Concentration</p>
+                    {tokenData.length > 0 && (
+                      <>
+                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                          {tokenData[0].token}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
