@@ -136,18 +136,18 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   // Trouver le mois avec le plus de transactions
   let mostActiveMonth = '';
   let maxActivity = 0;
-    .slice(0, 10); // Top 10 tokens
   
-  // Calculer la période d'activité en jours
-  const activityPeriod = Math.ceil((newestDate.getTime() - oldestDate.getTime()) / (1000 * 60 * 60 * 24));
-  
-  // Données de valeur journalière pour le graphique en ligne
-  const dailyValueData: Record<string, number> = {};
-  transactions.forEach(tx => {
-    if (tx.block_timestamp) {
-      const date = new Date(tx.block_timestamp);
-      const dateString = date.toISOString().split('T')[0]; // Format YYYY-MM-DD
-      const value = tx.valueInETH || (tx.value ? Number(tx.value) / 1e18 : 0);
+  Object.entries(monthlyActivity).forEach(([month, count]) => {
+    if (count > maxActivity) {
+      mostActiveMonth = month;
+      maxActivity = count;
+    }
+  });
+
+  // Compter les tokens uniques
+  const uniqueTokens = new Set(
+    transactions
+      .filter(tx => tx.tokenSymbol)
       dailyValueData[dateString] = (dailyValueData[dateString] || 0) + value;
     }
   });
