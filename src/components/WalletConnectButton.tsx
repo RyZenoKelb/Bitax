@@ -505,7 +505,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                     </div>
                   </div>
                 </button>
-              );))}
+              ))}
               
               <div className="border-t border-gray-200 dark:border-gray-700 mt-1 pt-1">
                 <button
