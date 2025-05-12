@@ -809,7 +809,15 @@ export default function Home() {
               </Link>
               
               {/* Bouton secondaire glassmorphism */}
-              <Link href="/guide" className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105">
+              <button 
+              onClick={() => {
+                howItWorksSectionRef.current?.scrollIntoView({ 
+                  behavior: 'smooth',  // Pour un défilement fluide
+                  block: 'start'       // Aligne le haut de la section avec le haut de la fenêtre
+                });
+              }} 
+              className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105"
+            >
                 <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
