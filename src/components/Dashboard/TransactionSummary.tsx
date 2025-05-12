@@ -705,3 +705,18 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                       />
                       <Bar dataKey="value" name="Valeur en ETH">
                         {tokenData.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={tokenColors[index % tokenColors.length]} 
+                            radius={[0, 4, 4, 0]}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+            
+            {/* Informations sur les tokens */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
