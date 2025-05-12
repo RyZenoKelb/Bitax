@@ -468,10 +468,10 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
               
               {wallets.map((wallet) => {
                 // Contourner les erreurs TypeScript avec des variables locales
-                const walletId = wallet.id as string;
-                const walletName = wallet.name as string || '';
-                const walletAddress = wallet.address as string;
-                const isCurrentWallet = currentWallet && 'id' in currentWallet && currentWallet.id === walletId;
+                const walletId = wallet.id;
+                const walletName = wallet.name || '';
+                const walletAddress = wallet.address;
+                const isCurrentWallet = currentWallet && currentWallet.id === walletId;
                 
                 return (
                   <button
