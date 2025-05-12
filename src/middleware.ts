@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 const publicRoutes = [
   "/", 
   "/login", 
+  "/logout",
   "/waitlist",
   "/invite",  // Pour permettre l'accès aux liens d'invitation
   "/api/auth",  
