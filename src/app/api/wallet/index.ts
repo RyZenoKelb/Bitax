@@ -96,7 +96,6 @@ async function createWallet(req: NextApiRequest, res: NextApiResponse, userId: s
         userId,
         address: {
           equals: address,
-          mode: 'insensitive',
         },
         network,
       },
