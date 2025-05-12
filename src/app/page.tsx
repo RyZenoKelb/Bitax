@@ -888,69 +888,69 @@ export default function Home() {
                 </div>
               </Link>
               <p className="text-blue-100/70 mb-6 max-w-md"></p>
-                Simplifiez votre fiscalité crypto avec notre plateforme intuitive. Connectez vos wallets, analysez vos transactions et générez des rapports fiscaux en quelques clics.
-              </p>
-              <div className="flex space-x-4"></div>
-                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"></svg>
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </a>
-                {/* Social icons remain the same */}
-              </div>
-            </div>
-            
-            {/* Navigation links */}
-            <div>
-              <h3 className="text-white font-semibold mb-4 font-satoshi">Navigation</h3>
-              <ul className="space-y-3">
-                {[
-                  { name: 'Accueil', href: '/' },
-                  { name: 'Fonctionnalités', href: '/fonctionnalites' },
-                  { name: 'Tarifs', href: '/tarifs' },
-                  { name: 'Guide', href: '/guide' },
-                  { name: 'Support', href: '/support' }
-                ].map((item, index) => (
-                  <li key={index}>
-                    <Link 
-                      href={item.href}
-                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Legal links */}
-            <div>
-              <h3 className="text-white font-semibold mb-4 font-satoshi">Légal</h3>
-              <ul className="space-y-3">
-                {[
-                  { name: 'Conditions d\'utilisation', href: '/terms' },
-                  { name: 'Politique de confidentialité', href: '/privacy' },
-                  { name: 'Mentions légales', href: '/legal' },
-                  { name: 'Cookies', href: '/cookies' }
-                ].map((item, index) => (
-                  <li key={index}>
-                    <Link 
-                      href={item.href}
-                      className="text-blue-100/70 hover:text-white transition-colors duration-300"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Contact information */}
-            <div>
-              <h3 className="text-white font-semibold mb-4 font-satoshi">Contact</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-[#4ab3f4] mt-0.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {/* Polygon/Matic */}
+              <motion.div 
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-purple-900/20 backdrop-blur-sm border border-purple-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 38.4 33.5" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="#8247E5" d="M29,10.2c-0.7-0.4-1.6-0.4-2.4,0L21,13.5l-3.8,2.1l-5.5,3.3c-0.7,0.4-1.6,0.4-2.4,0L5,16.3
+                    c-0.7-0.4-1.2-1.2-1.2-2.1v-5c0-0.8,0.4-1.6,1.2-2.1l4.3-2.5c0.7-0.4,1.6-0.4,2.4,0L16,7.2c0.7,0.4,1.2,1.2,1.2,2.1v3.3l3.8-2.2V7
+                    c0-0.8-0.4-1.6-1.2-2.1l-8-4.7c-0.7-0.4-1.6-0.4-2.4,0L1.2,5C0.4,5.4,0,6.2,0,7v9.4c0,0.8,0.4,1.6,1.2,2.1l8.1,4.7
+                    c0.7,0.4,1.6,0.4,2.4,0l5.5-3.2l3.8-2.2l5.5-3.2c0.7-0.4,1.6-0.4,2.4,0l4.3,2.5c0.7,0.4,1.2,1.2,1.2,2.1v5c0,0.8-0.4,1.6-1.2,2.1
+                    L29,28.8c-0.7,0.4-1.6,0.4-2.4,0l-4.3-2.5c-0.7-0.4-1.2-1.2-1.2-2.1V21l-3.8,2.2v3.3c0,0.8,0.4,1.6,1.2,2.1l8.1,4.7
+                    c0.7,0.4,1.6,0.4,2.4,0l8.1-4.7c0.7-0.4,1.2-1.2,1.2-2.1V17c0-0.8-0.4-1.6-1.2-2.1L29,10.2z"/>
+                </svg>
+              </motion.div>
+              
+              {/* Arbitrum */}
+              <motion.div 
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-blue-900/20 backdrop-blur-sm border border-blue-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 2500 2500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1250 0C559.644 0 0 559.644 0 1250C0 1940.36 559.644 2500 1250 2500C1940.36 2500 2500 1940.36 2500 1250C2500 559.644 1940.36 0 1250 0Z" fill="#28A0F0"/>
+                  <path d="M633.2 1250L1250 1866.8L1866.8 1250L1250 633.2L633.2 1250Z" fill="white"/>
+                  <path d="M633.2 1250L1250 1866.8L1866.8 1250H633.2Z" fill="#0C1424"/>
+                  <path d="M633.2 1250L1250 633.2L1866.8 1250H633.2Z" fill="#0C1424" fillOpacity="0.2"/>
+                </svg>
+              </motion.div>
+              
+              {/* Optimism */}
+              <motion.div 
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-red-900/20 backdrop-blur-sm border border-red-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="250" cy="250" r="250" fill="#FF0420"/>
+                  <path d="M168.5 200.5C168.5 177.9 186.4 160 209 160H291C313.6 160 331.5 177.9 331.5 200.5C331.5 223.1 313.6 241 291 241H209C186.4 241 168.5 223.1 168.5 200.5Z" fill="white"/>
+                  <path d="M168.5 299.5C168.5 276.9 186.4 259 209 259H291C313.6 259 331.5 276.9 331.5 299.5C331.5 322.1 313.6 340 291 340H209C186.4 340 168.5 322.1 168.5 299.5Z" fill="white"/>
+                </svg>
+              </motion.div>
+              
+              {/* Base */}
+              <motion.div 
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-blue-900/20 backdrop-blur-sm border border-blue-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 2000 2000" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M1000 2000C1552.28 2000 2000 1552.28 2000 1000C2000 447.715 1552.28 0 1000 0C447.715 0 0 447.715 0 1000C0 1552.28 447.715 2000 1000 2000ZM1041.2 400C1407.7 400 1631.9 612.2 1662.5 972.7C1690.1 1295 1535.6 1600 1000 1600C464.4 1600 309.9 1295 337.5 972.7C368.1 612.2 592.3 400 958.8 400H1041.2Z" fill="#0052FF"/>
+                </svg>
+              </motion.div>
+              
+              {/* Solana */}
+              <motion.div 
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-gradient-to-br from-purple-900/20 to-blue-900/20 backdrop-blur-sm border border-purple-800/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 397.7 311.7" xmlns="http://www.w3.org/2000/svg">
+                  <linearGradient id="solGradientUse" gradientUnits="userSpaceOnUse" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)">
+                    <stop offset="0" style={{ stopColor: '#00FFA3' }}/>
                     <stop offset="1" style={{ stopColor: '#DC1FFF' }}/>
                   </linearGradient>
                   <path fill="url(#solGradientUse)" d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5
