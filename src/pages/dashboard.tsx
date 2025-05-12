@@ -7,7 +7,7 @@ import WalletConnectPanel from '@/components/Wallet/WalletConnectPanel';
 import TransactionSummary from '@/components/TransactionSummary';
 import TaxDashboard from '@/components/Dashboard/TaxDashboard';
 import PremiumUnlock from '@/components/PremiumUnlock';
-import OnboardingWizard from '@/components/OnboardingWizard';
+import OnboardingWizard from '@/components/Misc/OnboardingWizard';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 import DevModeToggle from '@/components/Misc/DevModeToggle';

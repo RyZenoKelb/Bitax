@@ -7,7 +7,7 @@ import { Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CustomStyles from '@/components/Visual/CustomStyles';
-import AuthProvider from '@/components/AuthProvider';
+import AuthProvider from '@/components/Auth/AuthProvider';
 import { useSession } from 'next-auth/react';
 import { DevModeProvider } from '@/context/DevModeContext';
 import DevModeIndicator from '@/components/Misc/DevModeIndicator';
