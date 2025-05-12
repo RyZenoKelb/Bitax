@@ -106,6 +106,7 @@ export default function Home() {
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   // Près du début de ton composant, avec les autres useState/useRef
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
+  const [highlightSection, setHighlightSection] = useState(false);
   
   // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
