@@ -416,12 +416,12 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                     <button
                       key={range}
                       onClick={() => setTimeRange(range as any)}
-                          {uniqueTokens.size > 5 ? 'Portefeuille diversifié' : 'Portefeuille concentré'}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                      className={`px-2 py-1 text-xs rounded-md transition-colors duration-200 ${
+                        timeRange === range 
+                          ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium' 
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      }`}
+                    >
               )}
             </div>
             
