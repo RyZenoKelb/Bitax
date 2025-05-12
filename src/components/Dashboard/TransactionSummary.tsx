@@ -276,10 +276,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm font-medium text-purple-800 dark:text-purple-300 mb-3">Transactions</p>
-                    </div>
-                    
-                    {/* Barres verticales */}
-                    <div className="space-y-3">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{transactions.length} <span className="text-sm text-gray-500 dark:text-gray-400">tx</span></p>
+                  </div>
+                  <div className="bg-purple-100 dark:bg-purple-800/60 p-2 rounded-lg">
+                    <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       {typePercentages.slice(0, 5).map(({ type, count, percentage }) => (
                         <div key={type} className="space-y-1">
                           <div className="flex justify-between text-sm">
