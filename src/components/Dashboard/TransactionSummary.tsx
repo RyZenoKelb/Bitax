@@ -734,3 +734,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                     </div>
                     <div className="flex-1 truncate">
                       <p className="font-medium text-gray-900 dark:text-white">{token.token}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{formatAmount(token.value)} ETH</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 w-full bg-gray-100 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full rounded-full" 
+                      style={{ 
+                        width: `${(token.value / tokenData[0].value) * 100}%`,
