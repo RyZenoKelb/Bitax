@@ -273,9 +273,9 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
               </div>
               
               <div className="bg-gradient-to-br from-purple-50 to-fuchsia-50 dark:from-purple-900/20 dark:to-fuchsia-900/20 rounded-xl p-4 transition-all duration-300 border border-purple-100 dark:border-purple-800/30">
-                          <Tooltip formatter={(value) => [`${value} transactions`, 'Quantité']} />
-                        </PieChart>
-                      </ResponsiveContainer>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-medium text-purple-800 dark:text-purple-300 mb-3">Transactions</p>
                     </div>
                     
                     {/* Barres verticales */}
