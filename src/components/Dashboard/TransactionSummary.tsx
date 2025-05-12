@@ -588,3 +588,22 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                         labelFormatter={(label) => `Date: ${new Date(label).toLocaleDateString()}`}
                         contentStyle={{ 
                           backgroundColor: currentTheme === 'dark' ? '#1f2937' : '#ffffff',
+                          borderColor: currentTheme === 'dark' ? '#374151' : '#e5e7eb'
+                        }}
+                        labelStyle={{ color: currentTheme === 'dark' ? '#f9fafb' : '#111827' }}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="value" 
+                        stroke="#6366f1" 
+                        strokeWidth={2}
+                        fillOpacity={1} 
+                        fill="url(#colorValue)" 
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+            
+            {isPremiumUser && (

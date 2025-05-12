@@ -812,16 +812,16 @@ export default function Dashboard() {
               </div>
             </div>
           ) : (
-        )}
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Colonne latérale */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Panneau de connexion wallet */}
-          {!isWalletConnected ? (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-              <div className="p-6">
+                <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Vos wallets connectés
+                </h2>
+                <div className="space-y-2 mb-4">
+                  {walletAddresses.map((address, index) => (
+                  <div key={index} className="flex items-center">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                    <p className="text-gray-600 dark:text-gray-300 font-medium">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Connectez votre wallet
                 </h2>
