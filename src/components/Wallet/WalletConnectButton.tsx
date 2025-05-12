@@ -19,6 +19,7 @@ interface WalletConnectButtonProps {
   showAddress?: boolean;
   isLoading?: boolean;
   buttonText?: string;
+  onConnect?: (address: string, walletProvider: ethers.BrowserProvider) => Promise<void>;
 }
 
 const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
