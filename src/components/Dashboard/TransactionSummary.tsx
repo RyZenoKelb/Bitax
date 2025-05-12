@@ -399,23 +399,23 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                             }}
                           ></div>
                         </div>
-                  
-                  {isPremiumUser && (
-                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                        <h5 className="text-sm font-medium text-gray-500 mb-2">Token le plus transféré</h5>
-                        {tokenData.length > 0 && (
-                          <>
-                            <div className="text-2xl font-semibold text-gray-900">{tokenData[0].token}</div>
-                            <div className="text-sm text-gray-500">{tokenData[0].value.toFixed(4)} ETH de valeur</div>
-                          </>
-                        )}
+                        <div className="mt-1 text-xs text-right text-gray-500 dark:text-gray-400">{percentage.toFixed(1)}%</div>
                       </div>
-                      
-                      <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                        <h5 className="text-sm font-medium text-gray-500 mb-2">Diversité de portefeuille</h5>
-                        <div className="text-2xl font-semibold text-gray-900">{uniqueTokens.size} tokens</div>
-                        <div className="text-sm text-gray-500">
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Aperçu chronologique */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                <h4 className="font-medium text-gray-900 dark:text-white">Chronologie d'activité</h4>
+                <div className="flex space-x-1">
+                  {['all', '1y', '90d', '30d'].map((range) => (
+                    <button
+                      key={range}
+                      onClick={() => setTimeRange(range as any)}
                           {uniqueTokens.size > 5 ? 'Portefeuille diversifié' : 'Portefeuille concentré'}
                         </div>
                       </div>
