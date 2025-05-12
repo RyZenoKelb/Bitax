@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, 
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  Area, AreaChart, ComposedChart
 } from 'recharts';
 
 interface Transaction {
@@ -9,7 +10,6 @@ interface Transaction {
   type?: string;
   block_timestamp?: string;
   tokenSymbol?: string;
-  valueInETH?: number;
 }
 
 interface TransactionSummaryProps {
