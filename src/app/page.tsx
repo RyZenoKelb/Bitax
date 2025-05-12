@@ -109,82 +109,62 @@ export default function Home() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
+  
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
+  
     // Ajuster la taille du canvas à la fenêtre
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-
+  
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-
+  
     // Configuration des éléments visuels améliorés
     const hexagons: Hexagon[] = [];
-    const connections: Connection[] = [];
     const particles: Particle[] = [];
-    const dataPackets: DataPacket[] = [];
-      
+    
     // Créer des hexagones (symboles de blockchain)
     const createHexagons = () => {
-      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 20);
+      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 15);
       
       for (let i = 0; i < hexCount; i++) {
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
         const size = Math.random() * 25 + 20; // Hexagones plus grands
         const opacity = Math.random() * 0.3 + 0.15;
-        const speedX = (Math.random() - 0.5) * 0.4;
-        const speedY = (Math.random() - 0.5) * 0.4;
+        const speedX = (Math.random() - 0.5) * 0.3;
+        const speedY = (Math.random() - 0.5) * 0.3;
         // Réduire la vitesse de pulsation
         const pulseSpeed = Math.random() * 0.001 + 0.001;
-        const pulseAmount = Math.random() * 0.15 + 0.05;
+        const pulseAmount = Math.random() * 0.1 + 0.05;
         const baseSize = size;
-        const rotationSpeed = (Math.random() - 0.5) * 0.005;
+        const rotationSpeed = (Math.random() - 0.5) * 0.002;
         const rotation = Math.random() * Math.PI * 2;
         
         hexagons.push({ 
           x, y, size, baseSize, opacity, speedX, speedY, 
           pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
           rotation, rotationSpeed, 
-          isActive: Math.random() > 0.1 // Certains hexagones sont "actifs"
+          isActive: Math.random() > 0.7 // Moins d'hexagones actifs pour plus de subtilité
         });
       }
     };
-    
-    // Créer des connexions entre hexagones (simuler une blockchain)
-    const createConnections = () => {
-      for (let i = 0; i < hexagons.length; i++) {
-        for (let j = i + 1; j < hexagons.length; j++) {
-          if (Math.random() > 0.1) {
-            connections.push({
-              from: i,
-              to: j,
-              opacity: Math.random() * 0.2 + 0.05,
-              active: false,
-              lastPacketTime: 0,
-              packetInterval: Math.random() * 2000 + 2000, // Intervalle entre les paquets
-            });
-          }
-        }
-      }
-    };
-    
+      
     // Créer particules normales (effet visuel)
     const createParticles = () => {
-      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 15000), 60);
+      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 18000), 50);
       
       for (let i = 0; i < particleCount; i++) {
         const size = Math.random() * 2 + 0.5;
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const speedX = (Math.random() - 0.5) * 0.6;
-        const speedY = (Math.random() - 0.5) * 0.6;
+        const speedX = (Math.random() - 0.5) * 0.5;
+        const speedY = (Math.random() - 0.5) * 0.5;
         const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
-
+  
         particles.push({
           x,
           y,
@@ -195,34 +175,10 @@ export default function Home() {
         });
       }
     };
-
-    // Fonction pour créer un "paquet de données" transitant entre deux hexagones
-    const createDataPacket = (from: number, to: number) => {
-      const fromHex = hexagons[from];
-      const toHex = hexagons[to];
-      
-      dataPackets.push({
-        fromX: fromHex.x,
-        fromY: fromHex.y,
-        toX: toHex.x,
-        toY: toHex.y,
-        x: fromHex.x,
-        y: fromHex.y,
-        progress: 0,
-        speed: Math.random() * 0.01 + 0.005,
-        size: Math.random() * 4 + 2,
-        color: Math.random() > 0.5 ? 
-          'rgba(147, 51, 234, 0.8)' : // Violet
-          'rgba(99, 102, 241, 0.8)', // Indigo
-        from,
-        to
-      });
-    };
-
+  
     createHexagons();
-    createConnections();
     createParticles();
-
+  
     // Dessiner un hexagone avec rotation
     const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
       const sides = 6;
@@ -285,33 +241,42 @@ export default function Home() {
       
       ctx.restore();
     };
-
-    // Dessiner un paquet de données
-    const drawDataPacket = (packet: DataPacket) => {
-      ctx.beginPath();
-      ctx.arc(packet.x, packet.y, packet.size, 0, Math.PI * 2);
-      ctx.fillStyle = packet.color;
-      ctx.fill();
+  
+    // Dessiner une connexion entre deux hexagones
+    const drawConnection = (x1: number, y1: number, x2: number, y2: number, opacity: number, isActive: boolean) => {
+      // Calculer la distance entre les hexagones
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const distance = Math.sqrt(dx * dx + dy * dy);
       
-      // Effet de traînée
-      ctx.beginPath();
-      const trailLength = 15;
-      ctx.moveTo(packet.x, packet.y);
+      // Ne dessiner la connexion que si les hexagones sont assez proches
+      const threshold = 200; // Seuil de distance pour la connexion
       
-      // Calculer point arrière basé sur la direction du mouvement
-      const dx = packet.toX - packet.fromX;
-      const dy = packet.toY - packet.fromY;
-      const angle = Math.atan2(dy, dx);
-      
-      const trailX = packet.x - Math.cos(angle) * trailLength;
-      const trailY = packet.y - Math.sin(angle) * trailLength;
-      
-      ctx.lineTo(trailX, trailY);
-      ctx.strokeStyle = packet.color.replace('0.8', '0.3');
-      ctx.lineWidth = packet.size * 0.7;
-      ctx.stroke();
+      if (distance < threshold) {
+        // Calculer l'opacité basée sur la distance (plus c'est loin, plus c'est transparent)
+        const fadeOpacity = Math.max(0, 1 - distance / threshold);
+        const finalOpacity = opacity * fadeOpacity;
+        
+        // Dessiner la connexion
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        
+        // Style de ligne basé sur l'activité
+        if (isActive) {
+          // Connexion active - plus lumineuse
+          ctx.strokeStyle = `rgba(147, 51, 234, ${finalOpacity * 2})`;
+          ctx.lineWidth = 1.5;
+        } else {
+          // Connexion standard
+          ctx.strokeStyle = `rgba(99, 102, 241, ${finalOpacity * 0.7})`;
+          ctx.lineWidth = 0.8;
+        }
+        
+        ctx.stroke();
+      }
     };
-
+  
     // Animation timestamp pour gestion du temps
     let lastTime = 0;
     
@@ -322,135 +287,106 @@ export default function Home() {
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Mettre à jour et dessiner les connexions
-      connections.forEach((conn, index) => {
-        const fromHex = hexagons[conn.from];
-        const toHex = hexagons[conn.to];
-        
-        // Calculer la distance
-        const distance = Math.sqrt(
-          Math.pow(fromHex.x - toHex.x, 2) + 
-          Math.pow(fromHex.y - toHex.y, 2)
-        );
-        
-        // Ne dessiner la connexion que si les hexagones sont assez proches
-        if (distance < 350) {
-          ctx.beginPath();
-          ctx.moveTo(fromHex.x, fromHex.y);
-          ctx.lineTo(toHex.x, toHex.y);
-          
-          // Style de ligne basé sur l'activité
-          if (conn.active) {
-            ctx.strokeStyle = `rgba(147, 51, 234, ${conn.opacity * 2})`;
-            ctx.lineWidth = 1.5;
-            
-            // Désactive la connexion après un certain temps
-            if (timestamp - conn.lastPacketTime > 1500) {
-              conn.active = false;
-            }
-          } else {
-            ctx.strokeStyle = `rgba(99, 102, 241, ${conn.opacity})`;
-            ctx.lineWidth = 0.8;
-            
-            // Créer un nouveau paquet à intervalle régulier
-            if (timestamp - conn.lastPacketTime > conn.packetInterval) {
-              conn.active = true;
-              conn.lastPacketTime = timestamp;
-              createDataPacket(conn.from, conn.to);
-              
-              // Augmente les chances d'activation connectée
-              connections.forEach(otherConn => {
-                // Si cette connexion partage un node avec la connexion active
-                if (otherConn !== conn && 
-                    (otherConn.from === conn.from || otherConn.from === conn.to ||
-                     otherConn.to === conn.from || otherConn.to === conn.to)) {
-                  if (Math.random() > 0.7) {
-                    otherConn.active = true;
-                    otherConn.lastPacketTime = timestamp;
-                    createDataPacket(otherConn.from, otherConn.to);
-                  }
-                }
-              });
-            }
-          }
-          
-          ctx.stroke();
-        }
-      });
-      
-      // Mettre à jour et dessiner les paquets de données
-      for (let i = dataPackets.length - 1; i >= 0; i--) {
-        const packet = dataPackets[i];
-        packet.progress += packet.speed;
-        
-        // Mouvement le long de la ligne
-        packet.x = packet.fromX + (packet.toX - packet.fromX) * packet.progress;
-        packet.y = packet.fromY + (packet.toY - packet.fromY) * packet.progress;
-        
-        drawDataPacket(packet);
-        
-        // Supprimer le paquet s'il a atteint sa destination
-        if (packet.progress >= 1) {
-          // Activer brièvement l'hexagone de destination
-          hexagons[packet.to].isActive = true;
-          setTimeout(() => {
-            if (hexagons[packet.to]) hexagons[packet.to].isActive = Math.random() > 0.7;
-          }, 800);
-          
-          dataPackets.splice(i, 1);
-        }
-      }
-      
       // Mettre à jour et dessiner les hexagones
-      hexagons.forEach(hex => {
+      for (let i = 0; i < hexagons.length; i++) {
+        const hex = hexagons[i];
+        
+        // Mettre à jour la position
         hex.x += hex.speedX;
         hex.y += hex.speedY;
         hex.rotation += hex.rotationSpeed;
-        
-        // Effet de pulsation
-        hex.size = hex.baseSize + Math.sin(timestamp * hex.pulseSpeed + hex.pulsePhase) * hex.baseSize * hex.pulseAmount;
         
         // Rebond sur les bords
         if (hex.x < 0 || hex.x > canvas.width) hex.speedX *= -1;
         if (hex.y < 0 || hex.y > canvas.height) hex.speedY *= -1;
         
+        // Effet de pulsation
+        hex.size = hex.baseSize + Math.sin(timestamp * hex.pulseSpeed + hex.pulsePhase) * hex.baseSize * hex.pulseAmount;
+        
+        // Dessiner l'hexagone
         drawHexagon(hex.x, hex.y, hex.size, hex.rotation, hex.opacity, hex.isActive);
-      });
+        
+        // Dessiner les connexions entre hexagones proches
+        for (let j = i + 1; j < hexagons.length; j++) {
+          const otherHex = hexagons[j];
+          // Vérifier si au moins un des hexagones est actif
+          const isConnectionActive = hex.isActive || otherHex.isActive;
+          
+          // Calculer l'opacité de la connexion en fonction de l'activité
+          const connectionOpacity = isConnectionActive ? 0.5 : 0.2;
+          
+          // Dessiner la connexion si les conditions sont remplies
+          drawConnection(hex.x, hex.y, otherHex.x, otherHex.y, connectionOpacity, isConnectionActive);
+        }
+      }
       
-      // Mettre à jour et dessiner les particules
+      // Mettre à jour et dessiner les particules (effet visuel de fond)
       particles.forEach(p => {
         p.x += p.speedX;
         p.y += p.speedY;
-
+  
         // Rebond sur les bords
         if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
         if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-
+  
         // Dessiner particule
         ctx.fillStyle = p.color;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
-
+  
       requestAnimationFrame(animate);
     };
-
-    // Démarrer l'animation initiale
+  
+    // Démarrer l'animation
     requestAnimationFrame(animate);
     
-    // Générer quelques connexions actives initialement
-    setTimeout(() => {
-      for (let i = 0; i < 3; i++) {
-        const connIndex = Math.floor(Math.random() * connections.length);
-        connections[connIndex].active = true;
-        connections[connIndex].lastPacketTime = performance.now();
-        createDataPacket(connections[connIndex].from, connections[connIndex].to);
-      }
-    }, 500);
-
+    // Animation intelligente: vérifier périodiquement si des hexagones sont proches
+    // et activer l'un d'eux pour simuler une propagation d'information blockchain
+    const checkHexagonsProximity = () => {
+      const randomHexIndex = Math.floor(Math.random() * hexagons.length);
+      hexagons[randomHexIndex].isActive = true;
+      
+      // Après un délai, propager l'activation aux hexagones proches
+      setTimeout(() => {
+        const activeHex = hexagons[randomHexIndex];
+        
+        // Chercher les hexagones proches
+        for (let i = 0; i < hexagons.length; i++) {
+          if (i !== randomHexIndex) {
+            const otherHex = hexagons[i];
+            const dx = otherHex.x - activeHex.x;
+            const dy = otherHex.y - activeHex.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Si le hexagone est assez proche, l'activer avec une probabilité
+            if (distance < 200 && Math.random() > 0.5) {
+              setTimeout(() => {
+                otherHex.isActive = true;
+                
+                // Désactiver après un moment
+                setTimeout(() => {
+                  otherHex.isActive = false;
+                }, 2000 + Math.random() * 2000);
+              }, 500 + Math.random() * 1000);
+            }
+          }
+        }
+        
+        // Désactiver le hexagone original après un moment
+        setTimeout(() => {
+          hexagons[randomHexIndex].isActive = false;
+        }, 3000);
+      }, 500);
+    };
+    
+    // Déclencher l'activation des hexagones périodiquement
+    const proximityInterval = setInterval(checkHexagonsProximity, 5000);
+    
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      clearInterval(proximityInterval);
     };
   }, []);
   
