@@ -101,41 +101,41 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   // Préparer les données pour l'activité mensuelle
   const monthlyActivity: Record<string, number> = {};
   let oldestDate = new Date();
+  let newestDate = new Date(0);
+  
+  transactions.forEach(tx => {
+    if (tx.block_timestamp) {
+      const date = new Date(tx.block_timestamp);
+      if (date < oldestDate) oldestDate = date;
+      if (date > newestDate) newestDate = date;
+      
+      const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+      monthlyActivity[monthYear] = (monthlyActivity[monthYear] || 0) + 1;
+    }
+  });
+  
+  // Convertir en tableau pour le graphique
+  const activityData = Object.entries(monthlyActivity)
+    .map(([month, count]) => ({ month, count }))
+    .sort((a, b) => {
+      const [monthA, yearA] = a.month.split('/').map(Number);
+      const [monthB, yearB] = b.month.split('/').map(Number);
+      
+      if (yearA !== yearB) return yearA - yearB;
+      return monthA - monthB;
+    })
+    .map((entry, index, array) => {
+      // Ajouter la valeur précédente pour l'aire cumulée
+      const prevValue = index > 0 ? array[index - 1].count : 0;
+      return {
+        ...entry,
+        cumulative: prevValue + entry.count
+      };
+    });
   
   // Trouver le mois avec le plus de transactions
   let mostActiveMonth = '';
   let maxActivity = 0;
-  
-  Object.entries(monthlyActivity).forEach(([month, count]) => {
-    if (count > maxActivity) {
-      mostActiveMonth = month;
-      maxActivity = count;
-    }
-  });
-
-  // Compter les tokens uniques
-  const uniqueTokens = new Set(
-    transactions
-      .filter(tx => tx.tokenSymbol)
-      .map(tx => tx.tokenSymbol)
-  );
-
-  // Calculer la répartition par token
-  const tokenDistribution: Record<string, number> = {};
-  transactions.forEach(tx => {
-    if (tx.tokenSymbol) {
-      const value = tx.valueInETH || 0;
-      tokenDistribution[tx.tokenSymbol] = (tokenDistribution[tx.tokenSymbol] || 0) + value;
-    } else if (tx.type === 'Native Transfer') {
-      const value = Number(tx.value) / 1e18;
-      tokenDistribution['ETH'] = (tokenDistribution['ETH'] || 0) + value;
-    }
-  });
-
-  // Convertir en tableau pour le graphique
-  const tokenData = Object.entries(tokenDistribution)
-    .map(([token, value]) => ({ token, value }))
-    .sort((a, b) => b.value - a.value)
     .slice(0, 10); // Top 10 tokens
   
   // Calculer la période d'activité en jours
