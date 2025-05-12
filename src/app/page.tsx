@@ -190,7 +190,7 @@ export default function Home() {
               opacity: Math.random() * 0.2 + 0.05,
               active: false,
               lastPacketTime: 0,
-              packetInterval: Math.random() * 8000 + 2000, // Intervalle entre les paquets
+              packetInterval: Math.random() * 2000 + 2000, // Intervalle entre les paquets
             });
           }
         }
