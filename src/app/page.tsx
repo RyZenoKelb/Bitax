@@ -1120,6 +1120,10 @@ export default function Home() {
       <motion.section 
         className="py-20 relative"
         style={{ opacity: opacity2 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        onViewportEnter={() => setFeaturesVisible(true)}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
