@@ -31,6 +31,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
+  // NOUVELLE CONDITION: Rediriger /register vers /waitlist
+  if (pathname === '/register' || pathname.startsWith('/register/')) {
+    return NextResponse.redirect(new URL('/waitlist', request.url));
+  }
+  
   // Get the token
   const token = await getToken({
     req: request,
