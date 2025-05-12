@@ -7,5 +7,5 @@ export { default as BlockchainIcons } from './NetworkIcon';
 export { default as WalletConnectPanel } from './Wallet/WalletConnectPanel';
 export { default as OnboardingWizard } from './OnboardingWizard';
 export { default as DashboardHeader } from './Dashboard/DashboardHeader';
-export { default as DataVisualization } from './DataVisualization';
+export { default as DataVisualization } from './Infos/DataVisualization';
 export { default as SupportedNetworks } from './SupportedNetworks';
