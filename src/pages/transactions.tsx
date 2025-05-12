@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
-import WalletConnectButton from '@/components/WalletConnectButton';
+import WalletConnectButton from '@/components/Wallet/WalletConnectButton';
 import TransactionSummary from '@/components/TransactionSummary';
 import TransactionList from '@/components/TransactionList';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';

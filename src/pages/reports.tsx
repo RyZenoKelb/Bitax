@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
-import WalletConnectButton from '@/components/WalletConnectButton';
+import WalletConnectButton from '@/components/Wallet/WalletConnectButton';
 
 // Types pour les rapports fiscaux
 interface FiscalReport {
