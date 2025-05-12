@@ -148,13 +148,13 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   const uniqueTokens = new Set(
     transactions
       .filter(tx => tx.tokenSymbol)
-      dailyValueData[dateString] = (dailyValueData[dateString] || 0) + value;
-    }
-  });
+      .map(tx => tx.tokenSymbol)
+  );
 
-  // Convertir en tableau pour le graphique
-  const valueChartData = Object.entries(dailyValueData)
-    .map(([date, value]) => ({ date, value }))
+  // Calculer la répartition par token
+  const tokenDistribution: Record<string, number> = {};
+  transactions.forEach(tx => {
+    if (tx.tokenSymbol) {
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   
   // Générer des couleurs pour les tokens
