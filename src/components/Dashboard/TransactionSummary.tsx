@@ -314,10 +314,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-3">Tokens uniques</p>
-                        1 an
-                      </button>
-                      <button 
-                        className={`px-2 py-1 text-xs rounded-md ${timeRange === '90d' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{uniqueTokens.size} <span className="text-sm text-gray-500 dark:text-gray-400">tokens</span></p>
+                  </div>
+                  <div className="bg-amber-100 dark:bg-amber-800/60 p-2 rounded-lg">
+                    <svg className="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         onClick={() => setTimeRange('90d')}
                       >
                         90j
