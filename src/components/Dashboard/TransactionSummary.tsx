@@ -685,3 +685,23 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                         type="number"
                         tick={{ fill: chartTextColor }}
                         axisLine={{ stroke: chartGridColor }}
+                        tickLine={{ stroke: chartGridColor }}
+                        tickFormatter={(value) => formatAmount(value)}
+                      />
+                      <YAxis 
+                        dataKey="token" 
+                        type="category"
+                        tick={{ fill: chartTextColor }}
+                        axisLine={{ stroke: chartGridColor }}
+                        tickLine={{ stroke: chartGridColor }}
+                      />
+                      <Tooltip
+                        formatter={(value: number) => [`${formatAmount(value)} ETH`, 'Valeur']}
+                        contentStyle={{ 
+                          backgroundColor: currentTheme === 'dark' ? '#1f2937' : '#ffffff',
+                          borderColor: currentTheme === 'dark' ? '#374151' : '#e5e7eb'
+                        }}
+                        labelStyle={{ color: currentTheme === 'dark' ? '#f9fafb' : '#111827' }}
+                      />
+                      <Bar dataKey="value" name="Valeur en ETH">
+                        {tokenData.map((entry, index) => (
