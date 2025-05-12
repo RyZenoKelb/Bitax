@@ -285,11 +285,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                   </div>
                 </div>
                 <div className="mt-3">
-                          </div>
-                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className={`h-full rounded-full`}
-                              style={{ width: `${percentage}%`, backgroundColor: getTypeColor(type) }}
+                  <div className="w-full bg-purple-200/50 dark:bg-purple-800/30 h-1 rounded-full">
+                    <div className="bg-purple-600 dark:bg-purple-400 h-1 rounded-full" style={{ width: '60%' }}></div>
+                  </div>
+                </div>
+              </div>
                             ></div>
                           </div>
                         </div>
