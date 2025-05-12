@@ -85,10 +85,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
       'Token Transfer': '#3b82f6', // blue
       'Simple Transfer': '#06b6d4', // cyan
       'Smart Contract Interaction': '#6366f1', // indigo
-      
-      const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-      monthlyActivity[monthYear] = (monthlyActivity[monthYear] || 0) + 1;
-    }
+      'Token Approval': '#f59e0b', // amber
+      'Swap': '#8b5cf6', // violet
+      'Native Transfer': '#2563eb', // blue-600
+      'NFT Marketplace': '#9333ea', // purple-600
   });
   
   // Convertir en tableau pour le graphique
