@@ -30,7 +30,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
   const [manualWalletName, setManualWalletName] = useState<string>('');
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>('eth');
   const [walletConnectInitialized, setWalletConnectInitialized] = useState<boolean>(false);
-  const [wcProvider, setWcProvider] = useState<InstanceType<typeof EthereumProvider> | null>(null);
+  const [wcProvider, setWcProvider] = useState<EthereumProvider | null>(null);
 
   // Réinitialiser l'état quand le modal s'ouvre
   useEffect(() => {
