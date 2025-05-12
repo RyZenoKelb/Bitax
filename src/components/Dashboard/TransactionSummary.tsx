@@ -173,11 +173,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   const activityPeriod = Math.ceil((newestDate.getTime() - oldestDate.getTime()) / (1000 * 60 * 60 * 24));
   
   // Données de valeur journalière pour le graphique en ligne
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Métriques clés */}
-          <div className="md:col-span-4 space-y-6">
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Activité globale</h4>
+  const dailyValueData: Record<string, number> = {};
+  transactions.forEach(tx => {
+    if (tx.block_timestamp) {
+      const date = new Date(tx.block_timestamp);
+      const dateString = date.toISOString().split('T')[0]; // Format YYYY-MM-DD
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
                   <span className="text-sm font-medium text-gray-500">Période d'activité</span>
