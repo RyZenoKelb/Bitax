@@ -65,21 +65,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Bitax specific models
-model Wallet {
-  id           String        @id @default(cuid())
-  address      String
-  network      String        @default("eth")
-  name         String?
-  isPrimary    Boolean       @default(false)
-  userId       String
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  transactions Transaction[]
-
-  @@unique([address, userId])
-}
 
 model Report {
   id        String   @id @default(cuid())
