@@ -1,3 +1,4 @@
+// src/components/LogoutButton.tsx
 "use client";
 
 import { signOut } from 'next-auth/react';
@@ -22,10 +23,11 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({
     if (onLogout) {
       onLogout();
     }
-    await signOut({ redirect: false });
-    router.push('/login');
+    // Au lieu de rediriger vers /login, on redirige vers notre page de déconnexion
+    router.push('/logout');
   };
 
+  // Le reste du composant reste identique
   if (variant === 'icon') {
     return (
       <button 
