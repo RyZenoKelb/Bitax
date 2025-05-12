@@ -155,17 +155,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   const tokenDistribution: Record<string, number> = {};
   transactions.forEach(tx => {
     if (tx.tokenSymbol) {
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  
-  // Générer des couleurs pour les tokens
-  const tokenColors = [
-    '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#6366F1',
-    '#8B5CF6', '#EC4899', '#14B8A6', '#F97316', '#A855F7'
-  ];
+      const value = tx.valueInETH || 0;
+      tokenDistribution[tx.tokenSymbol] = (tokenDistribution[tx.tokenSymbol] || 0) + value;
+    } else if (tx.type === 'Native Transfer') {
+      const value = Number(tx.value) / 1e18;
+      tokenDistribution['ETH'] = (tokenDistribution['ETH'] || 0) + value;
+    }
+  });
 
-  return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-      <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+  // Convertir en tableau pour le graphique
+  const tokenData = Object.entries(tokenDistribution)
+    .map(([token, value]) => ({ token, value }))
         <h3 className="text-lg font-semibold text-gray-800">Résumé du Portefeuille</h3>
         <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
           {transactions.length} transactions
