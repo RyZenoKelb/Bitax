@@ -15,6 +15,7 @@ const SUPPORTED_WALLETS: {
   color: string;
   isInstalled: () => boolean;
   priority: number;
+  isAvailable?: boolean;
 }[] = [
   {
     id: 'walletconnect',
@@ -31,7 +32,7 @@ const SUPPORTED_WALLETS: {
     description: 'Le wallet ethereum le plus populaire',
     logo: '🦊',
     color: '#E2761B',
-    isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isMetaMask,
+    isInstalled: () => typeof window !== 'undefined' && !!window?.ethereum?.isMetaMask,
     priority: 2
   },
   {
@@ -40,7 +41,7 @@ const SUPPORTED_WALLETS: {
     description: 'Wallet sécurisé par Coinbase',
     logo: '🔵',
     color: '#1652F0',
-    isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isCoinbaseWallet,
+    isInstalled: () => typeof window !== 'undefined' && !!window?.ethereum?.isCoinbaseWallet,
     priority: 3
   },
   {
@@ -49,7 +50,7 @@ const SUPPORTED_WALLETS: {
     description: 'Le wallet mobile officiel de Binance',
     logo: '🛡️',
     color: '#3375BB',
-    isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isTrust,
+    isInstalled: () => typeof window !== 'undefined' && !!window?.ethereum?.isTrust,
     priority: 4
   },
   {
@@ -71,6 +72,12 @@ const SUPPORTED_WALLETS: {
     priority: 6
   }
 ];
+
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
 
 // Type de props pour le composant
 interface WalletConnectHandlerProps {
@@ -191,7 +198,9 @@ const WalletConnectHandler: React.FC<WalletConnectHandlerProps> = ({ onConnect, 
           
           // Pour cette démo, nous simulons la connexion:
           toast.success('WalletConnect implémenté avec succès!');
-          toast.info('Veuillez ajouter votre ID de projet WalletConnect pour une fonctionnalité complète.');
+          toast('Veuillez ajouter votre ID de projet WalletConnect pour une fonctionnalité complète.', {
+            icon: 'ℹ️',
+          });
           
           // Simuler un délai pour la démo
           await new Promise(resolve => setTimeout(resolve, 1500));
@@ -457,7 +466,11 @@ const WalletConnectHandler: React.FC<WalletConnectHandlerProps> = ({ onConnect, 
                     <button
                       type="button"
                       className="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-                      onClick={() => connectWallet(selectedWallet)}
+                      onClick={() => {
+                        if (selectedWallet) {
+                          connectWallet(selectedWallet);
+                        }
+                      }}
                       disabled={isConnecting}
                     >
                       {isConnecting ? (
