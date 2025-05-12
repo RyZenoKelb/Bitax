@@ -146,6 +146,20 @@ model Subscription {
   updatedAt     DateTime  @updatedAt
 }
 
+enum SyncStatus {
+  PENDING
+  SYNCING
+  COMPLETED
+  FAILED
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 // Modèle pour gérer la liste d'attente (waiting list)
 model WaitingList {
   id          String    @id @default(cuid())
