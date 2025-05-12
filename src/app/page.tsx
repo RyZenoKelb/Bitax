@@ -812,35 +812,35 @@ export default function Home() {
               {/* Bouton secondaire glassmorphism */}
               <button 
                 onClick={() => {
-                // Obtenir la hauteur de la navbar
-                const navbar = document.querySelector('header');
-                const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+                  // Obtenir la hauteur de la navbar
+                  const navbar = document.querySelector('header');
+                  const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
 
-                // Calculer la position de la section
-                const sectionPosition = howItWorksSectionRef.current?.getBoundingClientRect().top || 0;
-                const offsetPosition = sectionPosition + window.pageYOffset - navbarHeight - 20;
+                  // Calculer la position de la section
+                  const sectionPosition = howItWorksSectionRef.current?.getBoundingClientRect().top || 0;
+                  const offsetPosition = sectionPosition + window.pageYOffset - navbarHeight - 20;
 
-                // Activer l'animation de highlight
-                setHighlightSection(true);
+                  // Activer l'animation de highlight
+                  setHighlightSection(true);
 
-                // Désactiver l'animation après 3 secondes
-                setTimeout(() => setHighlightSection(false), 3000);
+                  // Désactiver l'animation après 3 secondes
+                  setTimeout(() => setHighlightSection(false), 3000);
 
-                // Faire défiler avec animation
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: 'smooth'
-                });
-                }} 
-                className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105"
-                >
-                <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Comment ça marche</span>
+                  // Faire défiler avec animation
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                  });
+                  }} 
+                  className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105"
+                  >
+                  <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Comment ça marche</span>
                 </div>
-                </button>
+              </button>
             </motion.div>
             
             {/* Badges de cryptomonnaies avec logos corrigés et taille réduite */}
