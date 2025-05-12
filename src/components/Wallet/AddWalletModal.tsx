@@ -1,6 +1,6 @@
 // src/components/Wallet/AddWalletModal.tsx
 import { useState, Fragment } from 'react';
-import { Dialog, Transition, RadioGroup } from '@headlessui/react';
+import { Dialog, Transition } from '@headlessui/react';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import NetworkIcon from '@/components/Visual/NetworkIcon';
 
@@ -47,7 +47,7 @@ const AddWalletModal: React.FC<AddWalletModalProps> = ({ onAdd, onClose, hasPrim
       await onAdd({
         address,
         network,
-        name: name.trim() || null,
+        name: name.trim() || undefined,
         isPrimary
       });
       
