@@ -298,7 +298,7 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatAmount(averageValue)} <span className="text-sm text-gray-500 dark:text-gray-400">ETH</span></p>
                   </div>
                   <div className="bg-cyan-100 dark:bg-cyan-800/60 p-2 rounded-lg">
-              
+                    <svg className="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {activeTab === 'activity' && (
                 <div>
                   <div className="flex justify-between items-center mb-4">
