@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { toast } from 'react-hot-toast';
+import Link from 'next/link';
 import { requireAuth } from '@/lib/server-auth';
 import WalletManager from '@/components/WalletManager';
+import NetworkIcon from '@/components/NetworkIcon';
 import { NetworkType } from '@/utils/transactions';
 
 // Types
@@ -52,7 +53,7 @@ export default function WalletsPage() {
   
   const handleWalletSelect = (wallet: Wallet) => {
     setSelectedWallet(wallet);
-    toast.success(`Wallet ${wallet.name || formatAddress(wallet.address)} sélectionné`);
+    console.log(`Wallet ${wallet.name || formatAddress(wallet.address)} sélectionné`);
   };
   
   // Formatter une adresse pour l'affichage

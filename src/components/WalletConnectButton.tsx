@@ -252,7 +252,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
   const [isFullDashboard, setIsFullDashboard] = useState<boolean>(false);
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [showWalletSelector, setShowWalletSelector] = useState<boolean>(false);
-  const [currentWallet, setCurrentWallet] = useState<Wallet | null>(selectedWallet as Wallet | null);
+  const [currentWallet, setCurrentWallet] = useState<Wallet | null>(selectedWallet);
   
   // Récupérer la configuration du réseau
   const getNetworkInfo = (network: NetworkType) => {
