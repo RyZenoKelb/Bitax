@@ -737,7 +737,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
               {showWalletSelector && wallets.length > 1 && (
                 <div className="mb-6 bg-gray-800/50 border border-gray-700/50 rounded-lg overflow-hidden">
                   <div className="p-2 max-h-60 overflow-y-auto">
-                    {wallets.filter(w => w.id !== currentWallet?.id).map((wallet) => (
+                    {wallets.filter(w => currentWallet ? w.id !== currentWallet.id : true).map((wallet) => (
                       <button
                         key={wallet.id}
                         onClick={() => handleSelectWallet(wallet)}
