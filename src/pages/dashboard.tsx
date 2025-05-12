@@ -958,16 +958,16 @@ export default function Dashboard() {
                         className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg flex items-center justify-center space-x-2"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                ) : (
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-                    <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-white">Aucune transaction trouvée</h3>
-                    <p className="mt-2 text-gray-500 dark:text-gray-400">
-                      Nous n'avons pas trouvé de transactions pour ce wallet sur {activeNetwork}.
-                      <br />Essayez de scanner un autre réseau ou connectez un wallet différent.
-                    </p>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <span>Scanner toutes les blockchains</span>
+                      </button>
+                    </div>
+                  </div>
+                )
+              ) : (
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+                  <h3 className="text-xl font-medium text-gray-900 dark:text-white">Bienvenue sur Bitax</h3>
                     <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
                       <button
                         onClick={() => handleScanNetwork(activeNetwork)}
