@@ -196,18 +196,18 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
 
   // Format du montant pour l'affichage
   const formatAmount = (value: number): string => {
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Montants transférés</h4>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                  <span className="text-sm font-medium text-gray-500">Volume total</span>
-                  <div className="mt-1 text-2xl font-semibold text-gray-900">{totalValue.toFixed(4)}</div>
-                  <div className="mt-1 text-sm text-gray-500">ETH (ou équivalent)</div>
-                </div>
-                
+    if (Math.abs(value) >= 1000000) {
+      return `${(value / 1000000).toFixed(2)}M`;
+    } else if (Math.abs(value) >= 1000) {
+      return `${(value / 1000).toFixed(2)}K`;
+    }
+    return value.toFixed(2);
+  };
+
+  // Formater la date pour meilleure affichage
+  const formatMonthYear = (monthYear: string): string => {
+    const [month, year] = monthYear.split('/');
+    const date = new Date(Number(year), Number(month) - 1);
                 <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
                   <span className="text-sm font-medium text-gray-500">Montant moyen</span>
                   <div className="mt-1 text-2xl font-semibold text-gray-900">{averageValue.toFixed(4)}</div>
