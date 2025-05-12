@@ -935,7 +935,7 @@ export default function Dashboard() {
                   </>
                 ) : (
                   <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-          {isLoading || isScanning ? (
+                    <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <div className="flex justify-center items-center py-12">
               <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
               <p className="ml-4 text-gray-600 dark:text-gray-300">Chargement des données...</p>

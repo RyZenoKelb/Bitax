@@ -768,3 +768,9 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                         ></div>
                       </div>
                       <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                        {uniqueTokens.size > 5 ? 'Élevée' : uniqueTokens.size > 2 ? 'Moyenne' : 'Faible'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4"></div>
