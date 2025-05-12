@@ -1,17 +1,23 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { generatePDF } from '@/utils/pdf';
 import TransactionList from './TransactionList';
 import TransactionSummary from './TransactionSummary';
 import PremiumUnlock from './PremiumUnlock';
 import TaxDashboard from './TaxDashboard';
+import WalletConnectPanel from './WalletConnectPanel';
+import { Fragment } from 'react';
+import { Transition } from '@headlessui/react';
+import { filterSpamTransactions } from '@/utils/SpamFilter';
 import NetworkIcon from '@/components/NetworkIcon';
 
-// Définition des types
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 interface Transaction {
   hash: string;
   block_timestamp: string;
@@ -26,14 +32,7 @@ interface Transaction {
   network: NetworkType;
 }
 
-interface Wallet {
-  id: string;
-  address: string;
-  network: string;
-  name?: string;
-  isPrimary: boolean;
-}
-
+// Interface pour le composant principal
 interface WalletConnectButtonProps {
   onConnect?: (address: string, provider: ethers.BrowserProvider) => void;
   className?: string;
@@ -43,10 +42,9 @@ interface WalletConnectButtonProps {
   showIcon?: boolean;
   showAddress?: boolean;
   isLoading?: boolean;
-  selectedWallet?: Wallet | null;
-  onWalletSelect?: (wallet: Wallet) => void;
 }
 
+// Interface pour le bouton simple
 interface SimpleButtonProps {
   onClick: () => void;
   className?: string;
@@ -58,49 +56,7 @@ interface SimpleButtonProps {
   isLoading?: boolean;
   disabled?: boolean;
   address?: string;
-  walletName?: string;
-  walletCount?: number;
 }
-
-// Liste des wallets supportés
-const SUPPORTED_WALLETS = [
-  {
-    id: 'walletconnect',
-    name: 'WalletConnect',
-    description: 'Connectez n\'importe quel wallet via WalletConnect',
-    color: '#3B99FC',
-    icon: '🔗',
-    bgColor: '#EDF5FF',
-    priority: 1
-  },
-  {
-    id: 'metamask',
-    name: 'MetaMask',
-    description: 'La solution la plus populaire pour gérer vos actifs crypto',
-    color: '#E2761B',
-    icon: '🦊',
-    bgColor: '#FFF5E6',
-    priority: 2
-  },
-  {
-    id: 'coinbase',
-    name: 'Coinbase Wallet',
-    description: 'Connectez-vous avec le wallet mobile ou l\'extension Coinbase',
-    color: '#1652F0',
-    icon: '🔵',
-    bgColor: '#E7EEFF',
-    priority: 3
-  },
-  {
-    id: 'trustwallet',
-    name: 'Trust Wallet',
-    description: 'Le wallet mobile officiel de Binance',
-    color: '#3375BB',
-    icon: '🛡️',
-    bgColor: '#E8F1FA',
-    priority: 4
-  }
-];
 
 // Composant bouton simple pour la réutilisabilité
 export const SimpleWalletButton: React.FC<SimpleButtonProps> = ({
@@ -113,9 +69,7 @@ export const SimpleWalletButton: React.FC<SimpleButtonProps> = ({
   showAddress = false,
   isLoading = false,
   disabled = false,
-  address = '',
-  walletName = '',
-  walletCount = 0
+  address = ''
 }) => {
   // Classes CSS basées sur les props
   const getButtonClasses = () => {
@@ -192,12 +146,7 @@ export const SimpleWalletButton: React.FC<SimpleButtonProps> = ({
               {showAddress ? (
                 <span className="flex items-center">
                   <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                  {walletName || formatAddress(address)}
-                  {walletCount > 1 && (
-                    <span className="ml-2 px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded-full text-xs text-gray-700 dark:text-gray-300">
-                      {walletCount}
-                    </span>
-                  )}
+                  {formatAddress(address)}
                 </span>
               ) : (
                 <span>Wallet Connecté</span>
@@ -221,15 +170,9 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
   fullWidth = false,
   showIcon = true,
   showAddress = false,
-  isLoading: externalIsLoading = false,
-  selectedWallet = null,
-  onWalletSelect
+  isLoading: externalIsLoading = false
 }) => {
-  const { data: session } = useSession();
-  const router = useRouter();
-  
-  // États
-  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [account, setAccount] = useState<string | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>('eth');
@@ -240,8 +183,6 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
   const [showNetworkSelector, setShowNetworkSelector] = useState<boolean>(false);
   const [isFullDashboard, setIsFullDashboard] = useState<boolean>(false);
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
-  const [showWalletSelector, setShowWalletSelector] = useState<boolean>(false);
-  const [currentWallet, setCurrentWallet] = useState<Wallet | null>(selectedWallet);
   
   // Récupérer la configuration du réseau
   const getNetworkInfo = (network: NetworkType) => {
@@ -253,56 +194,12 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
     const isPremium = localStorage.getItem('bitax-premium') === 'true';
     setIsPremiumUser(isPremium);
     
-    // Charger les wallets
-    if (session) {
-      fetchWallets();
-    }
-  }, [session]);
-  
-  // Mettre à jour le wallet sélectionné quand selectedWallet change
-  useEffect(() => {
-    if (selectedWallet) {
-      setCurrentWallet(selectedWallet);
-    }
-  }, [selectedWallet]);
-  
-  // Charger les wallets depuis l'API
-  const fetchWallets = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/wallet');
-      
-      if (!response.ok) {
-        throw new Error('Erreur lors de la récupération des wallets');
-      }
-      
-      const data = await response.json();
-      const retrievedWallets: Wallet[] = data.wallets || [];
-      setWallets(retrievedWallets);
-      
-      // Sélectionner le wallet principal par défaut
-      const primaryWallet = retrievedWallets.find((w) => w.isPrimary);
-      if (primaryWallet && !currentWallet) {
-        setCurrentWallet(primaryWallet);
-        if (onWalletSelect) {
-          onWalletSelect(primaryWallet);
-        }
-      }
-      
-      // Si au moins un wallet, établir une connexion
-      if (retrievedWallets.length > 0 && retrievedWallets[0].address) {
-        checkExistingConnection(retrievedWallets[0].address);
-      }
-    } catch (error) {
-      console.error('Erreur de chargement des wallets:', error);
-      setError('Impossible de charger vos wallets');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // Vérifier si un wallet est déjà connecté
+    checkExistingConnection();
+  }, []);
   
   // Vérifier si un wallet est déjà connecté
-  const checkExistingConnection = async (address: string) => {
+  const checkExistingConnection = async () => {
     if (typeof window !== 'undefined' && window.ethereum) {
       try {
         const provider = new ethers.BrowserProvider(window.ethereum);
@@ -310,6 +207,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
         
         if (accounts.length > 0) {
           const connectedAccount = accounts[0].address;
+          setAccount(connectedAccount);
           setProvider(provider);
           
           if (onConnect) {
@@ -324,24 +222,48 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
 
   // Connecter le wallet
   const connectWallet = async () => {
-    // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-    if (!session) {
-      router.push('/login?redirect=wallets');
-      return;
-    }
+    if (isLoading || externalIsLoading) return;
     
-    // Si l'utilisateur est connecté mais n'a pas de wallets, rediriger vers la page de gestion des wallets
-    router.push('/wallets');
-  };
-  
-  // Ouvrir la page des wallets
-  const openWalletManager = () => {
-    router.push('/wallets');
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        const walletProvider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await walletProvider.send('eth_requestAccounts', []);
+        
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+          setProvider(walletProvider);
+          
+          if (onConnect) {
+            onConnect(accounts[0], walletProvider);
+          }
+        } else {
+          throw new Error('Aucun compte autorisé');
+        }
+      } else {
+        window.open('https://metamask.io/download.html', '_blank');
+        throw new Error('Wallet non détecté. Veuillez installer MetaMask ou un autre wallet compatible.');
+      }
+    } catch (err: any) {
+      console.error('Erreur de connexion wallet:', err);
+      if (err.code === 4001) {
+        // L'utilisateur a refusé la connexion
+        setError('Vous avez refusé la connexion. Veuillez réessayer.');
+      } else if (err.message) {
+        setError(err.message);
+      } else {
+        setError('Une erreur est survenue lors de la connexion au wallet');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Scanner automatiquement toutes les blockchains
   const scanAuto = async () => {
-    if (!currentWallet) return;
+    if (!account) return;
     setIsLoading(true);
     setError(null);
     setTransactions([]);
@@ -351,15 +273,17 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
       const networks: NetworkType[] = ['eth', 'polygon', 'arbitrum', 'optimism', 'base'];
       
       // Utilisation de Promise.all pour paralléliser les requêtes
-      const txPromises = networks.map(network => getTransactions(currentWallet.address, network));
+      const txPromises = networks.map(network => getTransactions(account, network));
       const results = await Promise.all(txPromises);
       
       // Combiner tous les résultats
-      allTxs = results.flat().filter(tx => tx) as Transaction[];
+      allTxs = results.flat().filter(tx => tx) as Transaction[]; // Filtrer les valeurs null/undefined
       
-      setTransactions(allTxs);
+      // Filtrer les transactions spam
+      const filteredTxs = filterSpamTransactions(allTxs);
+      setTransactions(filteredTxs);
       
-      if (allTxs.length === 0) {
+      if (filteredTxs.length === 0) {
         setError('Aucune transaction trouvée. Essayez une autre blockchain ou vérifiez votre adresse.');
       }
     } catch (error) {
@@ -372,16 +296,19 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
 
   // Scanner une blockchain spécifique
   const scanManual = async () => {
-    if (!currentWallet) return;
+    if (!account) return;
     setIsLoading(true);
     setError(null);
     setTransactions([]);
 
     try {
-      const txs = await getTransactions(currentWallet.address, selectedNetwork);
-      setTransactions(txs);
+      const txs = await getTransactions(account, selectedNetwork);
       
-      if (txs.length === 0) {
+      // Filtrer les transactions spam
+      const filteredTxs = filterSpamTransactions(txs);
+      setTransactions(filteredTxs);
+      
+      if (filteredTxs.length === 0) {
         const networkInfo = getNetworkInfo(selectedNetwork);
         setError(`Aucune transaction trouvée sur ${networkInfo.name}. Essayez une autre blockchain.`);
       }
@@ -417,37 +344,18 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
 
   // Afficher le composant complet ou seulement le bouton
   useEffect(() => {
-    // Si connecté et avec des wallets, afficher le dashboard complet
-    if (currentWallet) {
+    // Si connecté et avec des transactions, afficher le dashboard complet
+    if (account) {
       setIsFullDashboard(true);
     }
-  }, [currentWallet]);
-
-  // Sélectionner un wallet
-  const handleSelectWallet = (wallet: Wallet) => {
-    setCurrentWallet(wallet);
-    if (onWalletSelect) {
-      onWalletSelect(wallet);
-    }
-    setShowWalletSelector(false);
-    
-    // Charger les transactions du wallet sélectionné
-    if (wallet.address) {
-      scanManual();
-    }
-  };
-
-  // Formater une adresse pour l'affichage
-  const formatAddress = (address: string) => {
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-  };
+  }, [account]);
 
   // Si c'est juste le bouton simple à afficher
-  if (!isFullDashboard && !currentWallet) {
+  if (!isFullDashboard && !account) {
     return (
       <>
         <SimpleWalletButton 
-          onClick={wallets.length > 0 ? () => setShowWalletSelector(true) : connectWallet}
+          onClick={connectWallet}
           variant={variant}
           size={size}
           fullWidth={fullWidth}
@@ -455,63 +363,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
           showAddress={showAddress}
           isLoading={isLoading || externalIsLoading}
           className={className}
-          walletCount={wallets.length}
         />
-        
-        {/* Sélecteur de wallet */}
-        {showWalletSelector && wallets.length > 0 && (
-          <div className="absolute z-50 mt-2 w-60 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5">
-            <div className="py-1" role="menu" aria-orientation="vertical">
-              <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
-                Vos wallets
-              </div>
-              
-              {wallets.map((wallet) => {
-                // Contourner les erreurs TypeScript avec des variables locales
-                const walletId = wallet.id as string;
-                const walletName = wallet.name as string || '';
-                const walletAddress = wallet.address as string;
-                const isCurrentWallet = currentWallet && currentWallet.id === walletId;
-                
-                return (
-                  <button
-                    key={walletId}
-                    className={`block w-full text-left px-4 py-2 text-sm ${
-                      isCurrentWallet
-                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                    onClick={() => handleSelectWallet(wallet)}
-                  >
-                    <div className="flex items-center">
-                      <div className={`w-2 h-2 rounded-full ${isCurrentWallet ? 'bg-primary-500 animate-pulse' : 'bg-gray-400'} mr-2`}></div>
-                      <div>
-                        <div>{walletName || `Wallet ${formatAddress(walletAddress)}`}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {formatAddress(walletAddress)}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-              
-              <div className="border-t border-gray-200 dark:border-gray-700 mt-1 pt-1">
-                <button
-                  className="block w-full text-left px-4 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={openWalletManager}
-                >
-                  <div className="flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    Gérer les wallets
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
         
         {error && (
           <div className="alert alert-danger mt-2 py-2 px-3 text-sm">
@@ -527,8 +379,16 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
     );
   }
 
+  // Liste des wallets supportés avec leurs logos
+  const supportedWallets = [
+    { id: 'metamask', name: 'MetaMask', icon: '🦊', color: '#F6851B' },
+    { id: 'coinbase', name: 'Coinbase Wallet', icon: '🔵', color: '#1652F0' },
+    { id: 'walletconnect', name: 'WalletConnect', icon: '🔗', color: '#3B99FC' },
+    { id: 'trustwallet', name: 'Trust Wallet', icon: '🛡️', color: '#3375BB' },
+  ];
+
   // Si pas encore connecté, afficher l'écran de bienvenue
-  if (!currentWallet) {
+  if (!account) {
     return (
       <div className="space-y-6">
         {/* Header avec titre de bienvenue */}
@@ -567,19 +427,12 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                {SUPPORTED_WALLETS.sort((a, b) => a.priority - b.priority).map(wallet => (
+                {supportedWallets.map(wallet => (
                   <button
                     key={wallet.id}
                     onClick={connectWallet}
-                    className={`relative flex items-center justify-center p-4 backdrop-blur-md bg-white/5 border border-gray-700/50 rounded-xl hover:bg-gray-800/30 hover:border-primary-500/50 transition-all duration-300 ${
-                      wallet.id === 'walletconnect' ? 'ring-2 ring-primary-500 ring-opacity-50' : ''
-                    }`}
+                    className="flex items-center justify-center p-4 backdrop-blur-md bg-white/5 border border-gray-700/50 rounded-xl hover:bg-gray-800/30 hover:border-primary-500/50 transition-all duration-300"
                   >
-                    {wallet.id === 'walletconnect' && (
-                      <div className="absolute -top-2 -right-2 bg-primary-500 text-white text-xs px-2 py-0.5 rounded-full">
-                        Recommandé
-                      </div>
-                    )}
                     <div className="flex flex-col items-center">
                       <span className="text-3xl mb-2">{wallet.icon}</span>
                       <span className="font-medium text-white">{wallet.name}</span>
@@ -686,76 +539,15 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
           {/* Panneau d'info wallet */}
           <div className="card">
             <div className="card-body">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-white">
-                  <span className="text-gradient">Wallets connectés</span>
-                </h2>
-                <button
-                  onClick={openWalletManager}
-                  className="text-sm text-primary-400 hover:text-primary-300 flex items-center"
-                >
-                  <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Gérer
-                </button>
-              </div>
-              
-              {/* Wallet sélectionné */}
+              <h2 className="text-xl font-semibold text-white mb-4">
+                <span className="text-gradient">Wallet connecté</span>
+              </h2>
               <div className="flex items-center mb-6 p-3 bg-gray-800/50 rounded-lg border border-gray-700/50">
                 <div className="w-3 h-3 bg-green-400 rounded-full mr-3 animate-pulse"></div>
-                <div className="flex-1">
-                  <p className="text-white font-medium">
-                    {currentWallet.name || 'Wallet principal'}
-                  </p>
-                  <p className="text-sm text-gray-400 font-mono">
-                    {formatAddress(currentWallet.address)}
-                  </p>
-                </div>
-                {wallets.length > 1 && (
-                  <button
-                    onClick={() => setShowWalletSelector(!showWalletSelector)}
-                    className="p-1.5 rounded-md hover:bg-gray-700/50"
-                  >
-                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-                    </svg>
-                  </button>
-                )}
+                <p className="text-white font-mono">
+                  {account.substring(0, 8)}...{account.substring(account.length - 6)}
+                </p>
               </div>
-              
-              {/* Sélecteur de wallets */}
-              {showWalletSelector && wallets.length > 1 && (
-                <div className="mb-6 bg-gray-800/50 border border-gray-700/50 rounded-lg overflow-hidden">
-                  <div className="p-2 max-h-60 overflow-y-auto">
-                    {wallets.filter(w => w.id !== currentWallet.id).map((wallet) => (
-                      <button
-                        key={wallet.id}
-                        onClick={() => handleSelectWallet(wallet)}
-                        className="flex items-center w-full text-left p-2 rounded-md hover:bg-gray-700/50 text-gray-300"
-                      >
-                        <div className={`w-2 h-2 rounded-full ${wallet.isPrimary ? 'bg-primary-500' : 'bg-gray-400'} mr-2`}></div>
-                        <div>
-                          <p className="text-sm font-medium">{wallet.name || `Wallet ${formatAddress(wallet.address)}`}</p>
-                          <p className="text-xs text-gray-400 font-mono">{formatAddress(wallet.address)}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="border-t border-gray-700/50 p-2">
-                    <button
-                      onClick={openWalletManager}
-                      className="flex items-center w-full text-left p-2 rounded-md hover:bg-gray-700/50 text-primary-400"
-                    >
-                      <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                      <span className="text-sm">Gérer les wallets</span>
-                    </button>
-                  </div>
-                </div>
-              )}
               
               {/* Sélection du réseau */}
               <div className="mt-6">
@@ -835,8 +627,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                   <span className="text-lg font-bold text-white">{transactions.length}</span>
                 </div>
                 <div className="w-full bg-gray-700/50 rounded-full h-1.5 mt-2">
-                  <div className="bg-gradient-to-r from-primary-500 to-secondary-500 h-1.5 rounded-full" 
-                       style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
+                  <div className="bg-gradient-to-r from-primary-500 to-secondary-500 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
                 </div>
               </div>
             )}
@@ -904,7 +695,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
             </div>
           ) : (
             <>
-              {currentWallet ? (
+              {account ? (
                 transactions.length > 0 ? (
                   <>
                     {/* Résumé des transactions */}
@@ -917,7 +708,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                     <TaxDashboard 
                       transactions={transactions}
                       isPremiumUser={isPremiumUser}
-                      walletAddress={currentWallet.address}
+                      walletAddress={account}
                     />
                     
                     {/* Liste des transactions */}
