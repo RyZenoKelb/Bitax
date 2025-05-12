@@ -781,3 +781,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                           {tokenData[0].token}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Représente {((tokenData[0].value / tokenData.reduce((sum, t) => sum + t.value, 0)) * 100).toFixed(1)}% de votre activité
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {!isPremiumUser && (
+          <div className="mt-6 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-100 dark:border-blue-800/30">
+            <div className="flex items-center justify-between">
