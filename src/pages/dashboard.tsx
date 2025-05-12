@@ -731,8 +731,8 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {/* Ajoutez le DevModeToggle ici */}
               <DevModeToggle className="ml-auto mr-4" />
+              
                 <div className="flex items-center">
                   <button
                     onClick={() => handleScanNetwork(activeNetwork)}
