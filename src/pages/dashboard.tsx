@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
-import WalletConnectButton from '@/components/Wallet/WalletConnectButton';
-import WalletConnectPanel from '@/components/Wallet/WalletConnectPanel';
+import WalletConnectButton from '@/components/WalletConnectButton';
+import WalletConnectPanel from '@/components/WalletConnectPanel';
 import TransactionSummary from '@/components/TransactionSummary';
-import TaxDashboard from '@/components/Dashboard/TaxDashboard';
+import TaxDashboard from '@/components/TaxDashboard';
 import PremiumUnlock from '@/components/PremiumUnlock';
 import OnboardingWizard from '@/components/OnboardingWizard';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
