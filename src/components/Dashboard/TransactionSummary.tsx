@@ -458,5 +458,9 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                         tickLine={{ stroke: chartGridColor }}
                       />
                       <Tooltip
-
-export default TransactionSummary;
+                        formatter={(value: number) => [`${value} transactions`, 'Nombre']}
+                        labelFormatter={(label) => `Période: ${formatMonthYear(label)}`}
+                        contentStyle={{ 
+                          backgroundColor: currentTheme === 'dark' ? '#1f2937' : '#ffffff',
+                          borderColor: currentTheme === 'dark' ? '#374151' : '#e5e7eb'
+                        }}
