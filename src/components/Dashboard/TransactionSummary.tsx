@@ -804,3 +804,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 <div className="ml-3">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">Débloquez toutes les analyses</p>
                   <p className="text-xs text-gray-600 dark:text-gray-400">Passez à Bitax Premium pour accéder à toutes les fonctionnalités</p>
+                </div>
+              </div>
+              <button className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-lg shadow-sm hover:from-blue-700 hover:to-indigo-700 transition-all">
+                Passer à Premium
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default TransactionSummary;
