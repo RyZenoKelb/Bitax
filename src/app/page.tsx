@@ -221,8 +221,8 @@ export default function Home() {
     };
 
     // Fonction pour créer un "paquet de données" transitant entre deux hexagones
-    const createDataPacket = (from: number, to: number) => {
-      if (Math.random() > 0.2) return; // Réduire la probabilité de création d'un paquet
+    const createDataPacket = (from: number, to: number, probability: number = 20) => {
+      if (Math.random() * 100 > probability) return; // Utiliser la probabilité pour déterminer la création d'un paquet
 
       const fromHex = hexagons[from];
       const toHex = hexagons[to];
