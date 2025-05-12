@@ -47,21 +47,21 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   if (transactions.length === 0) {
     return null;
   }
-    percentage: (count / transactions.length) * 100
-  }));
 
-  // Trier par nombre décroissant
-  typePercentages.sort((a, b) => b.count - a.count);
+  // Calculer les valeurs totales
+  const totalValue = transactions.reduce((sum, tx) => {
+    const ethValue = tx.valueInETH || (tx.value ? Number(tx.value) / 1e18 : 0);
+    return sum + ethValue;
+  }, 0);
 
-  // Préparer les données pour le graphique en camembert
-  const pieChartData = typePercentages.map(item => ({
-    name: item.type,
-    value: item.count
-  }));
+  const averageValue = totalValue / transactions.length;
 
-  // Définir les couleurs pour le graphique en fonction des types
-  const getTypeColor = (type: string): string => {
-    const colorMap: Record<string, string> = {
+  // Compter les types de transactions
+  const typeCounts: Record<string, number> = {};
+  transactions.forEach(tx => {
+    const type = tx.type || 'Unknown';
+    typeCounts[type] = (typeCounts[type] || 0) + 1;
+  });
       'Token Transfer': '#10B981', // vert
       'Simple Transfer': '#3B82F6', // bleu
       'Smart Contract Interaction': '#6366F1', // indigo
