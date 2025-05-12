@@ -464,3 +464,26 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                           backgroundColor: currentTheme === 'dark' ? '#1f2937' : '#ffffff',
                           borderColor: currentTheme === 'dark' ? '#374151' : '#e5e7eb'
                         }}
+                        labelStyle={{ color: currentTheme === 'dark' ? '#f9fafb' : '#111827' }}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="cumulative" 
+                        stroke="#3b82f6" 
+                        strokeWidth={0} 
+                        fillOpacity={1} 
+                        fill="url(#colorActivity)" 
+                        name="Cumul"
+                      />
+                      <Bar 
+                        dataKey="count" 
+                        fill="#3b82f6" 
+                        radius={[4, 4, 0, 0]} 
+                        name="Transactions"
+                        barSize={20}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
