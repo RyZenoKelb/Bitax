@@ -536,3 +536,14 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                     </svg>
                   </div>
                   <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Moyenne mensuelle</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">
+                      {formatAmount(transactions.length / (activityPeriod / 30))}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      transactions par mois
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
