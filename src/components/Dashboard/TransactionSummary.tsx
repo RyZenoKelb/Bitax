@@ -251,11 +251,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
         {/* Contenu des onglets */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-              {activeTab === 'overview' && (
-                <div className="h-64">
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Répartition par type de transaction</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-                    {/* Graphique en camembert */}
+            {/* Métriques principales */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 transition-all duration-300 border border-blue-100 dark:border-blue-800/30">
+                <div className="flex justify-between items-start">
+                  <div>
                     <div className="h-60">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
