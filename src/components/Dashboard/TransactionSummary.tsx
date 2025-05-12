@@ -341,40 +341,40 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          formatter={(value) => [`${value} transactions`, 'Nombre']}
-                          labelFormatter={(label) => `Mois: ${label}`}
+                          data={pieChartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={90}
+                          paddingAngle={2}
+                          dataKey="value"
+                          labelLine={false}
+                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        >
+                          {pieChartData.map((entry, index) => (
+                            <Cell 
+                              key={`cell-${index}`} 
+                              fill={getTypeColor(entry.name)} 
+                              stroke={currentTheme === 'dark' ? '#1f2937' : '#ffffff'}
+                              strokeWidth={2}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          formatter={(value: number) => [`${value} transactions`, 'Nombre']}
+                          contentStyle={{ 
+                            backgroundColor: currentTheme === 'dark' ? '#1f2937' : '#ffffff',
+                            borderColor: currentTheme === 'dark' ? '#374151' : '#e5e7eb'
+                          }}
+                          labelStyle={{ color: currentTheme === 'dark' ? '#f9fafb' : '#111827' }}
                         />
-                        <Bar dataKey="count" fill="#3B82F6" />
-                      </BarChart>
+                      </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  
-                  {isPremiumUser && (
-                    <div className="mt-6">
-                      <h4 className="text-sm font-medium text-gray-500 mb-4">Évolution des valeurs transférées</h4>
-                      <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart
-                            data={valueChartData}
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                          >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="date" />
-                            <YAxis />
-                            <Tooltip 
-                              formatter={(value) => [`${Number(value).toFixed(4)} ETH`, 'Valeur']}
-                              labelFormatter={(label) => `Date: ${new Date(label).toLocaleDateString()}`}
-                            />
-                            <Line type="monotone" dataKey="value" stroke="#6366F1" strokeWidth={2} dot={{ r: 3 }} />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
-                  )}
                 </div>
-              )}
+              </div>
               
-              {activeTab === 'tokens' && (
+              {/* Top types de transactions */}
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-4">Répartition par token (Top 10)</h4>
                   
