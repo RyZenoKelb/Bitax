@@ -11,7 +11,7 @@ const DevModeIndicator: React.FC = () => {
     if (isDevMode) {
       const timer = setTimeout(() => {
         setIsVisible(false);
-      }, 10000);
+      }, 5000);
       
       return () => clearTimeout(timer);
     }
