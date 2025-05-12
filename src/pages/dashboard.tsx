@@ -861,12 +861,12 @@ export default function Dashboard() {
           
           {/* Liens rapides */}
           {isWalletConnected && (
-                </Link>
-                </div>
-              
-              {/* Statistiques */}
-              {transactions.length > 0 && (
-                <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Accès rapide</h3>
+              <div className="space-y-3">
+                <Link 
+                  href="/transactions" 
+                  className="flex items-center p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800/40 transition-colors"
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500 dark:text-gray-400">Transactions trouvées</span>
                     <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>

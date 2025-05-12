@@ -654,3 +654,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                           strokeWidth={2}
                           dot={{ r: 4, fill: "#f59e0b", strokeWidth: 1 }}
                           activeDot={{ r: 6, fill: "#f59e0b", strokeWidth: 0 }}
+                          name="Cumul"
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {activeTab === 'tokens' && (
+          <div className="space-y-6">
+            {/* Vue des tokens */}
