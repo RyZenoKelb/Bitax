@@ -78,6 +78,9 @@ interface Particle {
 
 
 export default function Home() {
+  // État pour gérer les étoiles avec le type correct
+  const [stars, setStars] = useState<Star[]>([]);
+  
   // Référence pour le canvas d'animation
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
@@ -103,7 +106,6 @@ export default function Home() {
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
   // Près du début de ton composant, avec les autres useState/useRef
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
-  const [highlightSection, setHighlightSection] = useState(false);
   
   // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
@@ -807,60 +809,14 @@ export default function Home() {
               </Link>
               
               {/* Bouton secondaire glassmorphism */}
-              <button 
-                onClick={() => {
-                  // Obtenir la hauteur de la navbar
-                  const navbar = document.querySelector('header');
-                  const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
-                  
-                  // Trouver la position de la section
-                  const targetSection = howItWorksSectionRef.current;
-                  if (!targetSection) return;
-                  
-                  const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20;
-                  const startPosition = window.pageYOffset;
-                  const distance = targetPosition - startPosition;
-                  
-                  // Fonction d'animation de défilement personnalisée
-                  const smoothScroll = () => {
-                    const duration = 1000; // durée en ms
-                    let start: number | null = null;
-                    
-                    const step = (timestamp: number) => {
-                      if (!start) start = timestamp;
-                      const progress = timestamp - start;
-                      const percentage = Math.min(progress / duration, 1);
-                      
-                      // Fonction d'easing - rend l'animation plus naturelle
-                      const easeInOutCubic = percentage < 0.5
-                        ? 4 * percentage * percentage * percentage
-                        : 1 - Math.pow(-2 * percentage + 2, 3) / 2;
-                      
-                      window.scrollTo(0, startPosition + distance * easeInOutCubic);
-                      
-                      if (progress < duration) {
-                        window.requestAnimationFrame(step);
-                      } else {
-                        // Animation terminée, activer l'effet de highlight
-                        setHighlightSection(true);
-                        setTimeout(() => setHighlightSection(false), 3000);
-                      }
-                    };
-                    
-                    window.requestAnimationFrame(step);
-                  };
-                  
-                  smoothScroll();
-                }} 
-                className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105"
-              >
+              <Link href="/guide" className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105">
                 <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span>Comment ça marche</span>
                 </div>
-              </button>
+              </Link>
             </motion.div>
             
             {/* Badges de cryptomonnaies avec logos corrigés et taille réduite */}
@@ -1158,15 +1114,9 @@ export default function Home() {
       
       {/* Section Comment ça marche avec étapes */}
       <motion.section 
-        className={`py-20 relative ${highlightSection ? 'highlight-section' : ''}`}
+        className="py-20 relative"
         style={{ y: y3 }}
-        ref={howItWorksSectionRef}
-        animate={{
-          boxShadow: highlightSection 
-            ? ['0 0 0px rgba(99, 102, 241, 0)', '0 0 40px rgba(99, 102, 241, 0.5)', '0 0 0px rgba(99, 102, 241, 0)'] 
-            : '0 0 0px rgba(99, 102, 241, 0)',
-        }}
-        transition={{ duration: 2, ease: "easeInOut" }}
+        
       >
         <div className="absolute top-0 right-0 w-full h-full overflow-hidden -z-10">
           <div className="absolute -top-[10%] -right-[5%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
@@ -1717,17 +1667,6 @@ export default function Home() {
         
         .shadow-glow-xl {
           box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
-        }
-        @keyframes pulse-highlight {
-          0%, 100% {
-            background-color: transparent;
-          }
-          50% {
-            background-color: rgba(99, 102, 241, 0.07);
-          }
-        }
-        .highlight-section {
-          animation: pulse-highlight 2s ease-in-out;
         }
       `}</style>
     </div>
