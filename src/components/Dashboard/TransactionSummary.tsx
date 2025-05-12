@@ -166,13 +166,13 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   // Convertir en tableau pour le graphique
   const tokenData = Object.entries(tokenDistribution)
     .map(([token, value]) => ({ token, value }))
-        <h3 className="text-lg font-semibold text-gray-800">Résumé du Portefeuille</h3>
-        <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-          {transactions.length} transactions
-        </span>
-      </div>
-      
-      <div className="p-6">
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 10); // Top 10 tokens
+  
+  // Calculer la période d'activité en jours
+  const activityPeriod = Math.ceil((newestDate.getTime() - oldestDate.getTime()) / (1000 * 60 * 60 * 24));
+  
+  // Données de valeur journalière pour le graphique en ligne
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Métriques clés */}
           <div className="md:col-span-4 space-y-6">
