@@ -727,3 +727,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 ></div>
                   <div className="flex items-center space-x-3">
                     <div 
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium text-sm"
+                      style={{ backgroundColor: tokenColors[index % tokenColors.length] }}
+                    >
+                      {token.token.substring(0, 2)}
+                    </div>
+                    <div className="flex-1 truncate">
+                      <p className="font-medium text-gray-900 dark:text-white">{token.token}</p>
