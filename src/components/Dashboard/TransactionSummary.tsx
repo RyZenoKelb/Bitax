@@ -95,12 +95,12 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
       'Withdrawal': '#f43f5e' // rose-500
     };
     
-      const [monthA, yearA] = a.month.split('/').map(Number);
-      const [monthB, yearB] = b.month.split('/').map(Number);
-      
-      if (yearA !== yearB) return yearA - yearB;
-      return monthA - monthB;
-    });
+    return colorMap[type] || '#9ca3af';
+  };
+
+  // Préparer les données pour l'activité mensuelle
+  const monthlyActivity: Record<string, number> = {};
+  let oldestDate = new Date();
   
   // Trouver le mois avec le plus de transactions
   let mostActiveMonth = '';
