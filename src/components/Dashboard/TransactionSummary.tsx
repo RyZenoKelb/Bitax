@@ -507,3 +507,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       {oldestDate.toLocaleDateString()} - {newestDate.toLocaleDateString()}
                     </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4"></div>
+                <div className="flex items-center space-x-4">
+                  <div className="rounded-full p-3 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
