@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { DevModeProvider } from '@/context/DevModeContext';
-import DevModeIndicator from '@/components/DevModeIndicator';
+import DevModeIndicator from '@/components/Misc/DevModeIndicator';
 import CustomStyles from '@/components/Visual/CustomStyles';
 
 // Type pour les éléments CSS React

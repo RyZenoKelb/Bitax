@@ -10,8 +10,8 @@ import CustomStyles from '@/components/Visual/CustomStyles';
 import AuthProvider from '@/components/AuthProvider';
 import { useSession } from 'next-auth/react';
 import { DevModeProvider } from '@/context/DevModeContext';
-import DevModeIndicator from '@/components/DevModeIndicator';
-import BitaxLogoSVG from '@/components/BitaxLogoSVG';
+import DevModeIndicator from '@/components/Misc/DevModeIndicator';
+import BitaxLogoSVG from '@/components/Visual/BitaxLogoSVG';
 
 // Type pour les éléments d'enfants React
 declare module 'react' {

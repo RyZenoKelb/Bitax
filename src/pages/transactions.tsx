@@ -7,7 +7,7 @@ import TransactionSummary from '@/components/TransactionSummary';
 import TransactionList from '@/components/TransactionList';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
-import DevModeToggle from '@/components/DevModeToggle';
+import DevModeToggle from '@/components/Misc/DevModeToggle';
 import { isDevModeEnabled } from '@/utils/mockTransactions';
 
 export default function Transactions() {
