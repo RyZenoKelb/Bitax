@@ -1120,6 +1120,13 @@ export default function Home() {
       <motion.section 
         className="py-20 relative"
         style={{ opacity: opacity2 }}
+        // Détecte quand la section devient visible dans la fenêtre
+        onViewportEnter={() => {
+          // Quand la section entre dans la vue, active l'état
+          setFeaturesVisible(true);
+        }}
+        // Paramètres de visibilité pour la section elle-même
+        viewport={{ once: true, amount: 0.2 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
