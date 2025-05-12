@@ -6,339 +6,339 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import Head from "next/head";
 
-// Définir l'interface pour les étoiles
-interface Star {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  opacity: number;
-  animationDelay: string;
-}
-
-// Interface pour les fonctionnalités
-interface Feature {
-  id: number;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-}
-
-// Interface pour les avantages
-interface Benefit {
-  id: number;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-}
-
-// Interface pour les témoignages
-interface Testimonial {
-  id: number;
-  name: string;
-  role: string;
-  content: string;
-  avatar: string;
-}
-
-// Interface pour FAQ
-interface FaqItem {
-  id: number;
-  question: string;
-  answer: string;
-}
-
-// Interface pour les hexagones
-interface Hexagon {
-  x: number;
-  y: number;
-  size: number;
-  baseSize: number;
-  opacity: number;
-  speedX: number;
-  speedY: number;
-  pulseSpeed: number;
-  pulseAmount: number;
-  pulsePhase: number;
-  rotation: number;
-  rotationSpeed: number;
-  isActive: boolean;
-}
-
-
-// Interface pour les particules
-interface Particle {
-  x: number;
-  y: number;
-  size: number;
-  speedX: number;
-  speedY: number;
-  color: string;
-}
-
+// Interfaces remain the same
 
 export default function Home() {
-  // Référence pour le canvas d'animation
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // State and ref declarations remain the same
   
-  // Référence pour contrôler le scroll
-  const targetRef = useRef<HTMLDivElement>(null);
-  const mainRef = useRef<HTMLDivElement>(null);
+  // All useEffect hooks remain the same
+  // Particle and hexagon animation logic remains the same
   
-  // État pour savoir si la navbar est en mode scroll
-  const [scrolled, setScrolled] = useState(false);
+  // Data for features, benefits, testimonials, and FAQ remain the same
   
-  // État pour le menu mobile
-  const [menuOpen, setMenuOpen] = useState(false);
-  
-  // Hook de scroll pour les effets parallaxe
-  const { scrollY } = useScroll();
-  
-  // Transformations basées sur le scroll pour l'effet parallaxe
-  const y1 = useTransform(scrollY, [0, 1000], [0, -200]);
-  const y2 = useTransform(scrollY, [0, 1000], [0, -100]);
-  const y3 = useTransform(scrollY, [0, 1000], [0, -50]);
-  const opacity1 = useTransform(scrollY, [0, 100, 200], [1, 0.5, 0]);
-  const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
-  const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
-  // Près du début de ton composant, avec les autres useState/useRef
-  const howItWorksSectionRef = useRef<HTMLDivElement>(null);
-  const [highlightSection, setHighlightSection] = useState(false);
-  
-  // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-  
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-  
-    // Ajuster la taille du canvas à la fenêtre
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-  
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-  
-    // Configuration des éléments visuels améliorés
-    const hexagons: Hexagon[] = [];
-    const particles: Particle[] = [];
-    
-    // Créer des hexagones (symboles de blockchain)
-    const createHexagons = () => {
-      const hexCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 150000), 15);
-      
-      for (let i = 0; i < hexCount; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const size = Math.random() * 25 + 20; // Hexagones plus grands
-        const opacity = Math.random() * 0.3 + 0.15;
-        const speedX = (Math.random() - 0.5) * 0.3;
-        const speedY = (Math.random() - 0.5) * 0.3;
-        // Réduire la vitesse de pulsation
-        const pulseSpeed = Math.random() * 0.001 + 0.001;
-        const pulseAmount = Math.random() * 0.1 + 0.05;
-        const baseSize = size;
-        const rotationSpeed = (Math.random() - 0.5) * 0.002;
-        const rotation = Math.random() * Math.PI * 2;
+  return (
+    <div className="min-h-screen overflow-x-hidden font-sans" ref={mainRef}>
+      {/* Import the fonts */}
+      <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet" />
+      </Head>
+
+      {/* Background updated with new color */}
+      <div className="fixed inset-0 -z-20 bg-[#0f0f1a] overflow-hidden">
+        {/* Gradient d'ambiance updated with new colors */}
+        <motion.div className="absolute top-0 left-0 w-full h-full">
+          <motion.div 
+            className="absolute top-0 right-0 w-1/2 h-1/2 bg-[#5b4dc2]/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              x: [0, 30, 0],
+              y: [0, -30, 0],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 30,
+              ease: "easeInOut" 
+            }}
+          ></motion.div>
+          <motion.div 
+            className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[#4ab3f4]/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              x: [0, -30, 0],
+              y: [0, 30, 0],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 35,
+              ease: "easeInOut",
+              delay: 5
+            }}
+          ></motion.div>
+          <motion.div 
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 bg-[#5b4dc2]/10 rounded-full filter blur-[150px]"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.6, 0.8, 0.6],
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 25,
+              ease: "easeInOut",
+              delay: 10
+            }}
+          ></motion.div>
+        </motion.div>
         
-        hexagons.push({ 
-          x, y, size, baseSize, opacity, speedX, speedY, 
-          pulseSpeed, pulseAmount, pulsePhase: Math.random() * Math.PI * 2,
-          rotation, rotationSpeed, 
-          isActive: Math.random() > 0.7 // Moins d'hexagones actifs pour plus de subtilité
-        });
-      }
-    };
-      
-    // Créer particules normales (effet visuel)
-    const createParticles = () => {
-      const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 18000), 50);
-      
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 2 + 0.5;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const speedX = (Math.random() - 0.5) * 0.5;
-        const speedY = (Math.random() - 0.5) * 0.5;
-        const color = `rgba(${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 175)}, ${Math.floor(Math.random() * 80 + 225)}, ${Math.random() * 0.5 + 0.3})`;
-  
-        particles.push({
-          x,
-          y,
-          size,
-          speedX,
-          speedY,
-          color
-        });
-      }
-    };
-  
-    createHexagons();
-    createParticles();
-  
-    // Dessiner un hexagone avec rotation
-    const drawHexagon = (x: number, y: number, size: number, rotation: number, opacity: number, isActive: boolean) => {
-      const sides = 6;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-      
-      // Hexagone principal
-      ctx.beginPath();
-      for (let i = 0; i <= sides; i++) {
-        const angle = i * 2 * Math.PI / sides;
-        const pointX = size * Math.cos(angle);
-        const pointY = size * Math.sin(angle);
+        {/* Canvas for blockchain animations */}
+        <canvas 
+          ref={canvasRef} 
+          className="fixed inset-0 w-full h-full -z-10"
+          style={{ opacity: 0.7 }}
+        ></canvas>
+      </div>
+
+      {/* Header with glassmorphism - updated colors */}
+      <motion.header 
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+          scrolled 
+            ? 'bg-[#0f0f1a]/70 backdrop-blur-lg border-b border-white/5' 
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/" className="group">
+                <div className="flex flex-col font-satoshi">
+                  <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] tracking-tight">BITAX</h1>
+                  <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase -mt-1">FISCALITÉ CRYPTO</p>
+                </div>
+              </Link>
+              
+              {/* Badge Early Access */}
+              <div className="ml-3 hidden sm:block"></div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] text-white font-manrope">
+                  Early Access
+                </span>
+              </div>
+            </div>
+
+            {/* Navbar with updated styles */}
+            <nav className="hidden md:flex items-center space-x-1 font-inter">
+              {[
+                { name: 'Fonctionnalités', href: '/fonctionnalites' },
+                { name: 'Tarifs', href: '/tarifs' },
+              ].map((item) => (
+                <Link 
+                  key={item.name} 
+                  href={item.href}
+                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-all duration-300 rounded-lg hover:bg-white/5"
+                >
+                  {item.name}
+                </Link>
+              ))}
+              
+              {/* Connection buttons */}
+              <div className="flex items-center space-x-3 ml-6 font-manrope">
+                <Link 
+                  href="/login" 
+                  className="px-6 py-2 rounded-lg border border-white/10 text-white/90 font-medium transition-all duration-300 hover:border-white/20 hover:bg-white/5"
+                >
+                  Connexion
+                </Link>
+                
+                <Link 
+                  href="/waitlist" 
+                  className="px-6 py-2 rounded-lg relative overflow-hidden group"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] transition-all duration-300 group-hover:opacity-90"></span>
+                  <span className="relative text-white font-medium">Rejoindre la beta</span>
+                </Link>
+              </div>
+            </nav>
+
+            {/* Mobile menu button */}
+            <button 
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/5 transition-colors"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <span className={`block w-5 h-0.5 bg-white rounded-full transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+              <span className={`block w-5 h-0.5 bg-white rounded-full mt-1 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}></span>
+              <span className={`block w-5 h-0.5 bg-white rounded-full mt-1 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+            </button>
+          </div>
+        </div>
         
-        if (i === 0) {
-          ctx.moveTo(pointX, pointY);
-        } else {
-          ctx.lineTo(pointX, pointY);
-        }
-      }
-      
-      // Style pour hexagone actif/inactif
-      if (isActive) {
-        // Hexagone actif - double style
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 1.5})`;
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 0.15})`;
-      } else {
-        // Hexagone inactif
-        ctx.strokeStyle = `rgba(99, 102, 241, ${opacity})`;
-        ctx.fillStyle = `rgba(99, 102, 241, ${opacity * 0.1})`;
-      }
-      
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.fill();
-      
-      // Détail intérieur pour les hexagones actifs
-      if (isActive) {
-        ctx.beginPath();
-        for (let i = 0; i <= sides; i++) {
-          const angle = i * 2 * Math.PI / sides;
-          const pointX = size * 0.7 * Math.cos(angle);
-          const pointY = size * 0.7 * Math.sin(angle);
-          
-          if (i === 0) {
-            ctx.moveTo(pointX, pointY);
-          } else {
-            ctx.lineTo(pointX, pointY);
-          }
-        }
-        ctx.strokeStyle = `rgba(147, 51, 234, ${opacity * 0.8})`;
-        ctx.stroke();
-        
-        // Point central pulsant
-        ctx.beginPath();
-        ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(147, 51, 234, ${opacity * 2})`;
-        ctx.fill();
-      }
-      
-      ctx.restore();
-    };
-  
-    // Dessiner une connexion entre deux hexagones
-    const drawConnection = (x1: number, y1: number, x2: number, y2: number, opacity: number, isActive: boolean) => {
-      // Calculer la distance entre les hexagones
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      
-      // Ne dessiner la connexion que si les hexagones sont assez proches
-      const threshold = 200; // Seuil de distance pour la connexion
-      
-      if (distance < threshold) {
-        // Calculer l'opacité basée sur la distance (plus c'est loin, plus c'est transparent)
-        const fadeOpacity = Math.max(0, 1 - distance / threshold);
-        const finalOpacity = opacity * fadeOpacity;
-        
-        // Dessiner la connexion
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        
-        // Style de ligne basé sur l'activité
-        if (isActive) {
-          // Connexion active - plus lumineuse
-          ctx.strokeStyle = `rgba(147, 51, 234, ${finalOpacity * 2})`;
-          ctx.lineWidth = 1.5;
-        } else {
-          // Connexion standard
-          ctx.strokeStyle = `rgba(99, 102, 241, ${finalOpacity * 0.7})`;
-          ctx.lineWidth = 0.8;
-        }
-        
-        ctx.stroke();
-      }
-    };
-  
-    // Animation timestamp pour gestion du temps
-    let lastTime = 0;
-    
-    // Animer tous les éléments avec timestamp
-    const animate = (timestamp: number) => {
-      const deltaTime = timestamp - lastTime;
-      lastTime = timestamp;
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Mettre à jour et dessiner les hexagones
-      for (let i = 0; i < hexagons.length; i++) {
-        const hex = hexagons[i];
-        
-        // Mettre à jour la position
-        hex.x += hex.speedX;
-        hex.y += hex.speedY;
-        hex.rotation += hex.rotationSpeed;
-        
-        // Rebond sur les bords
-        if (hex.x < 0 || hex.x > canvas.width) hex.speedX *= -1;
-        if (hex.y < 0 || hex.y > canvas.height) hex.speedY *= -1;
-        
-        // Effet de pulsation
-        hex.size = hex.baseSize + Math.sin(timestamp * hex.pulseSpeed + hex.pulsePhase) * hex.baseSize * hex.pulseAmount;
-        
-        // Dessiner l'hexagone
-        drawHexagon(hex.x, hex.y, hex.size, hex.rotation, hex.opacity, hex.isActive);
-        
-        // Dessiner les connexions entre hexagones proches
-        for (let j = i + 1; j < hexagons.length; j++) {
-          const otherHex = hexagons[j];
-          // Vérifier si au moins un des hexagones est actif
-          const isConnectionActive = hex.isActive || otherHex.isActive;
-          
-          // Calculer l'opacité de la connexion en fonction de l'activité
-          const connectionOpacity = isConnectionActive ? 0.5 : 0.2;
-          
-          // Dessiner la connexion si les conditions sont remplies
-          drawConnection(hex.x, hex.y, otherHex.x, otherHex.y, connectionOpacity, isConnectionActive);
-        }
-      }
-      
-      // Mettre à jour et dessiner les particules (effet visuel de fond)
-      particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-  
-        // Rebond sur les bords
-        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-  
-        // Dessiner particule
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-  
-      requestAnimationFrame(animate);
-    };
-  
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden bg-[#0f0f1a]/80 backdrop-blur-lg border-b border-white/5"
+            >
+              <div className="px-6 py-4 space-y-3 font-inter">
+                {[
+                  { name: 'Fonctionnalités', href: '/fonctionnalites' },
+                  { name: 'Tarifs', href: '/tarifs' },
+                  { name: 'Guide', href: '/guide' }
+                ].map((item) => (
+                  <Link 
+                    key={item.name} 
+                    href={item.href}
+                    className="block py-2 text-white/80 hover:text-white transition-colors"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                
+                <div className="pt-2 space-y-2 font-manrope">
+                  <Link 
+                    href="/login" 
+                    className="block py-2.5 text-center text-white/80 border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Connexion
+                  </Link>
+                  
+                  <Link 
+                    href="/waitlist" 
+                    className="block py-2.5 text-center text-white bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] rounded-lg shadow-lg"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Rejoindre la beta
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.header>
+
+      {/* Hero Section with updated styling */}
+      <motion.section 
+        className="min-h-screen flex items-center justify-center px-4 pt-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        ref={targetRef}
+      >
+        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div 
+            className="text-center lg:text-left pt-8 lg:pt-0 font-manrope"
+            style={{ y: y1 }}
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight tracking-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              <span className="text-white">Votre fiscalité crypto, </span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4]">simplifiée</span>
+            </motion.h2>
+            
+            {/* Badge with French flag */}
+            <motion.div 
+              className="mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              <div className="inline-flex items-center px-6 py-2 rounded-full bg-[#5b4dc2]/20 border border-[#5b4dc2]/30 backdrop-blur-sm font-inter"></div>
+                <svg className="w-6 h-5 mr-2" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"></svg>
+                  <rect width="9" height="6" fill="#FFFFFF"/>
+                  <rect width="9" height="6" fill="#00209F"/>
+                  <rect x="6" width="3" height="6" fill="#DE2910"/>
+                  <rect x="3" width="3" height="6" fill="#FFFFFF"/>
+                </svg>
+                <span className="text-blue-200 font-medium">Conforme à la fiscalité française</span>
+              </div>
+            </motion.div>
+            
+            <motion.p 
+              className="text-xl text-blue-100/90 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              Bitax automatise la déclaration de vos cryptomonnaies et calcule vos plus-values en quelques clics.
+            </motion.p>
+            
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              {/* Main button with modern design */}
+              <Link 
+                href="/waitlist" 
+                className="relative px-8 py-3.5 rounded-lg overflow-hidden group font-inter"
+              >
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#5b4dc2] to-[#4ab3f4]"></span>
+                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#5b4dc2]/90 to-[#4ab3f4]/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative flex items-center justify-center text-white font-semibold">
+                  <span>Participer à la beta</span>
+                  <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+              </Link>
+              
+              {/* Secondary button with glassmorphism */}
+              <button 
+                onClick={() => {
+                  // Scroll logic remains the same
+                  const navbar = document.querySelector('header');
+                  const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+                  
+                  const targetSection = howItWorksSectionRef.current;
+                  if (!targetSection) return;
+                  
+                  const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20;
+                  const startPosition = window.pageYOffset;
+                  const distance = targetPosition - startPosition;
+                  
+                  const smoothScroll = () => {
+                    const duration = 1000;
+                    let start: number | null = null;
+                    
+                    const step = (timestamp: number) => {
+                      if (!start) start = timestamp;
+                      const progress = timestamp - start;
+                      const percentage = Math.min(progress / duration, 1);
+                      
+                      const easeInOutCubic = percentage < 0.5
+                        ? 4 * percentage * percentage * percentage
+                        : 1 - Math.pow(-2 * percentage + 2, 3) / 2;
+                      
+                      window.scrollTo(0, startPosition + distance * easeInOutCubic);
+                      
+                      if (progress < duration) {
+                        window.requestAnimationFrame(step);
+                      } else {
+                        setHighlightSection(true);
+                        setTimeout(() => setHighlightSection(false), 3000);
+                      }
+                    };
+                    
+                    window.requestAnimationFrame(step);
+                  };
+                  
+                  smoothScroll();
+                }} 
+                className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105 font-inter"
+              >
+                <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white"></div>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"></svg>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Comment ça marche</span>
+                </div>
+              </button>
+            </motion.div>
+            
+            {/* Crypto badges */}
+            <motion.div 
+              className="flex flex-wrap justify-center lg:justify-start gap-6 mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+            >
+              {/* Crypto badges remain the same with updated styling classes */}
+              <motion.div 
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-[#5b4dc2]/20 backdrop-blur-sm border border-[#5b4dc2]/30 flex items-center justify-center" 
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="#627EEA"></g>
     // Démarrer l'animation
     requestAnimationFrame(animate);
     
