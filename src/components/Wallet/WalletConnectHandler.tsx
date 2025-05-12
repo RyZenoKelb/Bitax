@@ -263,7 +263,7 @@ const WalletConnectHandler: React.FC<WalletConnectHandlerProps> = ({ onConnect, 
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" />
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" />
           </Transition.Child>
 
           {/* Centrer le modal verticalement */}
