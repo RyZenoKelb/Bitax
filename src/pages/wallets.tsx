@@ -4,7 +4,7 @@ import { GetServerSideProps } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { requireAuth } from '@/lib/server-auth';
+import { requireAuthSSR } from '@/lib/server-auth';
 import WalletManager from '@/components/WalletManager';
 import NetworkIcon from '@/components/NetworkIcon';
 import { NetworkType } from '@/utils/transactions';
@@ -18,17 +18,8 @@ interface Wallet {
   isPrimary: boolean;
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Vérifier l'authentification côté serveur
-  const session = await requireAuth();
-  
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
+export const getServerSideProps: GetServerSideProps = (context) =>
+  requireAuthSSR(context);
   }
   
   return {
