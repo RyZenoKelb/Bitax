@@ -487,3 +487,13 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 </div>
               </div>
             </div>
+          </div>
+        )}
+        
+        {activeTab === 'activity' && (
+          <div className="space-y-6">
+            {/* Vue d'activité */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+                <div className="flex items-center space-x-4">
+                  <div className="rounded-full p-3 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
