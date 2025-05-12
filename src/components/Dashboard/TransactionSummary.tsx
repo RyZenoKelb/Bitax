@@ -294,10 +294,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
               <div className="bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/20 dark:to-teal-900/20 rounded-xl p-4 transition-all duration-300 border border-cyan-100 dark:border-cyan-800/30">
                 <div className="flex justify-between items-start">
                   <div>
-                    </div>
+                    <p className="text-sm font-medium text-cyan-800 dark:text-cyan-300 mb-3">Montant moyen</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatAmount(averageValue)} <span className="text-sm text-gray-500 dark:text-gray-400">ETH</span></p>
                   </div>
-                </div>
-              )}
+                  <div className="bg-cyan-100 dark:bg-cyan-800/60 p-2 rounded-lg">
               
               {activeTab === 'activity' && (
                 <div>
