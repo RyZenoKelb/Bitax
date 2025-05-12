@@ -1,11 +1,11 @@
 export { default as WalletConnectButton } from './Wallet/WalletConnectButton';
-export { default as PremiumUnlock } from './PremiumUnlock';
-export { default as TransactionList } from './TransactionList';
-export { default as TransactionSummary } from './TransactionSummary';
+export { default as PremiumUnlock } from './Dashboard/PremiumUnlock';
+export { default as TransactionList } from './Infos/TransactionList';
+export { default as TransactionSummary } from './Infos/TransactionSummary';
 export { default as TaxDashboard } from './Dashboard/TaxDashboard';
 export { default as BlockchainIcons } from './Visual/NetworkIcon';
 export { default as WalletConnectPanel } from './Wallet/WalletConnectPanel';
 export { default as OnboardingWizard } from './Misc/OnboardingWizard';
 export { default as DashboardHeader } from './Dashboard/DashboardHeader';
 export { default as DataVisualization } from './Infos/DataVisualization';
-export { default as SupportedNetworks } from './SupportedNetworks';
+export { default as SupportedNetworks } from './Infos/SupportedNetworks';
