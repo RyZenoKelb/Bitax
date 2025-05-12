@@ -1698,6 +1698,18 @@ export default function Home() {
         .shadow-glow-xl {
           box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
         }
+          @keyframes pulse-highlight {
+    0%, 100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(99, 102, 241, 0.07);
+    }
+  }
+  
+  .highlight-section {
+    animation: pulse-highlight 2s ease-in-out;
+  }
       `}</style>
     </div>
   );
