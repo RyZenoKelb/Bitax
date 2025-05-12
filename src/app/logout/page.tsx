@@ -1,3 +1,4 @@
+// src/app/logout/page.tsx
 'use client';
 
 import { signOut } from 'next-auth/react';
@@ -10,7 +11,7 @@ export default function LogoutPage() {
   const [countdown, setCountdown] = useState(5);
   
   useEffect(() => {
-    // Déconnecter l'utilisateur dès le chargement de la page
+    // Déconnecter l'utilisateur - en s'assurant de ne PAS supprimer l'utilisateur
     signOut({ redirect: false });
     
     // Configurer le compte à rebours et la redirection
