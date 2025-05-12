@@ -6,6 +6,5 @@ export { default as TaxDashboard } from './Dashboard/TaxDashboard';
 export { default as BlockchainIcons } from './Visual/NetworkIcon';
 export { default as WalletConnectPanel } from './Wallet/WalletConnectPanel';
 export { default as OnboardingWizard } from './Misc/OnboardingWizard';
-export { default as DashboardHeader } from './Dashboard/DashboardHeader';
 export { default as DataVisualization } from './Infos/DataVisualization';
 export { default as SupportedNetworks } from './Infos/SupportedNetworks';
