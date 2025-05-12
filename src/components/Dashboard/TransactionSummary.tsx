@@ -642,3 +642,15 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                         />
                         <Bar 
                           dataKey="count" 
+                          fill="#8b5cf6"
+                          radius={[4, 4, 0, 0]}
+                          barSize={30}
+                          name="Transactions"
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="cumulative" 
+                          stroke="#f59e0b" 
+                          strokeWidth={2}
+                          dot={{ r: 4, fill: "#f59e0b", strokeWidth: 1 }}
+                          activeDot={{ r: 6, fill: "#f59e0b", strokeWidth: 0 }}

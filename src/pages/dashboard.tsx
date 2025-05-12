@@ -847,20 +847,20 @@ export default function Dashboard() {
                     <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">
-                    {address.substring(0, 8)}...{address.substring(address.length - 6)}
-                    </p>
+                    <div className="bg-primary-600 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
                   </div>
-                  ))}
                 </div>
-                
-                <Link
-                  href="/wallets"
-                  className="w-full mt-3 flex items-center justify-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors"
-                >
-                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  Ajouter un wallet
+              )}
+            </div>
+          )}
+          
+          {/* Bannière Premium */}
+          {!isPremiumUser && (
+            <PremiumUnlock onUnlock={handleUnlockPremium} />
+          )}
+          
+          {/* Liens rapides */}
+          {isWalletConnected && (
                 </Link>
                 </div>
               
