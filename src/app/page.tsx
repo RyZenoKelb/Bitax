@@ -104,6 +104,8 @@ export default function Home() {
   const opacity1 = useTransform(scrollY, [0, 100, 200], [1, 0.5, 0]);
   const opacity2 = useTransform(scrollY, [0, 400, 500], [0, 0.5, 1]);
   const scale1 = useTransform(scrollY, [0, 400], [1, 0.8]);
+  // Près du début de ton composant, avec les autres useState/useRef
+  const howItWorksSectionRef = useRef<HTMLDivElement>(null);
   
   // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
