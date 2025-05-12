@@ -672,3 +672,16 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
               <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
                 <h4 className="font-medium text-gray-900 dark:text-white">Distribution des tokens (Top 10)</h4>
               </div>
+              <div className="p-5">
+                <div className="h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={tokenData}
+                      layout="vertical"
+                      margin={{ top: 5, right: 30, left: 50, bottom: 5 }}
+                    ></BarChart>
+                      <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} horizontal={true} vertical={false} />
+                      <XAxis 
+                        type="number"
+                        tick={{ fill: chartTextColor }}
+                        axisLine={{ stroke: chartGridColor }}
