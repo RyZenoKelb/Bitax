@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link';
 import WalletConnectButton from '@/components/Wallet/WalletConnectButton';
 import WalletConnectPanel from '@/components/Wallet/WalletConnectPanel';
-import TransactionSummary from '@/components/Infos/TransactionSummary';
+import TransactionSummary from '@/components/Dashboard/TransactionSummary';
 import TaxDashboard from '@/components/Dashboard/TaxDashboard';
 import PremiumUnlock from '@/components/Dashboard/PremiumUnlock';
 import OnboardingWizard from '@/components/Misc/OnboardingWizard';
