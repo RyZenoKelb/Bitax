@@ -310,10 +310,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 </div>
               </div>
               
-                      <button 
-                        className={`px-2 py-1 text-xs rounded-md ${timeRange === '1y' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
-                        onClick={() => setTimeRange('1y')}
-                      >
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-4 transition-all duration-300 border border-amber-100 dark:border-amber-800/30">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-3">Tokens uniques</p>
                         1 an
                       </button>
                       <button 
