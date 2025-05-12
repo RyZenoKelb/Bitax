@@ -62,29 +62,29 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
     const type = tx.type || 'Unknown';
     typeCounts[type] = (typeCounts[type] || 0) + 1;
   });
-      'Token Transfer': '#10B981', // vert
-      'Simple Transfer': '#3B82F6', // bleu
-      'Smart Contract Interaction': '#6366F1', // indigo
-      'Token Approval': '#F59E0B', // orange
-      'Swap': '#8B5CF6', // violet
-      'Native Transfer': '#2563EB', // bleu foncé
-      'NFT Marketplace': '#7C3AED', // pourpre
-      'Unknown': '#9CA3AF' // gris
-    };
-    
-    return colorMap[type] || '#9CA3AF';
-  };
 
-  // Préparer les données pour l'activité mensuelle
-  const monthlyActivity: Record<string, number> = {};
-  let oldestDate = new Date();
-  let newestDate = new Date(0);
-  
-  transactions.forEach(tx => {
-    if (tx.block_timestamp) {
-      const date = new Date(tx.block_timestamp);
-      if (date < oldestDate) oldestDate = date;
-      if (date > newestDate) newestDate = date;
+  // Calculer les pourcentages par type
+  const typePercentages = Object.entries(typeCounts).map(([type, count]) => ({
+    type,
+    count,
+    percentage: (count / transactions.length) * 100
+  }));
+
+  // Trier par nombre décroissant
+  typePercentages.sort((a, b) => b.count - a.count);
+
+  // Préparer les données pour le graphique en camembert
+  const pieChartData = typePercentages.map(item => ({
+    name: item.type,
+    value: item.count
+  }));
+
+  // Définir les couleurs pour le graphique en fonction des types
+  const getTypeColor = (type: string): string => {
+    const colorMap: Record<string, string> = {
+      'Token Transfer': '#3b82f6', // blue
+      'Simple Transfer': '#06b6d4', // cyan
+      'Smart Contract Interaction': '#6366f1', // indigo
       
       const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
       monthlyActivity[monthYear] = (monthlyActivity[monthYear] || 0) + 1;
