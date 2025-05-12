@@ -607,3 +607,8 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
             </div>
             
             {isPremiumUser && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"></div>
+                <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                  <h4 className="font-medium text-gray-900 dark:text-white">Analyse avancée du volume</h4>
+                </div>
+                <div className="p-5">

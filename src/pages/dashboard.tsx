@@ -822,14 +822,14 @@ export default function Dashboard() {
                   <div key={index} className="flex items-center">
                     <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
                     <p className="text-gray-600 dark:text-gray-300 font-medium">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                  Connectez votre wallet
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Pour commencer, connectez votre wallet crypto pour analyser vos transactions.
-                </p>
-                <WalletConnectButton 
-                  onConnect={handleWalletConnect}
+                    {address.substring(0, 8)}...{address.substring(address.length - 6)}
+                    </p>
+                  </div>
+                  ))}
+                </div>
+                
+                <Link
+                  href="/wallets"
                   variant="primary"
                   fullWidth
                   size="lg"
