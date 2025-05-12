@@ -4,14 +4,12 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { ethers } from 'ethers';
 import { useSession } from 'next-auth/react';
-import { requireAuth } from '@/lib/server-auth';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { Tab } from '@headlessui/react';
-import { WalletType, Blockchain, SupportedNetwork } from '@/types/wallet';
+import { WalletType } from '@/types/wallet';
 import WalletList from '@/components/Wallet/WalletList';
 import AddWalletModal from '@/components/Wallet/AddWalletModal';
 import ImportFromExchangeModal from '@/components/Wallet/ImportFromExchangeModal';
-import NetworkIcon from '@/components/Visual/NetworkIcon';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import WalletStatusBadge from '@/components/Wallet/WalletStatusBadge';
 import toast from 'react-hot-toast';
@@ -23,7 +21,7 @@ interface Wallet {
   id: string;
   address: string;
   network: string; 
-  name: string | null;
+  name: string | undefined;
   isPrimary: boolean;
   createdAt: string;
   updatedAt: string;
@@ -33,7 +31,7 @@ interface Wallet {
   transactions?: number;
 }
 
-export default function WalletsPage() {
+const WalletsPage: NextPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -46,8 +44,17 @@ export default function WalletsPage() {
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [syncingWalletId, setSyncingWalletId] = useState<string | null>(null);
 
+  // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
+
   // Récupérer les wallets de l'utilisateur
   const fetchWallets = useCallback(async () => {
+    if (status !== 'authenticated') return;
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -75,7 +82,7 @@ export default function WalletsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [status]);
 
   // Charger les wallets au chargement de la page
   useEffect(() => {
@@ -319,11 +326,11 @@ export default function WalletsPage() {
   };
 
   // Gérer la sélection des wallets
-  const handleSelectWallet = (walletId: string) => {
+  const handleSelectWallet = (walletId: string, selected: boolean) => {
     setSelectedWallets(prev => 
-      prev.includes(walletId)
-        ? prev.filter(id => id !== walletId)
-        : [...prev, walletId]
+      selected
+        ? [...prev, walletId]
+        : prev.filter(id => id !== walletId)
     );
   };
 
@@ -338,25 +345,17 @@ export default function WalletsPage() {
     }
   };
 
-  // Formatter la date "il y a X temps"
-  const formatLastSynced = (dateString?: string) => {
-    if (!dateString) return 'Jamais';
-    
-    return formatDistanceToNow(new Date(dateString), { 
-      addSuffix: true,
-      locale: fr
-    });
-  };
-
-  // Grouper les wallets par réseau
-  const walletsByNetwork = wallets.reduce((acc, wallet) => {
-    const network = wallet.network || 'unknown';
-    if (!acc[network]) {
-      acc[network] = [];
-    }
-    acc[network].push(wallet);
-    return acc;
-  }, {} as Record<string, Wallet[]>);
+  // Si l'utilisateur n'est pas encore authentifié, afficher un écran de chargement
+  if (status === 'loading' || status === 'unauthenticated') {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Tabs pour les différentes sections
   const tabs = [
@@ -504,165 +503,16 @@ export default function WalletsPage() {
                   </button>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-800">
-                      <tr>
-                        <th scope="col" className="w-10 px-3 py-3 text-left">
-                          <input
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary-600"
-                            checked={selectedWallets.length === wallets.length && wallets.length > 0}
-                            onChange={handleSelectAllWallets}
-                          />
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Wallet
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Réseau
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Statut
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Dernière sync
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Transactions
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                      {wallets.map(wallet => (
-                        <tr 
-                          key={wallet.id} 
-                          className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
-                            syncingWalletId === wallet.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                          }`}
-                        >
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <input
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary-600"
-                              checked={selectedWallets.includes(wallet.id)}
-                              onChange={() => handleSelectWallet(wallet.id)}
-                            />
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                                wallet.isPrimary ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                              }`}>
-                                {wallet.isPrimary ? (
-                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                  </svg>
-                                ) : (
-                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                  </svg>
-                                )}
-                              </div>
-                              <div className="ml-3">
-                                <div className="flex items-center">
-                                  <p className="text-sm font-medium text-gray-900 dark:text-white">{wallet.name || 'Wallet sans nom'}</p>
-                                  {wallet.isPrimary && (
-                                    <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                      Principal
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-xs font-mono text-gray-500 dark:text-gray-400">
-                                  {wallet.address.substring(0, 10)}...{wallet.address.substring(wallet.address.length - 8)}
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <NetworkIcon network={wallet.network as NetworkType} size={20} className="mr-2" />
-                              <span className="text-sm text-gray-700 dark:text-gray-300">
-                                {SUPPORTED_NETWORKS[wallet.network as NetworkType]?.name || wallet.network}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <WalletStatusBadge status={wallet.status || 'pending'} />
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {formatLastSynced(wallet.lastSynced)}
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {wallet.transactions || '–'}
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                            <button
-                              onClick={() => handleSyncWallet(wallet.id)}
-                              disabled={wallet.status === 'syncing' || isSyncing}
-                              className={`p-1.5 rounded-lg ${
-                                wallet.status === 'syncing' || isSyncing
-                                  ? 'text-gray-400 cursor-not-allowed dark:text-gray-500'
-                                  : 'text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
-                              }`}
-                              title="Synchroniser"
-                            >
-                              {wallet.status === 'syncing' ? (
-                                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                                </svg>
-                              ) : (
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => {
-                                // Ouvrir modal d'édition
-                                // Pour l'instant on fait juste un prompt
-                                const newName = prompt("Nouveau nom pour ce wallet:", wallet.name || '');
-                                if (newName !== null) {
-                                  handleUpdateWallet(wallet.id, { name: newName });
-                                }
-                              }}
-                              className="p-1.5 text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/30 rounded-lg"
-                              title="Modifier"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteWallet(wallet.id)}
-                              className="p-1.5 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded-lg"
-                              title="Supprimer"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                            {!wallet.isPrimary && (
-                              <button
-                                onClick={() => handleUpdateWallet(wallet.id, { isPrimary: true })}
-                                className="p-1.5 text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30 rounded-lg"
-                                title="Définir comme wallet principal"
-                              >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                </svg>
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <WalletList 
+                  wallets={wallets}
+                  onSync={handleSyncWallet}
+                  onEdit={handleUpdateWallet}
+                  onDelete={handleDeleteWallet}
+                  onSelect={handleSelectWallet}
+                  selectedWallets={selectedWallets}
+                  isSyncing={isSyncing}
+                  syncingWalletId={syncingWalletId}
+                />
               )}
             </Tab.Panel>
             
@@ -694,172 +544,16 @@ export default function WalletsPage() {
                   )}
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-800">
-                      <tr>
-                        <th scope="col" className="w-10 px-3 py-3 text-left">
-                          <input
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary-600"
-                            checked={selectedWallets.length === wallets.filter(w => w.status === 'synced').length && wallets.filter(w => w.status === 'synced').length > 0}
-                            onChange={() => {
-                              const syncedWalletIds = wallets.filter(w => w.status === 'synced').map(w => w.id);
-                              if (selectedWallets.length === syncedWalletIds.length) {
-                                setSelectedWallets(prev => prev.filter(id => !syncedWalletIds.includes(id)));
-                              } else {
-                                setSelectedWallets(prev => [...new Set([...prev, ...syncedWalletIds])]);
-                              }
-                            }}
-                          />
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Wallet
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Réseau
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Statut
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Dernière sync
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Transactions
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                      {wallets.filter(w => w.status === 'synced').map(wallet => (
-                        <tr 
-                          key={wallet.id} 
-                          className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
-                            syncingWalletId === wallet.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                          }`}
-                        >
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <input
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary-600"
-                              checked={selectedWallets.includes(wallet.id)}
-                              onChange={() => handleSelectWallet(wallet.id)}
-                            />
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                                wallet.isPrimary ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                              }`}>
-                                {wallet.isPrimary ? (
-                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                  </svg>
-                                ) : (
-                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                  </svg>
-                                )}
-                              </div>
-                              <div className="ml-3">
-                                <div className="flex items-center">
-                                  <p className="text-sm font-medium text-gray-900 dark:text-white">{wallet.name || 'Wallet sans nom'}</p>
-                                  {wallet.isPrimary && (
-                                    <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                      Principal
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-xs font-mono text-gray-500 dark:text-gray-400">
-                                  {wallet.address.substring(0, 10)}...{wallet.address.substring(wallet.address.length - 8)}
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <NetworkIcon network={wallet.network as NetworkType} size={20} className="mr-2" />
-                              <span className="text-sm text-gray-700 dark:text-gray-300">
-                                {SUPPORTED_NETWORKS[wallet.network as NetworkType]?.name || wallet.network}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <WalletStatusBadge status={wallet.status || 'pending'} />
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {formatLastSynced(wallet.lastSynced)}
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {wallet.transactions || '–'}
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                            <button
-                              onClick={() => handleSyncWallet(wallet.id)}
-                              disabled={wallet.status === 'syncing' || isSyncing}
-                              className={`p-1.5 rounded-lg ${
-                                wallet.status === 'syncing' || isSyncing
-                                  ? 'text-gray-400 cursor-not-allowed dark:text-gray-500'
-                                  : 'text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
-                              }`}
-                              title="Synchroniser"
-                            >
-                              {wallet.status === 'syncing' ? (
-                                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                                </svg>
-                              ) : (
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => {
-                                // Ouvrir modal d'édition
-                                // Pour l'instant on fait juste un prompt
-                                const newName = prompt("Nouveau nom pour ce wallet:", wallet.name || '');
-                                if (newName !== null) {
-                                  handleUpdateWallet(wallet.id, { name: newName });
-                                }
-                              }}
-                              className="p-1.5 text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/30 rounded-lg"
-                              title="Modifier"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteWallet(wallet.id)}
-                              className="p-1.5 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded-lg"
-                              title="Supprimer"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                            {!wallet.isPrimary && (
-                              <button
-                                onClick={() => handleUpdateWallet(wallet.id, { isPrimary: true })}
-                                className="p-1.5 text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30 rounded-lg"
-                                title="Définir comme wallet principal"
-                              >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                </svg>
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <WalletList 
+                  wallets={wallets.filter(w => w.status === 'synced')}
+                  onSync={handleSyncWallet}
+                  onEdit={handleUpdateWallet}
+                  onDelete={handleDeleteWallet}
+                  onSelect={handleSelectWallet}
+                  selectedWallets={selectedWallets}
+                  isSyncing={isSyncing}
+                  syncingWalletId={syncingWalletId}
+                />
               )}
             </Tab.Panel>
             
@@ -897,172 +591,16 @@ export default function WalletsPage() {
                   </div>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-800">
-                      <tr>
-                        <th scope="col" className="w-10 px-3 py-3 text-left">
-                          <input
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary-600"
-                            checked={selectedWallets.length === wallets.filter(w => w.status === 'pending').length && wallets.filter(w => w.status === 'pending').length > 0}
-                            onChange={() => {
-                              const pendingWalletIds = wallets.filter(w => w.status === 'pending').map(w => w.id);
-                              if (selectedWallets.length === pendingWalletIds.length) {
-                                setSelectedWallets(prev => prev.filter(id => !pendingWalletIds.includes(id)));
-                              } else {
-                                setSelectedWallets(prev => [...new Set([...prev, ...pendingWalletIds])]);
-                              }
-                            }}
-                          />
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Wallet
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Réseau
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Statut
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Dernière sync
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Transactions
-                        </th>
-                        <th scope="col" className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                      {wallets.filter(w => w.status === 'pending').map(wallet => (
-                        <tr 
-                          key={wallet.id} 
-                          className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
-                            syncingWalletId === wallet.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                          }`}
-                        >
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <input
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary-600"
-                              checked={selectedWallets.includes(wallet.id)}
-                              onChange={() => handleSelectWallet(wallet.id)}
-                            />
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className={`w-8 h-8 flex items-center justify-center rounded-full ${
-                                wallet.isPrimary ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                              }`}>
-                                {wallet.isPrimary ? (
-                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                  </svg>
-                                ) : (
-                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                  </svg>
-                                )}
-                              </div>
-                              <div className="ml-3">
-                                <div className="flex items-center">
-                                  <p className="text-sm font-medium text-gray-900 dark:text-white">{wallet.name || 'Wallet sans nom'}</p>
-                                  {wallet.isPrimary && (
-                                    <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                      Principal
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-xs font-mono text-gray-500 dark:text-gray-400">
-                                  {wallet.address.substring(0, 10)}...{wallet.address.substring(wallet.address.length - 8)}
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <NetworkIcon network={wallet.network as NetworkType} size={20} className="mr-2" />
-                              <span className="text-sm text-gray-700 dark:text-gray-300">
-                                {SUPPORTED_NETWORKS[wallet.network as NetworkType]?.name || wallet.network}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap">
-                            <WalletStatusBadge status={wallet.status || 'pending'} />
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {formatLastSynced(wallet.lastSynced)}
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {wallet.transactions || '–'}
-                          </td>
-                          <td className="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                            <button
-                              onClick={() => handleSyncWallet(wallet.id)}
-                              disabled={wallet.status === 'syncing' || isSyncing}
-                              className={`p-1.5 rounded-lg ${
-                                wallet.status === 'syncing' || isSyncing
-                                  ? 'text-gray-400 cursor-not-allowed dark:text-gray-500'
-                                  : 'text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
-                              }`}
-                              title="Synchroniser"
-                            >
-                              {wallet.status === 'syncing' ? (
-                                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                                </svg>
-                              ) : (
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => {
-                                // Ouvrir modal d'édition
-                                // Pour l'instant on fait juste un prompt
-                                const newName = prompt("Nouveau nom pour ce wallet:", wallet.name || '');
-                                if (newName !== null) {
-                                  handleUpdateWallet(wallet.id, { name: newName });
-                                }
-                              }}
-                              className="p-1.5 text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/30 rounded-lg"
-                              title="Modifier"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteWallet(wallet.id)}
-                              className="p-1.5 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded-lg"
-                              title="Supprimer"
-                            >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                            {!wallet.isPrimary && (
-                              <button
-                                onClick={() => handleUpdateWallet(wallet.id, { isPrimary: true })}
-                                className="p-1.5 text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30 rounded-lg"
-                                title="Définir comme wallet principal"
-                              >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                </svg>
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <WalletList 
+                  wallets={wallets.filter(w => w.status === 'pending')}
+                  onSync={handleSyncWallet}
+                  onEdit={handleUpdateWallet}
+                  onDelete={handleDeleteWallet}
+                  onSelect={handleSelectWallet}
+                  selectedWallets={selectedWallets}
+                  isSyncing={isSyncing}
+                  syncingWalletId={syncingWalletId}
+                />
               )}
             </Tab.Panel>
           </Tab.Panels>
@@ -1087,22 +625,6 @@ export default function WalletsPage() {
       )}
     </div>
   );
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  // S'assurer que l'utilisateur est authentifié
-  const session = await requireAuth();
-  
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-  
-  return {
-    props: {},
-  };
 };
+
+export default WalletsPage;
