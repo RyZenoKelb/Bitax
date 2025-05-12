@@ -65,15 +65,6 @@ interface Hexagon {
   isActive: boolean;
 }
 
-// Interface pour les connexions entre hexagones
-interface Connection {
-  from: number;
-  to: number;
-  opacity: number;
-  active: boolean;
-  lastPacketTime: number;
-  packetInterval: number;
-}
 
 // Interface pour les particules
 interface Particle {
@@ -85,21 +76,6 @@ interface Particle {
   color: string;
 }
 
-// Interface pour les paquets de données
-interface DataPacket {
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
-  x: number;
-  y: number;
-  progress: number;
-  speed: number;
-  size: number;
-  color: string;
-  from: number;
-  to: number;
-}
 
 export default function Home() {
   // État pour gérer les étoiles avec le type correct
