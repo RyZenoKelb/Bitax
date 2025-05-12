@@ -742,3 +742,19 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                       className="h-full rounded-full" 
                       style={{ 
                         width: `${(token.value / tokenData[0].value) * 100}%`,
+                        backgroundColor: tokenColors[index % tokenColors.length]
+                      }}
+                    ></div>
+                  </div>
+                  <div className="mt-2 text-xs text-right text-gray-500 dark:text-gray-400">
+                    {((token.value / tokenData.reduce((sum, t) => sum + t.value, 0)) * 100).toFixed(1)}% du total
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {isPremiumUser && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4"></div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-4">Analyse de diversité</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4">
