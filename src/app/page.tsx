@@ -104,7 +104,6 @@ export default function Home() {
   // Près du début de ton composant, avec les autres useState/useRef
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
   const [highlightSection, setHighlightSection] = useState(false);
-  const [featuresVisible, setFeaturesVisible] = useState(false);
   
   // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
@@ -1120,10 +1119,6 @@ export default function Home() {
       <motion.section 
         className="py-20 relative"
         style={{ opacity: opacity2 }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.2 }}
-        onViewportEnter={() => setFeaturesVisible(true)}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
