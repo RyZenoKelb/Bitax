@@ -299,10 +299,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                   </div>
                   <div className="bg-cyan-100 dark:bg-cyan-800/60 p-2 rounded-lg">
                     <svg className="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {activeTab === 'activity' && (
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-sm font-medium text-gray-500">Activité par mois</h4>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
                     <div className="flex space-x-2">
                       <button 
                         className={`px-2 py-1 text-xs rounded-md ${timeRange === 'all' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
