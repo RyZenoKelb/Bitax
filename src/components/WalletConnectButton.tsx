@@ -984,6 +984,6 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
       </div>
     </div>
   );
-;
+};
 
 export default WalletConnectButton;
