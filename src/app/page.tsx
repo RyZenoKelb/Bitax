@@ -79,7 +79,6 @@ interface Particle {
 
 export default function Home() {
   // État pour gérer les étoiles avec le type correct
-  const [stars, setStars] = useState<Star[]>([]);
   
   // Référence pour le canvas d'animation
   const canvasRef = useRef<HTMLCanvasElement>(null);
