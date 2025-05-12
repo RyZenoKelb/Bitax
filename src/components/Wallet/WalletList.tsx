@@ -1,5 +1,5 @@
 // src/components/Wallet/WalletList.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import NetworkIcon from '@/components/Visual/NetworkIcon';
 import WalletStatusBadge from './WalletStatusBadge';
@@ -10,7 +10,7 @@ interface Wallet {
   id: string;
   address: string;
   network: string;
-  name: string | null;
+  name: string | undefined;
   isPrimary: boolean;
   createdAt: string;
   updatedAt: string;
@@ -41,8 +41,6 @@ const WalletList: React.FC<WalletListProps> = ({
   isSyncing = false,
   syncingWalletId = null,
 }) => {
-  const [showEditModal, setShowEditModal] = useState<string | null>(null);
-
   // Formatter la date "il y a X temps"
   const formatLastSynced = (dateString?: string) => {
     if (!dateString) return 'Jamais';
@@ -131,7 +129,7 @@ const WalletList: React.FC<WalletListProps> = ({
                       type="checkbox"
                       className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-primary-600"
                       checked={selectedWallets.includes(wallet.id)}
-                      onChange={(e) => onSelect(wallet.id, e.target.checked)}
+                      onChange={(e) => onSelect && onSelect(wallet.id, e.target.checked)}
                     />
                   </td>
                 )}
