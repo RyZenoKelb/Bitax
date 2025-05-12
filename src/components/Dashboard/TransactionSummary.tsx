@@ -89,12 +89,12 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
       'Swap': '#8b5cf6', // violet
       'Native Transfer': '#2563eb', // blue-600
       'NFT Marketplace': '#9333ea', // purple-600
-  });
-  
-  // Convertir en tableau pour le graphique
-  const activityData = Object.entries(monthlyActivity)
-    .map(([month, count]) => ({ month, count }))
-    .sort((a, b) => {
+      'Unknown': '#9ca3af', // gray-400
+      'DEX Interaction': '#ec4899', // pink-500
+      'Deposit': '#10b981', // emerald-500
+      'Withdrawal': '#f43f5e' // rose-500
+    };
+    
       const [monthA, yearA] = a.month.split('/').map(Number);
       const [monthB, yearB] = b.month.split('/').map(Number);
       
