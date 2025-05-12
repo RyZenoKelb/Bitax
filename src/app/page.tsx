@@ -1141,8 +1141,17 @@ export default function Home() {
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 * feature.id, duration: 0.5 }}
+                viewport={{ 
+                  once: true,
+                  amount: 0.1,  // Déclenche l'animation quand 10% seulement de l'élément est visible
+                  margin: "100px 0px 0px 0px"  // Marge supplémentaire pour déclencher plus tôt
+                }}
+                transition={{ 
+                  delay: 0.1 * feature.id, 
+                  duration: 0.5,
+                  ease: "easeOut"  // Animation plus naturelle
+                }}
+              >
               >
                 <div className="mb-4 rounded-lg p-3 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-white/5 w-fit">
                   {feature.icon}
