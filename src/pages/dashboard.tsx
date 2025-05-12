@@ -838,31 +838,31 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-              <div className="p-6">
+                <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   Vos wallets connectés
                 </h2>
                 <div className="space-y-2 mb-4">
                   {walletAddresses.map((address, index) => (
-                    <div key={index} className="flex items-center">
-                      <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                      <p className="text-gray-600 dark:text-gray-300 font-medium">
-                        {address.substring(0, 8)}...{address.substring(address.length - 6)}
-                      </p>
-                    </div>
+                  <div key={index} className="flex items-center">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                    <p className="text-gray-600 dark:text-gray-300 font-medium">
+                    {address.substring(0, 8)}...{address.substring(address.length - 6)}
+                    </p>
+                  </div>
                   ))}
                 </div>
                 
-                <button
-                  onClick={() => setShowOnboarding(true)}
+                <Link
+                  href="/wallets"
                   className="w-full mt-3 flex items-center justify-center px-4 py-2.5 border border-dashed border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   Ajouter un wallet
-                </button>
-              </div>
+                </Link>
+                </div>
               
               {/* Statistiques */}
               {transactions.length > 0 && (
