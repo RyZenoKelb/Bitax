@@ -190,12 +190,12 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   
   // Générer des couleurs pour les tokens
   const tokenColors = [
-                  <div className="mt-1 text-sm text-gray-500">
-                    {uniqueTokens.size > 0 
-                      ? `Dont ${Array.from(uniqueTokens).slice(0, 2).join(', ')}...` 
-                      : 'Aucun token ERC20 détecté'}
-                  </div>
-                </div>
+    '#3b82f6', '#06b6d4', '#8b5cf6', '#10b981', '#f59e0b',
+    '#6366f1', '#ec4899', '#14b8a6', '#f97316', '#a855f7'
+  ];
+
+  // Format du montant pour l'affichage
+  const formatAmount = (value: number): string => {
               </div>
             </div>
             
