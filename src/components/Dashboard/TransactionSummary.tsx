@@ -330,17 +330,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
               </div>
             </div>
             
-                  
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Graphique principal */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden lg:col-span-2">
+                <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                  <h4 className="font-medium text-gray-900 dark:text-white">Distribution des transactions</h4>
+                </div>
+                <div className="p-5">
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={activityData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip 
+                      <PieChart>
+                        <Pie
                           formatter={(value) => [`${value} transactions`, 'Nombre']}
                           labelFormatter={(label) => `Mois: ${label}`}
                         />
