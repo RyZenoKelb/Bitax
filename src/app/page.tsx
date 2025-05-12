@@ -731,111 +731,111 @@ export default function Home() {
                 <div className="mt-4 flex">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <svg key={star} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"></svg>
-          )}
-        </AnimatePresence>
-      </motion.header>
-
-      {/* Hero Section avec effet premium et parallaxe */}
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* FAQ section */}
       <motion.section 
-        className="min-h-screen flex items-center justify-center px-4 pt-20"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        ref={targetRef}
+        className="py-20 mt-16 relative font-inter"
+        style={{ y: y1 }}
       >
-        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <motion.div 
-            className="text-center lg:text-left pt-8 lg:pt-0"
-            style={{ y: y1 }}
-          >
-            <motion.h2 
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight tracking-tight"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              <span className="text-white">Votre fiscalité crypto, </span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400">simplifiée</span>
-            </motion.h2>
-            
-            {/* Badge avec drapeau français */}
-            <motion.div 
-              className="mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              <div className="inline-flex items-center px-6 py-2 rounded-full bg-blue-900/20 border border-blue-800/30 backdrop-blur-sm">
-                <svg className="w-6 h-5 mr-2" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="9" height="6" fill="#FFFFFF"/>
-                  <rect width="9" height="6" fill="#00209F"/>
-                  <rect x="6" width="3" height="6" fill="#DE2910"/>
-                  <rect x="3" width="3" height="6" fill="#FFFFFF"/>
-                </svg>
-                <span className="text-blue-200 font-medium">Conforme à la fiscalité française</span>
-              </div>
-            </motion.div>
-            
-            <motion.p 
-              className="text-xl text-blue-100/90 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-            >
-              Bitax automatise la déclaration de vos cryptomonnaies et calcule vos plus-values en quelques clics.
-            </motion.p>
-            
-            <motion.div 
-              className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start mb-12"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-            >
-              {/* Bouton principal avec design moderne */}
-              <Link 
-                href="/waitlist" 
-                className="relative px-8 py-3.5 rounded-lg overflow-hidden group"
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] font-satoshi">
+              Questions fréquentes
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Tout ce que vous devez savoir sur Bitax et la fiscalité crypto.
+            </p>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
+            {faqItems.map((item) => (
+              <motion.div 
+                key={item.id}
+                className="mb-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * item.id, duration: 0.5 }}
               >
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600"></span>
-                <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                <span className="relative flex items-center justify-center text-white font-semibold">
-                  <span>Participer à la beta</span>
-                  <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <button 
+                  className="w-full text-left py-4 px-6 flex justify-between items-center text-white font-medium"
+                  onClick={() => toggleFaq(item.id)}
+                >
+                  <span>{item.question}</span>
+                  <svg 
+                    className={`w-5 h-5 transition-transform duration-300 ${expandedFaq === item.id ? 'transform rotate-180' : ''}`} 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </span>
-              </Link>
-              
-              {/* Bouton secondaire glassmorphism */}
-              <button 
-                onClick={() => {
-                  // Obtenir la hauteur de la navbar
-                  const navbar = document.querySelector('header');
-                  const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
-                  
-                  // Trouver la position de la section
-                  const targetSection = howItWorksSectionRef.current;
-                  if (!targetSection) return;
-                  
-                  const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarHeight - 20;
-                  const startPosition = window.pageYOffset;
-                  const distance = targetPosition - startPosition;
-                  
-                  // Fonction d'animation de défilement personnalisée
-                  const smoothScroll = () => {
-                    const duration = 1000; // durée en ms
-                    let start: number | null = null;
-                    
-                    const step = (timestamp: number) => {
-                      if (!start) start = timestamp;
-                      const progress = timestamp - start;
-                      const percentage = Math.min(progress / duration, 1);
-                      
-                      // Fonction d'easing - rend l'animation plus naturelle
-                      const easeInOutCubic = percentage < 0.5
-                        ? 4 * percentage * percentage * percentage
-                        : 1 - Math.pow(-2 * percentage + 2, 3) / 2;
-                      
+                </button>
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ${
+                    expandedFaq === item.id ? 'max-h-72' : 'max-h-0'
+                  }`}
+                >
+                  <div className="py-4 px-6 text-blue-100/80 border-t border-white/5">
+                    {item.answer}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+      
+      {/* CTA section */}
+      <motion.section 
+        className="py-16 mb-16 relative font-manrope"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 px-4 sm:px-6 lg:px-8 items-center">
+            {/* CTA text */}
+            <div>
+              <motion.h2 
+                className="text-3xl sm:text-4xl font-bold mb-4 text-white bg-clip-text text-transparent bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] font-satoshi"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                Accédez à Bitax avant tout le monde
+              </motion.h2>
+              <motion.p 
+                className="text-xl text-blue-100/80 mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                Rejoignez notre liste d'attente pour tester Bitax en avant-première et contribuez à façonner l'avenir de la fiscalité crypto en France.
+              </motion.p>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="flex flex-col sm:flex-row gap-4"
+              >
+                <Link 
+                  href="/waitlist" 
+                  className="inline-block px-6 py-3.5 rounded-lg overflow-hidden group bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] text-white font-medium shadow-lg hover:shadow-[#5b4dc2]/25 transition-all duration-300 hover:scale-105"
+                >
+                  Rejoindre la liste d'attente
+                </Link>
+                <span className="inline-flex items-center text-blue-300/70 text-sm"></span>
+                  <svg className="w-5 h-5 mr-2 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"></svg>
                       window.scrollTo(0, startPosition + distance * easeInOutCubic);
                       
                       if (progress < duration) {
