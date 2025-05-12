@@ -116,7 +116,7 @@ const NetworkIcon: React.FC<NetworkIconProps> = ({
           <svg width={size} height={size} viewBox="0 0 32 32" className={className}>
             <circle cx="16" cy="16" r="16" fill={color} />
             <text x="16" y="20" fontSize="14" textAnchor="middle" fill="#FFF">
-              {network.charAt(0).toUpperCase()}
+              {typeof network === 'string' ? network.charAt(0).toUpperCase() : 'X'}
             </text>
           </svg>
         );
