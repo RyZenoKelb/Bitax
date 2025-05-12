@@ -234,23 +234,23 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
           ].map(tab => (
             <button
               key={tab.id}
-              </button>
-              <button 
-                className={`py-2 px-4 text-sm font-medium ${activeTab === 'activity' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => setActiveTab('activity')}
-              >
-                Activité
-              </button>
-              <button 
-                className={`py-2 px-4 text-sm font-medium ${activeTab === 'tokens' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => setActiveTab('tokens')}
-              >
-                Tokens
-              </button>
-            </div>
-            
-            {/* Contenu des onglets */}
-            <div className="flex-grow">
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${
+                activeTab === tab.id 
+                  ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      <div className="p-6">
+        {/* Contenu des onglets */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
               {activeTab === 'overview' && (
                 <div className="h-64">
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Répartition par type de transaction</h4>
