@@ -86,7 +86,7 @@ class WalletConnectService {
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simuler un délai
       
       const address = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
-      const provider = new ethers.providers.JsonRpcProvider();
+      const provider = new ethers.JsonRpcProvider();
       
       return { address, provider };
     } catch (error) {
