@@ -305,11 +305,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 </div>
                 <div className="mt-3">
                   <div className="w-full bg-cyan-200/50 dark:bg-cyan-800/30 h-1 rounded-full">
-                        className={`px-2 py-1 text-xs rounded-md ${timeRange === 'all' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
-                        onClick={() => setTimeRange('all')}
-                      >
-                        Tout
-                      </button>
+                    <div className="bg-cyan-600 dark:bg-cyan-400 h-1 rounded-full" style={{ width: '45%' }}></div>
+                  </div>
+                </div>
+              </div>
+              
                       <button 
                         className={`px-2 py-1 text-xs rounded-md ${timeRange === '1y' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
                         onClick={() => setTimeRange('1y')}
