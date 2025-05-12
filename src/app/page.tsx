@@ -653,84 +653,84 @@ export default function Home() {
             </p>
           </div>
           
-              ))}
-              
-              {/* Boutons Connexion/Rejoindre la Beta en français - nouveau design */}
-              <div className="flex items-center space-x-3 ml-6">
-                <Link 
-                  href="/login" 
-                  className="px-6 py-2 rounded-lg border border-white/10 text-white/90 font-medium transition-all duration-300 hover:border-white/20 hover:bg-white/5"
-                >
-                  Connexion
-                </Link>
-                
-                <Link 
-                  href="/waitlist" 
-                  className="px-6 py-2 rounded-lg relative overflow-hidden group"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 transition-all duration-300 group-hover:from-violet-500 group-hover:to-indigo-500"></span>
-                  <span className="relative text-white font-medium">Rejoindre la beta</span>
-                </Link>
-              </div>
-            </nav>
-
-            {/* Bouton menu mobile */}
-            <button 
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/5 transition-colors"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              <span className={`block w-5 h-0.5 bg-white rounded-full transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-              <span className={`block w-5 h-0.5 bg-white rounded-full mt-1 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}></span>
-              <span className={`block w-5 h-0.5 bg-white rounded-full mt-1 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-            </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+            {benefits.map((benefit) => (
+              <motion.div 
+                key={benefit.id}
+                className="flex gap-6"
+                initial={{ opacity: 0, x: benefit.id % 2 === 0 ? 20 : -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * benefit.id, duration: 0.5 }}
+              >
+                <div className="shrink-0">
+                  <div className="bg-gradient-to-r from-[#5b4dc2]/20 to-[#4ab3f4]/20 border border-white/5 rounded-lg p-3 w-16 h-16 flex items-center justify-center">
+                    {benefit.icon}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2 font-satoshi">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-blue-100/70">
+                    {benefit.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
+      </motion.section>
+      
+      {/* Testimonials section */}
+      <motion.section 
+        className="py-20 -mt-16 relative font-inter"
+        style={{ y: y3 }}
+      >
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+          <div className="absolute -bottom-[10%] -right-[5%] w-1/3 h-1/3 bg-[#5b4dc2]/10 rounded-full filter blur-[100px]"></div>
+        </div>
         
-        {/* Menu mobile */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden bg-slate-900/80 backdrop-blur-lg border-b border-white/5"
-            >
-              <div className="px-6 py-4 space-y-3">
-                {[
-                  { name: 'Fonctionnalités', href: '/fonctionnalites' },
-                  { name: 'Tarifs', href: '/tarifs' },
-                  { name: 'Guide', href: '/guide' }
-                ].map((item) => (
-                  <Link 
-                    key={item.name} 
-                    href={item.href}
-                    className="block py-2 text-white/80 hover:text-white transition-colors"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                
-                <div className="pt-2 space-y-2">
-                  <Link 
-                    href="/login" 
-                    className="block py-2.5 text-center text-white/80 border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Connexion
-                  </Link>
-                  
-                  <Link 
-                    href="/waitlist" 
-                    className="block py-2.5 text-center text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-lg shadow-lg"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Rejoindre la beta
-                  </Link>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16"></div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] font-satoshi">
+              Ce que disent nos utilisateurs
+            </h2>
+            <p className="text-xl text-blue-100/80 max-w-3xl mx-auto">
+              Nos premiers utilisateurs auront bientôt la parole ici.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((id) => (
+              <motion.div 
+                key={id}
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * id, duration: 0.5 }}
+                whileHover={{ y: -5, transition: { duration: 0.3 } }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] flex items-center justify-center text-white font-bold text-lg">
+                    {id}
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-bold text-white font-satoshi">
+                      Futur témoignage
+                    </h3>
+                    <p className="text-sm text-blue-100/70">
+                      Utilisateur Bitax
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+                <p className="text-blue-100/80 italic"></p>
+                  "Cette section sera bientôt remplie avec de vrais témoignages d'utilisateurs satisfaits de notre service de gestion fiscale crypto."
+                </p>
+                <div className="mt-4 flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg key={star} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"></svg>
           )}
         </AnimatePresence>
       </motion.header>
