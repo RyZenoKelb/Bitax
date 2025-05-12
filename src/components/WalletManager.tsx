@@ -315,7 +315,7 @@ const WalletManager: React.FC<WalletManagerProps> = ({ onWalletSelect, className
                         <div className={`w-2 h-2 rounded-full ${wallet.isPrimary ? 'bg-primary-500 animate-pulse' : 'bg-gray-400'} mr-2.5`}></div>
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">
-                            {wallet.name || `Wallet ${index + 1}`}
+                            {wallet.name || `Wallet ${formatAddress(wallet.address)}`}
                           </p>
                           <p className="text-sm font-mono text-gray-500 dark:text-gray-400">
                             {formatAddress(wallet.address)}

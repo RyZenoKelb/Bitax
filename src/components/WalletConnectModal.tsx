@@ -1,6 +1,5 @@
 // src/components/WalletConnectModal.tsx
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 
 // Types
@@ -143,7 +142,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({ isOpen, onClose
       localStorage.setItem('bitax-recent-wallets', JSON.stringify(updatedRecent));
     }
     
-    toast.success('Wallet connecté avec succès!');
+    console.log('Wallet connecté avec succès!');
     onConnect(address, null); // Ici, provider serait un vrai provider dans l'implémentation réelle
     onClose();
   };
