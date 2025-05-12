@@ -13,7 +13,7 @@ async function createUser() {
         name: 'RyZeno',
         email: 'gmail.com',
         password: hashedPassword,
-        isPremium: true
+        isPremium: false
       }
     });
     
