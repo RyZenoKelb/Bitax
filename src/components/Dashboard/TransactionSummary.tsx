@@ -290,7 +290,7 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                   </div>
                 </div>
               </div>
-                            ></div>
+              
                           </div>
                         </div>
                       ))}
