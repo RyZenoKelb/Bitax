@@ -811,9 +811,18 @@ export default function Home() {
               {/* Bouton secondaire glassmorphism */}
               <button 
                 onClick={() => {
-                  howItWorksSectionRef.current?.scrollIntoView({ 
-                    behavior: 'smooth',  // Pour un défilement fluide
-                    block: 'start'       // Aligne le haut de la section avec le haut de la fenêtre
+                  // Obtenir la hauteur de la navbar (supposons une classe "navbar" ou un ID)
+                  const navbar = document.querySelector('header');
+                  const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+
+                  // Calculer la position de la section
+                  const sectionPosition = howItWorksSectionRef.current?.getBoundingClientRect().top || 0;
+                  const offsetPosition = sectionPosition + window.pageYOffset - navbarHeight - 20; // 20px de marge supplémentaire
+
+                  // Faire défiler vers cette position
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
                   });
                 }} 
                 className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105"
