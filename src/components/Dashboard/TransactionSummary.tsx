@@ -219,21 +219,21 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden transition-all duration-300 border border-gray-100 dark:border-gray-700">
       <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex flex-wrap items-center justify-between">
         <div>
-                <div className="mt-1 text-2xl font-semibold text-gray-900">{mostActiveMonth}</div>
-                <div className="mt-1 text-sm text-gray-500">{maxActivity} transactions</div>
-              </div>
-            )}
-          </div>
-          
-          {/* Onglets de visualisation */}
-          <div className="md:col-span-8 flex flex-col">
-            {/* Sélecteur d'onglets */}
-            <div className="flex border-b border-gray-200 mb-4">
-              <button 
-                className={`py-2 px-4 text-sm font-medium ${activeTab === 'overview' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => setActiveTab('overview')}
-              >
-                Vue d'ensemble
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Aperçu du portefeuille</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Analyse basée sur {transactions.length} transactions sur <span className="text-blue-600 dark:text-blue-400">{activityPeriod} jours</span>
+          </p>
+        </div>
+        
+        {/* Sélecteur d'onglets */}
+        <div className="flex space-x-1 p-1 bg-gray-50 dark:bg-gray-700/50 rounded-lg mt-4 sm:mt-0">
+          {[
+            { id: 'overview', label: 'Vue d\'ensemble' },
+            { id: 'activity', label: 'Activité' },
+            { id: 'tokens', label: 'Tokens' }
+          ].map(tab => (
+            <button
+              key={tab.id}
               </button>
               <button 
                 className={`py-2 px-4 text-sm font-medium ${activeTab === 'activity' ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-500 hover:text-gray-700'}`}
