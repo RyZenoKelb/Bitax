@@ -104,7 +104,6 @@ export default function Home() {
   // Près du début de ton composant, avec les autres useState/useRef
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
   const [highlightSection, setHighlightSection] = useState(false);
-  const [featuresVisible, setFeaturesVisible] = useState(false);
   
   // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
@@ -1120,13 +1119,6 @@ export default function Home() {
       <motion.section 
         className="py-20 relative"
         style={{ opacity: opacity2 }}
-        // Détecte quand la section devient visible dans la fenêtre
-        onViewportEnter={() => {
-          // Quand la section entre dans la vue, active l'état
-          setFeaturesVisible(true);
-        }}
-        // Paramètres de visibilité pour la section elle-même
-        viewport={{ once: true, amount: 0.2 }}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -1139,25 +1131,15 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <motion.div 
                 key={feature.id}
                 className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 group"
-                // Configuration de l'état initial
-                initial={{ opacity: 0, y: 20 }}
-                // Animation conditionnelle basée sur l'état parent
-                animate={featuresVisible 
-                  ? { opacity: 1, y: 0 } // Animation quand featuresVisible est true
-                  : { opacity: 0, y: 20 } // Maintien de l'état initial si false
-                }
-                // Paramètres de l'animation
-                transition={{ 
-                  // Délai basé sur l'index de la carte pour un effet cascade
-                  delay: 0.1 * index, 
-                  duration: 0.5 
-                }}
-                // Effet hover
                 whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * feature.id, duration: 0.5 }}
               >
                 <div className="mb-4 rounded-lg p-3 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-white/5 w-fit">
                   {feature.icon}
