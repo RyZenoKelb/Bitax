@@ -867,8 +867,8 @@ export default function Dashboard() {
                 <Link 
                   href="/transactions" 
                   className="flex items-center p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800/40 transition-colors"
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Transactions trouvées</span>
+                >
+                  <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <span className="text-lg font-bold text-gray-900 dark:text-white">{transactions.length}</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 mt-2">

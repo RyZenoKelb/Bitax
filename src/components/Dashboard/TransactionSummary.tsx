@@ -668,3 +668,7 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
         {activeTab === 'tokens' && (
           <div className="space-y-6">
             {/* Vue des tokens */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"></div>
+              <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                <h4 className="font-medium text-gray-900 dark:text-white">Distribution des tokens (Top 10)</h4>
+              </div>
