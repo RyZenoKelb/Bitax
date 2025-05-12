@@ -222,24 +222,26 @@ export default function Home() {
 
     // Fonction pour créer un "paquet de données" transitant entre deux hexagones
     const createDataPacket = (from: number, to: number) => {
+      if (Math.random() > 0.2) return; // Réduire la probabilité de création d'un paquet
+
       const fromHex = hexagons[from];
       const toHex = hexagons[to];
       
       dataPackets.push({
-        fromX: fromHex.x,
-        fromY: fromHex.y,
-        toX: toHex.x,
-        toY: toHex.y,
-        x: fromHex.x,
-        y: fromHex.y,
-        progress: 0,
-        speed: Math.random() * 0.01 + 0.005,
-        size: Math.random() * 4 + 2,
-        color: Math.random() > 0.5 ? 
-          'rgba(147, 51, 234, 0.8)' : // Violet
-          'rgba(99, 102, 241, 0.8)', // Indigo
-        from,
-        to
+      fromX: fromHex.x,
+      fromY: fromHex.y,
+      toX: toHex.x,
+      toY: toHex.y,
+      x: fromHex.x,
+      y: fromHex.y,
+      progress: 0,
+      speed: Math.random() * 0.01 + 0.005,
+      size: Math.random() * 4 + 2,
+      color: Math.random() > 0.5 ? 
+        'rgba(147, 51, 234, 0.8)' : // Violet
+        'rgba(99, 102, 241, 0.8)', // Indigo
+      from,
+      to
       });
     };
 
