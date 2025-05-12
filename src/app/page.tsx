@@ -1116,6 +1116,7 @@ export default function Home() {
       <motion.section 
         className="py-20 relative"
         style={{ y: y3 }}
+        ref={howItWorksSectionRef}
       >
         <div className="absolute top-0 right-0 w-full h-full overflow-hidden -z-10">
           <div className="absolute -top-[10%] -right-[5%] w-1/3 h-1/3 bg-indigo-600/10 rounded-full filter blur-[100px]"></div>
