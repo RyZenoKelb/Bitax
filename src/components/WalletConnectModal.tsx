@@ -1,6 +1,7 @@
 // src/components/WalletConnectModal.tsx
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import
 
 // Types
 interface WalletConnectModalProps {
