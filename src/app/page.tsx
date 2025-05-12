@@ -78,8 +78,6 @@ interface Particle {
 
 
 export default function Home() {
-  // État pour gérer les étoiles avec le type correct
-  
   // Référence pour le canvas d'animation
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
@@ -106,6 +104,7 @@ export default function Home() {
   // Près du début de ton composant, avec les autres useState/useRef
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
   const [highlightSection, setHighlightSection] = useState(false);
+  const [featuresVisible, setFeaturesVisible] = useState(false);
   
   // Effet pour l'animation des particules et des formes géométriques blockchain - version améliorée
   useEffect(() => {
