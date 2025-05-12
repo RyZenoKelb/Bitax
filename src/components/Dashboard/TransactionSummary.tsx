@@ -568,3 +568,23 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} vertical={false} />
                       <XAxis 
+                        dataKey="date" 
+                        tick={{ fill: chartTextColor }}
+                        axisLine={{ stroke: chartGridColor }}
+                        tickLine={{ stroke: chartGridColor }}
+                        tickFormatter={(value) => {
+                          const date = new Date(value);
+                          return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                        }}
+                      />
+                      <YAxis 
+                        tick={{ fill: chartTextColor }}
+                        axisLine={{ stroke: chartGridColor }}
+                        tickLine={{ stroke: chartGridColor }}
+                        tickFormatter={(value) => formatAmount(value)}
+                      />
+                      <Tooltip
+                        formatter={(value: number) => [`${formatAmount(value)} ETH`, 'Volume']}
+                        labelFormatter={(label) => `Date: ${new Date(label).toLocaleDateString()}`}
+                        contentStyle={{ 
+                          backgroundColor: currentTheme === 'dark' ? '#1f2937' : '#ffffff',
