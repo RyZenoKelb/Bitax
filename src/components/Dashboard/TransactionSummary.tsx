@@ -547,3 +547,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 </div>
               </div>
             </div>
+            
+            {/* Graphique d'activité avancé */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"></div>
+              <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                <h4 className="font-medium text-gray-900 dark:text-white">Évolution du volume de transactions</h4>
+              </div>
+              <div className="p-5">
+                <div className="h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={valueChartData}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <defs>
