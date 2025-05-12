@@ -484,6 +484,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
               {wallets.map((wallet) => {
                 // Utilisation d'une variable pour contourner le problème TypeScript
                 const isSelected = currentWallet ? (currentWallet as any).id === (wallet as any).id : false;
+                
                 return (
                   <button
                     key={(wallet as any).id}
