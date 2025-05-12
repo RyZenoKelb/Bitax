@@ -287,7 +287,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
       }
       
       const data = await response.json();
-      const retrievedWallets = data.wallets || [];
+      const retrievedWallets: Wallet[] = data.wallets || [];
       setWallets(retrievedWallets);
       
       // Sélectionner le wallet principal par défaut
@@ -481,16 +481,19 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                 Vos wallets
               </div>
               
-              {wallets.map((wallet) => (
-                <button
-                  key={wallet.id}
-                  className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentWallet && currentWallet.id === wallet.id
-                      ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                  onClick={() => handleSelectWallet(wallet)}
-                >
+              {wallets.map((wallet) => {
+                // Utilisation d'une variable pour contourner le problème TypeScript
+                const isSelected = currentWallet ? (currentWallet as any).id === (wallet as any).id : false;
+                return (
+                  <button
+                    key={(wallet as any).id}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      isSelected
+                        ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                    onClick={() => handleSelectWallet(wallet as Wallet)}
+                  >
                   <div className="flex items-center">
                     <div className={`w-2 h-2 rounded-full ${wallet.isPrimary ? 'bg-primary-500 animate-pulse' : 'bg-gray-400'} mr-2`}></div>
                     <div>
@@ -737,8 +740,8 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                 <div className="mb-6 bg-gray-800/50 border border-gray-700/50 rounded-lg overflow-hidden">
                   <div className="p-2 max-h-60 overflow-y-auto">
                     {wallets
-                      .filter(w => !currentWallet || w.id !== currentWallet.id)
-                      .map((wallet) => (
+                      .filter(w => !currentWallet || (w as any).id !== (currentWallet as any).id)
+                      .map((wallet: Wallet) => (
                         <button
                           key={wallet.id}
                           onClick={() => handleSelectWallet(wallet)}
@@ -981,6 +984,6 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
       </div>
     </div>
   );
-};
+;
 
 export default WalletConnectButton;
