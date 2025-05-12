@@ -1152,7 +1152,6 @@ export default function Home() {
                   ease: "easeOut"  // Animation plus naturelle
                 }}
               >
-              >
                 <div className="mb-4 rounded-lg p-3 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-white/5 w-fit">
                   {feature.icon}
                 </div>
