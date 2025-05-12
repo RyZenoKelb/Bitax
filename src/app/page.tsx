@@ -164,7 +164,7 @@ export default function Home() {
         const speedX = (Math.random() - 0.5) * 0.4;
         const speedY = (Math.random() - 0.5) * 0.4;
         // Réduire la vitesse de pulsation
-        const pulseSpeed = Math.random() * 0.002 + 0.001;
+        const pulseSpeed = Math.random() * 0.001 + 0.001;
         const pulseAmount = Math.random() * 0.15 + 0.05;
         const baseSize = size;
         const rotationSpeed = (Math.random() - 0.5) * 0.005;
