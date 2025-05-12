@@ -256,12 +256,12 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4 transition-all duration-300 border border-blue-100 dark:border-blue-800/30">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="h-60">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={pieChartData}
-                            cx="50%"
+                    <p className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-3">Volume total</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatAmount(totalValue)} <span className="text-sm text-gray-500 dark:text-gray-400">ETH</span></p>
+                  </div>
+                  <div className="bg-blue-100 dark:bg-blue-800/60 p-2 rounded-lg">
+                    <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                             cy="50%"
                             labelLine={false}
                             outerRadius={80}
