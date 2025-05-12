@@ -720,3 +720,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
             
             {/* Informations sur les tokens */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {tokenData.slice(0, 4).map((token, index) => (
+                <div 
+                  key={token.token}
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 hover:shadow-md transition-shadow duration-300"
+                ></div>
+                  <div className="flex items-center space-x-3">
+                    <div 
