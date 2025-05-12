@@ -36,7 +36,6 @@ interface Transaction {
   network: NetworkType;
 }
 
-// Interface pour le wallet
 interface Wallet {
   id: string;
   address: string;
@@ -486,7 +485,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                 <button
                   key={wallet.id}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentWallet?.id === wallet.id
+                    currentWallet && currentWallet.id === wallet.id
                       ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
@@ -737,12 +736,14 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
               {showWalletSelector && wallets.length > 1 && (
                 <div className="mb-6 bg-gray-800/50 border border-gray-700/50 rounded-lg overflow-hidden">
                   <div className="p-2 max-h-60 overflow-y-auto">
-                    {wallets.filter(w => currentWallet ? w.id !== currentWallet.id : true).map((wallet) => (
-                      <button
-                        key={wallet.id}
-                        onClick={() => handleSelectWallet(wallet)}
-                        className="flex items-center w-full text-left p-2 rounded-md hover:bg-gray-700/50 text-gray-300"
-                      >
+                    {wallets
+                      .filter(w => !currentWallet || w.id !== currentWallet.id)
+                      .map((wallet) => (
+                        <button
+                          key={wallet.id}
+                          onClick={() => handleSelectWallet(wallet)}
+                          className="flex items-center w-full text-left p-2 rounded-md hover:bg-gray-700/50 text-gray-300"
+                        >
                         <div className={`w-2 h-2 rounded-full ${wallet.isPrimary ? 'bg-primary-500' : 'bg-gray-400'} mr-2`}></div>
                         <div>
                           <p className="text-sm font-medium">{wallet.name || `Wallet ${formatAddress(wallet.address)}`}</p>
