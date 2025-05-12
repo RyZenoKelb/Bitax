@@ -10,7 +10,7 @@ import PremiumUnlock from '@/components/Dashboard/PremiumUnlock';
 import OnboardingWizard from '@/components/Misc/OnboardingWizard';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
-import DevModeToggle from '@/components/DevModeToggle';
+import DevModeToggle from '@/components/Misc/DevModeToggle';
 import { isDevModeEnabled } from '@/utils/mockTransactions';
 
 export default function Dashboard() {
