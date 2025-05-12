@@ -30,7 +30,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
   const [manualWalletName, setManualWalletName] = useState<string>('');
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>('eth');
   const [walletConnectInitialized, setWalletConnectInitialized] = useState<boolean>(false);
-  const [wcProvider, setWcProvider] = useState<EthereumProvider | null>(null);
+  const [wcProvider, setWcProvider] = useState<InstanceType<typeof EthereumProvider> | null>(null);
 
   // Réinitialiser l'état quand le modal s'ouvre
   useEffect(() => {
@@ -88,7 +88,7 @@ const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
       // Connecter et obtenir les comptes
       await wcProvider.connect();
       
-      const accounts = await wcProvider.request({ method: 'eth_accounts' });
+      const accounts = (await wcProvider.request({ method: 'eth_accounts' })) as string[];
       
       if (!accounts || accounts.length === 0) {
         throw new Error('Aucun compte connecté via WalletConnect');
