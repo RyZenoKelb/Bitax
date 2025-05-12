@@ -287,7 +287,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
       }
       
       const data = await response.json();
-      const retrievedWallets = data.wallets || [];
+      const retrievedWallets: Wallet[] = data.wallets || [];
       setWallets(retrievedWallets);
       
       // Sélectionner le wallet principal par défaut
@@ -481,7 +481,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                 Vos wallets
               </div>
               
-              {wallets.map((wallet) => (
+              {wallets.map((wallet: Wallet) => (
                 <button
                   key={wallet.id}
                   className={`block w-full text-left px-4 py-2 text-sm ${
@@ -738,7 +738,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                   <div className="p-2 max-h-60 overflow-y-auto">
                     {wallets
                       .filter(w => !currentWallet || w.id !== currentWallet.id)
-                      .map((wallet) => (
+                      .map((wallet: Wallet) => (
                         <button
                           key={wallet.id}
                           onClick={() => handleSelectWallet(wallet)}
