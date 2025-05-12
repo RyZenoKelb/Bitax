@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             amount: parseFloat(tx.value || '0'),
             tokenSymbol: tx.tokenSymbol || 'ETH',
             tokenName: tx.tokenName || 'Ethereum',
-            tokenPrice: tx.priceUSD ? parseFloat(tx.priceUSD) : null,
+            tokenPrice: 'priceUSD' in tx && tx.priceUSD ? parseFloat(tx.priceUSD as string) : null,
             toAddress: tx.to_address,
             fromAddress: tx.from_address,
             type: tx.type || 'transfer',
