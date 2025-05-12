@@ -208,11 +208,11 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   const formatMonthYear = (monthYear: string): string => {
     const [month, year] = monthYear.split('/');
     const date = new Date(Number(year), Number(month) - 1);
-                <div className="p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-                  <span className="text-sm font-medium text-gray-500">Montant moyen</span>
-                  <div className="mt-1 text-2xl font-semibold text-gray-900">{averageValue.toFixed(4)}</div>
-                  <div className="mt-1 text-sm text-gray-500">par transaction</div>
-                </div>
+    return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+  };
+  
+  const chartBackground = currentTheme === 'dark' ? '#111827' : '#ffffff';
+  const chartTextColor = currentTheme === 'dark' ? '#d1d5db' : '#4b5563';
               </div>
             </div>
             
