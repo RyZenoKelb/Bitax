@@ -836,63 +836,63 @@ export default function Home() {
                 </Link>
                 <span className="inline-flex items-center text-blue-300/70 text-sm"></span>
                   <svg className="w-5 h-5 mr-2 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"></svg>
-                      window.scrollTo(0, startPosition + distance * easeInOutCubic);
-                      
-                      if (progress < duration) {
-                        window.requestAnimationFrame(step);
-                      } else {
-                        // Animation terminée, activer l'effet de highlight
-                        setHighlightSection(true);
-                        setTimeout(() => setHighlightSection(false), 3000);
-                      }
-                    };
-                    
-                    window.requestAnimationFrame(step);
-                  };
-                  
-                  smoothScroll();
-                }} 
-                className="rounded-lg backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105"
-              >
-                <div className="flex items-center justify-center space-x-2 px-8 py-3.5 text-white">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
-                  <span>Comment ça marche</span>
-                </div>
-              </button>
-            </motion.div>
-            
-            {/* Badges de cryptomonnaies avec logos corrigés et taille réduite */}
-            <motion.div 
-              className="flex flex-wrap justify-center lg:justify-start gap-6 mb-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-            >
-              {/* Ethereum */}
-              <motion.div 
-                className="crypto-icon-badge w-8 h-8 rounded-full bg-blue-900/20 backdrop-blur-sm border border-blue-800/30 flex items-center justify-center" 
-                whileHover={{ scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                <svg className="w-5 h-5" viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg">
-                  <g fill="#627EEA">
-                    <polygon fillOpacity=".6" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"/>
-                    <polygon points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"/>
-                    <polygon fillOpacity=".45" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"/>
-                    <polygon fillOpacity=".8" points="392.07,1277.38 392.07,956.52 -0,724.89"/>
-                    <polygon fillOpacity=".45" points="392.07,882.29 784.13,650.54 392.07,472.33"/>
-                    <polygon fillOpacity=".6" points="0,650.54 392.07,882.29 392.07,472.33"/>
-                  </g>
-                </svg>
+                  Places limitées pour la phase beta
+                </span>
               </motion.div>
-              
-              {/* Polygon/Matic */}
-              <motion.div 
-                className="crypto-icon-badge w-8 h-8 rounded-full bg-purple-900/20 backdrop-blur-sm border border-purple-800/30 flex items-center justify-center"
-                whileHover={{ scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            </div>
+          
+          {/* Stats */}
+          <motion.div 
+            className="bg-gradient-to-br from-[#5b4dc2]/30 to-[#4ab3f4]/30 border border-white/10 rounded-2xl p-6 backdrop-blur-lg"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <div className="grid grid-cols-2 gap-5">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+                <h4 className="text-2xl font-bold text-[#5b4dc2] mb-2">98%</h4>
+                <p className="text-sm text-white/70">de précision dans les calculs fiscaux</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+                <h4 className="text-2xl font-bold text-[#4ab3f4] mb-2">30min</h4>
+                <p className="text-sm text-white/70">de temps gagné par déclaration</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+                <h4 className="text-2xl font-bold text-[#5b4dc2] mb-2">5+</h4>
+                <p className="text-sm text-white/70">blockchains prises en charge</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5 text-center"></div>
+                <h4 className="text-2xl font-bold text-[#4ab3f4] mb-2">24/7</h4>
+                <p className="text-sm text-white/70">de disponibilité de la plateforme</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
+      
+      {/* Footer */}
+      <motion.footer 
+        className="py-12 border-t border-white/10 relative font-inter"
+        style={{ y: y1 }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <Link href="/" className="group inline-block mb-6">
+                <div className="relative font-satoshi"></div>
+                  <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4] tracking-tight">BITAX</span>
+                  <div className="h-px w-0 group-hover:w-full transition-all duration-300 bg-gradient-to-r from-[#5b4dc2] to-[#4ab3f4]"></div>
+                </div>
+              </Link>
+              <p className="text-blue-100/70 mb-6 max-w-md"></p>
+                Simplifiez votre fiscalité crypto avec notre plateforme intuitive. Connectez vos wallets, analysez vos transactions et générez des rapports fiscaux en quelques clics.
+              </p>
+              <div className="flex space-x-4"></div>
+                <a href="#" className="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center text-blue-100/70 hover:bg-white/10 transition-colors duration-300">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"></svg>
               >
                 <svg className="w-5 h-5" viewBox="0 0 38.4 33.5" xmlns="http://www.w3.org/2000/svg">
                   <path fill="#8247E5" d="M29,10.2c-0.7-0.4-1.6-0.4-2.4,0L21,13.5l-3.8,2.1l-5.5,3.3c-0.7,0.4-1.6,0.4-2.4,0L5,16.3
