@@ -339,27 +339,27 @@ export default function Home() {
               >
                 <svg className="w-5 h-5" viewBox="0 0 784.37 1277.39" xmlns="http://www.w3.org/2000/svg">
                   <g fill="#627EEA"></g>
-    // Démarrer l'animation
-    requestAnimationFrame(animate);
-    
-    // Animation intelligente: vérifier périodiquement si des hexagones sont proches
-    // et activer l'un d'eux pour simuler une propagation d'information blockchain
-    const checkHexagonsProximity = () => {
-      const randomHexIndex = Math.floor(Math.random() * hexagons.length);
-      hexagons[randomHexIndex].isActive = true;
-      
-      // Après un délai, propager l'activation aux hexagones proches
-      setTimeout(() => {
-        const activeHex = hexagons[randomHexIndex];
-        
-        // Chercher les hexagones proches
-        for (let i = 0; i < hexagons.length; i++) {
-          if (i !== randomHexIndex) {
-            const otherHex = hexagons[i];
-            const dx = otherHex.x - activeHex.x;
-            const dy = otherHex.y - activeHex.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
+                    <polygon fillOpacity=".6" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"/>
+                    <polygon points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"/>
+                    <polygon fillOpacity=".45" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"/>
+                    <polygon fillOpacity=".8" points="392.07,1277.38 392.07,956.52 -0,724.89"/>
+                    <polygon fillOpacity=".45" points="392.07,882.29 784.13,650.54 392.07,472.33"/>
+                    <polygon fillOpacity=".6" points="0,650.54 392.07,882.29 392.07,472.33"/>
+                  </g>
+                </svg>
+              </motion.div>
+              
+              {/* Other crypto badges with updated styling */}
+              <motion.div 
+                className="crypto-icon-badge w-8 h-8 rounded-full bg-[#5b4dc2]/20 backdrop-blur-sm border border-[#5b4dc2]/30 flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <svg className="w-5 h-5" viewBox="0 0 38.4 33.5" xmlns="http://www.w3.org/2000/svg"></svg>
+                  <path fill="#8247E5" d="M29,10.2c-0.7-0.4-1.6-0.4-2.4,0L21,13.5l-3.8,2.1l-5.5,3.3c-0.7,0.4-1.6,0.4-2.4,0L5,16.3
+                    c-0.7-0.4-1.2-1.2-1.2-2.1v-5c0-0.8,0.4-1.6,1.2-2.1l4.3-2.5c0.7-0.4,1.6-0.4,2.4,0L16,7.2c0.7,0.4,1.2,1.2,1.2,2.1v3.3l3.8-2.2V7
+                    c0-0.8-0.4-1.6-1.2-2.1l-8-4.7c-0.7-0.4-1.6-0.4-2.4,0L1.2,5C0.4,5.4,0,6.2,0,7v9.4c0,0.8,0.4,1.6,1.2,2.1l8.1,4.7
+                    c0.7,0.4,1.6,0.4,2.4,0l5.5-3.2l3.8-2.2l5.5-3.2c0.7-0.4,1.6-0.4,2.4,0l4.3,2.5c0.7,0.4,1.2,1.2,1.2,2.1v5c0,0.8-0.4,1.6-1.2,2.1
             // Si le hexagone est assez proche, l'activer avec une probabilité
             if (distance < 200 && Math.random() > 0.5) {
               setTimeout(() => {
