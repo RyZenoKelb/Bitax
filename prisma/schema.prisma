@@ -166,3 +166,28 @@ model WaitingList {
   @@index([email])
   @@index([invited])
 }
+
+// Bitax specific models
+model Wallet {
+  id              String        @id @default(cuid())
+  address         String
+  network         String        @default("eth")
+  name            String?
+  isPrimary       Boolean       @default(false)
+  walletType      String        @default("manual")
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  lastSynced      DateTime?
+  status          String?       @default("pending")
+  transactionCount Int?
+  balance         String?
+  transactions    Transaction[]
+
+  @@unique([address, userId, network])
+  @@index([userId])
+  @@index([address])
+  @@index([network])
+  @@index([status])
+}
