@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { generatePDF } from '@/utils/pdf';
 import TransactionList from '../Infos/TransactionList';
-import TransactionSummary from './infos/TransactionSummary';
+import TransactionSummary from '../Infos/TransactionSummary';
 import PremiumUnlock from '../Dashboard/PremiumUnlock';
 import TaxDashboard from '../Dashboard/TaxDashboard';
 import WalletConnectPanel from './WalletConnectPanel';
