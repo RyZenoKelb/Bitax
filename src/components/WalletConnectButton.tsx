@@ -3,25 +3,15 @@ import { ethers } from 'ethers';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { toast } from 'react-hot-toast';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { generatePDF } from '@/utils/pdf';
 import TransactionList from './TransactionList';
 import TransactionSummary from './TransactionSummary';
 import PremiumUnlock from './PremiumUnlock';
 import TaxDashboard from './TaxDashboard';
-import WalletConnectPanel from './WalletConnectPanel';
-import { Fragment } from 'react';
-import { Transition } from '@headlessui/react';
-import { filterSpamTransactions } from '@/utils/SpamFilter';
 import NetworkIcon from '@/components/NetworkIcon';
 
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}
-
+// Définition des types
 interface Transaction {
   hash: string;
   block_timestamp: string;
@@ -44,7 +34,6 @@ interface Wallet {
   isPrimary: boolean;
 }
 
-// Interface pour le composant principal
 interface WalletConnectButtonProps {
   onConnect?: (address: string, provider: ethers.BrowserProvider) => void;
   className?: string;
@@ -58,7 +47,6 @@ interface WalletConnectButtonProps {
   onWalletSelect?: (wallet: Wallet) => void;
 }
 
-// Interface pour le bouton simple
 interface SimpleButtonProps {
   onClick: () => void;
   className?: string;
@@ -83,7 +71,7 @@ const SUPPORTED_WALLETS = [
     color: '#3B99FC',
     icon: '🔗',
     bgColor: '#EDF5FF',
-    priority: 1, // Priorité plus élevée
+    priority: 1
   },
   {
     id: 'metamask',
@@ -92,7 +80,7 @@ const SUPPORTED_WALLETS = [
     color: '#E2761B',
     icon: '🦊',
     bgColor: '#FFF5E6',
-    priority: 2,
+    priority: 2
   },
   {
     id: 'coinbase',
@@ -101,7 +89,7 @@ const SUPPORTED_WALLETS = [
     color: '#1652F0',
     icon: '🔵',
     bgColor: '#E7EEFF',
-    priority: 3,
+    priority: 3
   },
   {
     id: 'trustwallet',
@@ -110,7 +98,7 @@ const SUPPORTED_WALLETS = [
     color: '#3375BB',
     icon: '🛡️',
     bgColor: '#E8F1FA',
-    priority: 4,
+    priority: 4
   }
 ];
 
@@ -237,8 +225,10 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
   selectedWallet = null,
   onWalletSelect
 }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
+  
+  // États
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -291,7 +281,7 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
       setWallets(retrievedWallets);
       
       // Sélectionner le wallet principal par défaut
-      const primaryWallet = retrievedWallets.find((w: Wallet) => w.isPrimary);
+      const primaryWallet = retrievedWallets.find((w) => w.isPrimary);
       if (primaryWallet && !currentWallet) {
         setCurrentWallet(primaryWallet);
         if (onWalletSelect) {
@@ -365,13 +355,11 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
       const results = await Promise.all(txPromises);
       
       // Combiner tous les résultats
-      allTxs = results.flat().filter(tx => tx) as Transaction[]; // Filtrer les valeurs null/undefined
+      allTxs = results.flat().filter(tx => tx) as Transaction[];
       
-      // Filtrer les transactions spam
-      const filteredTxs = filterSpamTransactions(allTxs);
-      setTransactions(filteredTxs);
+      setTransactions(allTxs);
       
-      if (filteredTxs.length === 0) {
+      if (allTxs.length === 0) {
         setError('Aucune transaction trouvée. Essayez une autre blockchain ou vérifiez votre adresse.');
       }
     } catch (error) {
@@ -391,12 +379,9 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
 
     try {
       const txs = await getTransactions(currentWallet.address, selectedNetwork);
+      setTransactions(txs);
       
-      // Filtrer les transactions spam
-      const filteredTxs = filterSpamTransactions(txs);
-      setTransactions(filteredTxs);
-      
-      if (filteredTxs.length === 0) {
+      if (txs.length === 0) {
         const networkInfo = getNetworkInfo(selectedNetwork);
         setError(`Aucune transaction trouvée sur ${networkInfo.name}. Essayez une autre blockchain.`);
       }
@@ -482,30 +467,34 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
               </div>
               
               {wallets.map((wallet) => {
-                // Utilisation d'une variable pour contourner le problème TypeScript
-                const isSelected = currentWallet ? (currentWallet as any).id === (wallet as any).id : false;
+                // Contourner les erreurs TypeScript avec des variables locales
+                const walletId = wallet.id as string;
+                const walletName = wallet.name as string || '';
+                const walletAddress = wallet.address as string;
+                const isCurrentWallet = currentWallet && currentWallet.id === walletId;
                 
                 return (
                   <button
-                    key={(wallet as any).id}
+                    key={walletId}
                     className={`block w-full text-left px-4 py-2 text-sm ${
-                      isSelected
+                      isCurrentWallet
                         ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
-                    onClick={() => handleSelectWallet(wallet as Wallet)}
+                    onClick={() => handleSelectWallet(wallet)}
                   >
-                  <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full ${wallet.isPrimary ? 'bg-primary-500 animate-pulse' : 'bg-gray-400'} mr-2`}></div>
-                    <div>
-                      <div>{wallet.name || `Wallet ${formatAddress(wallet.address)}`}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {formatAddress(wallet.address)}
+                    <div className="flex items-center">
+                      <div className={`w-2 h-2 rounded-full ${isCurrentWallet ? 'bg-primary-500 animate-pulse' : 'bg-gray-400'} mr-2`}></div>
+                      <div>
+                        <div>{walletName || `Wallet ${formatAddress(walletAddress)}`}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {formatAddress(walletAddress)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
               
               <div className="border-t border-gray-200 dark:border-gray-700 mt-1 pt-1">
                 <button
@@ -740,14 +729,12 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
               {showWalletSelector && wallets.length > 1 && (
                 <div className="mb-6 bg-gray-800/50 border border-gray-700/50 rounded-lg overflow-hidden">
                   <div className="p-2 max-h-60 overflow-y-auto">
-                    {wallets
-                      .filter(w => !currentWallet || (w as any).id !== (currentWallet as any).id)
-                      .map((wallet: Wallet) => (
-                        <button
-                          key={wallet.id}
-                          onClick={() => handleSelectWallet(wallet)}
-                          className="flex items-center w-full text-left p-2 rounded-md hover:bg-gray-700/50 text-gray-300"
-                        >
+                    {wallets.filter(w => w.id !== currentWallet.id).map((wallet) => (
+                      <button
+                        key={wallet.id}
+                        onClick={() => handleSelectWallet(wallet)}
+                        className="flex items-center w-full text-left p-2 rounded-md hover:bg-gray-700/50 text-gray-300"
+                      >
                         <div className={`w-2 h-2 rounded-full ${wallet.isPrimary ? 'bg-primary-500' : 'bg-gray-400'} mr-2`}></div>
                         <div>
                           <p className="text-sm font-medium">{wallet.name || `Wallet ${formatAddress(wallet.address)}`}</p>
@@ -848,7 +835,8 @@ const WalletConnectButton: React.FC<WalletConnectButtonProps> = ({
                   <span className="text-lg font-bold text-white">{transactions.length}</span>
                 </div>
                 <div className="w-full bg-gray-700/50 rounded-full h-1.5 mt-2">
-                  <div className="bg-gradient-to-r from-primary-500 to-secondary-500 h-1.5 rounded-full" style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
+                  <div className="bg-gradient-to-r from-primary-500 to-secondary-500 h-1.5 rounded-full" 
+                       style={{ width: `${Math.min(transactions.length / 100 * 100, 100)}%` }}></div>
                 </div>
               </div>
             )}
