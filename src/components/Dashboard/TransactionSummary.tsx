@@ -795,3 +795,6 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
         {!isPremiumUser && (
           <div className="mt-6 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-100 dark:border-blue-800/30">
             <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="flex-shrink-0 p-1 bg-blue-100 dark:bg-blue-900/50 rounded-md">
+                  <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
