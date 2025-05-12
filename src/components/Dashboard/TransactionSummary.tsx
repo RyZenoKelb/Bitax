@@ -384,21 +384,21 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                     {typePercentages.slice(0, 5).map(({ type, count, percentage }) => (
                       <div key={type} className="group hover:bg-gray-50 dark:hover:bg-gray-700/30 p-2 rounded-lg transition-colors duration-200">
                         <div className="flex justify-between items-center mb-1">
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis type="category" dataKey="token" />
-                        <Tooltip 
-                          formatter={(value) => [`${Number(value).toFixed(4)} ETH`, 'Valeur']}
-                        />
-                        <Bar dataKey="value" name="Valeur">
-                          {tokenData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={tokenColors[index % tokenColors.length]} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: getTypeColor(type) }}></div>
+                            <span className="font-medium text-gray-800 dark:text-gray-200 text-sm">{type}</span>
+                          </div>
+                          <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">{count}</span>
+                        </div>
+                        <div className="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full rounded-full transition-all duration-500 group-hover:opacity-90"
+                            style={{ 
+                              width: `${percentage}%`, 
+                              backgroundColor: getTypeColor(type) 
+                            }}
+                          ></div>
+                        </div>
                   
                   {isPremiumUser && (
                     <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
