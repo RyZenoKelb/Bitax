@@ -262,17 +262,17 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                   <div className="bg-blue-100 dark:bg-blue-800/60 p-2 rounded-lg">
                     <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                          >
-                            {pieChartData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={getTypeColor(entry.name)} />
-                            ))}
-                          </Pie>
+                    </svg>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <div className="w-full bg-blue-200/50 dark:bg-blue-800/30 h-1 rounded-full">
+                    <div className="bg-blue-600 dark:bg-blue-400 h-1 rounded-full" style={{ width: '70%' }}></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-purple-50 to-fuchsia-50 dark:from-purple-900/20 dark:to-fuchsia-900/20 rounded-xl p-4 transition-all duration-300 border border-purple-100 dark:border-purple-800/30">
                           <Tooltip formatter={(value) => [`${value} transactions`, 'Quantité']} />
                         </PieChart>
                       </ResponsiveContainer>
