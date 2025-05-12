@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getTransactions, NetworkType } from '@/utils/transactions';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
 import { ethers } from 'ethers';
-import { WalletTransaction } 
+import { WalletTransaction } from '@/types/WalletTransaction';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Vérifier la méthode HTTP
