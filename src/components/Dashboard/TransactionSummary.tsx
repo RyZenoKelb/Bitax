@@ -375,15 +375,15 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
               </div>
               
               {/* Top types de transactions */}
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-4">Répartition par token (Top 10)</h4>
-                  
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={tokenData}
-                        layout="vertical"
-                        margin={{ top: 5, right: 30, left: 50, bottom: 5 }}
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+                  <h4 className="font-medium text-gray-900 dark:text-white">Types principaux</h4>
+                </div>
+                <div className="p-5">
+                  <div className="space-y-4">
+                    {typePercentages.slice(0, 5).map(({ type, count, percentage }) => (
+                      <div key={type} className="group hover:bg-gray-50 dark:hover:bg-gray-700/30 p-2 rounded-lg transition-colors duration-200">
+                        <div className="flex justify-between items-center mb-1">
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" />
