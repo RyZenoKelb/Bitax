@@ -1,7 +1,7 @@
 export { default as WalletConnectButton } from './Wallet/WalletConnectButton';
 export { default as PremiumUnlock } from './Dashboard/PremiumUnlock';
 export { default as TransactionList } from './Infos/TransactionList';
-export { default as TransactionSummary } from './TransactionSummary';
+export { default as TransactionSummary } from './Infos/TransactionSummary';
 export { default as TaxDashboard } from './Dashboard/TaxDashboard';
 export { default as BlockchainIcons } from './Visual/NetworkIcon';
 export { default as WalletConnectPanel } from './Wallet/WalletConnectPanel';
