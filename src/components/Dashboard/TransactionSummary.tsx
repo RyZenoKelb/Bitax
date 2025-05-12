@@ -758,3 +758,13 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
                 <h4 className="font-medium text-gray-900 dark:text-white mb-4">Analyse de diversité</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Diversification du portefeuille</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{uniqueTokens.size} tokens</p>
+                    <div className="mt-2 flex items-center">
+                      <div className="w-full bg-gray-200 dark:bg-gray-600 h-1.5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full rounded-full bg-green-500 dark:bg-green-400" 
+                          style={{ width: `${Math.min((uniqueTokens.size / 10) * 100, 100)}%` }}
+                        ></div>
+                      </div>
+                      <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">

@@ -912,29 +912,29 @@ export default function Dashboard() {
           
           {isLoading || isScanning ? (
             <div className="flex justify-center items-center py-12">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="font-medium">Guide d'utilisation</span>
-                </Link>
-              </div>
+              <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+              <p className="ml-4 text-gray-600 dark:text-gray-300">Chargement des données...</p>
             </div>
-          )}
-        </div>
-        
-        {/* Contenu principal */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Afficher les erreurs */}
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4 text-red-700 dark:text-red-300">
-              <div className="flex items-center">
-                <svg className="w-5 h-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p>{error}</p>
-              </div>
-            </div>
-          )}
-          
+          ) : (
+            <>
+              {isWalletConnected ? (
+                transactions.length > 0 ? (
+                  <>
+                    {/* Résumé du portefeuille */}
+                    <TransactionSummary 
+                      transactions={transactions}
+                      isPremiumUser={isPremiumUser}
+                    />
+                    
+                    {/* Tableau de bord fiscal */}
+                    <TaxDashboard 
+                      transactions={transactions}
+                      isPremiumUser={isPremiumUser}
+                      walletAddress={walletAddresses[0]}
+                    />
+                  </>
+                ) : (
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
           {isLoading || isScanning ? (
             <div className="flex justify-center items-center py-12">
               <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
