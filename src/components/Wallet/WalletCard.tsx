@@ -81,9 +81,10 @@ const WalletCard: React.FC<WalletCardProps> = ({ wallet, onDelete, onSetPrimary,
   };
   
   const statusInfo = getStatusInfo();
+  const networkInfo = SUPPORTED_NETWORKS[wallet.network as NetworkType] || { name: wallet.network };
   
   return (
-    <div className={`card relative overflow-hidden transition-all duration-300 hover:shadow-xl ${wallet.isPrimary ? 'border-primary-500/50' : ''}`}>
+    <div className={`card relative overflow-hidden transition-all duration-300 backdrop-blur-xl bg-gray-800/30 border hover:shadow-xl hover:-translate-y-1 transform ${wallet.isPrimary ? 'border-primary-500/50 shadow-glow-blue' : 'border-gray-700/50'}`}>
       {/* Badge "Principal" si le wallet est principal */}
       {wallet.isPrimary && (
         <div className="absolute top-3 right-3">
@@ -101,7 +102,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ wallet, onDelete, onSetPrimary,
           {/* Informations du wallet */}
           <div className="flex-1">
             <div className="flex items-center">
-              <h3 className="text-lg font-semibold">{wallet.name || `Wallet ${wallet.network.toUpperCase()}`}</h3>
+              <h3 className="text-lg font-semibold text-white">{wallet.name || `Wallet ${wallet.network.toUpperCase()}`}</h3>
             </div>
             
             <div className="mt-1 flex items-center">
@@ -119,6 +120,14 @@ const WalletCard: React.FC<WalletCardProps> = ({ wallet, onDelete, onSetPrimary,
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
+            </div>
+            
+            <div className="mt-2">
+              <span className="text-xs text-gray-400">Réseau:</span>
+              <span className="ml-2 text-sm font-medium inline-flex items-center bg-gray-800/30 px-2 py-1 rounded">
+                <span className="w-2 h-2 rounded-full mr-1" style={{ backgroundColor: SUPPORTED_NETWORKS[wallet.network as NetworkType]?.color }}></span>
+                {networkInfo.name}
+              </span>
             </div>
             
             {/* Statistiques */}
@@ -154,7 +163,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ wallet, onDelete, onSetPrimary,
           <button
             onClick={onSync}
             disabled={wallet.status === 'pending'}
-            className="btn btn-sm btn-outline flex items-center"
+            className="btn btn-sm btn-outline flex items-center hover:shadow-glow-blue transition-all duration-300"
           >
             <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none">
               <path d="M4 4V9H4.58152M19.9381 11C19.446 7.05369 16.0796 4 12 4C8.64262 4 5.76829 6.06817 4.58152 9M4.58152 9H9M20 20V15H19.4185M19.4185 15C18.2317 17.9318 15.3574 20 12 20C7.92038 20 4.55399 16.9463 4.06189 13M19.4185 15H15" 
@@ -166,7 +175,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ wallet, onDelete, onSetPrimary,
           {!wallet.isPrimary && (
             <button
               onClick={onSetPrimary}
-              className="btn btn-sm btn-outline flex items-center"
+              className="btn btn-sm btn-outline flex items-center hover:shadow-glow-blue transition-all duration-300"
             >
               <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none">
                 <path d="M5 3V7M3 5H7M6 17V21M4 19H8M13 3L15.2857 9.85714L21 12L15.2857 14.1429L13 21L10.7143 14.1429L5 12L10.7143 9.85714L13 3Z" 
@@ -180,7 +189,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ wallet, onDelete, onSetPrimary,
         <div>
           <button
             onClick={onDelete}
-            className="btn btn-sm btn-outline-danger flex items-center"
+            className="btn btn-sm btn-outline-danger flex items-center transition-all duration-300"
           >
             <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none">
               <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" 
