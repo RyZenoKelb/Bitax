@@ -4,7 +4,7 @@ import { Wallet } from '@prisma/client';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import NetworkIcon from '@/components/Visual/NetworkIcon';
-import { NetworkType } from '@/utils/transactions';
+import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 
 interface WalletCardProps {
   wallet: Wallet;

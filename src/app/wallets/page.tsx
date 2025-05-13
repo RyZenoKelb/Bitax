@@ -3,6 +3,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { requireAuth } from '@/lib/server-auth';
 import WalletsDashboard from '@/components/Wallet/WalletsDashboard';
+import { SUPPORTED_NETWORKS } from '@/utils/transactions';
 
 export const metadata: Metadata = {
   title: 'Bitax | Gérer vos wallets',
