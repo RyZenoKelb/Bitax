@@ -5,7 +5,6 @@ import Head from 'next/head';
 import WalletManager from '@/components/Wallet/WalletManager';
 import TransactionSummary from '@/components/Dashboard/TransactionSummary';
 import TaxDashboard from '@/components/Dashboard/TaxDashboard';
-import WalletDetails from '@/components/Wallet/WalletDetails';
 
 interface Wallet {
   id: string;
@@ -206,7 +205,7 @@ const WalletsPage: NextPage = () => {
                   </button>
                 </div>
               </div>
-            )}
+            )}}
             
             {/* Section d'aide et FAQ */}
             <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-800/50 overflow-hidden">
@@ -257,12 +256,4 @@ const WalletsPage: NextPage = () => {
   );
 };
 
-function useEffect(callback: () => void, dependencies: any[]) {
-    reactUseEffect(callback, dependencies);
-}
-
 export default WalletsPage;
-
-function useEffect(arg0: () => void, arg1: never[]) {
-    throw new Error('Function not implemented.');
-}
