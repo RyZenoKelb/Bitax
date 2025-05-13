@@ -257,3 +257,7 @@ const WalletsPage: NextPage = () => {
 };
 
 export default WalletsPage;
+
+function useEffect(arg0: () => void, arg1: never[]) {
+    throw new Error('Function not implemented.');
+}
