@@ -335,13 +335,13 @@ const WalletManager: React.FC<WalletManagerProps> = ({
           return {
             ...w,
             lastSynced: new Date().toISOString(),
-            tokens: filteredTxs.reduce((acc, tx) => {
+            tokens: filteredTxs.reduce<string[]>((acc, tx) => {
               // Compter les tokens uniques (simpliste, à améliorer)
               if (tx.tokenSymbol && !acc.includes(tx.tokenSymbol)) {
-                return acc + 1;
+                acc.push(tx.tokenSymbol);
               }
               return acc;
-            }, 0),
+            }, []).length,
           };
         }
         return w;
