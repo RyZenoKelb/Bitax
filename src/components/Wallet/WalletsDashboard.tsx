@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Session } from 'next-auth';
 import { ethers } from 'ethers';
-import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
+import { NetworkType, SUPPORTED_NETWORKS, NetworkConfig } from '@/utils/transactions';
 import { Wallet } from '@prisma/client';
 import WalletCard from './WalletCard';
 import WalletConnectModal from './WalletConnectModal';
