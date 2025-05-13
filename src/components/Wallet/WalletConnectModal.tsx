@@ -9,7 +9,7 @@ interface WalletConnectModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddWallet: (address: string, network: NetworkType, name?: string) => void;
-  supportedNetworks: Record<string, { name: string; chainId: number; color: string }>;
+  supportedNetworks: Record<NetworkType, NetworkConfig>;
 }
 
 const WALLET_PROVIDERS = [
