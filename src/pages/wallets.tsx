@@ -4,6 +4,7 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import WalletManager from '@/components/Wallet/WalletManager';
 import TransactionSummary from '@/components/Dashboard/TransactionSummary';
+import WalletDetails from '@/components/Wallet/WalletDetails';
 import TaxDashboard from '@/components/Dashboard/TaxDashboard';
 
 interface Wallet {
