@@ -203,9 +203,9 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 py-6">
       {/* En-tête avec titre et bouton d'ajout */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10">
         <div>
           <h1 className="text-3xl font-bold mb-2">
             Vos <span className="text-gradient">wallets</span>
@@ -218,7 +218,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
         
         <button
           onClick={() => setIsModalOpen(true)}
-          className="btn btn-primary mt-4 sm:mt-0 flex items-center"
+          className="btn btn-primary mt-4 sm:mt-0 flex items-center shadow-glow-blue hover:shadow-xl transition-all duration-300"
         >
           <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 9V15M9 12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
@@ -230,8 +230,8 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
       
       {/* Statistiques des wallets */}
       {!isLoading && wallets.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="stat-card flex items-center">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="stat-card card-hover flex items-center">
             <div className="mr-4 bg-blue-500/20 p-3 rounded-xl">
               <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="none">
                 <path d="M19 11H5M19 11C20.1046 11 21 11.8954 21 13V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V13C3 11.8954 3.89543 11 5 11M19 11V9C19 7.89543 18.1046 7 17 7M5 11V9C5 7.89543 5.89543 7 7 7M7 7V5C7 3.89543 7.89543 3 9 3H15C16.1046 3 17 3.89543 17 5V7M7 7H17" 
@@ -244,7 +244,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
             </div>
           </div>
           
-          <div className="stat-card flex items-center">
+          <div className="stat-card card-hover flex items-center">
             <div className="mr-4 bg-green-500/20 p-3 rounded-xl">
               <svg className="w-6 h-6 text-green-500" viewBox="0 0 24 24" fill="none">
                 <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
@@ -257,7 +257,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
             </div>
           </div>
           
-          <div className="stat-card flex items-center">
+          <div className="stat-card card-hover flex items-center">
             <div className="mr-4 bg-yellow-500/20 p-3 rounded-xl">
               <svg className="w-6 h-6 text-yellow-500" viewBox="0 0 24 24" fill="none">
                 <path d="M12 9V13M12 17H12.01M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" 
@@ -270,7 +270,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
             </div>
           </div>
           
-          <div className="stat-card flex items-center">
+          <div className="stat-card card-hover flex items-center">
             <div className="mr-4 bg-red-500/20 p-3 rounded-xl">
               <svg className="w-6 h-6 text-red-500" viewBox="0 0 24 24" fill="none">
                 <path d="M12 9V13M12 17H12.01M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" 
@@ -287,7 +287,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
       
       {/* Message d'erreur */}
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert alert-danger mb-6">
           <div className="flex items-center">
             <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -315,7 +315,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
       
       {/* Liste des wallets */}
       {!isLoading && wallets.length === 0 ? (
-        <div className="card flex flex-col items-center justify-center py-12 text-center">
+        <div className="card flex flex-col items-center justify-center py-12 text-center backdrop-blur-xl bg-gray-800/30 border border-gray-700/50 shadow-lg">
           <div className="w-20 h-20 mb-6 rounded-full bg-gray-800/50 flex items-center justify-center">
             <svg className="w-10 h-10 text-gray-600" viewBox="0 0 24 24" fill="none">
               <path d="M19 11H5M19 11C20.1046 11 21 11.8954 21 13V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V13C3 11.8954 3.89543 11 5 11M19 11V9C19 7.89543 18.1046 7 17 7M5 11V9C5 7.89543 5.89543 7 7 7M7 7V5C7 3.89543 7.89543 3 9 3H15C16.1046 3 17 3.89543 17 5V7M7 7H17" 
@@ -328,7 +328,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
           </p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="btn btn-primary flex items-center"
+            className="btn btn-primary flex items-center shadow-glow-blue hover:shadow-xl transition-all duration-300"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none">
               <path d="M12 9V15M9 12H15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
@@ -354,19 +354,19 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
       )}
       
       {/* Blocs d'informations supplémentaires */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className="card overflow-hidden">
-          <div className="card-header flex items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+        <div className="card overflow-hidden card-hover backdrop-blur-xl bg-gray-800/30 border border-gray-700/50 shadow-lg">
+          <div className="card-header flex items-center bg-gray-800/50">
             <svg className="w-5 h-5 mr-2 text-primary-500" viewBox="0 0 24 24" fill="none">
               <path d="M13 16H12V12H11M12 8H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <h3 className="text-lg font-semibold">Blockchains supportées</h3>
+            <h3 className="text-lg font-semibold text-white">Blockchains supportées</h3>
           </div>
           <div className="card-body">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {Object.entries(SUPPORTED_NETWORKS).map(([id, network]) => (
-                <div key={id} className="flex items-center p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                <div key={id} className="flex items-center p-3 bg-gray-800/30 rounded-lg border border-gray-700/50 hover:bg-gray-800/50 hover:transform hover:-translate-y-1 transition-all duration-300">
                   <NetworkIcon network={id as NetworkType} size={24} className="mr-3" />
                   <span className="font-medium">{network.name}</span>
                 </div>
@@ -375,17 +375,17 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
           </div>
         </div>
         
-        <div className="card overflow-hidden">
-          <div className="card-header flex items-center">
+        <div className="card overflow-hidden card-hover backdrop-blur-xl bg-gray-800/30 border border-gray-700/50 shadow-lg">
+          <div className="card-header flex items-center bg-gray-800/50">
             <svg className="w-5 h-5 mr-2 text-secondary-500" viewBox="0 0 24 24" fill="none">
               <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <h3 className="text-lg font-semibold">Wallets supportés</h3>
+            <h3 className="text-lg font-semibold text-white">Wallets supportés</h3>
           </div>
           <div className="card-body">
             <ul className="space-y-3">
-              <li className="flex items-center">
+              <li className="flex items-center bg-gray-800/20 p-3 rounded-lg hover:bg-gray-800/50 transition-all duration-300 border border-transparent hover:border-gray-700/50">
                 <div className="h-8 w-8 rounded-full bg-orange-500/20 mr-3 flex items-center justify-center text-orange-500">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                     <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21" 
@@ -394,7 +394,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
                 </div>
                 <span className="font-medium">MetaMask</span>
               </li>
-              <li className="flex items-center">
+              <li className="flex items-center bg-gray-800/20 p-3 rounded-lg hover:bg-gray-800/50 transition-all duration-300 border border-transparent hover:border-gray-700/50">
                 <div className="h-8 w-8 rounded-full bg-blue-500/20 mr-3 flex items-center justify-center text-blue-500">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                     <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21" 
@@ -403,7 +403,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
                 </div>
                 <span className="font-medium">Coinbase Wallet</span>
               </li>
-              <li className="flex items-center">
+              <li className="flex items-center bg-gray-800/20 p-3 rounded-lg hover:bg-gray-800/50 transition-all duration-300 border border-transparent hover:border-gray-700/50">
                 <div className="h-8 w-8 rounded-full bg-purple-500/20 mr-3 flex items-center justify-center text-purple-500">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                     <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21" 
@@ -412,7 +412,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
                 </div>
                 <span className="font-medium">WalletConnect</span>
               </li>
-              <li className="flex items-center">
+              <li className="flex items-center bg-gray-800/20 p-3 rounded-lg hover:bg-gray-800/50 transition-all duration-300 border border-transparent hover:border-gray-700/50">
                 <div className="h-8 w-8 rounded-full bg-green-500/20 mr-3 flex items-center justify-center text-green-500">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                     <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21" 
@@ -421,7 +421,7 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
                 </div>
                 <span className="font-medium">Trust Wallet</span>
               </li>
-              <li className="flex items-center">
+              <li className="flex items-center bg-gray-800/20 p-3 rounded-lg hover:bg-gray-800/50 transition-all duration-300 border border-transparent hover:border-gray-700/50">
                 <div className="h-8 w-8 rounded-full bg-gray-500/20 mr-3 flex items-center justify-center text-gray-400">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                     <path d="M12 6V12M12 12V18M12 12H18M12 12H6" 
@@ -431,6 +431,40 @@ const WalletsDashboard: React.FC<WalletsDashboardProps> = ({ userId }) => {
                 <span className="font-medium text-gray-400">Et plus prochainement...</span>
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* Section pour sécurité */}
+      <div className="card mt-8 bg-gradient-to-br from-primary-900/30 to-secondary-900/30 border border-primary-800/30 p-6 mt-10">
+        <div className="flex items-start">
+          <div className="h-10 w-10 rounded-full bg-primary-900/50 mr-4 flex items-center justify-center text-primary-500">
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+              <path d="M12 15V17M6 21H18C19.1046 21 20 20.1046 20 19V13C20 11.8954 19.1046 11 18 11H6C4.89543 11 4 11.8954 4 13V19C4 20.1046 4.89543 21 6 21ZM16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11H16Z" 
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-2">Sécurité et confidentialité</h3>
+            <p className="text-gray-300 mb-4">
+              Bitax ne stocke jamais vos clés privées et n'a jamais accès à vos fonds. Nous utilisons uniquement des connexions en lecture seule pour analyser vos transactions.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="text-primary-400 hover:text-primary-300 flex items-center">
+                <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none">
+                  <path d="M13 16H12V12H11M12 8H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" 
+                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                En savoir plus
+              </a>
+              <a href="#" className="text-primary-400 hover:text-primary-300 flex items-center">
+                <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12H15M12 9L12 15M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z" 
+                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                FAQ Sécurité
+              </a>
+            </div>
           </div>
         </div>
       </div>
