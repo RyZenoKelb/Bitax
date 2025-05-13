@@ -6,7 +6,6 @@ import WalletManager from '@/components/Wallet/WalletManager';
 import TransactionSummary from '@/components/Dashboard/TransactionSummary';
 import TaxDashboard from '@/components/Dashboard/TaxDashboard';
 import WalletDetails from '@/components/Wallet/WalletDetails';
-import { useEffect as reactUseEffect } from 'react';
 
 interface Wallet {
   id: string;
