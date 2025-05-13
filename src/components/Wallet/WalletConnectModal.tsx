@@ -1,7 +1,7 @@
 // src/components/Wallet/WalletConnectModal.tsx
 import React, { useState, Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { NetworkType } from '@/utils/transactions';
+import { NetworkType, NetworkConfig } from '@/utils/transactions';
 import NetworkIcon from '@/components/Visual/NetworkIcon';
 import { ethers } from 'ethers';
 
