@@ -50,7 +50,6 @@ export async function POST(req: Request) {
       where: {
         userId: session.user.id,
         address: address,
-        network: network,
       },
     });
     
@@ -69,15 +68,14 @@ export async function POST(req: Request) {
       });
     }
     
-    // Créer le nouveau wallet - Ne pas inclure walletType qui n'existe pas
+    // Créer le nouveau wallet
     const wallet = await prisma.wallet.create({
       data: {
         address,
         network,
-        name: name || `${network.toUpperCase()} Wallet`,
+        name,
         isPrimary,
         userId: session.user.id,
-        status: "pending", // Par défaut en attente
       },
     });
     
