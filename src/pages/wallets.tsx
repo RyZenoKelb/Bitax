@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { SimpleWalletButton } from '@/components/Wallet/WalletConnectButton';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { isDevModeEnabled } from '@/utils/mockTransactions';
 import DevModeToggle from '@/components/Misc/DevModeToggle';
@@ -242,40 +241,73 @@ export default function Wallets() {
       setIsLoading(true);
       setError(null);
       
-      if (typeof window !== "undefined" && window.ethereum) {
-        const walletProvider = new ethers.BrowserProvider(window.ethereum);
-        const accounts = await walletProvider.send('eth_requestAccounts', []);
+      // Si nous sommes en mode dev, créer un wallet fictif pour tester
+      if (isDevModeEnabled()) {
+        console.log("Mode développement activé : création d'un wallet fictif");
         
-        if (accounts.length > 0) {
-          const address = accounts[0];
-          // Vérifier si le wallet est déjà connecté
-          if (walletAddresses.includes(address)) {
-            toast.error("Ce wallet est déjà connecté.");
-            setIsLoading(false);
-            return;
-          }
+        // Générer une adresse aléatoire pour simuler un wallet
+        const randomAddr = "0x" + Array.from({ length: 40 }, () => 
+          Math.floor(Math.random() * 16).toString(16)
+        ).join("");
+        
+        // Créer un provider simulé
+        const mockProvider = {
+          getNetwork: async () => ({ name: "Ethereum" }),
+          getBalance: async () => ethers.parseEther("1.5"),
+          lookupAddress: async () => null
+        } as unknown as ethers.BrowserProvider;
+        
+        // Traiter la connexion simulée
+        handleWalletConnect(randomAddr, mockProvider);
+        toast.success("Wallet fictif connecté en mode test");
+        return;
+      }
+      
+      // Mode production - vraie connexion
+      if (typeof window !== "undefined" && window.ethereum) {
+        console.log("Tentative de connexion à MetaMask...");
+        
+        try {
+          // Demander explicitement à l'utilisateur de se connecter
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const accounts = await provider.send('eth_requestAccounts', []);
           
-          handleWalletConnect(address, walletProvider);
-        } else {
-          throw new Error('Aucun compte autorisé');
+          console.log("Comptes trouvés:", accounts);
+          
+          if (accounts && accounts.length > 0) {
+            const address = accounts[0];
+            // Vérifier si le wallet est déjà connecté
+            if (walletAddresses.includes(address)) {
+              toast.error("Ce wallet est déjà connecté.");
+              setIsLoading(false);
+              return;
+            }
+            
+            handleWalletConnect(address, provider);
+          } else {
+            throw new Error('Aucun compte autorisé');
+          }
+        } catch (error: any) {
+          console.error("Erreur pendant la connexion à MetaMask:", error);
+          if (error.code === 4001) {
+            // L'utilisateur a refusé la connexion
+            toast.error('Vous avez refusé la connexion');
+            setError('Vous avez refusé la connexion. Veuillez réessayer.');
+          } else {
+            toast.error(error.message || 'Erreur lors de la connexion');
+            setError(error.message || 'Erreur lors de la connexion');
+          }
         }
       } else {
+        console.log("MetaMask non détecté");
         window.open('https://metamask.io/download.html', '_blank');
-        throw new Error('Wallet non détecté. Veuillez installer MetaMask ou un autre wallet compatible.');
+        toast.error('Wallet non détecté. Veuillez installer MetaMask.');
+        setError('Wallet non détecté. Veuillez installer MetaMask ou un autre wallet compatible.');
       }
     } catch (err: any) {
       console.error('Erreur de connexion wallet:', err);
-      if (err.code === 4001) {
-        // L'utilisateur a refusé la connexion
-        setError('Vous avez refusé la connexion. Veuillez réessayer.');
-        toast.error('Vous avez refusé la connexion');
-      } else if (err.message) {
-        setError(err.message);
-        toast.error(err.message);
-      } else {
-        setError('Une erreur est survenue lors de la connexion au wallet');
-        toast.error('Une erreur est survenue lors de la connexion');
-      }
+      toast.error(err.message || 'Une erreur est survenue lors de la connexion');
+      setError(err.message || 'Une erreur est survenue lors de la connexion au wallet');
     } finally {
       setIsLoading(false);
     }
@@ -746,11 +778,28 @@ export default function Wallets() {
           <p className="text-gray-500 dark:text-gray-400 text-center mb-4">
             Ajoutez un nouveau wallet pour analyser ses transactions
           </p>
-          <SimpleWalletButton
+          <button
             onClick={connectWallet}
-            variant="primary"
-            size="md"
-          />
+            disabled={isLoading}
+            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center"
+          >
+            {isLoading ? (
+              <>
+                <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Connexion...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 8H19C20.1046 8 21 8.89543 21 10V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V10C3 8.89543 3.89543 8 5 8H6M15 5H9M15 5C16.1046 5 17 5.89543 17 7V8H7V7C7 5.89543 7.89543 5 9 5M15 5H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Connecter Wallet
+              </>
+            )}
+          </button>
         </div>
 
         {/* Afficher les wallets connectés */}
@@ -1038,12 +1087,28 @@ export default function Wallets() {
             </p>
 
             <div className="max-w-xs mx-auto">
-              <SimpleWalletButton
+              <button
                 onClick={connectWallet}
-                variant="primary"
-                fullWidth
-                size="lg"
-              />
+                disabled={isLoading}
+                className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center"
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Connexion...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18 8H19C20.1046 8 21 8.89543 21 10V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V10C3 8.89543 3.89543 8 5 8H6M15 5H9M15 5C16.1046 5 17 5.89543 17 7V8H7V7C7 5.89543 7.89543 5 9 5M15 5H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Connecter Wallet
+                  </>
+                )}
+              </button>
 
               {/* Wallet supportés */}
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -1132,12 +1197,28 @@ export default function Wallets() {
               
               <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6 flex flex-col justify-center">
                 <h3 className="font-medium text-gray-900 dark:text-white text-lg mb-4 text-center">Prêt à commencer ?</h3>
-                <SimpleWalletButton
+                <button
                   onClick={connectWallet}
-                  variant="primary"
-                  fullWidth
-                  size="lg"
-                />
+                  disabled={isLoading}
+                  className="w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center"
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Connexion...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 8H19C20.1046 8 21 8.89543 21 10V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V10C3 8.89543 3.89543 8 5 8H6M15 5H9M15 5C16.1046 5 17 5.89543 17 7V8H7V7C7 5.89543 7.89543 5 9 5M15 5H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Connecter Wallet
+                    </>
+                  )}
+                </button>
                 <div className="mt-6">
                   <div className="flex items-center justify-center space-x-4 mb-4">
                     {[
