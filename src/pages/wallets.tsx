@@ -116,14 +116,14 @@ export default function Wallets() {
           toast('Wallet déconnecté par MetaMask');
         } else {
           // L'utilisateur a changé de compte
-          toast.info('Compte MetaMask modifié');
+          toast('Compte MetaMask modifié');
           window.location.reload();
         }
       });
 
       window.ethereum.on('chainChanged', () => {
         // Le réseau a changé, recharger la page
-        toast.info('Réseau blockchain modifié, rechargement...');
+        toast('Réseau blockchain modifié, rechargement...');
         window.location.reload();
       });
     }
