@@ -81,7 +81,7 @@ export default function Wallets() {
     
     // Mettre à jour les détails avec les métadonnées personnalisées
     const initialDetails: { [address: string]: WalletDetails } = {};
-    connectedWallets.forEach(address => {
+    connectedWallets.forEach((address: string) => {
       initialDetails[address] = {
         balance: "0",
         network: "Chargement...",
@@ -91,7 +91,7 @@ export default function Wallets() {
         lastActive: customWalletData[address]?.lastActive 
           ? new Date(customWalletData[address].lastActive) 
           : new Date()
-      };
+      } as WalletDetails;
     });
     
     setWalletsDetails(initialDetails);
