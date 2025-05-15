@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import WalletConnectButton from '@/components/Wallet/WalletConnectButton';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { isDevModeEnabled } from '@/utils/mockTransactions';
 import DevModeToggle from '@/components/Misc/DevModeToggle';
