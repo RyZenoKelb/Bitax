@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { generatePDF } from '@/utils/pdf';
 import TransactionList from './TransactionList';
-import TransactionSummary from '../TransactionSummary'; // Update the path if the file is located in a different directory
+import TransactionSummary from './TransactionSummary';
 import PremiumUnlock from './PremiumUnlock';
 import TaxDashboard from './TaxDashboard';
 import WalletConnectPanel from './WalletConnectPanel';
