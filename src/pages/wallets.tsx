@@ -8,6 +8,10 @@ import { isDevModeEnabled } from '@/utils/mockTransactions';
 import DevModeToggle from '@/components/Misc/DevModeToggle';
 import NetworkIcon from '@/components/Visual/NetworkIcon';
 import { toast } from 'react-hot-toast';
+// Web3Modal
+import Web3Modal from 'web3modal';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 declare global {
   interface Window {
@@ -51,6 +55,7 @@ export default function Wallets() {
   const [editingWallet, setEditingWallet] = useState<string | null>(null);
   const [editName, setEditName] = useState<string>("");
   const [editCategory, setEditCategory] = useState<string>("default");
+  const [web3Modal, setWeb3Modal] = useState<Web3Modal | null>(null);
   const router = useRouter();
 
   // Catégories de wallets prédéfinies
@@ -64,10 +69,47 @@ export default function Wallets() {
     { id: "gaming", name: "Gaming", color: "pink" },
   ];
 
+  // Initialiser Web3Modal
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const providerOptions = {
+        walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            infuraId: "your-infura-id" // Remplacer par votre infuraId ou utiliser un RPC personnalisé
+          }
+        },
+        coinbasewallet: {
+          package: CoinbaseWalletSDK,
+          options: {
+            appName: "Bitax",
+            infuraId: "your-infura-id" // Remplacer par votre infuraId
+          }
+        }
+      };
+
+      const modal = new Web3Modal({
+        network: "mainnet", // Optionnel, mais recommandé
+        cacheProvider: true,
+        providerOptions,
+        theme: "dark"
+      });
+
+      setWeb3Modal(modal);
+    }
+  }, []);
+
   // Charger l'état du mode développeur
   useEffect(() => {
     setIsDevMode(isDevModeEnabled());
   }, []);
+
+  // Connecter automatiquement si le provider est mis en cache
+  useEffect(() => {
+    if (web3Modal && web3Modal.cachedProvider) {
+      connectWallet();
+    }
+  }, [web3Modal]);
 
   // Charger les wallets au démarrage
   useEffect(() => {
@@ -107,6 +149,97 @@ export default function Wallets() {
     
     setWalletsDetails(initialDetails);
   }, []);
+
+  // Connecter un wallet avec Web3Modal
+  const connectWallet = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Si nous sommes en mode dev, créer un wallet fictif pour tester
+      if (isDevModeEnabled()) {
+        console.log("Mode développement activé : création d'un wallet fictif");
+        
+        // Générer une adresse aléatoire pour simuler un wallet
+        const randomAddr = "0x" + Array.from({ length: 40 }, () => 
+          Math.floor(Math.random() * 16).toString(16)
+        ).join("");
+        
+        // Créer un provider simulé
+        const mockProvider = {
+          getNetwork: async () => ({ name: "Ethereum" }),
+          getBalance: async () => ethers.parseEther("1.5"),
+          lookupAddress: async () => null
+        } as unknown as ethers.BrowserProvider;
+        
+        // Traiter la connexion simulée
+        await handleWalletConnect(randomAddr, mockProvider);
+        toast.success("Wallet fictif connecté en mode test");
+        setIsLoading(false);
+        return;
+      }
+      
+      if (!web3Modal) {
+        throw new Error("Web3Modal n'est pas initialisé");
+      }
+      
+      // Ouvrir la fenêtre modale pour choisir le wallet
+      const instance = await web3Modal.connect();
+      
+      // Wrapper le provider avec ethers
+      const provider = new ethers.BrowserProvider(instance);
+      
+      // Obtenir l'adresse
+      const accounts = await provider.listAccounts();
+      
+      if (accounts.length === 0) {
+        throw new Error("Aucun compte disponible");
+      }
+      
+      const address = accounts[0].address;
+      
+      // Vérifier si le wallet est déjà connecté
+      if (walletAddresses.includes(address)) {
+        toast.error("Ce wallet est déjà connecté");
+        return;
+      }
+      
+      // Écouter les événements de changement
+      instance.on("accountsChanged", (accounts: string[]) => {
+        if (accounts.length === 0) {
+          // L'utilisateur s'est déconnecté du wallet
+          console.log("Utilisateur déconnecté");
+        } else if (accounts[0] !== address) {
+          // L'utilisateur a changé de compte
+          console.log("Compte changé :", accounts[0]);
+          window.location.reload();
+        }
+      });
+      
+      instance.on("chainChanged", () => {
+        // Le réseau a changé, recharger la page
+        console.log("Réseau changé, rechargement...");
+        window.location.reload();
+      });
+      
+      // Connexion réussie, stocker les détails
+      await handleWalletConnect(address, provider);
+      
+    } catch (err: any) {
+      console.error("Erreur lors de la connexion du wallet:", err);
+      toast.error(err.message || "Erreur lors de la connexion du wallet");
+      setError(err.message || "Une erreur est survenue lors de la connexion");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Déconnecter le Web3Modal
+  const disconnectWeb3Modal = () => {
+    if (web3Modal) {
+      web3Modal.clearCachedProvider();
+    }
+  };
 
   // Charger les détails de wallet (solde, etc.)
   const loadWalletDetails = async (addresses: string[]) => {
@@ -235,84 +368,6 @@ export default function Wallets() {
     }));
   };
 
-  // Connecter un nouveau wallet
-  const connectWallet = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      // Si nous sommes en mode dev, créer un wallet fictif pour tester
-      if (isDevModeEnabled()) {
-        console.log("Mode développement activé : création d'un wallet fictif");
-        
-        // Générer une adresse aléatoire pour simuler un wallet
-        const randomAddr = "0x" + Array.from({ length: 40 }, () => 
-          Math.floor(Math.random() * 16).toString(16)
-        ).join("");
-        
-        // Créer un provider simulé
-        const mockProvider = {
-          getNetwork: async () => ({ name: "Ethereum" }),
-          getBalance: async () => ethers.parseEther("1.5"),
-          lookupAddress: async () => null
-        } as unknown as ethers.BrowserProvider;
-        
-        // Traiter la connexion simulée
-        handleWalletConnect(randomAddr, mockProvider);
-        toast.success("Wallet fictif connecté en mode test");
-        return;
-      }
-      
-      // Mode production - vraie connexion
-      if (typeof window !== "undefined" && window.ethereum) {
-        console.log("Tentative de connexion à MetaMask...");
-        
-        try {
-          // Demander explicitement à l'utilisateur de se connecter
-          const provider = new ethers.BrowserProvider(window.ethereum);
-          const accounts = await provider.send('eth_requestAccounts', []);
-          
-          console.log("Comptes trouvés:", accounts);
-          
-          if (accounts && accounts.length > 0) {
-            const address = accounts[0];
-            // Vérifier si le wallet est déjà connecté
-            if (walletAddresses.includes(address)) {
-              toast.error("Ce wallet est déjà connecté.");
-              setIsLoading(false);
-              return;
-            }
-            
-            handleWalletConnect(address, provider);
-          } else {
-            throw new Error('Aucun compte autorisé');
-          }
-        } catch (error: any) {
-          console.error("Erreur pendant la connexion à MetaMask:", error);
-          if (error.code === 4001) {
-            // L'utilisateur a refusé la connexion
-            toast.error('Vous avez refusé la connexion');
-            setError('Vous avez refusé la connexion. Veuillez réessayer.');
-          } else {
-            toast.error(error.message || 'Erreur lors de la connexion');
-            setError(error.message || 'Erreur lors de la connexion');
-          }
-        }
-      } else {
-        console.log("MetaMask non détecté");
-        window.open('https://metamask.io/download.html', '_blank');
-        toast.error('Wallet non détecté. Veuillez installer MetaMask.');
-        setError('Wallet non détecté. Veuillez installer MetaMask ou un autre wallet compatible.');
-      }
-    } catch (err: any) {
-      console.error('Erreur de connexion wallet:', err);
-      toast.error(err.message || 'Une erreur est survenue lors de la connexion');
-      setError(err.message || 'Une erreur est survenue lors de la connexion au wallet');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // Traitement après la connexion d'un wallet
   const handleWalletConnect = async (address: string, walletProvider: ethers.BrowserProvider) => {
     try {
@@ -388,6 +443,11 @@ export default function Wallets() {
         "bitax-connected-wallets",
         JSON.stringify(updatedWallets)
       );
+      
+      // Si c'était le dernier wallet, déconnecter Web3Modal
+      if (updatedWallets.length === 0) {
+        disconnectWeb3Modal();
+      }
 
       toast.success("Wallet déconnecté avec succès");
       setError(null);
