@@ -7,7 +7,6 @@ import { SimpleWalletButton } from '@/components/Wallet/WalletConnectButton';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { isDevModeEnabled } from '@/utils/mockTransactions';
 import DevModeToggle from '@/components/Misc/DevModeToggle';
-import OnboardingWizard from '@/components/Misc/OnboardingWizard';
 import NetworkIcon from '@/components/Visual/NetworkIcon';
 import { toast } from 'react-hot-toast';
 
@@ -24,6 +23,18 @@ interface WalletDetails {
   name: string | null;
   category: string | null;
   lastActive: Date | null;
+}
+
+interface WalletStats {
+  totalWallets: number;
+  totalBalance: number;
+  networks: Record<string, number>;
+}
+
+interface WalletCategory {
+  id: string;
+  name: string;
+  color: string;
 }
 
 export default function Wallets() {
@@ -44,7 +55,7 @@ export default function Wallets() {
   const router = useRouter();
 
   // Catégories de wallets prédéfinies
-  const walletCategories = [
+  const walletCategories: WalletCategory[] = [
     { id: "all", name: "Tous les wallets", color: "gray" },
     { id: "default", name: "Non catégorisé", color: "gray" },
     { id: "defi", name: "DeFi", color: "indigo" },
@@ -63,7 +74,8 @@ export default function Wallets() {
   useEffect(() => {
     const connectedWallets = JSON.parse(
       localStorage.getItem("bitax-connected-wallets") || "[]"
-    );
+    ) as string[];
+    
     setWalletAddresses(connectedWallets);
 
     // Charger les détails de chaque wallet
@@ -77,7 +89,7 @@ export default function Wallets() {
     // Charger les noms et catégories personnalisés
     const customWalletData = JSON.parse(
       localStorage.getItem("bitax-wallet-metadata") || "{}"
-    );
+    ) as Record<string, any>;
     
     // Mettre à jour les détails avec les métadonnées personnalisées
     const initialDetails: { [address: string]: WalletDetails } = {};
@@ -107,7 +119,7 @@ export default function Wallets() {
       const details: { [address: string]: WalletDetails } = {};
       const customWalletData = JSON.parse(
         localStorage.getItem("bitax-wallet-metadata") || "{}"
-      );
+      ) as Record<string, any>;
 
       // Si nous sommes en mode dev, utiliser des données simulées
       if (isDevModeEnabled()) {
@@ -203,7 +215,7 @@ export default function Wallets() {
 
   // Fonction pour sauvegarder les métadonnées des wallets
   const saveWalletMetadata = (address: string, data: { name?: string | undefined; category?: string | undefined }) => {
-    const metadata = JSON.parse(localStorage.getItem("bitax-wallet-metadata") || "{}");
+    const metadata = JSON.parse(localStorage.getItem("bitax-wallet-metadata") || "{}") as Record<string, any>;
     
     metadata[address] = {
       ...metadata[address],
@@ -268,13 +280,10 @@ export default function Wallets() {
       setIsLoading(false);
     }
   };
-    try {
-      // Vérifier si le wallet est déjà connecté
-      if (walletAddresses.includes(address)) {
-        toast.error("Ce wallet est déjà connecté.");
-        return;
-      }
 
+  // Traitement après la connexion d'un wallet
+  const handleWalletConnect = async (address: string, walletProvider: ethers.BrowserProvider) => {
+    try {
       // Ajouter le nouveau wallet à la liste
       const updatedWallets = [...walletAddresses, address];
       setWalletAddresses(updatedWallets);
@@ -459,7 +468,7 @@ export default function Wallets() {
   };
 
   // Filtrer les wallets en fonction de la catégorie et de la recherche
-  const filteredWallets = walletAddresses.filter(address => {
+  const filteredWallets = walletAddresses.filter((address: string) => {
     // Filtre par catégorie
     if (walletCategory !== "all" && walletsDetails[address]?.category !== walletCategory) {
       return false;
@@ -486,34 +495,34 @@ export default function Wallets() {
   });
 
   // Obtenir la couleur d'une catégorie
-  const getCategoryColor = (categoryId: string) => {
+  const getCategoryColor = (categoryId: string): string => {
     const category = walletCategories.find(cat => cat.id === categoryId);
     return category ? category.color : "gray";
   };
 
   // Obtenir le nom d'une catégorie
-  const getCategoryName = (categoryId: string) => {
+  const getCategoryName = (categoryId: string): string => {
     const category = walletCategories.find(cat => cat.id === categoryId);
     return category ? category.name : "Non catégorisé";
   };
 
   // Stats agrégées pour tous les wallets
-  const walletStats = {
+  const walletStats: WalletStats = {
     totalWallets: walletAddresses.length,
-    totalBalance: walletAddresses.reduce((total, address) => {
+    totalBalance: walletAddresses.reduce((total: number, address: string) => {
       return total + parseFloat(walletsDetails[address]?.balance || "0");
     }, 0),
-    networks: walletAddresses.reduce((networks, address) => {
+    networks: walletAddresses.reduce((networks: Record<string, number>, address: string) => {
       const network = walletsDetails[address]?.network;
       if (network) {
         networks[network] = (networks[network] || 0) + 1;
       }
       return networks;
-    }, {} as {[key: string]: number})
+    }, {})
   };
 
   // Formatter la valeur pour l'affichage
-  const formatValue = (value: number) => {
+  const formatValue = (value: number): string => {
     if (value > 1000000) {
       return `${(value / 1000000).toFixed(2)}M`;
     } else if (value > 1000) {
