@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import WalletConnectButton from '@/components/Wallet/WalletConnectButton';
+import { SimpleWalletButton } from '@/components/Wallet/WalletConnectButton';
 import { NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { isDevModeEnabled } from '@/utils/mockTransactions';
 import DevModeToggle from '@/components/Misc/DevModeToggle';
@@ -81,7 +81,7 @@ export default function Wallets() {
     
     // Mettre à jour les détails avec les métadonnées personnalisées
     const initialDetails: { [address: string]: WalletDetails } = {};
-    connectedWallets.forEach((address: string) => {
+    connectedWallets.forEach(address => {
       initialDetails[address] = {
         balance: "0",
         network: "Chargement...",
@@ -91,7 +91,7 @@ export default function Wallets() {
         lastActive: customWalletData[address]?.lastActive 
           ? new Date(customWalletData[address].lastActive) 
           : new Date()
-      } as WalletDetails;
+      };
     });
     
     setWalletsDetails(initialDetails);
@@ -225,7 +225,49 @@ export default function Wallets() {
   };
 
   // Connecter un nouveau wallet
-  const handleWalletConnect = async (address: string, walletProvider: ethers.BrowserProvider) => {
+  const connectWallet = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      if (typeof window !== "undefined" && window.ethereum) {
+        const walletProvider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await walletProvider.send('eth_requestAccounts', []);
+        
+        if (accounts.length > 0) {
+          const address = accounts[0];
+          // Vérifier si le wallet est déjà connecté
+          if (walletAddresses.includes(address)) {
+            toast.error("Ce wallet est déjà connecté.");
+            setIsLoading(false);
+            return;
+          }
+          
+          handleWalletConnect(address, walletProvider);
+        } else {
+          throw new Error('Aucun compte autorisé');
+        }
+      } else {
+        window.open('https://metamask.io/download.html', '_blank');
+        throw new Error('Wallet non détecté. Veuillez installer MetaMask ou un autre wallet compatible.');
+      }
+    } catch (err: any) {
+      console.error('Erreur de connexion wallet:', err);
+      if (err.code === 4001) {
+        // L'utilisateur a refusé la connexion
+        setError('Vous avez refusé la connexion. Veuillez réessayer.');
+        toast.error('Vous avez refusé la connexion');
+      } else if (err.message) {
+        setError(err.message);
+        toast.error(err.message);
+      } else {
+        setError('Une erreur est survenue lors de la connexion au wallet');
+        toast.error('Une erreur est survenue lors de la connexion');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
     try {
       // Vérifier si le wallet est déjà connecté
       if (walletAddresses.includes(address)) {
@@ -695,8 +737,8 @@ export default function Wallets() {
           <p className="text-gray-500 dark:text-gray-400 text-center mb-4">
             Ajoutez un nouveau wallet pour analyser ses transactions
           </p>
-          <WalletConnectButton
-            onConnect={handleWalletConnect}
+          <SimpleWalletButton
+            onClick={connectWallet}
             variant="primary"
             size="md"
           />
@@ -987,8 +1029,8 @@ export default function Wallets() {
             </p>
 
             <div className="max-w-xs mx-auto">
-              <WalletConnectButton
-                onConnect={handleWalletConnect}
+              <SimpleWalletButton
+                onClick={connectWallet}
                 variant="primary"
                 fullWidth
                 size="lg"
@@ -1081,8 +1123,8 @@ export default function Wallets() {
               
               <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6 flex flex-col justify-center">
                 <h3 className="font-medium text-gray-900 dark:text-white text-lg mb-4 text-center">Prêt à commencer ?</h3>
-                <WalletConnectButton
-                  onConnect={handleWalletConnect}
+                <SimpleWalletButton
+                  onClick={connectWallet}
                   variant="primary"
                   fullWidth
                   size="lg"
