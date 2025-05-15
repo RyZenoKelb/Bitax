@@ -6,7 +6,6 @@ import TransactionList from '../Infos/TransactionList';
 import TransactionSummary from '../Dashboard/TransactionSummary';
 import PremiumUnlock from '../Dashboard/PremiumUnlock';
 import TaxDashboard from '../Dashboard/TaxDashboard';
-import WalletConnectPanel from './WalletConnectPanel';
 import { Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
