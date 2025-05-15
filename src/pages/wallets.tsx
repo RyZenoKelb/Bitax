@@ -8,10 +8,6 @@ import { isDevModeEnabled } from '@/utils/mockTransactions';
 import DevModeToggle from '@/components/Misc/DevModeToggle';
 import NetworkIcon from '@/components/Visual/NetworkIcon';
 import { toast } from 'react-hot-toast';
-// Web3Modal
-import Web3Modal from 'web3modal';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 declare global {
   interface Window {
@@ -55,7 +51,6 @@ export default function Wallets() {
   const [editingWallet, setEditingWallet] = useState<string | null>(null);
   const [editName, setEditName] = useState<string>("");
   const [editCategory, setEditCategory] = useState<string>("default");
-  const [web3Modal, setWeb3Modal] = useState<Web3Modal | null>(null);
   const router = useRouter();
 
   // Catégories de wallets prédéfinies
@@ -69,47 +64,10 @@ export default function Wallets() {
     { id: "gaming", name: "Gaming", color: "pink" },
   ];
 
-  // Initialiser Web3Modal
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const providerOptions = {
-        walletconnect: {
-          package: WalletConnectProvider,
-          options: {
-            infuraId: "your-infura-id" // Remplacer par votre infuraId ou utiliser un RPC personnalisé
-          }
-        },
-        coinbasewallet: {
-          package: CoinbaseWalletSDK,
-          options: {
-            appName: "Bitax",
-            infuraId: "your-infura-id" // Remplacer par votre infuraId
-          }
-        }
-      };
-
-      const modal = new Web3Modal({
-        network: "mainnet", // Optionnel, mais recommandé
-        cacheProvider: true,
-        providerOptions,
-        theme: "dark"
-      });
-
-      setWeb3Modal(modal);
-    }
-  }, []);
-
   // Charger l'état du mode développeur
   useEffect(() => {
     setIsDevMode(isDevModeEnabled());
   }, []);
-
-  // Connecter automatiquement si le provider est mis en cache
-  useEffect(() => {
-    if (web3Modal && web3Modal.cachedProvider) {
-      connectWallet();
-    }
-  }, [web3Modal]);
 
   // Charger les wallets au démarrage
   useEffect(() => {
@@ -148,9 +106,38 @@ export default function Wallets() {
     });
     
     setWalletsDetails(initialDetails);
+
+    // Écouter les changements de compte MetaMask
+    if (typeof window !== 'undefined' && window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts: string[]) => {
+        console.log('Comptes MetaMask modifiés:', accounts);
+        if (accounts.length === 0) {
+          // L'utilisateur s'est déconnecté
+          toast.info('Wallet déconnecté par MetaMask');
+        } else {
+          // L'utilisateur a changé de compte
+          toast.info('Compte MetaMask modifié');
+          window.location.reload();
+        }
+      });
+
+      window.ethereum.on('chainChanged', () => {
+        // Le réseau a changé, recharger la page
+        toast.info('Réseau blockchain modifié, rechargement...');
+        window.location.reload();
+      });
+    }
+
+    // Cleanup function
+    return () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        window.ethereum.removeAllListeners('accountsChanged');
+        window.ethereum.removeAllListeners('chainChanged');
+      }
+    };
   }, []);
 
-  // Connecter un wallet avec Web3Modal
+  // Connecter un wallet
   const connectWallet = async () => {
     try {
       setIsLoading(true);
@@ -175,69 +162,52 @@ export default function Wallets() {
         // Traiter la connexion simulée
         await handleWalletConnect(randomAddr, mockProvider);
         toast.success("Wallet fictif connecté en mode test");
-        setIsLoading(false);
         return;
       }
       
-      if (!web3Modal) {
-        throw new Error("Web3Modal n'est pas initialisé");
-      }
-      
-      // Ouvrir la fenêtre modale pour choisir le wallet
-      const instance = await web3Modal.connect();
-      
-      // Wrapper le provider avec ethers
-      const provider = new ethers.BrowserProvider(instance);
-      
-      // Obtenir l'adresse
-      const accounts = await provider.listAccounts();
-      
-      if (accounts.length === 0) {
-        throw new Error("Aucun compte disponible");
-      }
-      
-      const address = accounts[0].address;
-      
-      // Vérifier si le wallet est déjà connecté
-      if (walletAddresses.includes(address)) {
-        toast.error("Ce wallet est déjà connecté");
-        return;
-      }
-      
-      // Écouter les événements de changement
-      instance.on("accountsChanged", (accounts: string[]) => {
-        if (accounts.length === 0) {
-          // L'utilisateur s'est déconnecté du wallet
-          console.log("Utilisateur déconnecté");
-        } else if (accounts[0] !== address) {
-          // L'utilisateur a changé de compte
-          console.log("Compte changé :", accounts[0]);
-          window.location.reload();
+      // Vérifier si MetaMask est installé
+      if (typeof window !== "undefined" && window.ethereum) {
+        // Demander l'accès au wallet
+        try {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const accounts = await provider.send('eth_requestAccounts', []);
+          
+          if (accounts && accounts.length > 0) {
+            const address = accounts[0];
+            
+            // Vérifier si le wallet est déjà connecté
+            if (walletAddresses.includes(address)) {
+              toast.error("Ce wallet est déjà connecté");
+              return;
+            }
+            
+            // Procéder à la connexion
+            await handleWalletConnect(address, provider);
+            toast.success("Wallet connecté avec succès");
+          } else {
+            throw new Error("Aucun compte n'a été autorisé");
+          }
+        } catch (error: any) {
+          if (error.code === 4001) {
+            // L'utilisateur a refusé la connexion
+            throw new Error("Vous avez refusé la connexion à MetaMask");
+          } else {
+            console.error("Erreur lors de la connexion à MetaMask:", error);
+            throw error;
+          }
         }
-      });
-      
-      instance.on("chainChanged", () => {
-        // Le réseau a changé, recharger la page
-        console.log("Réseau changé, rechargement...");
-        window.location.reload();
-      });
-      
-      // Connexion réussie, stocker les détails
-      await handleWalletConnect(address, provider);
-      
+      } else {
+        // MetaMask n'est pas installé
+        toast.error("MetaMask n'est pas installé");
+        window.open('https://metamask.io/download.html', '_blank');
+        throw new Error("MetaMask n'est pas installé. Veuillez l'installer pour continuer.");
+      }
     } catch (err: any) {
       console.error("Erreur lors de la connexion du wallet:", err);
       toast.error(err.message || "Erreur lors de la connexion du wallet");
       setError(err.message || "Une erreur est survenue lors de la connexion");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // Déconnecter le Web3Modal
-  const disconnectWeb3Modal = () => {
-    if (web3Modal) {
-      web3Modal.clearCachedProvider();
     }
   };
 
@@ -443,11 +413,6 @@ export default function Wallets() {
         "bitax-connected-wallets",
         JSON.stringify(updatedWallets)
       );
-      
-      // Si c'était le dernier wallet, déconnecter Web3Modal
-      if (updatedWallets.length === 0) {
-        disconnectWeb3Modal();
-      }
 
       toast.success("Wallet déconnecté avec succès");
       setError(null);
@@ -856,7 +821,7 @@ export default function Wallets() {
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18 8H19C20.1046 8 21 8.89543 21 10V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V10C3 8.89543 3.89543 8 5 8H6M15 5H9M15 5C16.1046 5 17 5.89543 17 7V8H7V7C7 5.89543 7.89543 5 9 5M15 5H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Connecter Wallet
+                Connecter MetaMask
               </>
             )}
           </button>
@@ -1165,7 +1130,7 @@ export default function Wallets() {
                     <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M18 8H19C20.1046 8 21 8.89543 21 10V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V10C3 8.89543 3.89543 8 5 8H6M15 5H9M15 5C16.1046 5 17 5.89543 17 7V8H7V7C7 5.89543 7.89543 5 9 5M15 5H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    Connecter Wallet
+                    Connecter MetaMask
                   </>
                 )}
               </button>
@@ -1173,26 +1138,22 @@ export default function Wallets() {
               {/* Wallet supportés */}
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                  Wallets supportés
+                  Wallet supporté
                 </p>
-                <div className="flex justify-center space-x-4">
-                  {[
-                    { name: "MetaMask", icon: "🦊" },
-                    { name: "Coinbase", icon: "🔷" },
-                    { name: "WalletConnect", icon: "📱" },
-                  ].map((wallet, idx) => (
-                    <div
-                      key={idx}
-                      className="flex flex-col items-center"
-                      title={wallet.name}
-                    >
-                      <div className="text-2xl mb-1">{wallet.icon}</div>
-                      <span className="text-xs text-gray-600 dark:text-gray-400">
-                        {wallet.name}
-                      </span>
-                    </div>
-                  ))}
+                <div className="flex justify-center">
+                  <div
+                    className="flex flex-col items-center"
+                    title="MetaMask"
+                  >
+                    <div className="text-2xl mb-1">🦊</div>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                      MetaMask
+                    </span>
+                  </div>
                 </div>
+                <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                  Pas de wallet ? <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="text-primary-600 dark:text-primary-400 hover:underline">Installer MetaMask</a>
+                </p>
               </div>
             </div>
           </div>
@@ -1230,7 +1191,7 @@ export default function Wallets() {
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900 dark:text-white text-lg">Connectez vos wallets</h3>
-                    <p className="text-gray-600 dark:text-gray-300 mt-1">Utilisez MetaMask, Coinbase Wallet ou WalletConnect pour connecter vos adresses crypto</p>
+                    <p className="text-gray-600 dark:text-gray-300 mt-1">Utilisez MetaMask pour connecter vos adresses crypto</p>
                   </div>
                 </div>
                 
@@ -1275,28 +1236,18 @@ export default function Wallets() {
                       <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 8H19C20.1046 8 21 8.89543 21 10V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V10C3 8.89543 3.89543 8 5 8H6M15 5H9M15 5C16.1046 5 17 5.89543 17 7V8H7V7C7 5.89543 7.89543 5 9 5M15 5H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      Connecter Wallet
+                      Connecter MetaMask
                     </>
                   )}
                 </button>
-                <div className="mt-6">
-                  <div className="flex items-center justify-center space-x-4 mb-4">
-                    {[
-                      { name: "MetaMask", icon: "🦊" },
-                      { name: "Coinbase", icon: "🔷" },
-                      { name: "WalletConnect", icon: "📱" },
-                    ].map((wallet, idx) => (
-                      <div
-                        key={idx}
-                        className="flex flex-col items-center"
-                        title={wallet.name}
-                      >
-                        <div className="text-2xl mb-1">{wallet.icon}</div>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">
-                          {wallet.name}
-                        </span>
-                      </div>
-                    ))}
+                <div className="mt-6 text-center">
+                  <div className="flex justify-center mb-4">
+                    <div className="flex flex-col items-center mx-auto" title="MetaMask">
+                      <div className="text-3xl mb-2">🦊</div>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        MetaMask
+                      </span>
+                    </div>
                   </div>
                   <p className="text-gray-500 dark:text-gray-400 text-sm text-center">
                     Pas de wallet ? <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="text-primary-600 dark:text-primary-400 hover:underline">Installer MetaMask</a>
