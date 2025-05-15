@@ -5,7 +5,7 @@ import { generatePDF } from '@/utils/pdf';
 import TransactionList from '@/components/Infos/TransactionList';
 import TransactionSummary from '@/components/Dashboard/TransactionSummary';
 import PremiumUnlock from '@/components/Dashboard/PremiumUnlock';
-import TaxDashboard from './TaxDashboard';
+import TaxDashboard from '@/components/Dashboard/TaxDashboard';
 import WalletConnectPanel from './WalletConnectPanel';
 import { Fragment } from 'react';
 import { Transition } from '@headlessui/react';
