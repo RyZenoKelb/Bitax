@@ -113,7 +113,7 @@ export default function Wallets() {
         console.log('Comptes MetaMask modifiés:', accounts);
         if (accounts.length === 0) {
           // L'utilisateur s'est déconnecté
-          toast.info('Wallet déconnecté par MetaMask');
+          toast('Wallet déconnecté par MetaMask');
         } else {
           // L'utilisateur a changé de compte
           toast.info('Compte MetaMask modifié');
