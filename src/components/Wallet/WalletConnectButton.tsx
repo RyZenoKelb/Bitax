@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { getTransactions, NetworkType, SUPPORTED_NETWORKS } from '@/utils/transactions';
 import { generatePDF } from '@/utils/pdf';
-import TransactionList from '@/components/Dashboard./TransactionList';
+import TransactionList from '@/components/Dashboard/TransactionList';
 import TransactionSummary from '@/components/Dashboard/TransactionSummary';
 import PremiumUnlock from './PremiumUnlock';
 import TaxDashboard from './TaxDashboard';
