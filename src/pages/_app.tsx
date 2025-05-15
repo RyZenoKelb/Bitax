@@ -106,6 +106,17 @@ const AppContent = ({ Component, pageProps }: { Component: AppProps['Component']
       ),
       gradient: `linear-gradient(45deg, ${COLORS.cyan.main}, ${COLORS.cyan.light})`
     },
+    // Ajoutez ceci au tableau navLinks dans src/pages/_app.tsx après Dashboard
+    { 
+      name: 'Wallets', 
+      href: '/wallets', 
+      icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 8H19C20.1046 8 21 8.89543 21 10V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V10C3 8.89543 3.89543 8 5 8H6M15 5H9M15 5C16.1046 5 17 5.89543 17 7V8H7V7C7 5.89543 7.89543 5 9 5M15 5H9M18 14H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      ),
+      gradient: `linear-gradient(45deg, ${COLORS.cyan.main}, ${COLORS.indigo.main})`
+    },
     { 
       name: 'Guide', 
       href: '/guide', 
