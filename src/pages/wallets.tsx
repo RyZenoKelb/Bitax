@@ -202,7 +202,7 @@ export default function Wallets() {
   };
 
   // Fonction pour sauvegarder les métadonnées des wallets
-  const saveWalletMetadata = (address: string, data: { name?: string; category?: string }) => {
+  const saveWalletMetadata = (address: string, data: { name?: string | undefined; category?: string | undefined }) => {
     const metadata = JSON.parse(localStorage.getItem("bitax-wallet-metadata") || "{}");
     
     metadata[address] = {
@@ -408,7 +408,7 @@ export default function Wallets() {
     if (!editingWallet) return;
     
     saveWalletMetadata(editingWallet, {
-      name: editName || null,
+      name: editName || undefined,
       category: editCategory
     });
     
