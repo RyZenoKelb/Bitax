@@ -10,7 +10,7 @@ import WalletConnectPanel from './WalletConnectPanel';
 import { Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import { filterSpamTransactions } from '@/utils/SpamFilter';
-import NetworkIcon from './Visual/NetworkIcon';
+import NetworkIcon from '@/components/Visual/NetworkIcon';
 
 declare global {
   interface Window {
