@@ -1,6 +1,5 @@
 /* Importation des fichiers de style */
 @import 'buttons.css';
-@import 'landing.css';
 
 /* Amélioration du bouton "Suivant" en mode clair */
 .light button[class*="px-6 py-2"],
