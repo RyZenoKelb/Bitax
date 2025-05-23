@@ -1,0 +1,549 @@
+/* landing.css - Design Premium pour Bitax */
+
+/* ===== VARIABLES ET CONFIGURATIONS ===== */
+:root {
+    /* Palette Futuriste */
+    --neon-purple: #9945ff;
+    --neon-blue: #14f195;
+    --deep-purple: #5a21b6;
+    --electric-blue: #00d9ff;
+    --cyber-pink: #ff006e;
+    --dark-bg: #0a0118;
+    --darker-bg: #050010;
+    --card-bg: rgba(20, 12, 46, 0.6);
+    
+    /* Gradients Premium */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-neon: linear-gradient(135deg, #9945ff 0%, #14f195 100%);
+    --gradient-cyber: linear-gradient(135deg, #00d9ff 0%, #ff006e 100%);
+    --gradient-aurora: linear-gradient(135deg, #ffa8a8 0%, #fcff00 50%, #00ff88 100%);
+    
+    /* Shadows */
+    --neon-glow: 0 0 30px rgba(153, 69, 255, 0.5);
+    --cyber-glow: 0 0 40px rgba(20, 241, 149, 0.5);
+    --card-glow: 0 0 50px rgba(153, 69, 255, 0.2);
+  }
+  
+  /* ===== HERO SECTION PREMIUM ===== */
+  .hero-gradient-mesh {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+  }
+  
+  .hero-gradient-mesh::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 20% 50%, rgba(153, 69, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(20, 241, 149, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(0, 217, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 110, 0.2) 0%, transparent 50%);
+    animation: meshAnimation 20s ease-in-out infinite;
+  }
+  
+  @keyframes meshAnimation {
+    0%, 100% { transform: rotate(0deg) scale(1.2); }
+    33% { transform: rotate(120deg) scale(1.3); }
+    66% { transform: rotate(240deg) scale(1.2); }
+  }
+  
+  /* ===== PARTICULES 3D AVANCÉES ===== */
+  .particles-3d {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(135deg, #9945ff, #14f195);
+    border-radius: 50%;
+    animation: float-particle 15s infinite ease-in-out;
+  }
+  
+  @keyframes float-particle {
+    0%, 100% {
+      transform: translateY(0) translateX(0) scale(1);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100vh) translateX(50px) scale(0.5);
+      opacity: 0;
+    }
+  }
+  
+  /* ===== NAVBAR GLASSMORPHISM PREMIUM ===== */
+  .navbar-premium {
+    background: rgba(10, 1, 24, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .navbar-premium.scrolled {
+    background: rgba(10, 1, 24, 0.95);
+    box-shadow: 0 8px 32px rgba(153, 69, 255, 0.15);
+  }
+  
+  .nav-link-premium {
+    position: relative;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 8px;
+  }
+  
+  .nav-link-premium::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-neon);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transform: translateX(-50%);
+  }
+  
+  .nav-link-premium:hover::before {
+    width: 80%;
+  }
+  
+  .nav-link-premium:hover {
+    color: #14f195;
+    text-shadow: 0 0 20px rgba(20, 241, 149, 0.5);
+  }
+  
+  /* ===== BOUTONS PREMIUM ===== */
+  .btn-neon {
+    position: relative;
+    padding: 16px 40px;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 50px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 1;
+  }
+  
+  .btn-neon-primary {
+    background: linear-gradient(135deg, #9945ff 0%, #5a21b6 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(153, 69, 255, 0.3);
+  }
+  
+  .btn-neon-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #14f195 0%, #00d9ff 100%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: -1;
+  }
+  
+  .btn-neon-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(153, 69, 255, 0.4), 0 0 60px rgba(20, 241, 149, 0.3);
+  }
+  
+  .btn-neon-primary:hover::before {
+    opacity: 1;
+  }
+  
+  .btn-neon-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid transparent;
+    background-image: linear-gradient(#0a0118, #0a0118), linear-gradient(135deg, #9945ff, #14f195);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+  
+  .btn-neon-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(20, 241, 149, 0.3);
+    text-shadow: 0 0 20px rgba(20, 241, 149, 0.8);
+  }
+  
+  /* ===== HERO TITLE ANIMATION ===== */
+  .hero-title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  
+  .hero-title-gradient {
+    background: linear-gradient(135deg, #9945ff 0%, #14f195 50%, #00d9ff 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 5s ease infinite;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 40px rgba(153, 69, 255, 0.5),
+                 0 0 80px rgba(20, 241, 149, 0.3);
+  }
+  
+  /* ===== FLOATING BADGE ===== */
+  .floating-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 20px;
+    background: rgba(153, 69, 255, 0.1);
+    border: 1px solid rgba(153, 69, 255, 0.3);
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  /* ===== DASHBOARD 3D CARD ===== */
+  .dashboard-3d-container {
+    perspective: 1500px;
+    transform-style: preserve-3d;
+  }
+  
+  .dashboard-3d-card {
+    background: linear-gradient(135deg, rgba(20, 12, 46, 0.9), rgba(10, 1, 24, 0.9));
+    border: 1px solid rgba(153, 69, 255, 0.2);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 100px rgba(153, 69, 255, 0.1);
+    transform: rotateY(-15deg) rotateX(5deg);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    overflow: hidden;
+  }
+  
+  .dashboard-3d-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(20, 241, 149, 0.1), transparent);
+    transform: rotate(45deg);
+    transition: all 0.6s;
+    opacity: 0;
+  }
+  
+  .dashboard-3d-card:hover {
+    transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6),
+                0 0 120px rgba(20, 241, 149, 0.2);
+  }
+  
+  .dashboard-3d-card:hover::before {
+    animation: shimmer 0.5s;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(45deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
+  }
+  
+  /* ===== FEATURE CARDS HOLOGRAPHIC ===== */
+  .feature-card-holographic {
+    position: relative;
+    background: linear-gradient(135deg, rgba(20, 12, 46, 0.8), rgba(10, 1, 24, 0.8));
+    border-radius: 20px;
+    padding: 32px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  
+  .feature-card-holographic::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(135deg, #9945ff, #14f195, #00d9ff, #ff006e);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+    transition: opacity 0.4s;
+  }
+  
+  .feature-card-holographic:hover::before {
+    opacity: 1;
+  }
+  
+  .feature-card-holographic:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(153, 69, 255, 0.3),
+                0 0 60px rgba(20, 241, 149, 0.2);
+  }
+  
+  /* ===== CRYPTO ICONS NEON ===== */
+  .crypto-icon-neon {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(153, 69, 255, 0.1);
+    border: 1px solid rgba(153, 69, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .crypto-icon-neon::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #9945ff, #14f195, #00d9ff);
+    border-radius: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+    filter: blur(10px);
+  }
+  
+  .crypto-icon-neon:hover {
+    transform: translateY(-5px) scale(1.1);
+    border-color: transparent;
+  }
+  
+  .crypto-icon-neon:hover::before {
+    opacity: 1;
+  }
+  
+  /* ===== SECTION SEPARATORS ===== */
+  .section-separator {
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+  }
+  
+  .section-separator svg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .section-separator-gradient {
+    fill: url(#gradient-separator);
+  }
+  
+  /* ===== STATS CARDS CYBERPUNK ===== */
+  .stat-card-cyber {
+    position: relative;
+    background: linear-gradient(135deg, rgba(20, 12, 46, 0.9), rgba(10, 1, 24, 0.9));
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 24px;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+  }
+  
+  .stat-card-cyber::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #9945ff, #14f195);
+    border-radius: 16px;
+    opacity: 0.5;
+    z-index: -1;
+    animation: borderRotate 4s linear infinite;
+  }
+  
+  @keyframes borderRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .stat-card-cyber:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(153, 69, 255, 0.3);
+  }
+  
+  /* ===== TESTIMONIAL CARDS AURORA ===== */
+  .testimonial-aurora {
+    position: relative;
+    background: rgba(20, 12, 46, 0.8);
+    border-radius: 20px;
+    padding: 32px;
+    overflow: hidden;
+  }
+  
+  .testimonial-aurora::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(153, 69, 255, 0.1) 0%, transparent 70%);
+    animation: aurora 8s linear infinite;
+  }
+  
+  @keyframes aurora {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* ===== FAQ ACCORDION MODERN ===== */
+  .faq-item-modern {
+    background: rgba(20, 12, 46, 0.6);
+    border: 1px solid rgba(153, 69, 255, 0.2);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .faq-item-modern:hover {
+    border-color: rgba(20, 241, 149, 0.4);
+    box-shadow: 0 4px 20px rgba(20, 241, 149, 0.1);
+  }
+  
+  .faq-item-modern.active {
+    background: rgba(153, 69, 255, 0.05);
+    border-color: rgba(153, 69, 255, 0.5);
+  }
+  
+  /* ===== RESPONSIVE OPTIMIZATIONS ===== */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+    
+    .dashboard-3d-card {
+      transform: rotateY(-5deg) rotateX(2deg);
+    }
+    
+    .feature-card-holographic {
+      padding: 24px;
+    }
+  }
+  
+  /* ===== LOADING ANIMATIONS ===== */
+  .skeleton-loader {
+    background: linear-gradient(90deg, rgba(20, 12, 46, 0.8) 0%, rgba(153, 69, 255, 0.1) 50%, rgba(20, 12, 46, 0.8) 100%);
+    background-size: 200% 100%;
+    animation: skeleton 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes skeleton {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  
+  /* ===== SCROLL ANIMATIONS ===== */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .scale-in {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .scale-in.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* ===== SPECIAL EFFECTS ===== */
+  .glitch-text {
+    position: relative;
+    color: white;
+    font-weight: 900;
+  }
+  
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .glitch-text::before {
+    animation: glitch-1 0.5s infinite;
+    color: #00d9ff;
+    z-index: -1;
+  }
+  
+  .glitch-text::after {
+    animation: glitch-2 0.5s infinite;
+    color: #ff006e;
+    z-index: -2;
+  }
+  
+  @keyframes glitch-1 {
+    0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+    20% { clip-path: inset(20% 0 30% 0); transform: translate(-2px, 2px); }
+    40% { clip-path: inset(50% 0 20% 0); transform: translate(2px, -2px); }
+    60% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 1px); }
+    80% { clip-path: inset(80% 0 5% 0); transform: translate(1px, -1px); }
+  }
+  
+  @keyframes glitch-2 {
+    0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+    20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+    40% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 2px); }
+    60% { clip-path: inset(30% 0 40% 0); transform: translate(1px, -2px); }
+    80% { clip-path: inset(5% 0 80% 0); transform: translate(-1px, 1px); }
+  }
