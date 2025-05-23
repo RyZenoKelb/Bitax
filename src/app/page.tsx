@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from "framer-motion";
+import 'landing.css';
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
